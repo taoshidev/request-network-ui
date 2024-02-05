@@ -5,7 +5,7 @@ import { AppShell } from "@mantine/core";
 import { Header } from "@/components/Header";
 import { Dashboard } from "@/components/Dashboard";
 
-export default function Layout({ children }) {
+export default function Layout({ children }: any) {
   return (
     <AppShell header={{ height: 60 }} padding="md">
       <AppShell.Header>
