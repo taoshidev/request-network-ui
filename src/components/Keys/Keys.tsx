@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-export function Keys({ apiKey }) {
+export function Keys({ apiKey }: { apiKey: any }) {
   const supabase = createClientComponentClient();
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -34,8 +34,6 @@ export function Keys({ apiKey }) {
   //     </Container>
   //   );
   // }
-
-  console.log(apiKey);
 
   return (
     <Container>

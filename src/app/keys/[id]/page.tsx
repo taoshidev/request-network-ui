@@ -5,7 +5,7 @@ import { getAPIKey } from "@/actions/keys";
 
 import { Keys } from "@/components/Keys";
 
-export default async function Page({ params }) {
+export default async function Page({ params }: any) {
   const { id } = params;
 
   const { error, result } = await getAPIKey({ keyId: id });
