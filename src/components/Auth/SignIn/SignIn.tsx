@@ -55,8 +55,8 @@ export function SignIn() {
   };
 
   return (
-    <Box py="md">
-      <Box mb="xl">
+    <Box py="md" pt="xl">
+      <Box my="xl">
         <Title>Sign In.</Title>
         <Text>
           Have an account already?{" "}
@@ -72,12 +72,12 @@ export function SignIn() {
             withAsterisk
             label="Email"
             placeholder="Email"
-            {...register("email", { required: true })}
             error={errors.email?.message}
+            {...register("email", { required: true })}
           />
         </Box>
 
-        <Box mb="md">
+        <Box mb="xl">
           <PasswordInput
             withAsterisk
             label="Password"
@@ -92,21 +92,30 @@ export function SignIn() {
             <Checkbox
               color="orange"
               variant="outline"
-              label="I agree to sell my privacy"
+              label={
+                <Text size="xs">
+                  By signing up, you confirm you have read and agree to our{" "}
+                  <Anchor href="/" target="_blank" inherit>
+                    Terms of Use
+                  </Anchor>{" "}
+                  and{" "}
+                  <Anchor href="/" target="_blank" inherit>
+                    Privacy Policy
+                  </Anchor>
+                </Text>
+              }
             />
-          </Box>
-          <Box>
-            <Link href="/auth/sign-up" target="_blank">
-              Forgot Password
-            </Link>
           </Box>
         </Group>
 
-        <Box mt="lg">
+        <Group mt="xl" justify="space-between">
           <Button type="submit" loading={loading}>
             Sign In
           </Button>
-        </Box>
+          <Anchor component={Link} href="/auth/sign-up" target="_blank">
+            Forgot Password
+          </Anchor>
+        </Group>
       </Box>
     </Box>
   );

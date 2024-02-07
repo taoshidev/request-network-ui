@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-
+import NextTopLoader from "nextjs-toploader";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import { theme } from "@/theme";
@@ -23,6 +23,7 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
+        <NextTopLoader color="#BB572A" />
         <MantineProvider theme={theme}>{children}</MantineProvider>
       </body>
     </html>

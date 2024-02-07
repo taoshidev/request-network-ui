@@ -2,23 +2,19 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getKey } from "@/actions/keys";
+import { Onboarding } from "@/components/Onboarding";
 
-import { Keys } from "@/components/Keys";
-
-export default async function Page({ params }: any) {
+export default async function Page() {
   const supabase = createServerComponentClient({ cookies });
-
-  const { id } = params;
-  const { result } = await getKey({ keyId: id });
 
   const {
     data: { user },
+    error: GetUserError,
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  if (!user || GetUserError) {
     redirect("/auth/sign-in");
   }
 
-  return <Keys apiKey={result} />;
+  return <Onboarding />;
 }

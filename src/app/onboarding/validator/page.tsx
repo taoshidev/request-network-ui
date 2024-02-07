@@ -2,15 +2,10 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getKey } from "@/actions/keys";
+import { Validator } from "@/components/Onboarding/Validator";
 
-import { Keys } from "@/components/Keys";
-
-export default async function Page({ params }: any) {
+export default async function Page() {
   const supabase = createServerComponentClient({ cookies });
-
-  const { id } = params;
-  const { result } = await getKey({ keyId: id });
 
   const {
     data: { user },
@@ -20,5 +15,5 @@ export default async function Page({ params }: any) {
     redirect("/auth/sign-in");
   }
 
-  return <Keys apiKey={result} />;
+  return <Validator user={user} />;
 }

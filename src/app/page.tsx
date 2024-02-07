@@ -1,16 +1,5 @@
-import { Button } from "@mantine/core";
-import Link from "next/link";
+import { Home } from "@/components/Home";
 
-export default function Home() {
-  return (
-    <main>
-      <Button component={Link} href="/dashboard">
-        Dashboard
-      </Button>
-      <Button component={Link} href="/login">
-        Login
-      </Button>
-      Request Network
-    </main>
-  );
+export default async function Page() {
+  return <Home />;
 }

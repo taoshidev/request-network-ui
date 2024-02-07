@@ -1,75 +1,51 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
   Container,
-  Loader,
   Title,
   Text,
-  Group,
   Box,
+  Group,
   Button,
-  TextInput,
-  Mark,
+  CopyButton,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import dayjs from "dayjs";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Settings } from "./Settings";
+import { IconCopy } from "@tabler/icons-react";
+
+import styles from "./keys.module.css";
 
 export function Keys({ apiKey }: { apiKey: any }) {
-  const supabase = createClientComponentClient();
-
-  const [opened, { open, close }] = useDisclosure(false);
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
-  const [keys, setKeys] = useState(null);
-
-  // if (!keys) {
-  //   return (
-  //     <Container>
-  //       <Center>
-  //         <Loader size="xl" />
-  //       </Center>
-  //     </Container>
-  //   );
-  // }
+  const url = `https://request.taoshi.io/api/stream/${apiKey.meta.shortId}`;
 
   return (
     <Container>
-      <Group justify="space-between" mb="lg">
-        <Box>
-          <Title>{apiKey.name}</Title>
-          <Text size="sm">Key: {apiKey.start}</Text>
-          <Text size="sm">
-            Created: {dayjs(apiKey.createdAt).format("MMM DD, YYYY")}
-          </Text>
-        </Box>
+      <Box my="xl" className={styles.intro} pb="lg">
+        <Title>{apiKey.name}</Title>
+        <Text size="xs" mb="sm">
+          Created: {dayjs(apiKey.createdAt).format("MMM DD, YYYY")}
+        </Text>
 
-        <Group>
-          <Button variant="default">Active Validators</Button>
-          <Button variant="default">All Validators</Button>
-          <Button variant="default">Settings</Button>
+        <Group gap="xs">
+          <Text size="sm">Custom Endpoint:</Text>
+          <CopyButton value={url}>
+            {({ copied, copy }) => (
+              <Button
+                leftSection={<IconCopy size={14} />}
+                variant="subtle"
+                onClick={copy}
+              >
+                <Text size="sm" fw="bold">
+                  {copied ? "Copied url" : url}
+                </Text>
+              </Button>
+            )}
+          </CopyButton>
         </Group>
-      </Group>
-
-      <Box mb="lg">
-        <Title order={2}>General Settings</Title>
-        <TextInput
-          withAsterisk
-          label="Edit Key Name"
-          placeholder="Name"
-          defaultValue={apiKey.name}
-        />
       </Box>
 
-      <Box mb="lg">
-        <Title order={2}>Requirements</Title>
-      </Box>
-
-      <Box mb="lg">
-        <Title order={2}>Requirements</Title>
-      </Box>
+      <Settings apiKey={apiKey} />
     </Container>
   );
 }

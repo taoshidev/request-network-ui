@@ -1,32 +1,47 @@
 "use server";
 
-import { Unkey, verifyKey } from "@unkey/api";
+import { Unkey } from "@unkey/api";
 
 const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY as string });
 const apiId = process.env.UNKEY_API_KEY as string;
 
-export const getAPIKey = async ({ keyId }: { keyId: string }) => {
+export const updateKey = async ({
+  keyId,
+  name,
+}: {
+  keyId: string;
+  name: string;
+}) => {
+  try {
+    await unkey.keys.update({
+      keyId,
+      name,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteKey = async ({ keyId }: { keyId: string }) => {
+  try {
+    await unkey.keys.delete({ keyId });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getKey = async ({ keyId }: { keyId: string }) => {
   const { error, result } = await unkey.keys.get({ keyId });
 
   return { error, result };
 };
 
-export const createAPIKey = async ({
-  name,
-  ownerId,
-}: {
-  name: string;
-  ownerId: string;
-}) => {
+export const createKey = async (params: any) => {
   try {
     const { result } = await unkey.keys.create({
       apiId,
-      name,
       prefix: "req",
-      ownerId,
-      meta: {
-        role: "user",
-      },
+      ...params,
     });
 
     return {
