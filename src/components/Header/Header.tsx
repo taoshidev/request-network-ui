@@ -1,11 +1,8 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-
 import {
   Burger,
   Group,
   Anchor,
   Menu,
-  UnstyledButton,
   Indicator,
   Image,
   Button,
@@ -18,21 +15,20 @@ import { useRouter } from "next/navigation";
 import NextImage from "next/image";
 import { IconLogout, IconUser, IconArrowDown } from "@tabler/icons-react";
 
+import { signout } from "@/actions/auth";
+
 import styles from "./header.module.css";
 
 import logo from "@/assets/logo.svg";
 
 export function Header() {
-  const supabase = createClientComponentClient();
   const [opened, { toggle }] = useDisclosure();
   const router = useRouter();
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
+    await signout();
 
-    if (!error) {
-      router.push("/auth/sign-in");
-    }
+    router.push("/auth/login");
   };
 
   return (

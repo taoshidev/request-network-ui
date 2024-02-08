@@ -1,6 +1,9 @@
 import crypto from "crypto";
 
-export const generateShortId = (userId: string, validatorId: string) => {
+export const generateShortId = (
+  userId: string,
+  validatorId: string | number
+) => {
   const combinedString = `${userId}:${validatorId}`;
 
   const hash = crypto.createHash("sha256").update(combinedString).digest("hex");

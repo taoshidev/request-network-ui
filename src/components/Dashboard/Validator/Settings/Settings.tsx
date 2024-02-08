@@ -1,19 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Title, Group, Box, Button, TextInput } from "@mantine/core";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-import { useDisclosure, useLocalStorage } from "@mantine/hooks";
-import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
-import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { deleteKey, updateKey } from "@/actions/keys";
-import { TAOSHI_REQUEST_KEY } from "@/constants";
+import { updateValidator } from "@/actions/validators";
 
 import styles from "./settings.module.css";
 
@@ -25,11 +18,10 @@ type Validator = z.infer<typeof validatorSchema>;
 
 interface SettingsProps {
   user: any;
+  validator: any;
 }
 
-export function Settings({ user }: SettingsProps) {
-  const supabase = createClientComponentClient();
-
+export function Settings({ user, validator }: SettingsProps) {
   const {
     register,
     handleSubmit,
@@ -40,23 +32,10 @@ export function Settings({ user }: SettingsProps) {
   });
 
   const onUpdate: SubmitHandler<Validator> = async (values) => {
-    const { data, error } = await supabase
-      .from("validators")
-      .update({ end_point: values.endpoint })
-      .eq("id", user.id)
-      .select();
-
-    console.log(data);
+    try {
+      await updateValidator({ id: user.id, endpoint: values.endpoint });
+    } catch (error) {}
   };
-
-  useEffect(() => {
-    const test = async () => {
-      const { data: validators, error: GetValidatorError } = await supabase
-        .from("validators")
-        .select("*")
-        .eq("id", user.id);
-    };
-  }, []);
 
   return (
     <Box>
@@ -70,12 +49,28 @@ export function Settings({ user }: SettingsProps) {
             label="Edit Endpoint"
             placeholder="Endpoint"
             error={errors.endpoint?.message}
+            defaultValue={validator[0].endpoint}
             {...register("endpoint", { required: true })}
           />
 
           <Group justify="flex-end" mt="xl">
             <Button type="submit" variant="primary">
-              Update Name
+              Update Endpoint
+            </Button>
+          </Group>
+        </Box>
+
+        <Box component="form" onSubmit={handleSubmit(onUpdate)} w="100%">
+          <TextInput
+            label="Edit Hotkey"
+            placeholder="Hotkey"
+            error={errors.endpoint?.message}
+            {...register("endpoint", { required: true })}
+          />
+
+          <Group justify="flex-end" mt="xl">
+            <Button type="submit" variant="primary">
+              Update Hotkey
             </Button>
           </Group>
         </Box>

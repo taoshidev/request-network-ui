@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { login, signup } from "@/actions/auth";
 import {
   Title,
   TextInput,
@@ -29,7 +29,6 @@ const userSchema = z.object({
 type User = z.infer<typeof userSchema>;
 
 export function SignUp() {
-  const supabase = createClientComponentClient();
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -44,20 +43,8 @@ export function SignUp() {
   const onSubmit: SubmitHandler<User> = async (values) => {
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
-      options: {
-        emailRedirectTo: `${location.origin}/auth/callback`,
-      },
-    });
-
-    if (error) {
-      console.error(error);
-      return;
-    } else {
-      setLoading(false);
-    }
+    await signup(values);
+    setLoading(false);
 
     open();
   };
@@ -76,7 +63,7 @@ export function SignUp() {
           <Title>Sign Up.</Title>
           <Text>
             Have an account already?{" "}
-            <Anchor component={Link} href="/auth/sign-in">
+            <Anchor component={Link} href="/auth/login">
               Sign In
             </Anchor>
             .

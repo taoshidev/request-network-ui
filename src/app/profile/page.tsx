@@ -1,19 +1,19 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+
+import { createClient } from "@/utils/supabase/server";
 
 import { Profile } from "@/components/Profile";
 
 export default async function Page() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/auth/sign-in");
+  if (error || !data?.user) {
+    redirect("/auth/login");
   }
 
-  return <Profile user={user} />;
+  return <Profile user={data.user} />;
 }

@@ -1,27 +1,36 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+
+import { createClient } from "@/utils/supabase/server";
+
+import { getUserAPIKeys } from "@/actions/keys";
+import { getValidator } from "@/actions/validators";
 
 import { Consumer } from "@/components/Dashboard/Consumer";
 import { Validator } from "@/components/Dashboard/Validator";
 
 export default async function Page() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/auth/sign-in");
+  if (error || !data?.user) {
+    redirect("/auth/login");
   }
 
   // if user is a consumer, render consumer dashboard
-  if (user.user_metadata.type === "consumer") {
-    return <Consumer user={user} />;
+  if (data.user.user_metadata.type === "consumer") {
+    const {
+      result: { keys },
+    }: any = await getUserAPIKeys({ ownerId: data.user.id });
+
+    return <Consumer user={data.user} keys={keys} />;
 
     // if user is a validator, render validator dashboard
-  } else if (user.user_metadata.type === "validator") {
-    return <Validator user={user} />;
+  } else if (data.user.user_metadata.type === "validator") {
+    const result: any = await getValidator({ id: data.user.id });
+
+    return <Validator user={data.user} validator={result} />;
   }
 }

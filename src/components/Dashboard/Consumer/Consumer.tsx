@@ -12,20 +12,19 @@ import {
   Table,
   Group,
   Modal,
-  Loader,
-  Center,
   Anchor,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { isEmpty } from "lodash";
 import dayjs from "dayjs";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 
 import { getUserAPIKeys, createKey } from "@/actions/keys";
+import { getValidators } from "@/actions/validators";
+
 import { TAOSHI_REQUEST_KEY } from "@/constants";
 import { generateShortId } from "@/utils/ids";
 
@@ -39,15 +38,14 @@ type User = z.infer<typeof userSchema>;
 
 interface ConsumerProps {
   user: any;
+  keys: any;
 }
 
-export function Consumer({ user }: ConsumerProps) {
-  const supabase = createClientComponentClient();
+export function Consumer({ user, keys }: ConsumerProps) {
   const router = useRouter();
 
   const [opened, { open, close }] = useDisclosure(false);
   const [loading, setLoading] = useState(false);
-  const [keys, setKeys] = useState([]);
 
   const [_, setLocalStorage]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
@@ -67,12 +65,9 @@ export function Consumer({ user }: ConsumerProps) {
 
     // get a random validator
     // in the future, we will select validator based on criteria
-    const { data: validators, error: GetValidatorError } = await supabase
-      .from("validators")
-      .select("*")
-      .neq("end_point", null);
+    const validators = await getValidators();
 
-    if (GetValidatorError) return;
+    if (!validators || validators.length === 0) return;
 
     // create id from user and validator
     const shortId = generateShortId(user.id, validators[0].id);
@@ -85,7 +80,7 @@ export function Consumer({ user }: ConsumerProps) {
         shortId,
         type: "consumer",
         validatorId: validators[0].id,
-        customEndpoint: validators[0].end_point,
+        customEndpoint: validators[0].endpoint,
       },
     });
 
@@ -97,20 +92,6 @@ export function Consumer({ user }: ConsumerProps) {
     router.push(`/keys/${result?.keyId}`);
     close();
   };
-
-  useEffect(() => {
-    const fetchKeys = async () => {
-      const { result }: any = await getUserAPIKeys({ ownerId: user.id });
-
-      if (result) {
-        setKeys(result.keys);
-      }
-    };
-
-    if (!keys && user) {
-      fetchKeys();
-    }
-  }, [keys, user]);
 
   const createKeyComponent = (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} w="100%">
@@ -132,16 +113,6 @@ export function Consumer({ user }: ConsumerProps) {
     </Box>
   );
 
-  if (!keys) {
-    return (
-      <Container my="xl">
-        <Center>
-          <Loader size="xl" />
-        </Center>
-      </Container>
-    );
-  }
-
   return (
     <Container>
       <Modal
@@ -152,6 +123,7 @@ export function Consumer({ user }: ConsumerProps) {
       >
         {createKeyComponent}
       </Modal>
+
       {isEmpty(keys) ? (
         <>
           <Box my="xl">

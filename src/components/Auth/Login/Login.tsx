@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { login, signup } from "@/actions/auth";
 import {
   Title,
   TextInput,
@@ -28,8 +28,7 @@ const userSchema = z.object({
 
 type User = z.infer<typeof userSchema>;
 
-export function SignIn() {
-  const supabase = createClientComponentClient();
+export function Login() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -44,14 +43,7 @@ export function SignIn() {
   const onSubmit: SubmitHandler<User> = async (values) => {
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
-
-    if (!error) {
-      router.push("/dashboard");
-    }
+    await login(values);
   };
 
   return (
@@ -60,7 +52,7 @@ export function SignIn() {
         <Title>Sign In.</Title>
         <Text>
           Have an account already?{" "}
-          <Anchor component={Link} href="/auth/sign-up">
+          <Anchor component={Link} href="/auth/signup">
             Sign Up
           </Anchor>
         </Text>
@@ -112,7 +104,7 @@ export function SignIn() {
           <Button type="submit" loading={loading}>
             Sign In
           </Button>
-          <Anchor component={Link} href="/auth/sign-up" target="_blank">
+          <Anchor component={Link} href="/auth/signup" target="_blank">
             Forgot Password
           </Anchor>
         </Group>

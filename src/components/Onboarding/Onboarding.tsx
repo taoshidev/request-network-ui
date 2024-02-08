@@ -11,58 +11,62 @@ import {
   UnstyledButton,
   Button,
 } from "@mantine/core";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import styles from "./onboarding.module.css";
 import { isEmpty } from "lodash";
 import { useRouter } from "next/navigation";
+
+import { createValidator } from "@/actions/validators";
+import { createConsumer } from "@/actions/consumers";
+import { getUser, updateUser } from "@/actions/auth";
+
+import styles from "./onboarding.module.css";
 
 export function Onboarding() {
   const router = useRouter();
   const [checked, setChecked] = useState("");
-  const supabase = createClientComponentClient();
 
   const handleClick = (type: "client" | "validator") => setChecked(type);
 
   const letsGo = async () => {
-    const { data, error: GetUserError } = await supabase.auth.getUser();
+    const { data, error: GetUserError } = await getUser();
+
+    if (!data || GetUserError) return;
 
     // if element is selected
     if (checked) {
       // if selected element is client
-      if (checked === "client" && !GetUserError) {
+      if (checked === "client") {
         // update user type to consumer
-        const { data, error: UpdateUserError } = await supabase.auth.updateUser(
-          {
-            data: {
-              type: "consumer",
-            },
-          }
-        );
+        const { error: UpdateUserError } = await updateUser({
+          data: {
+            type: "consumer",
+          },
+        });
 
         if (UpdateUserError) return;
 
-        const { error } = await supabase
-          .from("consumers")
-          .insert([{ id: data.user.id }])
-          .select();
-
-        if (!error) router.push("/dashboard");
-      } else if (checked === "validator" && !GetUserError) {
+        try {
+          // @ts-ignore
+          await createConsumer({ id: data.user.id });
+          router.push("/dashboard");
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (checked === "validator") {
         // update user type to validator
-        const { data, error: UpdateUserError } = await supabase.auth.updateUser(
-          {
-            data: { type: "validator" },
-          }
-        );
+        const { error: UpdateUserError } = await updateUser({
+          data: { type: "validator" },
+        });
 
         if (UpdateUserError) return;
 
-        const { error } = await supabase
-          .from("validators")
-          .insert([{ id: data.user.id }])
-          .select();
+        try {
+          // @ts-ignore
 
-        if (!error) router.push("/onboarding/validator");
+          await createValidator({ id: data.user.id });
+          router.push("/dashboard");
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
   };
