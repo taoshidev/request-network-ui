@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { login, signup } from "@/actions/auth";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Title,
   TextInput,
@@ -12,12 +13,14 @@ import {
   Checkbox,
   Text,
   Anchor,
+  Alert,
 } from "@mantine/core";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { IconInfoCircle } from "@tabler/icons-react";
 import { z } from "zod";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+
+import { login } from "@/actions/auth";
 
 const userSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
@@ -30,7 +33,8 @@ type User = z.infer<typeof userSchema>;
 
 export function Login() {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const message = searchParams.get("message");
 
   const {
     register,
@@ -42,12 +46,23 @@ export function Login() {
 
   const onSubmit: SubmitHandler<User> = async (values) => {
     setLoading(true);
-
     await login(values);
+
+    setLoading(false);
   };
 
   return (
     <Box py="md" pt="xl">
+      {message && (
+        <Alert
+          withCloseButton
+          variant="light"
+          color="orange"
+          icon={<IconInfoCircle />}
+        >
+          {message}
+        </Alert>
+      )}
       <Box my="xl">
         <Title>Sign In.</Title>
         <Text>
