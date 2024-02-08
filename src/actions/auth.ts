@@ -36,7 +36,7 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(formData);
 
   if (error) {
-    redirect("/error");
+    return redirect(`/auth/login?message=${error.message}`);
   }
 
   revalidatePath("/", "layout");
@@ -57,7 +57,7 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp(data);
 
   if (error) {
-    redirect("/error");
+    return redirect(`/auth/signup?message=${error.message}`);
   }
 
   revalidatePath("/", "layout");
@@ -68,10 +68,6 @@ export async function signout() {
   const supabase = createClient(cookieStore);
 
   const { error } = await supabase.auth.signOut();
-
-  if (error) {
-    redirect("/error");
-  }
 
   revalidatePath("/", "layout");
   redirect("/");
