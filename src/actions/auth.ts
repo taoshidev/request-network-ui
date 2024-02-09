@@ -67,8 +67,21 @@ export async function signout() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const { error } = await supabase.auth.signOut();
+  await supabase.auth.signOut();
 
   revalidatePath("/", "layout");
   redirect("/");
+}
+
+export async function forgotPassword(email: string) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email);
+
+  if (error) {
+    return redirect(`/auth/forgot?message=${error.message}`);
+  }
+
+  revalidatePath("/", "layout");
 }

@@ -7,14 +7,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { updateValidator } from "@/actions/validators";
+import { isAddress } from "@/utils/address";
 
 import styles from "./settings.module.css";
 
-const validatorSchema = z.object({
+const validatorSchemea = z.object({
   endpoint: z.string().url({ message: "Endpoint must be a valid URL" }),
+  hotkey: z.string().refine((value) => isAddress({ address: value }), {
+    message: "Invalid Bittensor address",
+  }),
 });
 
-type Validator = z.infer<typeof validatorSchema>;
+type Validator = z.infer<typeof validatorSchemea>;
 
 interface SettingsProps {
   user: any;
@@ -28,10 +32,11 @@ export function Settings({ user, validator }: SettingsProps) {
     formState: { isValid, errors },
   } = useForm<Validator>({
     mode: "onChange",
-    resolver: zodResolver(validatorSchema),
+    resolver: zodResolver(validatorSchemea),
   });
 
   const onUpdate: SubmitHandler<Validator> = async (values) => {
+    console.log(values);
     try {
       await updateValidator({ id: user.id, endpoint: values.endpoint });
     } catch (error) {}
@@ -45,34 +50,36 @@ export function Settings({ user, validator }: SettingsProps) {
         </Title>
 
         <Box component="form" onSubmit={handleSubmit(onUpdate)} w="100%">
-          <TextInput
-            label="Edit Endpoint"
-            placeholder="Endpoint"
-            error={errors.endpoint?.message}
-            defaultValue={validator[0].endpoint}
-            {...register("endpoint", { required: true })}
-          />
+          <Box>
+            <TextInput
+              label="Edit Endpoint"
+              placeholder="Endpoint"
+              error={errors.endpoint?.message}
+              defaultValue={validator[0].endpoint}
+              {...register("endpoint", { required: true })}
+            />
 
-          <Group justify="flex-end" mt="xl">
-            <Button type="submit" variant="primary">
-              Update Endpoint
-            </Button>
-          </Group>
-        </Box>
+            <Group justify="flex-end" mt="xl">
+              <Button type="submit" variant="primary">
+                Update Endpoint
+              </Button>
+            </Group>
+          </Box>
 
-        <Box component="form" onSubmit={handleSubmit(onUpdate)} w="100%">
-          <TextInput
-            label="Edit Hotkey"
-            placeholder="Hotkey"
-            error={errors.endpoint?.message}
-            {...register("endpoint", { required: true })}
-          />
+          <Box>
+            <TextInput
+              label="Edit Hotkey"
+              placeholder="Hotkey"
+              error={errors.hotkey?.message}
+              {...register("hotkey", { required: true })}
+            />
 
-          <Group justify="flex-end" mt="xl">
-            <Button type="submit" variant="primary">
-              Update Hotkey
-            </Button>
-          </Group>
+            <Group justify="flex-end" mt="xl">
+              <Button type="submit" variant="primary">
+                Update Hotkey
+              </Button>
+            </Group>
+          </Box>
         </Box>
       </Box>
     </Box>

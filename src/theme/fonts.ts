@@ -1,18 +1,34 @@
-import { Space_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
 export const ADLaMDisplay = localFont({
   src: "../fonts/ADLaMDisplay-Regular.ttf",
   weight: "400",
   style: "normal",
-  variable: "--font-adlam",
 });
 
-export const SpaceMono = Space_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "700"],
-  variable: "--font-space-mono",
+export const SpaceMono = localFont({
+  src: [
+    {
+      path: "../fonts/SpaceMono-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/SpaceMono-Italic.ttf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../fonts/SpaceMono-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../fonts/SpaceMono-BoldItalic.ttf",
+      weight: "700",
+      style: "italic",
+    },
+  ],
 });
 
 export const fonts = {

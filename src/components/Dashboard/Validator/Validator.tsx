@@ -16,7 +16,7 @@ import { IconSettings, IconGraph } from "@tabler/icons-react";
 import { z } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { isEmpty } from "lodash";
 
 import { updateValidator } from "@/actions/validators";
@@ -39,6 +39,10 @@ type User = z.infer<typeof userSchema>;
 export function Validator({ user, validator }: ValidatorProps) {
   const iconStyle = { width: rem(12), height: rem(12) };
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("activeTab");
+
+  console.log(validator);
 
   const [opened, { open, close }] = useDisclosure(false);
   const [loading, setLoading] = useState(false);
@@ -63,7 +67,7 @@ export function Validator({ user, validator }: ValidatorProps) {
 
   return (
     <Container>
-      {isEmpty(validator) ? (
+      {!validator[0].endpoint ? (
         <>
           <Box my="xl">
             <Title order={3}>Add your first Validator Endpoint.</Title>
@@ -91,7 +95,11 @@ export function Validator({ user, validator }: ValidatorProps) {
       ) : (
         <>
           <Title my="xl">Validator Settings</Title>
-          <Tabs defaultValue="statistics">
+          <Tabs
+            value={activeTab || "settings"}
+            onChange={(value) => router.push(`/dashboard?activeTab=${value}`)}
+            defaultValue="statistics"
+          >
             <Tabs.List>
               <Tabs.Tab
                 value="statistics"

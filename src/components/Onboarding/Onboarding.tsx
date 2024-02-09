@@ -15,7 +15,7 @@ import { isEmpty } from "lodash";
 import { useRouter } from "next/navigation";
 
 import { createValidator } from "@/actions/validators";
-import { createConsumer } from "@/actions/consumers";
+import { createConsumer } from "@/actions/consumer";
 import { getUser, updateUser } from "@/actions/auth";
 
 import styles from "./onboarding.module.css";
