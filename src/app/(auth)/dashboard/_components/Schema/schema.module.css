@@ -1,0 +1,4 @@
+.code {
+  font-size: var(--mantine-font-size-xs);
+  border: 1px dashed var(--mantine-color-black)
+}

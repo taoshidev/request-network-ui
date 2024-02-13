@@ -27,8 +27,6 @@ export function Header() {
 
   const handleSignOut = async () => {
     await signout();
-
-    router.push("/auth/login");
   };
 
   return (
@@ -94,7 +92,7 @@ export function Header() {
 
           <>
             <Divider color="black" variant="dashed" orientation="vertical" />
-            <Menu position="bottom-end" offset={10}>
+            <Menu position="bottom-end" offset={5} width={200}>
               <Menu.Target>
                 <Button
                   variant="transparent"
@@ -103,7 +101,7 @@ export function Header() {
                   <Text size="sm">Settings</Text>
                 </Button>
               </Menu.Target>
-              <Menu.Dropdown>
+              <Menu.Dropdown className={styles.menu}>
                 <Menu.Item
                   component={Link}
                   href="/profile"
@@ -111,7 +109,7 @@ export function Header() {
                 >
                   Profile
                 </Menu.Item>
-                <Menu.Divider />
+                <Menu.Divider className={styles.divider} />
                 <Menu.Item
                   onClick={handleSignOut}
                   leftSection={<IconLogout size={16} stroke={1} />}

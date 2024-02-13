@@ -1,0 +1,48 @@
+.anchor {
+  font-family: var(--mantine-font-family);
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-black);
+  
+}
+
+.button {
+  align-items: center;
+  background-color: var(--mantine-color-white);
+  border: 1px dashed black;
+  border-radius: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--mantine-spacing-xs);
+  width: 100%;
+  margin-bottom: var(--mantine-spacing-md);
+  padding: var(--mantine-spacing-sm);
+}
+
+.button:hover {
+  cursor: pointer;
+  color: var(--mantine-color-orange-9);
+  border: 1px dashed var(--mantine-color-orange-9);
+  background-color: var(--mantine-color-orange-0);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  width: 100%;
+  margin-bottom: var(--mantine-spacing-lg);
+  padding: var(--mantine-spacing-sm);
+  border: 1px dashed black;
+}
+
+.message {
+  background-color: var(--mantine-color-orange-0);
+  border: 1px dashed var(--mantine-color-orange-7);
+  padding: var(--mantine-spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

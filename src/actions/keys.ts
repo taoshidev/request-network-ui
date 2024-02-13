@@ -2,6 +2,8 @@
 
 import { Unkey } from "@unkey/api";
 
+import { db } from "@/db";
+
 const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY as string });
 const apiId = process.env.UNKEY_API_KEY as string;
 
@@ -43,7 +45,6 @@ export const createKey = async (params: any) => {
       prefix: "req",
       ...params,
     });
-
     return {
       result,
       error: null,
