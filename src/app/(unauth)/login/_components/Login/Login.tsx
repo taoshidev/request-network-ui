@@ -14,13 +14,13 @@ export function Login() {
 
   const supabase = createClient();
 
-  useEffect(() => {
-    supabase.auth.onAuthStateChange((_, session) => {
-      if (session) {
-        router.push("/");
-      }
-    });
-  }, [router, supabase.auth]);
+  // useEffect(() => {
+  //   supabase.auth.onAuthStateChange((_, session) => {
+  //     if (session) {
+  //       router.push("/");
+  //     }
+  //   });
+  // }, [router, supabase.auth]);
 
   return (
     <Box py="md" pt="xl">

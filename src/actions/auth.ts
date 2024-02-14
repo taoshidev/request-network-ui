@@ -38,7 +38,7 @@ export async function getAuthUser() {
 export async function getUser() {
   const supabase = createClient();
   try {
-    const { data } = await supabase.from("users").select("*").single();
+    const { data, error } = await supabase.from("users").select("*").single();
     return data;
   } catch (error) {
     console.error("Error:", error);

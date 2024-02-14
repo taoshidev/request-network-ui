@@ -89,7 +89,7 @@ interface CreateSettings {
   refillRate: number;
   refillInterval: number;
   remaining: number;
-  expires: number;
+  expires?: number;
 }
 
 export const createSettings = async ({

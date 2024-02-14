@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import dayjs from "dayjs";
 import { Box, Button, NumberInput } from "@mantine/core";
-import { DateTimePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { z } from "zod";
 
+import { updateUser } from "@/actions/auth";
 import { createSettings } from "@/actions/validators";
 
 import "@mantine/dates/styles.css";
@@ -17,7 +16,6 @@ const settingsSchema = z.object({
   refillRate: z.number().int().min(1),
   refillInterval: z.number().int().min(1),
   remaining: z.number().int().min(1),
-  expires: z.date(),
 });
 
 type Settings = z.infer<typeof settingsSchema>;
@@ -31,15 +29,12 @@ export function Limits({ onComplete, user }: any) {
       refillRate: 1,
       refillInterval: 1000,
       remaining: 1000,
-      expires: new Date(),
     },
     validate: zodResolver(settingsSchema),
   });
 
   const onSubmit = async (values: Settings) => {
     setLoading(true);
-
-    console.log(values);
 
     try {
       await createSettings({
@@ -48,11 +43,14 @@ export function Limits({ onComplete, user }: any) {
         refillRate: values.refillRate,
         refillInterval: values.refillInterval,
         remaining: values.remaining,
-        expires: dayjs(values.expires).valueOf(),
       });
 
-      setLoading(false);
+      const { error: UpdateUserError } = await updateUser({
+        data: { onboarding: { step: 3, completed: true } },
+      });
+
       onComplete();
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -79,15 +77,6 @@ export function Limits({ onComplete, user }: any) {
         />
       </Box>
 
-      <Box mb="md">
-        <DateTimePicker
-          withSeconds
-          label="Expiry Date"
-          placeholder="Pick date"
-          description="When should your keys expire?"
-          {...form.getInputProps("expires")}
-        />
-      </Box>
       <Box mb="md">
         <NumberInput
           label="Refill Interval"

@@ -7,6 +7,7 @@ import { zodResolver } from "mantine-form-zod-resolver";
 import { z } from "zod";
 import { isAddress } from "@/utils/address";
 
+import { updateUser } from "@/actions/auth";
 import { createValidator } from "@/actions/validators";
 
 const settingsSchema = z.object({
@@ -39,9 +40,12 @@ export function Create({ onComplete, user }: any) {
         hotkey: values.hotkey,
       });
 
-      setLoading(false);
+      const { error: UpdateUserError } = await updateUser({
+        data: { onboarding: { step: 1 } },
+      });
 
       onComplete();
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Box, Button, Text } from "@mantine/core";
 
 import { createValidator } from "@/actions/validators";
+import { updateUser } from "@/actions/auth";
 
 const wait = (waitTime = 1000, response = "Success!") => {
   return new Promise((resolve) => {
@@ -22,9 +23,12 @@ export function Verify({ onComplete, user }: any) {
 
     await wait(2000);
 
-    setLoading(false);
+    const { error: UpdateUserError } = await updateUser({
+      data: { onboarding: { step: 2 } },
+    });
 
     onComplete();
+    setLoading(false);
   };
 
   return (

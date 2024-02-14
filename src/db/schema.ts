@@ -22,8 +22,8 @@ export const users = authSchema.table("users", {
   fullname: varchar("fullname"),
   username: varchar("username"),
   phone: varchar("phone", { length: 256 }),
-  onboarded: boolean("onboarded").default(false),
-  onboardingStep: integer("onboardingStep").default(0),
+  onboarded: boolean("onboarded").notNull().default(false),
+  onboardingStep: integer("onboardingStep").notNull().default(0),
 });
 
 export const consumers = pgTable("consumers", {

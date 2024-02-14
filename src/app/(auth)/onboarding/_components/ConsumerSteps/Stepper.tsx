@@ -11,8 +11,6 @@ import {
 } from "@mantine/core";
 
 import { Create } from "./Create";
-import { Verify } from "./Verify";
-import { Limits } from "./Limits";
 
 export function Stepper({ user }: any) {
   const router = useRouter();
@@ -49,14 +47,18 @@ export function Stepper({ user }: any) {
             >
               <Create onComplete={nextStep} user={user} />
             </MantineStepper.Step>
-            <MantineStepper.Step label="Create" description="Verify email">
-              <Verify onComplete={nextStep} user={user} />
+            <MantineStepper.Step
+              label="Choose a Validator"
+              description="Verify email"
+            >
+              Velit excepteur Lorem proident laborum reprehenderit nisi officia
+              eiusmod commodo in in laborum incididunt aliquip fugiat.
             </MantineStepper.Step>
             <MantineStepper.Step
-              label="Final step"
+              label="Copy Authentication"
               description="Get full access"
             >
-              <Limits onComplete={nextStep} user={user} />
+              Mollit magna labore id irure consectetur cillum excepteur aliqua.
             </MantineStepper.Step>
             <MantineStepper.Completed>
               Completed, click back button to get to previous step
