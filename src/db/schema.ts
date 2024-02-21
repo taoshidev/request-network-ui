@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   pgTable,
   uuid,
@@ -9,7 +10,6 @@ import {
   boolean,
   pgEnum,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
 
 export const authSchema = pgSchema("auth");
 
@@ -26,17 +26,16 @@ export const users = authSchema.table("users", {
   onboardingStep: integer("onboardingStep").notNull().default(0),
 });
 
+export const subnets = pgTable("subnets", {
+  value: uuid("id").primaryKey(),
+  label: varchar("label"),
+});
+
 export const consumers = pgTable("consumers", {
   id: uuid("id")
     .primaryKey()
     .notNull()
     .references(() => users.id),
-
-  stripeCustomerId: varchar("stripeCustomerId"),
-  stripePriceId: varchar("stripePriceId"),
-  currentCartId: varchar("currentCartId"),
-  stripeCurrentPeriodEnd: varchar("stripeCurrentPeriodEnd"),
-  stripeSubscriptionId: varchar("stripeSubscriptionId"),
 });
 
 export const validators = pgTable("validators", {
@@ -45,25 +44,21 @@ export const validators = pgTable("validators", {
     .notNull()
     .references(() => users.id),
 
-  endpoint: varchar("endpoint").notNull(),
-  hotkey: varchar("hotkey").notNull(),
-
   vtrust: numeric("vtrust", { precision: 7, scale: 5 }),
+  hotkey: varchar("hotkey").notNull(),
+  verified: boolean("verified").notNull().default(false),
 });
 
-export const validatorsRelations = relations(validators, ({ one }) => ({
-  settings: one(settings, {
-    fields: [validators.id],
-    references: [settings.id],
-  }),
+export const validatorsRelations = relations(validators, ({ many }) => ({
+  endpoints: many(endpoints),
 }));
 
-export const settings = pgTable("settings", {
-  id: uuid("id")
-    .primaryKey()
+export const endpoints = pgTable("endpoints", {
+  id: uuid("id").primaryKey().notNull(),
+  url: varchar("url").notNull(),
+  subnet: uuid("subnet")
     .notNull()
-    .references(() => validators.id),
-
+    .references(() => subnets.value),
   enabled: boolean("enabled").notNull().default(true).notNull(),
   expires: timestamp("expires"),
   limit: integer("limit").default(10), // The total amount of burstable requests.

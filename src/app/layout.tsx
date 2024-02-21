@@ -1,13 +1,14 @@
+import "@mantine/core/styles.css";
+import "@mantine/code-highlight/styles.css";
+import "@mantine/dates/styles.css";
+import "./global.css";
+
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 
 import { theme } from "@/theme";
-
-import "@mantine/core/styles.css";
-
-import "./global.css";
 
 export const metadata: Metadata = {
   title: "Taoshi",

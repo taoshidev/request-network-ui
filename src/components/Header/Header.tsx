@@ -13,7 +13,7 @@ import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import NextImage from "next/image";
-import { IconLogout, IconUser, IconArrowDown } from "@tabler/icons-react";
+import { IconLogout, IconUser, IconChevronDown } from "@tabler/icons-react";
 
 import { signout } from "@/actions/auth";
 
@@ -96,7 +96,7 @@ export function Header() {
               <Menu.Target>
                 <Button
                   variant="transparent"
-                  rightSection={<IconArrowDown size={16} stroke={1} />}
+                  rightSection={<IconChevronDown size={16} stroke={1} />}
                 >
                   <Text size="sm">Settings</Text>
                 </Button>
