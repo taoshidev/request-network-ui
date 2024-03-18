@@ -9,6 +9,7 @@ import {
   integer,
   boolean,
   pgEnum,
+  unique,
 } from "drizzle-orm/pg-core";
 
 export const authSchema = pgSchema("auth");
@@ -26,43 +27,81 @@ export const users = authSchema.table("users", {
   onboardingStep: integer("onboardingStep").notNull().default(0),
 });
 
+export const usersRelations = relations(users, ({ many }) => ({
+  validators: many(validators),
+}));
+
 export const subnets = pgTable("subnets", {
   value: uuid("id").primaryKey(),
   label: varchar("label"),
 });
 
-export const consumers = pgTable("consumers", {
-  id: uuid("id")
-    .primaryKey()
-    .notNull()
-    .references(() => users.id),
-});
+export const subnetsRelations = relations(subnets, ({ many }) => ({
+  validators: many(validators),
+}));
 
 export const validators = pgTable("validators", {
-  id: uuid("id")
-    .primaryKey()
+  id: uuid("id").primaryKey().notNull(),
+
+  hotkey: varchar("hotkey", { length: 48 }).unique().notNull(),
+
+  subnetId: uuid("subnet_id")
+    .notNull()
+    .references(() => subnets.value),
+
+  userId: uuid("user_id")
     .notNull()
     .references(() => users.id),
 
+  signature: varchar("signature"),
   vtrust: numeric("vtrust", { precision: 7, scale: 5 }),
-  hotkey: varchar("hotkey").notNull(),
   verified: boolean("verified").notNull().default(false),
 });
 
-export const validatorsRelations = relations(validators, ({ many }) => ({
+export const validatorsRelations = relations(validators, ({ many, one }) => ({
   endpoints: many(endpoints),
+  user: one(users, {
+    fields: [validators.userId],
+    references: [users.id],
+  }),
+  subnets: one(subnets, {
+    fields: [validators.subnetId],
+    references: [subnets.value],
+  }),
 }));
 
-export const endpoints = pgTable("endpoints", {
-  id: uuid("id").primaryKey().notNull(),
-  url: varchar("url").notNull(),
-  subnet: uuid("subnet")
-    .notNull()
-    .references(() => subnets.value),
-  enabled: boolean("enabled").notNull().default(true).notNull(),
-  expires: timestamp("expires"),
-  limit: integer("limit").default(10), // The total amount of burstable requests.
-  refillRate: integer("refill_rate").default(1), // The amount of requests that are refilled every refillInterval.
-  refillInterval: integer("refill_interval").default(1000), // The interval at which the limit is refilled.
-  remaining: integer("remaining").default(1000),
-});
+export const endpoints = pgTable(
+  "endpoints",
+  {
+    id: uuid("id").primaryKey().notNull(),
+
+    subnet: uuid("subnet")
+      .notNull()
+      .references(() => subnets.value),
+    validator: uuid("validator")
+      .notNull()
+      .references(() => validators.id),
+
+    limit: integer("limit").default(10), // The total amount of burstable requests.
+    url: varchar("url").notNull(),
+    enabled: boolean("enabled").notNull().default(true).notNull(),
+    expires: timestamp("expires"),
+    refillRate: integer("refill_rate").default(1), // The amount of requests that are refilled every refillInterval.
+    refillInterval: integer("refill_interval").default(1000), // The interval at which the limit is refilled.
+    remaining: integer("remaining").default(1000),
+  },
+  (table) => ({
+    unique: unique().on(table.validator, table.subnet),
+  }),
+);
+
+export const endpointsRelations = relations(endpoints, ({ one }) => ({
+  subnets: one(subnets, {
+    fields: [endpoints.subnet],
+    references: [subnets.value],
+  }),
+  validators: one(validators, {
+    fields: [endpoints.validator],
+    references: [validators.id],
+  }),
+}));

@@ -3,9 +3,11 @@ import { redirect } from "next/navigation";
 import { getAuthUser } from "@/actions/auth";
 import { getUserAPIKeys } from "@/actions/keys";
 import { getEndpoints } from "@/actions/endpoints";
+import { getValidators } from "@/actions/validators";
+import { getSubnets } from "@/actions/subnets";
 
 import { Consumer } from "@/components/Consumer";
-import { Endpoints } from "@/components/Endpoints";
+import { ValidatorDashboard } from "@/components/ValidatorDashbord";
 
 export default async function Page() {
   const user = await getAuthUser();
@@ -29,7 +31,16 @@ export default async function Page() {
     // if user is a validator, render validator dashboard
   } else if (user.user_metadata.role === "validator") {
     const endpoints = await getEndpoints();
+    const subnets = await getSubnets();
+    const validators = await getValidators();
 
-    return <Endpoints user={user} endpoints={endpoints} />;
+    return (
+      <ValidatorDashboard
+        user={user}
+        subnets={subnets}
+        endpoints={endpoints}
+        validators={validators}
+      />
+    );
   }
 }

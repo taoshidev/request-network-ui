@@ -35,6 +35,7 @@ export function Header() {
       <Group justify="space-between" style={{ flex: 1 }}>
         <Group align="center" justify="center">
           <Image
+            priority
             component={NextImage}
             src={logo}
             alt="Taoshi"
@@ -42,12 +43,15 @@ export function Header() {
             height={40}
           />
           <Anchor
-            mr="lg"
+            mr="sm"
             className={styles.logo}
             component={Link}
             href="/dashboard"
           >
             taoshi
+          </Anchor>
+          <Anchor c="black" component={Link} href="/dashboard" size="sm">
+            Dashboard
           </Anchor>
         </Group>
         <Group ml="xl" visibleFrom="sm">

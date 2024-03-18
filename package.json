@@ -11,6 +11,7 @@
     "introspect:pg": "drizzle-kit introspect:pg",
     "db:push": "drizzle-kit push:pg",
     "db:seed": "npx esno ./src/db/seed",
+    "db:teardown": "npx esno ./src/db/teardown",
     "migrations:drop": "drizzle-kit drop --config=drizzle.config.ts"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
     "@mantine/form": "^7.5.2",
     "@mantine/hooks": "^7.5.1",
     "@polkadot/api": "^10.11.2",
+    "@polkadot/extension-dapp": "^0.46.6",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/ssr": "^0.1.0",

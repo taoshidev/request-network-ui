@@ -3,8 +3,7 @@ import { loadEnvConfig } from "@next/env";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 
-import { subnets } from "./schema";
-import { seedData } from "./data/subnets";
+import { users, subnets, validators, endpoints } from "./schema";
 
 loadEnvConfig(cwd());
 
@@ -15,26 +14,25 @@ export const client = postgres(connectionString, { prepare: false });
 
 export const db = drizzle(client);
 
-const seed = async () => {
+const teardown = async () => {
   try {
-    console.log("Seeding...");
+    console.log("Teardown Started...");
 
+    await db.delete(users);
     await db.delete(subnets);
-    await db
-      .insert(subnets)
-      .values(seedData)
-      .onConflictDoNothing({ target: subnets.value });
+    await db.delete(validators);
+    await db.delete(endpoints);
 
-    console.log("Seeded");
+    console.log("Teardown Completed");
   } catch (error) {
-    console.error("Seeding failed:", error);
+    console.error("Teardown failed:", error);
     process.exit(1);
   } finally {
     process.exit(0);
   }
 };
 
-seed().catch((error) => {
+teardown().catch((error) => {
   console.error("Unhandled error:", error);
   process.exit(1);
 });

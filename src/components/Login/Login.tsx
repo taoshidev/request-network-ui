@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Auth } from "@supabase/auth-ui-react";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 
 import { useEffect } from "react";
 import { Title, Box, Text } from "@mantine/core";

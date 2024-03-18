@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   Box,
   Button,
@@ -17,13 +17,13 @@ import { isEmpty } from "lodash";
 
 import { updateUser } from "@/actions/auth";
 import { createEndpoint } from "@/actions/endpoints";
-import { getSubnets } from "@/actions/subnets";
 
 const EndpointSchema = z.object({
   id: z.string().uuid(),
   limit: z.number().int().min(1),
   url: z.string().url(),
-  subnet: z.string(),
+  subnet: z.string().uuid(),
+  validator: z.string().uuid(),
   refillRate: z.number().int().min(1),
   refillInterval: z.number().int().min(1),
   remaining: z.number().int().min(1),
@@ -31,16 +31,16 @@ const EndpointSchema = z.object({
 
 type Endpoint = z.infer<typeof EndpointSchema>;
 
-export function Limits({ onComplete, user }: any) {
+export function Limits({ onComplete, user, validators }: any) {
   const [loading, setLoading] = useState(false);
-  const [subnets, setSubnets] = useState([]);
 
   const form = useForm<Endpoint>({
     initialValues: {
-      id: user.id,
+      id: uuid(),
       limit: 10,
       url: "http://localhost:3001",
       subnet: "",
+      validator: "b83cc56b-0df3-49b8-b1a7-c4f2fd939324",
       refillRate: 1,
       refillInterval: 1000,
       remaining: 1000,
@@ -48,11 +48,11 @@ export function Limits({ onComplete, user }: any) {
     validate: zodResolver(EndpointSchema),
   });
 
-  const onSubmit = async (values: Endpoint) => {
+  const onSubmit = async (values) => {
     setLoading(true);
-    console.log(values);
+
     try {
-      await createEndpoint({ ...values });
+      await createEndpoint(values);
 
       await updateUser({
         data: { onboarding: { step: 3, completed: true } },
@@ -65,17 +65,11 @@ export function Limits({ onComplete, user }: any) {
     }
   };
 
-  useEffect(() => {
-    const fetchSubnets = async () => {
-      const data = await getSubnets();
+  const availableSubnets = useMemo(() => {
+    return validators.map((validator) => validator.subnets);
+  }, [validators]);
 
-      setSubnets(data);
-    };
-
-    if (isEmpty(subnets)) {
-      fetchSubnets();
-    }
-  }, [subnets]);
+  console.log(availableSubnets);
 
   return (
     <Box component="form" w="100%" onSubmit={form.onSubmit(onSubmit)}>
@@ -91,7 +85,7 @@ export function Limits({ onComplete, user }: any) {
         <Select
           label="Which Subnet"
           placeholder="Pick value or enter anything"
-          data={subnets}
+          data={availableSubnets}
           {...form.getInputProps("subnet")}
         />
       </Box>
@@ -100,7 +94,6 @@ export function Limits({ onComplete, user }: any) {
           label="Limit"
           description="The total amount of burstable requests."
           placeholder="Input placeholder"
-          defaultValue={10}
           {...form.getInputProps("limit")}
         />
       </Box>
@@ -110,7 +103,6 @@ export function Limits({ onComplete, user }: any) {
             label="Refill Rate"
             description="How many tokens to refill during each refillInterval"
             placeholder="Input placeholder"
-            defaultValue={1}
             {...form.getInputProps("refillRate")}
           />
         </Box>

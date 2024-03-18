@@ -1,0 +1,8 @@
+.card {
+  border: 1px dashed black;
+}
+
+.card:hover {
+  border: 1px dashed var(--mantine-color-orange-6);
+  color: var(--mantine-color-orange-6);
+}

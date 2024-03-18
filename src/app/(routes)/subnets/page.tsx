@@ -3,16 +3,16 @@ import { redirect } from "next/navigation";
 import { getAuthUser } from "@/actions/auth";
 import { getSubnets } from "@/actions/subnets";
 
-import { Landing } from "@/components/Landing";
+import { Subnets } from "@/components/Subnets";
 
 export default async function Page() {
   const user = await getAuthUser();
+  const subnets = await getSubnets({ with: { validators: true } });
+  console.log(subnets);
 
   if (!user) {
     redirect("/login");
   }
 
-  // we now have a onboarded prop on the user to check
-  // if the user has already onboarded
-  return <Landing />;
+  return <Subnets subnets={subnets} />;
 }

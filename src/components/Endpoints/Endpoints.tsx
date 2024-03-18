@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   Title,
@@ -11,15 +11,18 @@ import {
   Button,
   Group,
   Modal,
-  TextInput,
+  Alert,
+  Flex,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { z } from "zod";
+import { find, some } from "lodash";
 import { IconSettings, IconGraph } from "@tabler/icons-react";
 import { isEmpty } from "lodash";
 
+import { getSubnets } from "@/actions/subnets";
 import { createEndpoint } from "@/actions/endpoints";
 
 import { Limits } from "@/components/Limits";
@@ -29,9 +32,10 @@ import styles from "./endpoint.module.css";
 interface EndpointsProps {
   user: any;
   endpoints: any;
+  validators: any;
 }
 
-export function Endpoints({ user, endpoints }: EndpointsProps) {
+export function Endpoints({ user, endpoints, validators }: EndpointsProps) {
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -39,7 +43,10 @@ export function Endpoints({ user, endpoints }: EndpointsProps) {
     router.push(`/endpoints/${endpoint?.id}`);
   };
 
-  const createEndpointComponent = <Limits user={user} onComplete={close} />;
+  const enabled = useMemo(() => {
+    const verified = some(validators, { verified: true });
+    return verified;
+  }, [validators]);
 
   return (
     <>
@@ -49,13 +56,15 @@ export function Endpoints({ user, endpoints }: EndpointsProps) {
         onClose={close}
         title="Create a new Endpoint"
       >
-        {createEndpointComponent}
+        <Limits user={user} onComplete={close} validators={validators} />
       </Modal>
 
       <Box>
         <Group justify="space-between" my="xl">
           <Title order={2}>Endpoints</Title>
-          <Button onClick={open}>Create New Endpoint</Button>
+          <Button onClick={open} disabled={!enabled}>
+            Create New Endpoint
+          </Button>
         </Group>
 
         <Table>
@@ -72,7 +81,7 @@ export function Endpoints({ user, endpoints }: EndpointsProps) {
               endpoints.map((endpoint: any) => (
                 <Table.Tr key={endpoint.id}>
                   <Table.Td>{endpoint.url}</Table.Td>
-                  <Table.Td>{endpoint.subnet}</Table.Td>
+                  <Table.Td>{endpoint.subnet?.label}</Table.Td>
                   <Table.Td>
                     {endpoint.enabled ? (
                       <Badge radius={0} color="orange">

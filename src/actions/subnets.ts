@@ -1,13 +1,10 @@
 "use server";
 
-import { eq } from "drizzle-orm";
 import { db } from "@/db";
 
-import { subnets } from "@/db/schema";
-
-export const getSubnets = async () => {
+export const getSubnets = async (query) => {
   try {
-    const results = await db.select().from(subnets);
+    const results = await db.query.subnets.findMany(query);
 
     return results;
   } catch (error) {

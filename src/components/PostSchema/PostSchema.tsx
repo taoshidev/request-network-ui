@@ -20,7 +20,7 @@ export function PostSchema() {
 
   return (
     <Box>
-      <Title order={3} mb="sm">
+      <Title order={3} mb="xs">
         Required Schema
       </Title>
       <Group justify="space-between" grow>
@@ -43,9 +43,9 @@ export function PostSchema() {
             className={styles.code}
             code={[
               {
-                fileName: "index.ts",
+                fileName: "schema.json",
                 code,
-                language: "ts",
+                language: "json",
               },
             ]}
           />
