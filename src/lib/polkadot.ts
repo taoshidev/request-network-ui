@@ -11,6 +11,14 @@ import {
 import type { HexString } from "@polkadot/util/types";
 
 import { stringToHex, u8aToHex } from "@polkadot/util";
+import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+
+export type SignedDataType = {
+  message: string;
+  signature: `0x${string}`;
+  account: InjectedAccountWithMeta;
+} | null | undefined;
+
 
 export const isValidSignature = async (
   signedMessage: string,

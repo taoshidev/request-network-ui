@@ -6,6 +6,29 @@ import { db } from "@/db";
 
 import { subnets, validators } from "@/db/schema";
 
+interface AccountMetaType {
+  genesisHash: string;
+  name: string;
+  source: string;
+}
+
+export interface AccountType {
+  address: string;
+  meta: AccountMetaType;
+  type: string;
+}
+
+export interface ValidatorType {
+  signature: string | null;
+  hotkey: string;
+  account: AccountType | unknown;
+  id: string;
+  verified: boolean;
+  subnetId: string;
+  userId: string;
+  vtrust: string | null;
+}
+
 export const getValidators = async () => {
   try {
     const results = await db.query.validators.findMany({
@@ -20,16 +43,16 @@ export const getValidators = async () => {
   }
 };
 
-export const getValidator = async ({ id }: { id: string }) => {
-  try {
-    const results = await db.query.validators.findFirst({
-      where: (validators, { eq }) => eq(validators.id, id),
-    });
-
-    return results;
-  } catch (error) {
-    if (error instanceof Error) console.log(error.stack);
-  }
+export const getValidator = async ({
+  id,
+}: {
+  id: string;
+}): Promise<ValidatorType> => {
+  const res: ValidatorType | undefined = await db.query.validators.findFirst({
+    where: (validators, { eq }) => eq(validators.id, id),
+  });
+  if (!res) throw new Error(`Validator with ID ${id} not found.`);
+  return res;
 };
 
 export const updateValidator = async ({ id, ...values }) => {
