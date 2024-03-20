@@ -10,6 +10,10 @@ import {
   Button,
   TextInput,
   Text,
+  Modal,
+  List,
+  Anchor,
+  Space,
 } from "@mantine/core";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
@@ -23,7 +27,13 @@ import {
 
 import { sign, isValidSignature, SignedDataType } from "@/lib/polkadot";
 
-import { updateValidator, ValidatorType, AccountType } from "@/actions/validators";
+import {
+  updateValidator,
+  ValidatorType,
+  AccountType,
+} from "@/actions/validators";
+
+import { useDisclosure } from "@mantine/hooks";
 
 export const ValidatorEditSchema = z.object({
   url: z.string().url({ message: "Endpoint must be a valid URL" }),
@@ -32,6 +42,7 @@ export const ValidatorEditSchema = z.object({
 export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
   const [loading, setLoading] = useState(false);
   const [verified, setVerified] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
   const form = useForm({
     initialValues: {
@@ -58,9 +69,10 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
       subnetId: validator.subnetId,
     });
 
-    const signedData: SignedDataType = await sign(message);
-
-    if (signedData && "signature" in signedData) {
+    const signedData: Partial<SignedDataType> = await sign(message);
+    if (signedData?.error) {
+      open();
+    } else if (signedData && "signature" in signedData) {
       const { signature, account } = signedData;
 
       await updateValidator({
@@ -102,6 +114,34 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
 
   return (
     <Group align="flex-start">
+      <Modal
+        centered
+        opened={opened}
+        onClose={close}
+        title="Validator Verification Failed"
+      >
+        <Box mb="lg">
+          <Text size="sm">
+            Validator verification failed. In order to verify your validator, a
+            browser wallet that works with Bittensor is required.
+          </Text>
+          <Space h="sm" />
+          <Text size="sm">Some browser wallets that work with Bittesnor:</Text>
+          <Space h="sm" />
+          <List>
+            <List.Item>
+              <Anchor href="https://polkadot.js.org/extension/" target="_blank">
+                Polkadot-js
+              </Anchor>
+            </List.Item>
+            <List.Item>
+              <Anchor href="https://www.talisman.xyz/" target="_blank">
+                talisman.xyz
+              </Anchor>
+            </List.Item>
+          </List>
+        </Box>
+      </Modal>
       <Box>
         <NavLink
           active

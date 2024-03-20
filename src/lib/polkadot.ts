@@ -11,14 +11,17 @@ import {
 import type { HexString } from "@polkadot/util/types";
 
 import { stringToHex, u8aToHex } from "@polkadot/util";
-import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 
-export type SignedDataType = {
-  message: string;
-  signature: `0x${string}`;
-  account: InjectedAccountWithMeta;
-} | null | undefined;
-
+export type SignedDataType =
+  | {
+      message: string;
+      signature: `0x${string}`;
+      account: InjectedAccountWithMeta;
+      error: string;
+    }
+  | null
+  | undefined;
 
 export const isValidSignature = async (
   signedMessage: string,
@@ -39,13 +42,15 @@ export async function sign(message: string) {
     const extensions = await web3Enable("Taoshi Request Network");
 
     if (extensions.length === 0) {
-      throw new Error("No Polkadot extension installed");
+      // throw new Error("No Polkadot extension installed");
+      return { error: "No Polkadot extension installed" };
     }
 
     const accounts = await web3Accounts();
 
     if (accounts.length === 0) {
-      throw new Error("No Polkadot accounts available");
+      // throw new Error("No Polkadot accounts available");
+      return { error: "No Polkadot accounts available" };
     }
 
     const account = accounts[0];
