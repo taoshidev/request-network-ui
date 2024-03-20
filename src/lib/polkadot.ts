@@ -42,14 +42,12 @@ export async function sign(message: string) {
     const extensions = await web3Enable("Taoshi Request Network");
 
     if (extensions.length === 0) {
-      // throw new Error("No Polkadot extension installed");
       return { error: "No Polkadot extension installed" };
     }
 
     const accounts = await web3Accounts();
 
     if (accounts.length === 0) {
-      // throw new Error("No Polkadot accounts available");
       return { error: "No Polkadot accounts available" };
     }
 
