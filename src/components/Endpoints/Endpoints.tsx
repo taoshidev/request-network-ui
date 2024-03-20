@@ -33,9 +33,15 @@ interface EndpointsProps {
   user: any;
   endpoints: any;
   validators: any;
+  subnets: any;
 }
 
-export function Endpoints({ user, endpoints, validators }: EndpointsProps) {
+export function Endpoints({
+  user,
+  endpoints,
+  validators,
+  subnets,
+}: EndpointsProps) {
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -56,7 +62,12 @@ export function Endpoints({ user, endpoints, validators }: EndpointsProps) {
         onClose={close}
         title="Create a new Endpoint"
       >
-        <Limits user={user} onComplete={close} validators={validators} />
+        <Limits
+          user={user}
+          onComplete={close}
+          validators={validators}
+          subnets={subnets}
+        />
       </Modal>
 
       <Box>

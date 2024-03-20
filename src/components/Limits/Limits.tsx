@@ -13,7 +13,6 @@ import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { v4 as uuid } from "uuid";
 import { z } from "zod";
-import { isEmpty } from "lodash";
 
 import { updateUser } from "@/actions/auth";
 import { createEndpoint } from "@/actions/endpoints";
@@ -31,16 +30,17 @@ const EndpointSchema = z.object({
 
 type Endpoint = z.infer<typeof EndpointSchema>;
 
-export function Limits({ onComplete, user, validators }: any) {
+export function Limits({ onComplete, user, validators, subnets }: any) {
   const [loading, setLoading] = useState(false);
 
   const form = useForm<Endpoint>({
+    name: "create-new-endpoint",
     initialValues: {
       id: uuid(),
       limit: 10,
       url: "http://localhost:3001",
       subnet: "",
-      validator: "b83cc56b-0df3-49b8-b1a7-c4f2fd939324",
+      validator: "",
       refillRate: 1,
       refillInterval: 1000,
       remaining: 1000,
@@ -48,28 +48,38 @@ export function Limits({ onComplete, user, validators }: any) {
     validate: zodResolver(EndpointSchema),
   });
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: Endpoint) => {
     setLoading(true);
 
     try {
-      await createEndpoint(values);
-
-      await updateUser({
-        data: { onboarding: { step: 3, completed: true } },
-      });
-
-      onComplete();
-      setLoading(false);
+      const res = await createEndpoint(values);
+      if (res.error) {
+        console.error(res.message);
+        // TODO: use a toast or notification service?
+      } else {
+        await updateUser({
+          data: { onboarding: { step: 3, completed: true } },
+        });
+        onComplete?.();
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Network or server error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const availableSubnets = useMemo(() => {
-    return validators.map((validator) => validator.subnets);
+  // Only return validated validators for selection
+  const verifiedValidators = useMemo(() => {
+    return validators
+      .filter((v) => v.verified)
+      .map((v) => {
+        return {
+          value: v.id,
+          label: v?.account?.meta?.name || "Unknown",
+        };
+      });
   }, [validators]);
-
-  console.log(availableSubnets);
 
   return (
     <Box component="form" w="100%" onSubmit={form.onSubmit(onSubmit)}>
@@ -83,9 +93,17 @@ export function Limits({ onComplete, user, validators }: any) {
       </Box>
       <Box mb="md">
         <Select
+          label="Which Validator"
+          placeholder="Pick value or enter anything"
+          data={verifiedValidators}
+          {...form.getInputProps("validator")}
+        />
+      </Box>
+      <Box mb="md">
+        <Select
           label="Which Subnet"
           placeholder="Pick value or enter anything"
-          data={availableSubnets}
+          data={subnets}
           {...form.getInputProps("subnet")}
         />
       </Box>

@@ -12,7 +12,7 @@ export function ValidatorDashboard({
   return (
     <>
       <Validators user={user} validators={validators} subnets={subnets} />
-      <Endpoints user={user} endpoints={endpoints} validators={validators} />
+      <Endpoints user={user} endpoints={endpoints} validators={validators} subnets={subnets} />
     </>
   );
 }
