@@ -10,6 +10,7 @@ import {
   boolean,
   pgEnum,
   unique,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 export const authSchema = pgSchema("auth");
@@ -52,7 +53,7 @@ export const validators = pgTable("validators", {
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id),
-
+  account: jsonb('account'),
   signature: varchar("signature"),
   vtrust: numeric("vtrust", { precision: 7, scale: 5 }),
   verified: boolean("verified").notNull().default(false),
