@@ -57,9 +57,6 @@ export function Limits({ onComplete, user, validators, subnets }: any) {
         console.error(res.message);
         // TODO: use a toast or notification service?
       } else {
-        await updateUser({
-          data: { onboarding: { step: 3, completed: true } },
-        });
         onComplete?.();
       }
     } catch (error) {
