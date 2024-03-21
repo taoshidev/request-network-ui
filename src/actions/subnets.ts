@@ -2,9 +2,9 @@
 
 import { db } from "@/db";
 
-export const getSubnets = async (query) => {
+export const getSubnets = async (query?: object) => {
   try {
-    const results = await db.query.subnets.findMany(query);
+    const results = await db.query.subnets.findMany(query && query);
 
     return results;
   } catch (error) {

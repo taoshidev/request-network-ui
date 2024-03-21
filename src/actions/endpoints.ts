@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 
 import { endpoints } from "@/db/schema";
+import { parseError, parseResult } from "@/db/error";
 
 export const getEndpoints = async () => {
   try {
@@ -33,11 +34,11 @@ export const getEndpoint = async ({ id }: { id: string }) => {
 
 export const createEndpoint = async (endpoint: any) => {
   try {
-    const results = await db.insert(endpoints).values(endpoint).returning();
+    const res = await db.insert(endpoints).values(endpoint).returning();
     revalidatePath("/dashboard");
-    return { results, error: null };
+    return parseResult(res);
   } catch (error) {
-    return { result: null, error };
+    return parseError(error);
   }
 };
 
