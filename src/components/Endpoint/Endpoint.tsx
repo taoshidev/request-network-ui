@@ -40,51 +40,48 @@ export const EndpointSchema = z.object({
   expires: z.date(),
 });
 
-interface EndpointProps {
-  user: any;
+export function Endpoint({
+  user,
+  endpoint,
+  validator,
+}: {
+  user?: any;
   endpoint: any;
-  validator: any;
-}
-
-export function Endpoint({ user, endpoint, validator }: EndpointProps) {
+  validator?: any;
+}) {
   const [loading, setLoading] = useState(false);
   const [enabled, setEnabled] = useState(endpoint.enabled);
 
   const form = useForm({
     initialValues: {
-      id: endpoint.id,
-      url: endpoint.url,
-      subnet: endpoint.subnet,
-      limit: endpoint.limit,
-      refillRate: endpoint.refillRate,
-      refillInterval: endpoint.refillInterval,
-      remaining: endpoint.remaining,
-      expires: endpoint.expires,
+      ...endpoint,
     },
     validate: zodResolver(EndpointSchema),
   });
 
   const onSubmit = async (values: any) => {
     setLoading(true);
-
+    const { id } = endpoint;
     try {
-      await updateEndpoint({ id: endpoint.id, endpoint: values });
-
-      setLoading(false);
+      const res = await updateEndpoint({ id, ...values });
+      if (res?.error) {
+        console.error(res?.message);
+        // TODO: show toast
+      }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleEnable = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const isEnabled = event.target.checked;
-
     try {
-      await updateEndpoint({ id: endpoint.id, enabled: isEnabled });
+      const res = await updateEndpoint({ id: endpoint.id, enabled: isEnabled });
     } catch (error) {
       console.log(error);
     }
-
     setEnabled(isEnabled);
   };
 
@@ -132,14 +129,6 @@ export function Endpoint({ user, endpoint, validator }: EndpointProps) {
               withAsterisk
               placeholder="URL"
               {...form.getInputProps("url")}
-            />
-          </Box>
-          <Box mb="md" flex="2">
-            <Select
-              label="Which Subnet"
-              placeholder="Pick value or enter anything"
-              data={[]}
-              {...form.getInputProps("subnet")}
             />
           </Box>
           <Group justify="flex-end">

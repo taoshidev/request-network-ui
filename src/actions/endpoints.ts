@@ -6,6 +6,7 @@ import { db } from "@/db";
 
 import { endpoints } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
+import { filterData } from "@/utils/sanitize";
 
 export const getEndpoints = async () => {
   try {
@@ -44,13 +45,14 @@ export const createEndpoint = async (endpoint: any) => {
 
 export const updateEndpoint = async ({ id, ...values }: any) => {
   try {
-    const results = await db
+    const res = await db
       .update(endpoints)
       .set(values)
-      .where(eq(endpoints.id, id));
+      .where(eq(endpoints.id, id))
+      .returning();
 
-    return { results, error: null };
+    return parseResult(filterData(res, ["url", "subnet", "validator"]));
   } catch (error) {
-    return { result: null, error };
+    return parseError(error);
   }
 };

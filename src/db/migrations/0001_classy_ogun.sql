@@ -1,0 +1,1 @@
+ALTER TABLE "endpoints" ADD CONSTRAINT "endpoints_url_unique" UNIQUE("url");

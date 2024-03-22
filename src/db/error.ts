@@ -44,6 +44,8 @@ const prepareErrorMessage = (error: any): string => {
   switch (error.constraint_name) {
     case "endpoints_validator_subnet_unique":
       return "An endpoint with this validator and subnet already exists.";
+    case "endpoints_url_unique":
+      return "The url endpoint already exists.";
     default:
       return `Cannot process database action on table ${error?.table_name}`;
   }
