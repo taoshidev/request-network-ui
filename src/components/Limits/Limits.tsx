@@ -16,6 +16,7 @@ import { z } from "zod";
 
 import { updateUser } from "@/actions/auth";
 import { createEndpoint } from "@/actions/endpoints";
+import { useNotification } from "@/utils/use-notification";
 
 const EndpointSchema = z.object({
   id: z.string().uuid(),
@@ -32,6 +33,7 @@ type Endpoint = z.infer<typeof EndpointSchema>;
 
 export function Limits({ onComplete, user, validators, subnets }: any) {
   const [loading, setLoading] = useState(false);
+  const { notifySuccess, notifyError, notifyInfo } = useNotification();
 
   const form = useForm<Endpoint>({
     name: "create-new-endpoint",
@@ -53,14 +55,11 @@ export function Limits({ onComplete, user, validators, subnets }: any) {
 
     try {
       const res = await createEndpoint(values);
-      if (res.error) {
-        console.error(res.message);
-        // TODO: use a toast or notification service?
-      } else {
-        onComplete?.();
-      }
-    } catch (error) {
-      console.error("Network or server error occurred.");
+      if (res?.error) return notifyError(res?.message);
+      onComplete?.();
+      notifySuccess(res?.message);
+    } catch (error: Error | unknown) {
+      notifyInfo((error as Error).message);
     } finally {
       setLoading(false);
     }

@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   description:
     "Decentralized Financial Market Forecasting Through the Power of AI",
 };
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
 
 export default function RootLayout({
   children,
@@ -28,7 +30,10 @@ export default function RootLayout({
       </head>
       <body>
         <NextTopLoader color="#D36737" showSpinner={false} shadow={false} />
-        <MantineProvider theme={theme}>{children}</MantineProvider>
+        <MantineProvider theme={theme}>
+          <Notifications position="top-right" zIndex={1000}/>
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );

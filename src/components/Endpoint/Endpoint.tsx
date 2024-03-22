@@ -24,12 +24,10 @@ import {
   IconActivity,
   IconCircleOff,
 } from "@tabler/icons-react";
-
 import { updateEndpoint } from "@/actions/endpoints";
-
 import { PostSchema } from "../PostSchema";
-
 import styles from "./endpoint.module.css";
+import { useNotification } from "@/utils/use-notification";
 
 export const EndpointSchema = z.object({
   url: z.string().url({ message: "Endpoint must be a valid URL" }),
@@ -51,6 +49,7 @@ export function Endpoint({
 }) {
   const [loading, setLoading] = useState(false);
   const [enabled, setEnabled] = useState(endpoint.enabled);
+  const { notifySuccess, notifyError, notifyInfo } = useNotification();
 
   const form = useForm({
     initialValues: {
@@ -64,12 +63,10 @@ export function Endpoint({
     const { id } = endpoint;
     try {
       const res = await updateEndpoint({ id, ...values });
-      if (res?.error) {
-        console.error(res?.message);
-        // TODO: show toast
-      }
-    } catch (error) {
-      console.log(error);
+      if (res?.error) return notifyError(res?.message);
+      notifySuccess(res.message);
+    } catch (error: Error | unknown) {
+      notifyInfo((error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -79,10 +76,13 @@ export function Endpoint({
     const isEnabled = event.target.checked;
     try {
       const res = await updateEndpoint({ id: endpoint.id, enabled: isEnabled });
-    } catch (error) {
-      console.log(error);
+      if (res?.error) return notifyError(res?.message);
+      notifySuccess(res.message);
+    } catch (error: Error | unknown) {
+      notifyInfo((error as Error).message);
+    } finally {
+      setEnabled(isEnabled);
     }
-    setEnabled(isEnabled);
   };
 
   return (
