@@ -11,7 +11,6 @@ export const useNotification = () => {
   };
 
   const notifyError = (message: string) => {
-    console.log('from notifiy error')
     showNotification({
       message,
       icon: <IconX size={18} />,
