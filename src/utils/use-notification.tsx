@@ -27,6 +27,5 @@ export const useNotification = () => {
     });
   };
 
-  // Return notification functions
   return { notifySuccess, notifyError, notifyInfo };
 };
