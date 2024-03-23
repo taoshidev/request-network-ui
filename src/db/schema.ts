@@ -84,7 +84,7 @@ export const endpoints = pgTable(
       .references(() => validators.id),
 
     limit: integer("limit").default(10), // The total amount of burstable requests.
-    url: varchar("url").notNull(),
+    url: varchar("url").unique().notNull(),
     enabled: boolean("enabled").notNull().default(true).notNull(),
     expires: timestamp("expires"),
     refillRate: integer("refill_rate").default(1), // The amount of requests that are refilled every refillInterval.

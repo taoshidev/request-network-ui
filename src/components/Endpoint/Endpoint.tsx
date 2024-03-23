@@ -24,12 +24,10 @@ import {
   IconActivity,
   IconCircleOff,
 } from "@tabler/icons-react";
-
 import { updateEndpoint } from "@/actions/endpoints";
-
 import { PostSchema } from "../PostSchema";
-
 import styles from "./endpoint.module.css";
+import { useNotification } from "@/utils/use-notification";
 
 export const EndpointSchema = z.object({
   url: z.string().url({ message: "Endpoint must be a valid URL" }),
@@ -40,52 +38,51 @@ export const EndpointSchema = z.object({
   expires: z.date(),
 });
 
-interface EndpointProps {
-  user: any;
+export function Endpoint({
+  user,
+  endpoint,
+  validator,
+}: {
+  user?: any;
   endpoint: any;
-  validator: any;
-}
-
-export function Endpoint({ user, endpoint, validator }: EndpointProps) {
+  validator?: any;
+}) {
   const [loading, setLoading] = useState(false);
   const [enabled, setEnabled] = useState(endpoint.enabled);
+  const { notifySuccess, notifyError, notifyInfo } = useNotification();
 
   const form = useForm({
     initialValues: {
-      id: endpoint.id,
-      url: endpoint.url,
-      subnet: endpoint.subnet,
-      limit: endpoint.limit,
-      refillRate: endpoint.refillRate,
-      refillInterval: endpoint.refillInterval,
-      remaining: endpoint.remaining,
-      expires: endpoint.expires,
+      ...endpoint,
     },
     validate: zodResolver(EndpointSchema),
   });
 
   const onSubmit = async (values: any) => {
     setLoading(true);
-
+    const { id } = endpoint;
     try {
-      await updateEndpoint({ id: endpoint.id, endpoint: values });
-
+      const res = await updateEndpoint({ id, ...values });
+      if (res?.error) return notifyError(res?.message);
+      notifySuccess(res.message);
+    } catch (error: Error | unknown) {
+      notifyInfo((error as Error).message);
+    } finally {
       setLoading(false);
-    } catch (error) {
-      console.log(error);
     }
   };
 
   const handleEnable = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const isEnabled = event.target.checked;
-
     try {
-      await updateEndpoint({ id: endpoint.id, enabled: isEnabled });
-    } catch (error) {
-      console.log(error);
+      const res = await updateEndpoint({ id: endpoint.id, enabled: isEnabled });
+      if (res?.error) return notifyError(res?.message);
+      notifySuccess(res.message);
+    } catch (error: Error | unknown) {
+      notifyInfo((error as Error).message);
+    } finally {
+      setEnabled(isEnabled);
     }
-
-    setEnabled(isEnabled);
   };
 
   return (
@@ -132,14 +129,6 @@ export function Endpoint({ user, endpoint, validator }: EndpointProps) {
               withAsterisk
               placeholder="URL"
               {...form.getInputProps("url")}
-            />
-          </Box>
-          <Box mb="md" flex="2">
-            <Select
-              label="Which Subnet"
-              placeholder="Pick value or enter anything"
-              data={[]}
-              {...form.getInputProps("subnet")}
             />
           </Box>
           <Group justify="flex-end">

@@ -9,7 +9,7 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { id } = params;
-  const [result] = await getEndpoint({ id });
+  const [result = {}] = await getEndpoint({ id }) ?? [];
 
   return <Endpoint endpoint={result} />;
 }
