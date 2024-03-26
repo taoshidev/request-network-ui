@@ -63,8 +63,16 @@ export function Validators({ user, subnets, validators }: any) {
               !isEmpty(validators) &&
               validators.map((validator: any) => (
                 <Table.Tr key={validator.id}>
-                  <Table.Td>{validator.id}</Table.Td>
-                  <Table.Td>{validator.subnets.label}</Table.Td>
+                  <Table.Td>{validator.name}</Table.Td>
+                  <Table.Td>
+                    <Group>
+                      {(validator.endpoints || []).map((endpoint: any) => (
+                        <Badge key={endpoint.id} radius={0} color="grey">
+                          {endpoint?.subnets?.label}
+                        </Badge>
+                      ))}
+                    </Group>
+                  </Table.Td>
                   <Table.Td>
                     {validator.verified ? (
                       <Badge radius={0} color="orange">

@@ -1,0 +1,14 @@
+.card {
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px dashed black;
+}
+
+.statItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}

@@ -32,7 +32,15 @@ export default async function Page() {
   } else if (user.user_metadata.role === "validator") {
     const endpoints = await getEndpoints();
     const subnets = await getSubnets();
-    const validators = await getValidators();
+    const validators = await getValidators({
+      with: {
+        endpoints: {
+          with: {
+            subnets: true,
+          },
+        },
+      },
+    });
 
     return (
       <ValidatorDashboard

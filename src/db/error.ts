@@ -1,5 +1,5 @@
 import { toPlainObject } from "@/utils/sanitize";
-
+import { filterData } from "@/utils/sanitize";
 export interface DatabaseResponseType {
   message: string;
   code?: string;
@@ -9,15 +9,20 @@ export interface DatabaseResponseType {
 // PostgreSQL Error Codes enum
 export enum DatabaseErrorCode {
   UniqueViolation = "23505",
+  ExecConstraints = "23502",
   // ...
 }
 
-// TODO: there's opportunity to refine this more
-export const parseResult = (result: any): DatabaseResponseType => {
+export const parseResult = (
+  result: any,
+  props?: { filter: Array<string> }
+): DatabaseResponseType => {
+  const { filter = [] } = props || {};
+  const data = filter.length > 0 ? filterData(result, filter) : result;
   return {
     message: result?.message || "Database action succeeded.",
     code: result?.code || 200,
-    data: result,
+    data,
   };
 };
 
@@ -29,6 +34,9 @@ export const parseError = (error: any): DatabaseResponseType => {
   switch (parsedError.code) {
     case DatabaseErrorCode.UniqueViolation:
       errorMessage = prepareErrorMessage(parsedError);
+      break;
+    case DatabaseErrorCode.ExecConstraints:
+      errorMessage = 'Failing row contains null values.';
       break;
     // ...
   }

@@ -16,7 +16,6 @@ import { DateTimePicker } from "@mantine/dates";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
 import { z } from "zod";
-
 import {
   IconHome2,
   IconGauge,
@@ -27,7 +26,8 @@ import {
 import { updateEndpoint } from "@/actions/endpoints";
 import { PostSchema } from "../PostSchema";
 import styles from "./endpoint.module.css";
-import { useNotification } from "@/utils/use-notification";
+import { useNotification } from "@/hooks/use-notification";
+import { useRouter } from "next/navigation";
 
 export const EndpointSchema = z.object({
   url: z.string().url({ message: "Endpoint must be a valid URL" }),
@@ -50,6 +50,7 @@ export function Endpoint({
   const [loading, setLoading] = useState(false);
   const [enabled, setEnabled] = useState(endpoint.enabled);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
+  const router = useRouter();
 
   const form = useForm({
     initialValues: {
@@ -65,6 +66,7 @@ export function Endpoint({
       const res = await updateEndpoint({ id, ...values });
       if (res?.error) return notifyError(res?.message);
       notifySuccess(res.message);
+      router.back();
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
     } finally {
@@ -172,7 +174,7 @@ export function Endpoint({
               description="Determines the speed at which tokens are refilled."
               placeholder="Input placeholder"
               defaultValue={1}
-              {...form.getInputProps("limit")}
+              {...form.getInputProps("refillInterval")}
             />
           </Box>
         </Box>

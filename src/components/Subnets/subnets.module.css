@@ -1,8 +1,17 @@
 .card {
   border: 1px dashed black;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.card:hover {
+.card:not(.disabled):hover,
+.card:not(.disabled).selected {
   border: 1px dashed var(--mantine-color-orange-6);
   color: var(--mantine-color-orange-6);
+}
+
+.disabled {
+  background-color: #eeeeee;
+  color: #9e9e9e;
+  cursor: not-allowed;
 }

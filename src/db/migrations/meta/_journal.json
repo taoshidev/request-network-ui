@@ -15,6 +15,34 @@
       "when": 1711065777038,
       "tag": "0001_classy_ogun",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1711222710511,
+      "tag": "0002_previous_king_cobra",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1711308092815,
+      "tag": "0003_safe_barracuda",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1711319431112,
+      "tag": "0004_harsh_earthquake",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1711400491842,
+      "tag": "0005_orange_adam_warlock",
+      "breakpoints": true
     }
   ]
 }

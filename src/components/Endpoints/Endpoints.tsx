@@ -92,7 +92,7 @@ export function Endpoints({
               endpoints.map((endpoint: any) => (
                 <Table.Tr key={endpoint.id}>
                   <Table.Td>{endpoint.url}</Table.Td>
-                  <Table.Td>{endpoint.subnet?.label}</Table.Td>
+                  <Table.Td>{endpoint.subnets?.label}</Table.Td>
                   <Table.Td>
                     {endpoint.enabled ? (
                       <Badge radius={0} color="orange">
