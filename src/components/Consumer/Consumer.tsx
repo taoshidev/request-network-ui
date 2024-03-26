@@ -94,7 +94,7 @@ export function Consumer({ user, keys }: ConsumerProps) {
     });
 
     if (CreateKeyError) return;
-    console.log('result', result)
+   
     setLocalStorage({ id: result?.key });
 
     router.push(`/keys/${result?.keyId}`);

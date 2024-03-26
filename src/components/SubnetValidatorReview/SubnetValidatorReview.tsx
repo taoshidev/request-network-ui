@@ -1,50 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import {
-  Title,
-  Text,
-  Box,
-  Grid,
-  Card,
-  Group,
-  Badge,
-  Button,
-  Table,
-  TextInput,
-  Input,
-} from "@mantine/core";
+import { Title, Box, Badge, Table } from "@mantine/core";
 
 import styles from "./subnet-validator-review.module.css";
-import {
-  useRegistration,
-  RegistrationData,
-} from "@/providers/registration-provider";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { IconKey, IconCheck } from "@tabler/icons-react";
-
-const keySchema = z.object({
-  keyName: z.string().min(3, { message: "Name must be at least 3 characters" }),
-});
-
-type Key = z.infer<typeof keySchema>;
+import { useRegistration } from "@/providers/registration-provider";
 
 export function SubnetValidatorReview() {
-  const { updateData, registrationData } = useRegistration();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Key>({
-    resolver: zodResolver(keySchema),
-  });
-  const onSubmit = (values) => {
-    updateData({ keyName: values.keyName } as RegistrationData);
-    console.log("registration data after", registrationData);
-
-  };
+  const { registrationData } = useRegistration();
 
   return (
     <Box>
