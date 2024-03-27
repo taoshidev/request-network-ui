@@ -6,7 +6,6 @@ import { db } from "@/db";
 
 import { endpoints } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
-import { filterData } from "@/utils/sanitize";
 
 export const getEndpoints = async () => {
   try {
@@ -51,7 +50,7 @@ export const updateEndpoint = async ({ id, ...values }: any) => {
       .where(eq(endpoints.id, id))
       .returning();
 
-    return parseResult(filterData(res, ["url", "subnet", "validator"]));
+    return parseResult(res, { filter: ["url", "subnet", "validator"] });
   } catch (error) {
     return parseError(error);
   }

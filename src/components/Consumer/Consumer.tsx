@@ -94,7 +94,7 @@ export function Consumer({ user, keys }: ConsumerProps) {
     });
 
     if (CreateKeyError) return;
-
+   
     setLocalStorage({ id: result?.key });
 
     router.push(`/keys/${result?.keyId}`);
@@ -154,9 +154,11 @@ export function Consumer({ user, keys }: ConsumerProps) {
         <>
           <Group justify="space-between" my="xl">
             <Title order={2}>API Keys</Title>
-            <Button onClick={open}>Create New API Key</Button>
+            <Box>
+              <Button onClick={open}>Create New API Key</Button>
+              <Button ml={15} onClick={() => router.push('/registration')}>Register</Button>
+            </Box>
           </Group>
-
           <Table>
             <Table.Thead>
               <Table.Tr>

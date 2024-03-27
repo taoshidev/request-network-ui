@@ -16,7 +16,7 @@ import { z } from "zod";
 
 import { updateUser } from "@/actions/auth";
 import { createEndpoint } from "@/actions/endpoints";
-import { useNotification } from "@/utils/use-notification";
+import { useNotification } from "@/hooks/use-notification";
 
 const EndpointSchema = z.object({
   id: z.string().uuid(),

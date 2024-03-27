@@ -33,27 +33,25 @@ export const usersRelations = relations(users, ({ many }) => ({
 }));
 
 export const subnets = pgTable("subnets", {
+  id: uuid("id").primaryKey().notNull(),
   value: uuid("id").primaryKey(),
   label: varchar("label"),
 });
 
 export const subnetsRelations = relations(subnets, ({ many }) => ({
+  endpoints: many(endpoints),
   validators: many(validators),
 }));
 
 export const validators = pgTable("validators", {
   id: uuid("id").primaryKey().notNull(),
-
+  name: varchar("name"),
+  description: varchar("description"),
   hotkey: varchar("hotkey", { length: 48 }).unique().notNull(),
-
-  subnetId: uuid("subnet_id")
-    .notNull()
-    .references(() => subnets.value),
-
   userId: uuid("user_id")
     .notNull()
-    .references(() => users.id),
-  account: jsonb('account'),
+    .references(() => users.id, { onDelete: "cascade" }),
+  account: jsonb("account"),
   signature: varchar("signature"),
   vtrust: numeric("vtrust", { precision: 7, scale: 5 }),
   verified: boolean("verified").notNull().default(false),
@@ -65,23 +63,18 @@ export const validatorsRelations = relations(validators, ({ many, one }) => ({
     fields: [validators.userId],
     references: [users.id],
   }),
-  subnets: one(subnets, {
-    fields: [validators.subnetId],
-    references: [subnets.value],
-  }),
 }));
 
 export const endpoints = pgTable(
   "endpoints",
   {
     id: uuid("id").primaryKey().notNull(),
-
     subnet: uuid("subnet")
       .notNull()
-      .references(() => subnets.value),
+      .references(() => subnets.id, { onDelete: "cascade" }),
     validator: uuid("validator")
       .notNull()
-      .references(() => validators.id),
+      .references(() => validators.id, { onDelete: "cascade" }),
 
     limit: integer("limit").default(10), // The total amount of burstable requests.
     url: varchar("url").unique().notNull(),
@@ -93,16 +86,50 @@ export const endpoints = pgTable(
   },
   (table) => ({
     unique: unique().on(table.validator, table.subnet),
-  }),
+  })
 );
 
 export const endpointsRelations = relations(endpoints, ({ one }) => ({
   subnets: one(subnets, {
     fields: [endpoints.subnet],
-    references: [subnets.value],
+    references: [subnets.id],
   }),
   validators: one(validators, {
     fields: [endpoints.validator],
     references: [validators.id],
   }),
 }));
+
+export const subscriptions = pgTable("subscriptions", {
+  id: uuid("id").primaryKey().notNull(),
+  endpointId: uuid("endpoint_id")
+    .notNull()
+    .references(() => endpoints.id, { onDelete: "set null" }),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "set null" }),
+  keyId: varchar("key_id"),
+  key: varchar("key"),
+});
+
+export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
+  endpointId: one(endpoints, {
+    fields: [subscriptions.endpointId],
+    references: [endpoints.id],
+  }),
+  userId: one(users, {
+    fields: [subscriptions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const userSubscriptionRelations = relations(users, ({ many }) => ({
+  subscriptions: many(subscriptions),
+}));
+
+export const userSubscriptionEndpointRelations = relations(
+  endpoints,
+  ({ many }) => ({
+    endpoints: many(endpoints),
+  })
+);

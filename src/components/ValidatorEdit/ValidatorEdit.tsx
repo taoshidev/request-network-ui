@@ -9,6 +9,7 @@ import {
   Title,
   Button,
   TextInput,
+  Textarea,
   Text,
   Modal,
   List,
@@ -24,41 +25,53 @@ import {
   IconCircleOff,
   IconCircleCheck,
 } from "@tabler/icons-react";
-
 import { sign, isValidSignature, SignedDataType } from "@/lib/polkadot";
-
 import {
   updateValidator,
   ValidatorType,
   AccountType,
 } from "@/actions/validators";
-
 import { useDisclosure } from "@mantine/hooks";
+import { useNotification } from "@/hooks/use-notification";
+import { useRouter } from "next/navigation";
 
 export const ValidatorEditSchema = z.object({
-  url: z.string().url({ message: "Endpoint must be a valid URL" }),
+  name: z.string().min(3, { message: "Name must be at least 3 characters" }),
+  description: z
+    .string()
+    .min(64, { message: "Description must be at least 64 characters" }),
 });
 
 export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
   const [loading, setLoading] = useState(false);
   const [verified, setVerified] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
-
+  const { notifySuccess, notifyError, notifyInfo } = useNotification();
+  const router = useRouter();
+  console.log("validator", validator);
   const form = useForm({
     initialValues: {
-      id: validator.id,
-      url: "",
+      name: validator?.name || "",
+      description: validator?.description || "",
     },
     validate: zodResolver(ValidatorEditSchema),
   });
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (
+    values: Pick<ValidatorType, "name" | "description">
+  ) => {
+    console.log("from onSubmit", values);
     setLoading(true);
-
     try {
-      setLoading(false);
+      const res = await updateValidator({ id: validator.id, ...values });
+      console.log("res", res);
+      if (res?.error) return notifyError(res?.message);
+      notifySuccess(res?.message as string);
+      router.back();
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,7 +79,6 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
     const message = JSON.stringify({
       id: validator.id,
       userId: validator.userId,
-      subnetId: validator.subnetId,
     });
 
     const signedData: Partial<SignedDataType> = await sign(message);
@@ -88,12 +100,11 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
 
   useEffect(() => {
     const getSignature = async () => {
-      const { id, userId, subnetId, signature } = validator;
+      const { id, userId, signature } = validator;
       const account = validator?.account as AccountType;
       const message = JSON.stringify({
         id,
         userId,
-        subnetId,
       });
 
       const isValid = await isValidSignature(
@@ -189,10 +200,18 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
         >
           <Box mb="md">
             <TextInput
+              mb="md"
               withAsterisk
-              label="URL"
-              placeholder="URL"
-              {...form.getInputProps("url")}
+              label="Validator Name"
+              placeholder="Enter a name for your validator"
+              {...form.getInputProps("name")}
+            />
+            <Textarea
+              mb="md"
+              withAsterisk
+              label="Description"
+              placeholder="Enter a brief description for your validator"
+              {...form.getInputProps("description")}
             />
           </Box>
           <Box mb="md">
