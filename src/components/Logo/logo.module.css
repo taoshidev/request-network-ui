@@ -1,0 +1,23 @@
+@import url('//cdn.jsdelivr.net/gh/be5invis/Iosevka@ff81c66/fonts.css');
+
+.braille {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row;
+  max-width: 100%;
+  max-height: 100%;
+  font: 11px/12px 'Iosevka Web', monospace;
+  position: relative;
+
+}
+
+.braille > * {
+  white-space: pre;
+}
+
+.hidden {
+  position: absolute;
+  bottom: 100%;
+  right: 100%;
+}
