@@ -11,7 +11,6 @@ import {
   Alert,
   Modal,
 } from "@mantine/core";
-// import { useDisclosure } from "@mantine/hooks";
 import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
 import styles from "./key-modal.module.css";
 

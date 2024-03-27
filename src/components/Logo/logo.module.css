@@ -1,4 +1,4 @@
-@import url('//cdn.jsdelivr.net/gh/be5invis/Iosevka@ff81c66/fonts.css');
+@import url("//cdn.jsdelivr.net/gh/be5invis/Iosevka@ff81c66/fonts.css");
 
 .braille {
   display: flex;
@@ -7,9 +7,8 @@
   flex-flow: row;
   max-width: 100%;
   max-height: 100%;
-  font: 11px/12px 'Iosevka Web', monospace;
+  font: 11px/12px "Iosevka Web", monospace;
   position: relative;
-
 }
 
 .braille > * {
