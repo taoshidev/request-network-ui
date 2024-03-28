@@ -52,8 +52,9 @@ export const updateSubscription = async ({
   }
 };
 
-export const createSubscription = async (subscription: Partial<SubscriptionType>) => {
-    console.log('from careateSubscription', subscription)
+export const createSubscription = async (
+  subscription: Partial<SubscriptionType>
+) => {
   try {
     const res = await db.insert(subscriptions).values(subscription).returning();
 

@@ -13,8 +13,6 @@ import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { v4 as uuid } from "uuid";
 import { z } from "zod";
-
-import { updateUser } from "@/actions/auth";
 import { createEndpoint } from "@/actions/endpoints";
 import { useNotification } from "@/hooks/use-notification";
 

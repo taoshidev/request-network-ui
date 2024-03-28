@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Stepper, Button, Group, Text } from "@mantine/core";
+import { Stepper, Button, Group, Text, Box, Title } from "@mantine/core";
 import {
   useRegistration,
   RegistrationData,
@@ -12,7 +12,11 @@ import { SubscriptionType, createSubscription } from "@/actions/subscriptions";
 import { getAuthUser } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { useNotification } from "@/hooks/use-notification";
+import { useDisclosure } from "@mantine/hooks";
 import { v4 as uuid } from "uuid";
+import { Logo } from "@/components/Logo";
+import { KeyModal } from "@components/KeyModal/KeyModal";
+import styles from "./registration-stepper.module.css";
 
 const REGISTRATION_STEPS = 3;
 
@@ -27,6 +31,8 @@ export function RegistrationStepper({
 }) {
   const [active, setActive] = useState(0);
   const [disabled, setDisabled] = useState(true);
+  const [key, setKey] = useState("");
+  const [opened, { open, close }] = useDisclosure(false);
   const { updateData, registrationData } = useRegistration();
   const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState(false);
@@ -87,7 +93,8 @@ export function RegistrationStepper({
 
       if (res?.error) return notifyError(res?.message);
       notifySuccess(res?.message as string);
-      router.push("/dashboard");
+      setKey(key);
+      open();
     } catch (error: Error | unknown) {
       throw new Error((error as Error)?.message);
     } finally {
@@ -112,9 +119,37 @@ export function RegistrationStepper({
           <StepThree.type {...StepThree.props} />
         </Stepper.Step>
         <Stepper.Completed>
+          <Title my="xl" order={2} ta="center">
+            Confirm Registration
+          </Title>
           <Text size="sm">
-            Completed, click back button to get to previous step
+            Congratulations! You're one click away from your making your first
+            request, integrating your app, and start building!
           </Text>
+          <Box>
+            <KeyModal
+              apiKey={key}
+              opened={opened}
+              close={close}
+              onCopy={() => setKey("")}
+              modalTitle="Congratulations!"
+              keyTitle="API Access Key"
+              Action={
+                <Box>
+                  <Button
+                    w="100%"
+                    loading={loading}
+                    onClick={() => router.push("/dashboard")}
+                  >
+                    Go to Dashboard
+                  </Button>
+                </Box>
+              }
+            />
+          </Box>
+          <Box my={50}>
+            <Logo />
+          </Box>
         </Stepper.Completed>
       </Stepper>
       <Group justify="center" mt="xl">
