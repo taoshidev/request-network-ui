@@ -30,10 +30,10 @@ export function Header() {
   };
 
   return (
-    <Group h="100%" px="md">
+    <Group className="h-full p-1">
       <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-      <Group justify="space-between" style={{ flex: 1 }}>
-        <Group align="center" justify="center">
+      <Group className="space-between flex-1">
+        <Group className="items-center justify-center">
           <Image
             priority
             component={NextImage}
@@ -42,12 +42,7 @@ export function Header() {
             width={40}
             height={40}
           />
-          <Anchor
-            mr="sm"
-            className={styles.logo}
-            component={Link}
-            href="/dashboard"
-          >
+          <Anchor mr="sm" component={Link} href="/dashboard">
             taoshi
           </Anchor>
           <Anchor c="black" component={Link} href="/dashboard" size="sm">

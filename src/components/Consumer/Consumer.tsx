@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   Container,
@@ -94,7 +94,7 @@ export function Consumer({ user, keys }: ConsumerProps) {
     });
 
     if (CreateKeyError) return;
-   
+
     setLocalStorage({ id: result?.key });
 
     router.push(`/keys/${result?.keyId}`);
@@ -156,7 +156,9 @@ export function Consumer({ user, keys }: ConsumerProps) {
             <Title order={2}>API Keys</Title>
             <Box>
               <Button onClick={open}>Create New API Key</Button>
-              <Button ml={15} onClick={() => router.push('/registration')}>Register</Button>
+              <Button ml={15} onClick={() => router.push("/registration")}>
+                Register
+              </Button>
             </Box>
           </Group>
           <Table>

@@ -14,8 +14,8 @@ import NotFoundImage from "../../public/404.gif";
 
 export default function NotFound() {
   return (
-    <Container my="xl" h="100%">
-      <Center h="100%">
+    <Container className="h-full">
+      <Center className="h-full">
         <Stack>
           <Image
             alt="Taoshi"
