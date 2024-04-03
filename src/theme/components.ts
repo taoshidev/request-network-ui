@@ -19,4 +19,11 @@ export const components = {
       },
     }),
   },
+  Badge: {
+    styles: () => ({
+      root: {
+        borderRadius: 0,
+      },
+    }),
+  },
 };

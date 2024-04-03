@@ -31,7 +31,7 @@ export function Validators({ user, subnets, validators }: any) {
   };
 
   return (
-    <Box mb={100}>
+    <Box className="mb-16">
       <Modal
         centered
         opened={opened}
@@ -46,7 +46,7 @@ export function Validators({ user, subnets, validators }: any) {
       </Modal>
 
       <Box>
-        <Group justify="space-between" my="xl">
+        <Group className="justify-between my-8">
           <Title order={2}>Validators</Title>
           <Button onClick={open}>Add Your Validator</Button>
         </Group>
@@ -67,7 +67,7 @@ export function Validators({ user, subnets, validators }: any) {
                   <Table.Td>
                     <Group>
                       {(validator.endpoints || []).map((endpoint: any) => (
-                        <Badge key={endpoint.id} radius={0} color="grey">
+                        <Badge key={endpoint.id} color="grey">
                           {endpoint?.subnets?.label}
                         </Badge>
                       ))}
@@ -75,13 +75,9 @@ export function Validators({ user, subnets, validators }: any) {
                   </Table.Td>
                   <Table.Td>
                     {validator.verified ? (
-                      <Badge radius={0} color="orange">
-                        Verified
-                      </Badge>
+                      <Badge>Verified</Badge>
                     ) : (
-                      <Badge radius={0} color="black">
-                        Unverified
-                      </Badge>
+                      <Badge color="black">Unverified</Badge>
                     )}
                   </Table.Td>
                   <Table.Td>
