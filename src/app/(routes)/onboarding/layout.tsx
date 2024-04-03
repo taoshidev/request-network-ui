@@ -4,8 +4,8 @@ import { Center, Container } from "@mantine/core";
 
 export default function Layout({ children }: any) {
   return (
-    <Container h="100%">
-      <Center h="100%">{children}</Center>
+    <Container className="h-full">
+      <Center className="h-full">{children}</Center>
     </Container>
   );
 }

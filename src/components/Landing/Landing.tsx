@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { isEmpty } from "lodash";
 import { useRouter } from "next/navigation";
+import { clsx } from "clsx";
 
 import { getAuthUser, updateUser } from "@/actions/auth";
 
@@ -43,65 +44,69 @@ export function Landing() {
   };
 
   return (
-    <Box w={800}>
-      <Box mb="xl">
+    <Box className="w-8/12">
+      <Box className="mb-8">
         <Title>Plug in to Bittensor.</Title>
         <Text>Welcome to Taoshi. Come as you are.</Text>
       </Box>
 
-      <Box mb="lg" className={styles.root}>
+      <Box className="relative mb-4">
         <Checkbox
+          size="md"
           classNames={{
-            root: styles.checkboxWrapper,
+            root: "absolute pointer-events-none top-4 left-4",
             input: styles.checkbox,
           }}
           checked={role === "validator"}
           onChange={() => setRole("validator")}
           tabIndex={-1}
-          size="md"
           aria-label="Checkbox example"
         />
 
         <UnstyledButton
-          w="100%"
-          className={styles.control}
+          className={clsx(
+            "w-full border border-dashed bg-white p-4 pl-14 transition-colors duration-100 ease-in-out",
+            styles.control,
+          )}
           data-checked={role === "validator" || undefined}
           onClick={() => handleClick("validator")}
         >
-          <Text className={styles.label}>as a Validator</Text>
-          <Text className={styles.description}>Looking to sell your data?</Text>
+          <Text className="font-bold leading-none">as a Validator</Text>
+          <Text className="mt-1 text-xs">Looking to use Bittensor.</Text>
         </UnstyledButton>
       </Box>
 
-      <Box mb="lg" className={styles.root}>
+      <Box className="relative mb-4">
         <Checkbox
+          size="md"
           classNames={{
-            root: styles.checkboxWrapper,
+            root: "absolute pointer-events-none top-4 left-4",
             input: styles.checkbox,
           }}
           checked={role === "consumer"}
           onChange={() => setRole("consumer")}
           tabIndex={-1}
-          size="md"
           aria-label="Checkbox example"
         />
 
         <UnstyledButton
-          w="100%"
-          className={styles.control}
+          className={clsx(
+            "w-full border border-dashed bg-white p-4 pl-14",
+            styles.control,
+          )}
           data-checked={role === "consumer" || undefined}
           onClick={() => handleClick("consumer")}
         >
-          <Text className={styles.label}>as a Client</Text>
-          <Text className={styles.description}>Looking to use Bittensor.</Text>
+          <Text className="font-bold leading-none">as a Client</Text>
+          <Text className="mt-1 text-xs">Looking to use Bittensor.</Text>
         </UnstyledButton>
       </Box>
       <Box>
         <Button
+          className="w-full"
           loading={loading}
           onClick={letsGo}
           disabled={isEmpty(role)}
-          w="100%"
         >
           Let&apos;s Go
         </Button>
