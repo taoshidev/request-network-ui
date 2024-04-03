@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   Container,
@@ -31,8 +31,6 @@ import { TAOSHI_REQUEST_KEY } from "@/constants";
 import { generateShortId } from "@/utils/ids";
 
 import { ProductInfo } from "@/components/ProductInfo";
-
-import styles from "./consumer.module.css";
 
 const userSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -94,7 +92,7 @@ export function Consumer({ user, keys }: ConsumerProps) {
     });
 
     if (CreateKeyError) return;
-   
+
     setLocalStorage({ id: result?.key });
 
     router.push(`/keys/${result?.keyId}`);
@@ -156,7 +154,9 @@ export function Consumer({ user, keys }: ConsumerProps) {
             <Title order={2}>API Keys</Title>
             <Box>
               <Button onClick={open}>Create New API Key</Button>
-              <Button ml={15} onClick={() => router.push('/registration')}>Register</Button>
+              <Button ml={15} onClick={() => router.push("/registration")}>
+                Register
+              </Button>
             </Box>
           </Group>
           <Table>
@@ -173,7 +173,7 @@ export function Consumer({ user, keys }: ConsumerProps) {
                 <Table.Tr key={key.id}>
                   <Table.Td>
                     <Anchor
-                      className={styles.anchor}
+                      className="font-semibold text-black"
                       component={Link}
                       href={`/keys/${key.id}`}
                     >

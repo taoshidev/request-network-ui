@@ -1,22 +1,18 @@
-import "@mantine/core/styles.css";
-import "@mantine/code-highlight/styles.css";
-import "@mantine/dates/styles.css";
-import "./global.css";
-
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 
-import { theme } from "@/theme";
+import { theme, fonts } from "@/theme";
+
+import "./styles/styles.css";
 
 export const metadata: Metadata = {
   title: "Taoshi",
   description:
     "Decentralized Financial Market Forecasting Through the Power of AI",
 };
-import { Notifications } from "@mantine/notifications";
-import "@mantine/notifications/styles.css";
 
 export default function RootLayout({
   children,
@@ -24,14 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${fonts.heading.variable} ${fonts.body.variable}`}
+    >
       <head>
         <ColorSchemeScript />
       </head>
       <body>
         <NextTopLoader color="#D36737" showSpinner={false} shadow={false} />
         <MantineProvider theme={theme}>
-          <Notifications position="top-right" zIndex={1000}/>
+          <Notifications position="top-right" zIndex={1000} />
           {children}
         </MantineProvider>
       </body>

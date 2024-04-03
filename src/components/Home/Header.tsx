@@ -14,71 +14,63 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import styles from "./home.module.css";
-
 import logo from "@/assets/logo.svg";
 
 export function Header() {
   const [opened, { toggle }] = useDisclosure();
 
   return (
-    <Group h="100%" px="md">
+    <Group className="h-full px-2">
       <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-      <Group justify="space-between" style={{ flex: 1 }}>
+      <Group className="flex-1 justify-between">
         <Group>
-          <Image
-            component={NextImage}
-            src={logo}
-            alt="Taoshi"
-            width={40}
-            height={40}
-          />
-          <Anchor className={styles.logo} component={Link} href="/">
+          <Image component={NextImage} src={logo} alt="Taoshi" w={40} h={40} />
+          <Anchor
+            className="font-adlam-display font-bold text-black"
+            component={Link}
+            href="/"
+          >
             taoshi
           </Anchor>
         </Group>
-        <Group ml="xl" visibleFrom="sm">
+        <Group className="ml-1" visibleFrom="sm">
           <Anchor
-            c="black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             <Indicator position="top-start" size={6}>
               Status
             </Indicator>
           </Anchor>
           <Anchor
-            c="black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             Docs
           </Anchor>
           <Anchor
-            c="black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             Help
           </Anchor>
           <Anchor
-            c="black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             Support
           </Anchor>
           <Divider color="black" variant="dashed" orientation="vertical" />
           <Button component={Link} href="/dashboard">
-            <Text size="sm">Dashboard</Text>
+            <Text className="text-sm">Dashboard</Text>
           </Button>
         </Group>
       </Group>

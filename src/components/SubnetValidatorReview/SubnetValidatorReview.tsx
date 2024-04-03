@@ -34,13 +34,9 @@ export function SubnetValidatorReview() {
               <Table.Td>{registrationData?.subnet.label}</Table.Td>
               <Table.Td>
                 {registrationData?.validator.verified ? (
-                  <Badge radius={0} color="orange">
-                    Verified
-                  </Badge>
+                  <Badge>Verified</Badge>
                 ) : (
-                  <Badge radius={0} color="black">
-                    Unverified
-                  </Badge>
+                  <Badge color="black">Unverified</Badge>
                 )}
               </Table.Td>
               <Table.Td>

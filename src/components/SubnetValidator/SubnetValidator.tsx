@@ -33,7 +33,7 @@ export function SubnetValidator({
   useEffect(() => {
     if (registrationData?.subnet?.endpoints) {
       const updatedValidators = registrationData.subnet.endpoints.flatMap(
-        (endpoint: any) => endpoint.validators
+        (endpoint: any) => endpoint.validators,
       );
       setFilteredValidators(updatedValidators);
     }
@@ -57,27 +57,19 @@ export function SubnetValidator({
 
               <Box className={styles.statItem}>
                 <Text>Subnets:</Text>
-                <Badge color="orange" variant="outline">
-                  {validator?.endpoints?.length}
-                </Badge>
+                <Badge variant="outline">{validator?.endpoints?.length}</Badge>
               </Box>
               <Box className={styles.statItem}>
                 <Text>Latency:</Text>
-                <Badge color="orange" variant="outline">
-                  0.8 ms
-                </Badge>
+                <Badge variant="outline">0.8 ms</Badge>
               </Box>
               <Box className={styles.statItem}>
                 <Text>Uptime:</Text>
-                <Badge color="orange" variant="outline">
-                  90%
-                </Badge>
+                <Badge variant="outline">90%</Badge>
               </Box>
               <Box className={styles.statItem}>
                 <Text>Vtrust:</Text>
-                <Badge color="orange" variant="outline">
-                  {validator?.vtrust || "High"}
-                </Badge>
+                <Badge variant="outline">{validator?.vtrust || "High"}</Badge>
               </Box>
 
               <Text size="sm" style={{ marginTop: 10, marginBottom: 10 }}>

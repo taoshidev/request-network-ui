@@ -17,8 +17,6 @@ import { IconLogout, IconUser, IconChevronDown } from "@tabler/icons-react";
 
 import { signout } from "@/actions/auth";
 
-import styles from "./header.module.css";
-
 import logo from "@/assets/logo.svg";
 
 export function Header() {
@@ -30,66 +28,65 @@ export function Header() {
   };
 
   return (
-    <Group h="100%" px="md">
+    <Group className="h-full px-2">
       <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-      <Group justify="space-between" style={{ flex: 1 }}>
-        <Group align="center" justify="center">
+      <Group className="flex-1 justify-between">
+        <Group className="items-center justify-center">
           <Image
             priority
             component={NextImage}
             src={logo}
             alt="Taoshi"
-            width={40}
-            height={40}
+            w={40}
+            h={40}
           />
           <Anchor
-            mr="sm"
-            className={styles.logo}
+            className="mr-1 font-adlam-display font-bold text-black"
             component={Link}
             href="/dashboard"
           >
             taoshi
           </Anchor>
-          <Anchor c="black" component={Link} href="/dashboard" size="sm">
+          <Anchor
+            className="text-xs text-black"
+            component={Link}
+            href="/dashboard"
+          >
             Dashboard
           </Anchor>
         </Group>
-        <Group ml="xl" visibleFrom="sm">
+        <Group className="ml-1" visibleFrom="sm">
           <Anchor
-            c="black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             <Indicator position="top-start" size={6}>
               Status
             </Indicator>
           </Anchor>
           <Anchor
-            c="black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             Docs
           </Anchor>
           <Anchor
-            c="black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             Help
           </Anchor>
           <Anchor
-            c="black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             Support
           </Anchor>
@@ -102,10 +99,10 @@ export function Header() {
                   variant="transparent"
                   rightSection={<IconChevronDown size={16} stroke={1} />}
                 >
-                  <Text size="sm">Settings</Text>
+                  <Text className="text-sm">Settings</Text>
                 </Button>
               </Menu.Target>
-              <Menu.Dropdown className={styles.menu}>
+              <Menu.Dropdown className="border border-dashed border-black">
                 <Menu.Item
                   component={Link}
                   href="/profile"
@@ -113,7 +110,7 @@ export function Header() {
                 >
                   Profile
                 </Menu.Item>
-                <Menu.Divider className={styles.divider} />
+                <Menu.Divider className="border-dashed bg-black" />
                 <Menu.Item
                   onClick={handleSignOut}
                   leftSection={<IconLogout size={16} stroke={1} />}

@@ -1,31 +1,19 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Auth } from "@supabase/auth-ui-react";
 import { createClient } from "@/lib/supabase/client";
 
-import { useEffect } from "react";
 import { Title, Box, Text } from "@mantine/core";
 
 import styles from "./login.module.css";
 
 export function Login() {
-  const router = useRouter();
-
   const supabase = createClient();
 
-  // useEffect(() => {
-  //   supabase.auth.onAuthStateChange((_, session) => {
-  //     if (session) {
-  //       router.push("/");
-  //     }
-  //   });
-  // }, [router, supabase.auth]);
-
   return (
-    <Box py="md" pt="xl">
-      <Box mb="xl">
-        <Title mb="sm">Login</Title>
+    <Box className="mt-40">
+      <Box className="mb-8">
+        <Title className="mb-4">Login</Title>
         <Text>
           Dolor velit cillum occaecat velit deserunt velit irure deserunt
           incididunt ad nisi anim. Nulla quis pariatur id esse officia veniam.

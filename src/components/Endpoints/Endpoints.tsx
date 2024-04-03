@@ -27,8 +27,6 @@ import { createEndpoint } from "@/actions/endpoints";
 
 import { Limits } from "@/components/Limits";
 
-import styles from "./endpoint.module.css";
-
 interface EndpointsProps {
   user: any;
   endpoints: any;
@@ -95,13 +93,9 @@ export function Endpoints({
                   <Table.Td>{endpoint.subnets?.label}</Table.Td>
                   <Table.Td>
                     {endpoint.enabled ? (
-                      <Badge radius={0} color="orange">
-                        Enabled
-                      </Badge>
+                      <Badge>Enabled</Badge>
                     ) : (
-                      <Badge radius={0} color="black">
-                        Disabled
-                      </Badge>
+                      <Badge color="black">Disabled</Badge>
                     )}
                   </Table.Td>
                   <Table.Td>

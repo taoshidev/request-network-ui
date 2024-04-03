@@ -25,7 +25,6 @@ import {
 } from "@tabler/icons-react";
 import { updateEndpoint } from "@/actions/endpoints";
 import { PostSchema } from "../PostSchema";
-import styles from "./endpoint.module.css";
 import { useNotification } from "@/hooks/use-notification";
 import { useRouter } from "next/navigation";
 

@@ -1,14 +1,14 @@
 "use client";
 import NextImage from "next/image";
 import {
-  Divider,
-  Flex,
-  Title,
-  Text,
   Box,
   Container,
+  Divider,
+  Flex,
   Group,
   Image,
+  Text,
+  Title,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Logo from "@/assets/logo.svg";
@@ -21,30 +21,24 @@ export default function Page({ children }: PageProps) {
   const [opened, { toggle }] = useDisclosure();
 
   return (
-    <Flex h="100%">
-      <Box p="md" w="600px" display={{ base: "none", sm: "block" }}>
+    <Flex className="h-full">
+      <Box p="md" className="w-6/12" display={{ base: "none", sm: "block" }}>
         <Box
-          bg="orange"
+          className="bg-primary-500 h-full overflow-hidden border border-dashed border-black"
           p="xl"
-          h="100%"
-          style={{ border: "1px dashed black", overflow: "hidden" }}
         >
           <Box>
-            <Group align="center">
-              <Text size="xl" fw={700} c="white">
+            <Group className="items-center text-white">
+              <Text className="font-bold" size="xl">
                 taoshi
               </Text>
               <Divider variant="dashed" orientation="vertical" />
-              <Text size="sm" c="white">
-                request network
-              </Text>
+              <Text size="sm">request network</Text>
             </Group>
           </Box>
-          <Box mt="150px">
-            <Title c="white" mb="sm">
-              Start your Journey with us.
-            </Title>
-            <Text c="white">
+          <Box className="mt-36 text-white">
+            <Title mb="sm">Start your Journey with us.</Title>
+            <Text>
               Are you a subnet validator looking to earn? Or are you a retail
               user looking for access to subnet data? Either way, utilize
               Taoshi&apos;s Request Network to access the power of decentralized

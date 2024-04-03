@@ -26,15 +26,15 @@ export function Home() {
 
   return (
     <AppShell header={{ height: 60 }} padding="md">
-      <AppShell.Header style={{ borderBottom: "1px dashed black" }}>
+      <AppShell.Header className="border-b border-dashed border-black">
         <Header />
       </AppShell.Header>
 
       <AppShell.Main>
         <Container my="xl">
-          <Center h={400}>
-            <Group justify="space-between" wrap="nowrap" gap="xl">
-              <Box maw="550px">
+          <Center className="h-96">
+            <Group className="flex-nowrap justify-between" gap="xl">
+              <Box className="max-h-96">
                 <Title mb="sm" order={1}>
                   Request. Bittensor.
                 </Title>

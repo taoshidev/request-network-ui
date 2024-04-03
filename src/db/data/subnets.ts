@@ -31,7 +31,7 @@ export const seedData = [
   },
   {
     value: uuidv4(),
-    label: "Time Series Prediction",
+    label: "Proprietay Trading Network",
   },
   {
     value: uuidv4(),

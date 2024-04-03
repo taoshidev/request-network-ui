@@ -1,12 +1,14 @@
 import localFont from "next/font/local";
 
 export const ADLaMDisplay = localFont({
+  variable: "--font-adlam-display",
   src: "../fonts/ADLaMDisplay-Regular.ttf",
   weight: "400",
   style: "normal",
 });
 
 export const SpaceMono = localFont({
+  variable: "--font-space-mono",
   src: [
     {
       path: "../fonts/SpaceMono-Regular.ttf",

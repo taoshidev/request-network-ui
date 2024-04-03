@@ -43,6 +43,27 @@
       "when": 1711400491842,
       "tag": "0005_orange_adam_warlock",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1712163647841,
+      "tag": "0006_loud_green_goblin",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1712163838003,
+      "tag": "0007_lumpy_caretaker",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1712164330594,
+      "tag": "0008_simple_sphinx",
+      "breakpoints": true
     }
   ]
 }
