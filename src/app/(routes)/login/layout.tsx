@@ -1,14 +1,14 @@
 "use client";
 import NextImage from "next/image";
 import {
-  Divider,
-  Flex,
-  Title,
-  Text,
   Box,
   Container,
+  Divider,
+  Flex,
   Group,
   Image,
+  Text,
+  Title,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Logo from "@/assets/logo.svg";
@@ -48,7 +48,7 @@ export default function Page({ children }: PageProps) {
         </Box>
       </Box>
 
-      <Container className="flex-1" fluid>
+      <Container flex="1" fluid>
         {children}
       </Container>
     </Flex>

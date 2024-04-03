@@ -20,17 +20,11 @@ export function Header() {
   const [opened, { toggle }] = useDisclosure();
 
   return (
-    <Group className="h-full" px="md">
+    <Group className="h-full px-2">
       <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
       <Group className="flex-1 justify-between">
         <Group>
-          <Image
-            component={NextImage}
-            src={logo}
-            alt="Taoshi"
-            w={40}
-            height={40}
-          />
+          <Image component={NextImage} src={logo} alt="Taoshi" w={40} h={40} />
           <Anchor
             className="font-adlam-display font-bold text-black"
             component={Link}
@@ -39,48 +33,44 @@ export function Header() {
             taoshi
           </Anchor>
         </Group>
-        <Group ml="xl" visibleFrom="sm">
+        <Group className="ml-1" visibleFrom="sm">
           <Anchor
-            className="text-black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             <Indicator position="top-start" size={6}>
               Status
             </Indicator>
           </Anchor>
           <Anchor
-            className="text-black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             Docs
           </Anchor>
           <Anchor
-            className="text-black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             Help
           </Anchor>
           <Anchor
-            className="text-black"
+            className="text-sm text-black"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
-            size="sm"
           >
             Support
           </Anchor>
           <Divider color="black" variant="dashed" orientation="vertical" />
           <Button component={Link} href="/dashboard">
-            <Text size="sm">Dashboard</Text>
+            <Text className="text-sm">Dashboard</Text>
           </Button>
         </Group>
       </Group>
