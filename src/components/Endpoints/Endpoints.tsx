@@ -27,8 +27,6 @@ import { createEndpoint } from "@/actions/endpoints";
 
 import { Limits } from "@/components/Limits";
 
-import styles from "./endpoint.module.css";
-
 interface EndpointsProps {
   user: any;
   endpoints: any;

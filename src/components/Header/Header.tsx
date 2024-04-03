@@ -17,8 +17,6 @@ import { IconLogout, IconUser, IconChevronDown } from "@tabler/icons-react";
 
 import { signout } from "@/actions/auth";
 
-import styles from "./header.module.css";
-
 import logo from "@/assets/logo.svg";
 
 export function Header() {
@@ -104,7 +102,7 @@ export function Header() {
                   <Text className="text-sm">Settings</Text>
                 </Button>
               </Menu.Target>
-              <Menu.Dropdown className={styles.menu}>
+              <Menu.Dropdown className="border border-dashed border-black">
                 <Menu.Item
                   component={Link}
                   href="/profile"
@@ -112,7 +110,7 @@ export function Header() {
                 >
                   Profile
                 </Menu.Item>
-                <Menu.Divider className={styles.divider} />
+                <Menu.Divider className="border-dashed bg-black" />
                 <Menu.Item
                   onClick={handleSignOut}
                   leftSection={<IconLogout size={16} stroke={1} />}

@@ -49,8 +49,8 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
   };
 
   return (
-    <Box component="form" w="100%" onSubmit={form.onSubmit(onSubmit)}>
-      <Box mb="md">
+    <Box component="form" className="w-full" onSubmit={form.onSubmit(onSubmit)}>
+      <Box className="mb-4">
         <TextInput
           withAsterisk
           label="Hotkey"
@@ -58,7 +58,7 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
           {...form.getInputProps("hotkey")}
         />
       </Box>
-      <Box mb="md">
+      <Box className="mb-8">
         <Select
           label="Which Subnet"
           placeholder="Pick value or enter anything"
@@ -67,8 +67,8 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
         />
       </Box>
 
-      <Box mt="xl">
-        <Button type="submit" w="100%" loading={loading}>
+      <Box>
+        <Button type="submit" className="w-full" loading={loading}>
           Create
         </Button>
       </Box>

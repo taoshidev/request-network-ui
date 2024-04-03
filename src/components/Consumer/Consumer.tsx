@@ -32,8 +32,6 @@ import { generateShortId } from "@/utils/ids";
 
 import { ProductInfo } from "@/components/ProductInfo";
 
-import styles from "./consumer.module.css";
-
 const userSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
 });
@@ -175,7 +173,7 @@ export function Consumer({ user, keys }: ConsumerProps) {
                 <Table.Tr key={key.id}>
                   <Table.Td>
                     <Anchor
-                      className={styles.anchor}
+                      className="font-semibold text-black"
                       component={Link}
                       href={`/keys/${key.id}`}
                     >
