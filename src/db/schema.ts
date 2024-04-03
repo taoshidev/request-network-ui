@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   pgTable,
   uuid,
@@ -17,6 +17,7 @@ export const authSchema = pgSchema("auth");
 
 export const roleEnum = pgEnum("role", ["consumer", "validator"]);
 
+// TODO - All IDS should be auto generated
 export const users = authSchema.table("users", {
   id: uuid("id").primaryKey().notNull(),
   role: roleEnum("role").notNull().default("consumer"),
@@ -32,9 +33,13 @@ export const usersRelations = relations(users, ({ many }) => ({
   validators: many(validators),
 }));
 
+// TODO: Value because maintine select takes label and value
 export const subnets = pgTable("subnets", {
-  id: uuid("id").primaryKey().notNull(),
-  value: uuid("id").primaryKey(),
+  id: uuid("id")
+    .default(sql`gen_random_uuid()`)
+    .primaryKey()
+    .notNull(),
+  value: uuid("value").unique().notNull(),
   label: varchar("label"),
 });
 
@@ -86,7 +91,7 @@ export const endpoints = pgTable(
   },
   (table) => ({
     unique: unique().on(table.validator, table.subnet),
-  })
+  }),
 );
 
 export const endpointsRelations = relations(endpoints, ({ one }) => ({
@@ -131,5 +136,5 @@ export const userSubscriptionEndpointRelations = relations(
   endpoints,
   ({ many }) => ({
     endpoints: many(endpoints),
-  })
+  }),
 );
