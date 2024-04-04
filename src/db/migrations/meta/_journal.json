@@ -64,6 +64,13 @@
       "when": 1712164330594,
       "tag": "0008_simple_sphinx",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1712188039288,
+      "tag": "0009_bitter_mandrill",
+      "breakpoints": true
     }
   ]
 }

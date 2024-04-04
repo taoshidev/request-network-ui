@@ -1,18 +1,4 @@
-import {
-  Box,
-  Button,
-  Text,
-  Title,
-  Group,
-  Grid,
-  Modal,
-  Anchor,
-  Card,
-  Image,
-  Badge,
-} from "@mantine/core";
-
-import styles from "./product-info.module.css";
+import { Box, Button, Text, Title, Group, Grid, Card } from "@mantine/core";
 
 export function ProductInfo() {
   return (
@@ -27,11 +13,9 @@ export function ProductInfo() {
 
       <Grid>
         <Grid.Col span={4}>
-          <Card radius="0" className={styles.card} h="100%">
+          <Card className="h-full">
             <Group justify="space-between" h="100%" gap="xs">
-              <Text size="sm" fw={700} mb="sm">
-                Taoshi Quickstarts
-              </Text>
+              <Text className="text-sm font-bold mb-4">Taoshi Quickstarts</Text>
 
               <Text size="xs">
                 Make your first request, integrate your app with Infura, and
@@ -46,7 +30,7 @@ export function ProductInfo() {
         </Grid.Col>
 
         <Grid.Col span={4}>
-          <Card radius="0" className={styles.card} h="100%">
+          <Card className="h-full">
             <Group justify="space-between" h="100%" gap="xs">
               <Text size="sm" fw={700} mb="sm">
                 Integrate Taoshi to your application
@@ -64,7 +48,7 @@ export function ProductInfo() {
         </Grid.Col>
 
         <Grid.Col span={4}>
-          <Card radius="0" className={styles.card} h="100%">
+          <Card className="h-full">
             <Group justify="space-between" h="100%" gap="xs">
               <Text size="sm" fw={700} mb="sm">
                 Taoshi Developer Center

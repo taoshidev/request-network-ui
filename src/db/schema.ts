@@ -39,7 +39,6 @@ export const subnets = pgTable("subnets", {
     .default(sql`gen_random_uuid()`)
     .primaryKey()
     .notNull(),
-  value: uuid("value").unique().notNull(),
   label: varchar("label"),
 });
 
