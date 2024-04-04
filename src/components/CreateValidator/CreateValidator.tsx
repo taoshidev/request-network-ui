@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Box, Button, TextInput, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
@@ -37,7 +37,6 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
 
   const onSubmit = async (values: Validator) => {
     setLoading(true);
-    console.log(values);
     try {
       await createValidator(values);
 
@@ -47,6 +46,11 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
       console.log(error);
     }
   };
+
+  const options = useMemo(
+    () => subnets.map((subnet) => ({ ...subnet, value: subnet.id })),
+    [subnets],
+  );
 
   return (
     <Box component="form" className="w-full" onSubmit={form.onSubmit(onSubmit)}>
@@ -62,7 +66,7 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
         <Select
           label="Which Subnet"
           placeholder="Pick value or enter anything"
-          data={subnets}
+          data={options}
           {...form.getInputProps("subnetId")}
         />
       </Box>

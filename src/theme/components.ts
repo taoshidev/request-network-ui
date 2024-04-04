@@ -26,4 +26,12 @@ export const components = {
       },
     }),
   },
+  Card: {
+    styles: () => ({
+      root: {
+        borderRadious: 0,
+        border: "1px dashed black",
+      },
+    }),
+  },
 };
