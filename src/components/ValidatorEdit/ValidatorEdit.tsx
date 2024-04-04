@@ -102,6 +102,9 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
     const getSignature = async () => {
       const { id, userId, signature } = validator;
       const account = validator?.account as AccountType;
+
+      if(!account) return;
+      
       const message = JSON.stringify({
         id,
         userId,
@@ -110,7 +113,7 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
       const isValid = await isValidSignature(
         message,
         signature,
-        account.address
+        account?.address
       );
 
       setVerified(isValid);
@@ -118,7 +121,7 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
 
     getSignature();
 
-    if (!validator.verified) {
+    if (!validator?.verified) {
       getSignature();
     }
   }, [validator]);

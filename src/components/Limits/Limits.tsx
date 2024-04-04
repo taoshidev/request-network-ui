@@ -75,6 +75,16 @@ export function Limits({ onComplete, user, validators, subnets }: any) {
       });
   }, [validators]);
 
+  const availableSubnets = useMemo(() => {
+    return subnets
+      .map((s) => {
+        return {
+          value: s.id,
+          label: s.label,
+        };
+      });
+  }, [subnets]);
+
   return (
     <Box component="form" w="100%" onSubmit={form.onSubmit(onSubmit)}>
       <Box mb="md">
@@ -97,7 +107,7 @@ export function Limits({ onComplete, user, validators, subnets }: any) {
         <Select
           label="Which Subnet"
           placeholder="Pick value or enter anything"
-          data={subnets}
+          data={availableSubnets}
           {...form.getInputProps("subnet")}
         />
       </Box>
