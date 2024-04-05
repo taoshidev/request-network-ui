@@ -1,14 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Title, Text, Box, Grid, Card, Badge, Button } from "@mantine/core";
-
-import styles from "./subnet-validator.module.css";
-import { ValidatorType } from "@/actions/validators";
 import {
-  useRegistration,
-  RegistrationData,
-} from "@/providers/registration-provider";
+  Title,
+  Text,
+  Box,
+  Grid,
+  Card,
+  Badge,
+  Button,
+  Group,
+} from "@mantine/core";
+
+import { ValidatorType } from "@/actions/validators";
+import { useRegistration, RegistrationData } from "@/providers/registration";
 
 //TODO: uptime, v-trust and latency data for each validator
 export function SubnetValidator({
@@ -38,43 +43,50 @@ export function SubnetValidator({
       setFilteredValidators(updatedValidators);
     }
   }, [registrationData]);
+
   const handleSubscribeClick = (validator: ValidatorType) => {
     updateData({ validator } as RegistrationData);
   };
 
   return (
     <Box>
-      <Title my="xl" order={2} ta="center">
+      <Title className="text-2xl text-center my-8">
         Choose a Validator for {subnet?.label} Subnet
       </Title>
       <Grid>
         {filteredValidators?.map((validator) => (
           <Grid.Col key={validator.id} span={3}>
-            <Card radius="sm" className={styles.card}>
-              <Text ta="center" size="lg" fw={500} style={{ marginBottom: 15 }}>
+            <Card>
+              <Text className="font-bold mb-4">
                 {validator?.name || "Validator"}
               </Text>
 
-              <Box className={styles.statItem}>
-                <Text>Subnets:</Text>
-                <Badge variant="outline">{validator?.endpoints?.length}</Badge>
-              </Box>
-              <Box className={styles.statItem}>
-                <Text>Latency:</Text>
-                <Badge variant="outline">0.8 ms</Badge>
-              </Box>
-              <Box className={styles.statItem}>
-                <Text>Uptime:</Text>
-                <Badge variant="outline">90%</Badge>
-              </Box>
-              <Box className={styles.statItem}>
-                <Text>Vtrust:</Text>
-                <Badge variant="outline">{validator?.vtrust || "High"}</Badge>
-              </Box>
+              <Group className="justify-between items-center mb-2">
+                <Text className="text-sm">Subnets:</Text>
+                <Badge size="sm" variant="light">
+                  {validator?.endpoints?.length}
+                </Badge>
+              </Group>
+              <Group className="justify-between items-center mb-2">
+                <Text className="text-sm">Latency:</Text>
+                <Badge size="sm" variant="light">
+                  0.8 ms
+                </Badge>
+              </Group>
+              <Group className="justify-between items-center mb-2">
+                <Text className="text-sm">Uptime:</Text>
+                <Badge size="sm" variant="light">
+                  90%
+                </Badge>
+              </Group>
+              <Group className="justify-between items-center mb-4">
+                <Text className="text-sm">Vtrust:</Text>
+                <Badge size="sm" variant="light">
+                  {validator?.vtrust || "High"}
+                </Badge>
+              </Group>
 
-              <Text size="sm" style={{ marginTop: 10, marginBottom: 10 }}>
-                {validator?.description}
-              </Text>
+              <Text className="text-xs mb-4">{validator?.description}</Text>
 
               <Button
                 variant={

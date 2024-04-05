@@ -58,7 +58,7 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
   });
 
   const onSubmit = async (
-    values: Pick<ValidatorType, "name" | "description">
+    values: Pick<ValidatorType, "name" | "description">,
   ) => {
     console.log("from onSubmit", values);
     setLoading(true);

@@ -1,11 +1,12 @@
 "use client";
+
 import { AppShell } from "@mantine/core";
 
 import { Header } from "@/components/Header";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: any) {
   return (
-    <AppShell header={{ height: 60 }} padding="md">
+    <AppShell>
       <AppShell.Header>
         <Header />
       </AppShell.Header>

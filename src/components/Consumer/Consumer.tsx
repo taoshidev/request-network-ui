@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Container,
   Box,
-  TextInput,
+  Alert,
   Button,
   Text,
   Title,
@@ -23,6 +23,7 @@ import { isEmpty } from "lodash";
 import dayjs from "dayjs";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { IconAlertCircle } from "@tabler/icons-react";
 
 import { createKey } from "@/actions/keys";
 import { getEndpoints } from "@/actions/endpoints";
@@ -56,7 +57,6 @@ export function Consumer({ user, keys }: ConsumerProps) {
   });
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
   } = useForm<User>({
@@ -101,105 +101,71 @@ export function Consumer({ user, keys }: ConsumerProps) {
     close();
   };
 
-  const createKeyComponent = (
-    <Box component="form" onSubmit={handleSubmit(onSubmit)} w="100%">
-      <Box mb="md">
-        <TextInput
-          withAsterisk
-          label="Name"
-          placeholder="Name"
-          {...register("name", { required: true })}
-          error={errors.name?.message}
-        />
-      </Box>
-
-      <Box mt="lg">
-        <Button type="submit" loading={loading} w="100%">
-          Create
-        </Button>
-      </Box>
-    </Box>
-  );
-
   return (
-    <Container>
+    <Container className="my-8">
       {error && (
-        <Notification radius="0" title="No Validators Found">
+        <Notification title="No Validators Found">
           To obtain a key, their needs to be at least one validator available.
         </Notification>
       )}
 
-      <Modal
-        centered
-        opened={opened}
-        onClose={close}
-        title="Create a new API key"
-      >
-        {createKeyComponent}
-      </Modal>
-
-      {isEmpty(keys) ? (
-        <>
-          <Box my="xl">
-            <Title order={2}>You don&apos;t have any API Keys yet</Title>
-            <Text mb="sm">
-              Create your first API key and start receiving requests.
-            </Text>
-            {createKeyComponent}
-          </Box>
-        </>
-      ) : (
-        <>
-          <Group justify="space-between" my="xl">
-            <Title order={2}>API Keys</Title>
-            <Box>
-              <Button onClick={open}>Create New API Key</Button>
-              <Button ml={15} onClick={() => router.push("/registration")}>
-                Register
-              </Button>
-            </Box>
-          </Group>
-          <Table>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Name</Table.Th>
-                <Table.Th>Created</Table.Th>
-                <Table.Th>Role</Table.Th>
-                <Table.Th>Request</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {keys.map((key: any) => (
-                <Table.Tr key={key.id}>
-                  <Table.Td>
-                    <Anchor
-                      className="font-semibold text-black"
-                      component={Link}
-                      href={`/keys/${key.id}`}
-                    >
-                      {key.name}
-                    </Anchor>
-                  </Table.Td>
-                  <Table.Td>
-                    {dayjs(key.createdAt).format("MMM DD, YYYY")}
-                  </Table.Td>
-                  <Table.Td>{key.meta.role}</Table.Td>
-                  <Table.Td>52,184</Table.Td>
-                  <Table.Td align="right">
-                    <Anchor component={Link} href={`/keys/${key.id}`}>
-                      View Stats
-                    </Anchor>
-                  </Table.Td>
-                </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
-        </>
+      {isEmpty(keys) && (
+        <Alert className="mb-8" color="orange" icon={<IconAlertCircle />}>
+          <Text className="mb-2">You don&apos;t have any API Keys yet</Text>
+          <Text>Create your first API key and start receiving requests.</Text>
+        </Alert>
       )}
-      <Space h="xl" />
+
+      <Group className="justify-between my-5">
+        <Title className="text-2xl">API Keys</Title>
+        <Box>
+          <Button component="a" href="/registration">
+            Register
+          </Button>
+        </Box>
+      </Group>
+      <Table>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Name</Table.Th>
+            <Table.Th>Created</Table.Th>
+            <Table.Th>Role</Table.Th>
+            <Table.Th>Request</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {keys.map((key: any) => (
+            <Table.Tr key={key.id}>
+              <Table.Td>
+                <Anchor
+                  className="font-semibold text-black"
+                  component={Link}
+                  href={`/keys/${key.id}`}
+                >
+                  {key.name}
+                </Anchor>
+              </Table.Td>
+              <Table.Td>{dayjs(key.createdAt).format("MMM DD, YYYY")}</Table.Td>
+              <Table.Td>{key.meta.role}</Table.Td>
+              <Table.Td>52,184</Table.Td>
+              <Table.Td className="text-right">
+                <Anchor
+                  className="text-sm"
+                  component={Link}
+                  href={`/keys/${key.id}`}
+                >
+                  View Stats
+                </Anchor>
+              </Table.Td>
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      </Table>
+      {/* TODO: Add Products */}
+      {/* <Space h="xl" />
       <ProductInfo />
       <Space h="xl" />
-      <ProductInfo />
+      <ProductInfo /> */}
     </Container>
   );
 }
