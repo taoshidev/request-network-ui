@@ -59,7 +59,7 @@ export function RegistrationStepper({
 
   const nextStep = () => {
     setActive((current) =>
-      current < REGISTRATION_STEPS ? current + 1 : current,
+      current < REGISTRATION_STEPS ? current + 1 : current
     );
 
     scrollToTop();
@@ -132,8 +132,10 @@ export function RegistrationStepper({
     <>
       <KeyModal
         apiKey={key}
+        apiSecret=""
         opened={opened}
-        close={close}
+        onClose={close}
+        onCopy={(key: "apiKey" | "apiSecret") => setKey("")}
         title="API Access Key"
       />
 

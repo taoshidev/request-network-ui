@@ -1,81 +1,97 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Box, Button, TextInput, Select } from "@mantine/core";
+import { useState } from "react";
+import { Box, Button, TextInput, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
-import { v4 as uuid } from "uuid";
-import { z } from "zod";
+import { EndpointFormInput } from "@components/EndpointFormInput";
+import { createValidatorEndpoint } from "@/actions/validators";
+import { ValidatorSchema, ValidatorType } from "@/db/types/validator";
+import { EndpointSchema, EndpointType } from "@/db/types/endpoint";
+import { useNotification } from "@/hooks/use-notification";
 
-import { isAddress } from "@/utils/address";
-
-import { createValidator } from "@/actions/validators";
-
-const ValidatorSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  hotkey: z.string().refine((value) => isAddress({ address: value }), {
-    message: "Invalid Bittensor address",
-  }),
-  subnetId: z.string().uuid(),
-});
-
-type Validator = z.infer<typeof ValidatorSchema>;
-
+const ValidatorEndpointSchema = ValidatorSchema.merge(EndpointSchema);
 export function CreateValidator({ onComplete, user, subnets }: any) {
   const [loading, setLoading] = useState(false);
+  const { notifySuccess, notifyError } = useNotification();
 
-  const form = useForm<Validator>({
+  const form = useForm<Partial<ValidatorType & EndpointType>>({
     initialValues: {
-      id: uuid(),
+      name: "",
+      description: "",
       userId: user.id,
+      verified: false,
+      enabled: false,
       hotkey: "",
-      subnetId: "",
+      subnet: "",
+      limit: 10,
+      url: "",
+      refillRate: 1,
+      refillInterval: 1000,
+      remaining: 1000,
+      expires: new Date(new Date().setMonth(new Date().getMonth() + 3)),
     },
-    validate: zodResolver(ValidatorSchema),
+    validate: zodResolver(ValidatorEndpointSchema),
   });
 
-  const onSubmit = async (values: Validator) => {
+  const onSubmit = async (values: Partial<ValidatorType & EndpointType>) => {
     setLoading(true);
+    const { name, description, userId, hotkey, ...endpoint } = values;
+    const validator = { name, description, userId, hotkey };
     try {
-      await createValidator(values);
+      const res = await createValidatorEndpoint(validator, endpoint);
 
-      onComplete();
+      const { validator: newValidator } = res as {
+        validator: ValidatorType;
+      };
+
+      const { apiId: apiKey, apiSecret } = newValidator;
+      onComplete({ apiKey, apiSecret });
+
+      notifySuccess("Validator registered successfully");
+    } catch (error: Error | unknown) {
+      notifyError((error as Error).message);
+    } finally {
       setLoading(false);
-    } catch (error) {
-      console.log(error);
     }
   };
 
-  const options = useMemo(
-    () => subnets.map((subnet) => ({ ...subnet, value: subnet.id })),
-    [subnets],
-  );
-
   return (
-    <Box component="form" className="w-full" onSubmit={form.onSubmit(onSubmit)}>
-      <Box className="mb-4">
+    <>
+      <Box
+        component="form"
+        className="w-full"
+        onSubmit={form.onSubmit(onSubmit)}
+      >
         <TextInput
+          mb="md"
           withAsterisk
-          label="Hotkey"
-          placeholder="Hotkey"
-          {...form.getInputProps("hotkey")}
+          label="Validator Name"
+          placeholder="Enter a name for your validator"
+          {...form.getInputProps("name")}
         />
-      </Box>
-      <Box className="mb-8">
-        <Select
-          label="Which Subnet"
-          placeholder="Pick value or enter anything"
-          data={options}
-          {...form.getInputProps("subnetId")}
+        <Textarea
+          mb="md"
+          withAsterisk
+          label="Description"
+          placeholder="Enter a brief description for your validator"
+          {...form.getInputProps("description")}
         />
+        <Box className="mb-4">
+          <TextInput
+            withAsterisk
+            label="Hotkey"
+            placeholder="Hotkey"
+            {...form.getInputProps("hotkey")}
+          />
+        </Box>
+        <EndpointFormInput form={form} subnets={subnets} />
+        <Box>
+          <Button type="submit" className="w-full" loading={loading}>
+            Create
+          </Button>
+        </Box>
       </Box>
-
-      <Box>
-        <Button type="submit" className="w-full" loading={loading}>
-          Create
-        </Button>
-      </Box>
-    </Box>
+    </>
   );
 }

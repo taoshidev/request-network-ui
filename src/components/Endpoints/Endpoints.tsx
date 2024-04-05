@@ -61,7 +61,6 @@ export function Endpoints({
         title="Create a new Endpoint"
       >
         <Limits
-          user={user}
           onComplete={close}
           validators={validators}
           subnets={subnets}

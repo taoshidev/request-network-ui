@@ -19,7 +19,10 @@ export const roleEnum = pgEnum("role", ["consumer", "validator"]);
 
 // TODO - All IDS should be auto generated
 export const users = authSchema.table("users", {
-  id: uuid("id").primaryKey().notNull(),
+  id: uuid("id")
+    .default(sql`gen_random_uuid()`)
+    .primaryKey()
+    .notNull(),
   role: roleEnum("role").notNull().default("consumer"),
   email: varchar("email", { length: 255 }),
   fullname: varchar("fullname"),
@@ -48,9 +51,15 @@ export const subnetsRelations = relations(subnets, ({ many }) => ({
 }));
 
 export const validators = pgTable("validators", {
-  id: uuid("id").primaryKey().notNull(),
+  id: uuid("id")
+    .default(sql`gen_random_uuid()`)
+    .primaryKey()
+    .notNull(),
   name: varchar("name"),
   description: varchar("description"),
+  apiId: varchar("api_id"),
+  apiKey: varchar("api_key"),
+  apiSecret: varchar("api_secret"),
   hotkey: varchar("hotkey", { length: 48 }).unique().notNull(),
   userId: uuid("user_id")
     .notNull()
@@ -72,7 +81,10 @@ export const validatorsRelations = relations(validators, ({ many, one }) => ({
 export const endpoints = pgTable(
   "endpoints",
   {
-    id: uuid("id").primaryKey().notNull(),
+    id: uuid("id")
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
     subnet: uuid("subnet")
       .notNull()
       .references(() => subnets.id, { onDelete: "cascade" }),
@@ -90,7 +102,7 @@ export const endpoints = pgTable(
   },
   (table) => ({
     unique: unique().on(table.validator, table.subnet),
-  }),
+  })
 );
 
 export const endpointsRelations = relations(endpoints, ({ one }) => ({
@@ -113,7 +125,8 @@ export const subscriptions = pgTable("subscriptions", {
     .notNull()
     .references(() => users.id, { onDelete: "set null" }),
   keyId: varchar("key_id"),
-  key: varchar("key"),
+  apiKey: varchar("api_key"),
+  apiSecret: varchar("api_secret"),
 });
 
 export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
@@ -135,5 +148,5 @@ export const userSubscriptionEndpointRelations = relations(
   endpoints,
   ({ many }) => ({
     endpoints: many(endpoints),
-  }),
+  })
 );
