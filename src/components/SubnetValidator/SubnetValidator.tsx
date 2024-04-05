@@ -12,7 +12,8 @@ import {
   Group,
 } from "@mantine/core";
 
-import { ValidatorType } from "@/actions/validators";
+import { ValidatorType } from "@/db/types/validator";
+
 import { useRegistration, RegistrationData } from "@/providers/registration";
 
 //TODO: uptime, v-trust and latency data for each validator
@@ -38,7 +39,7 @@ export function SubnetValidator({
   useEffect(() => {
     if (registrationData?.subnet?.endpoints) {
       const updatedValidators = registrationData.subnet.endpoints.flatMap(
-        (endpoint: any) => endpoint.validators,
+        (endpoint: any) => endpoint.validators
       );
       setFilteredValidators(updatedValidators);
     }

@@ -1,29 +1,27 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Box,
-  Title,
-  Group,
-  Table,
-  Button,
-  Modal,
-  Badge,
-  Anchor,
-} from "@mantine/core";
+import { Box, Title, Group, Table, Button, Modal, Badge } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { isEmpty } from "lodash";
-
 import { CreateValidator } from "@/components/CreateValidator";
+import { KeyModal } from "@components/KeyModal/KeyModal";
+
+type KeyType = { apiKey: string; apiSecret: string };
 
 export function Validators({ user, subnets, validators }: any) {
-  console.log(validators);
   const router = useRouter();
 
   const [opened, { open, close }] = useDisclosure(false);
+  const [keyModalOpened, setKeyModalOpened] = useState(false);
 
-  const onVerified = () => {
+  const [keys, setKeys] = useState<KeyType>({ apiKey: "", apiSecret: "" });
+
+  const handleRegistrationComplete = ({ apiKey, apiSecret }: KeyType) => {
     close();
+    setKeys({ apiKey, apiSecret });
+    setKeyModalOpened(true);
   };
 
   const handleEdit = (validator: any) => {
@@ -32,6 +30,17 @@ export function Validators({ user, subnets, validators }: any) {
 
   return (
     <Box className="mb-16">
+      <KeyModal
+        apiKey={keys.apiKey}
+        apiSecret={keys?.apiSecret}
+        opened={keyModalOpened}
+        onClose={() => setKeyModalOpened(false)}
+        onCopy={(key: "apiKey" | "apiSecret") =>
+          setKeys((prev) => ({ ...prev, [key]: "" }))
+        }
+        title="API Access Key"
+      />
+
       <Modal
         centered
         opened={opened}
@@ -41,7 +50,7 @@ export function Validators({ user, subnets, validators }: any) {
         <CreateValidator
           user={user}
           subnets={subnets}
-          onComplete={onVerified}
+          onComplete={handleRegistrationComplete}
         />
       </Modal>
 

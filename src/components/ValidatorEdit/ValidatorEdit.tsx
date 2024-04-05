@@ -26,11 +26,8 @@ import {
   IconCircleCheck,
 } from "@tabler/icons-react";
 import { sign, isValidSignature, SignedDataType } from "@/lib/polkadot";
-import {
-  updateValidator,
-  ValidatorType,
-  AccountType,
-} from "@/actions/validators";
+import { updateValidator } from "@/actions/validators";
+import { ValidatorType } from "@/db/types/validator";
 import { useDisclosure } from "@mantine/hooks";
 import { useNotification } from "@/hooks/use-notification";
 import { useRouter } from "next/navigation";
@@ -101,10 +98,10 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
   useEffect(() => {
     const getSignature = async () => {
       const { id, userId, signature } = validator;
-      const account = validator?.account as AccountType;
+      const account = validator?.account;
 
-      if(!account) return;
-      
+      if (!account) return;
+
       const message = JSON.stringify({
         id,
         userId,

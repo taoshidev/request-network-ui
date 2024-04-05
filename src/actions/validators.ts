@@ -3,33 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-
 import { validators } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
 import { filterData } from "@/utils/sanitize";
-interface AccountMetaType {
-  genesisHash: string;
-  name: string;
-  source: string;
-}
-
-export interface AccountType {
-  address: string;
-  meta: AccountMetaType;
-  type: string;
-}
-
-export interface ValidatorType {
-  signature: string | null;
-  name: string;
-  description: string;
-  hotkey: string;
-  account: AccountType;
-  id: string;
-  verified: boolean;
-  userId: string;
-  vtrust: string | null;
-}
+import { createEndpoint } from "./endpoints";
+import { createUnkeyApiKey, generateApiKey, generateApiSecret } from "./apis";
+import { EndpointType } from "@/app/(routes)/endpoints/types";
+import { ValidatorType } from "@/db/types/validator";
 
 export const getValidators = async (query: object = {}) => {
   try {
@@ -42,13 +22,16 @@ export const getValidators = async (query: object = {}) => {
 
 export const getValidator = async ({ id }: ValidatorType) => {
   const res = await db.query.validators.findFirst({
-    where: (validators, { eq }) => eq(validators.id, id),
+    where: (validators, { eq }) => eq(validators.id, id as string),
   });
   if (!res) throw new Error(`Validator with ID ${id} not found.`);
   return filterData(res, ["hotkey"]);
 };
 
-export const updateValidator = async ({ id, ...values }: Partial<ValidatorType>) => {
+export const updateValidator = async ({
+  id,
+  ...values
+}: Partial<ValidatorType>) => {
   try {
     const res = await db
       .update(validators)
@@ -57,7 +40,6 @@ export const updateValidator = async ({ id, ...values }: Partial<ValidatorType>)
       .returning();
 
     revalidatePath(`/validators/${id}`);
-
     return parseResult(res, { filter: ["hotkey"] });
   } catch (error) {
     if (error instanceof Error) return parseError(error);
@@ -66,10 +48,43 @@ export const updateValidator = async ({ id, ...values }: Partial<ValidatorType>)
 
 export const createValidator = async (validator: ValidatorType) => {
   try {
-    const res = await db.insert(validators).values(validator);
+    const res = await db.insert(validators).values(validator).returning();
 
     revalidatePath("/dashboard");
     return parseResult(res, { filter: ["hotkey"] });
+  } catch (error) {
+    if (error instanceof Error) return parseError(error);
+  }
+};
+
+export const createValidatorEndpoint = async (
+  validator: Partial<ValidatorType>,
+  endpoint: Partial<EndpointType>
+) => {
+  try {
+    const res = await db.transaction(async (tx) => {
+      const record = await createValidator(validator as ValidatorType);
+
+      const { id, name } = record?.data[0];
+
+      const newEndpoint = await createEndpoint({
+        ...endpoint,
+        validator: id,
+      } as any);
+
+      const key = await createUnkeyApiKey({ name });
+
+      const newValidator = await updateValidator({
+        id,
+        apiId: key?.data.apiId,
+        apiKey: generateApiKey(),
+        apiSecret: generateApiSecret(),
+      });
+
+      return { validator: newValidator?.data?.[0], endpoint: newEndpoint?.data?.[0] };
+    });
+    revalidatePath("/dashboard");
+    return res;
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }
