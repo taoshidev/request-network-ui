@@ -1,71 +1,53 @@
 "use client";
 
-import React, { ReactNode } from "react";
-import {
-  Button,
-  Group,
-  Text,
-  Box,
-  Title,
-  CopyButton,
-  Alert,
-  Modal,
-} from "@mantine/core";
+import { Button, Text, Box, CopyButton, Alert, Modal } from "@mantine/core";
 import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
-import styles from "./key-modal.module.css";
 
 export function KeyModal({
   opened,
-  close,
-  onCopy,
+  onClose,
   apiKey,
-  keyTitle,
-  modalTitle,
-  Action,
+  title,
 }: {
   opened: boolean;
-  close: () => void;
-  onCopy: () => void;
+  onClose: () => void;
   apiKey: string;
-  keyTitle: string;
-  modalTitle: string;
-  Action?: ReactNode;
+  title: string;
 }) {
-  const handleCopy = (copy: () => void) => {
-    copy();
-    return onCopy?.();
-  };
-
   return (
-    <Modal centered opened={opened} onClose={close} title={modalTitle}>
-      <Box my="sm" className={styles["one-time"]}>
-        <Box mb="lg">
-          <Title mb="md" order={2}>
-            {keyTitle}
-          </Title>
-          <Alert color="orange" radius="0" title="" icon={<IconAlertCircle />}>
-            <Text size="sm">
+    <Modal centered opened={opened} onClose={onClose} title={title}>
+      <Box className="mt-4 mb-8">
+        <Box className="mb-8">
+          <Alert color="orange" icon={<IconAlertCircle />}>
+            <Text className="mb-2 text-xs">
               Please copy and safely store your unique authentication key below.
             </Text>
-            This key will not be displayed again.
+            <Text className="text-xs">
+              This key will not be displayed again.
+            </Text>
           </Alert>
         </Box>
-        <Group gap="xs">
-          <Text>{keyTitle}:</Text>
+        <Box>
+          <Text className="text-xs mb-2 font-bold text-center">{title}:</Text>
           <CopyButton value={apiKey}>
             {({ copied, copy }) => (
               <Button
+                className="w-full"
                 leftSection={<IconCopy size={14} />}
                 variant="subtle"
-                onClick={() => handleCopy(copy)}
+                onClick={copy}
               >
-                <Text fw="bold">{copied ? "Copied key" : apiKey}</Text>
+                <Text>{copied ? "Copied key" : apiKey}</Text>
               </Button>
             )}
           </CopyButton>
-        </Group>
+        </Box>
       </Box>
-      {Action}
+      <Box>
+        <Button className="w-full" component="a" href="/dashboard">
+          Go to Dashboard
+        </Button>
+      </Box>
     </Modal>
   );
 }

@@ -1,7 +1,5 @@
 "use client";
 
-import { Anchor } from "@mantine/core";
-
 export const components = {
   Input: {
     styles: () => ({
@@ -29,8 +27,35 @@ export const components = {
   Card: {
     styles: () => ({
       root: {
-        borderRadious: 0,
+        borderRadius: 0,
         border: "1px dashed black",
+      },
+    }),
+  },
+  AppShell: {
+    styles: () => ({
+      header: {
+        borderBottom: "1px dashed black",
+        height: 60,
+      },
+      main: {
+        height: "100%",
+        paddingTop: 60, // header height
+        paddingBottom: 160,
+      },
+    }),
+  },
+  Stepper: {
+    styles: () => ({
+      stepIcon: {
+        borderRadius: 0,
+      },
+    }),
+  },
+  Alert: {
+    styles: () => ({
+      root: {
+        borderRadius: 0,
       },
     }),
   },

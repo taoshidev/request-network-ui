@@ -2,9 +2,9 @@ import { Box, Button, Text, Title, Group, Grid, Card } from "@mantine/core";
 
 export function ProductInfo() {
   return (
-    <Box mt="xl">
-      <Box mb="xl">
-        <Title order={2}>Let&apos;s Get Started</Title>
+    <Box className="mt-20">
+      <Box className="mb-8">
+        <Title className="text-2xl">Let&apos;s Get Started</Title>
         <Text>
           Explore the Resource Hub below to start building a winning app on
           Bittensor in no time

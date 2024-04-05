@@ -1,62 +1,87 @@
 "use client";
 
-import { Title, Box, Badge, Table } from "@mantine/core";
+import {
+  Title,
+  Box,
+  Badge,
+  Card,
+  Group,
+  Text,
+  Stack,
+  Divider,
+} from "@mantine/core";
 
-import styles from "./subnet-validator-review.module.css";
-import { useRegistration } from "@/providers/registration-provider";
+import { useRegistration } from "@/providers/registration";
 
 export function SubnetValidatorReview() {
   const { registrationData } = useRegistration();
 
   return (
     <Box>
-      <Title my="xl" order={2} ta="center">
-        Review Selection
-      </Title>
-      <Table mt={40}>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Validator</Table.Th>
-            <Table.Th>Subnet</Table.Th>
-            <Table.Th>Verified</Table.Th>
-            <Table.Th>Vtrust</Table.Th>
-            <Table.Th>Latency</Table.Th>
-            <Table.Th>Uptime</Table.Th>
-            <Table.Th>Limit</Table.Th>
-            <Table.Th>Refill Interval</Table.Th>
-            <Table.Th>Refill Rate</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {registrationData?.validator && (
-            <Table.Tr key={registrationData?.validator.id}>
-              <Table.Td>{registrationData?.validator.name}</Table.Td>
-              <Table.Td>{registrationData?.subnet.label}</Table.Td>
-              <Table.Td>
+      <Title className="text-center my-8 text-2xl">Review Selection</Title>
+
+      <Card className="my-14 pb-8">
+        <Title className="text-xl mb-4">
+          {registrationData?.validator.name}
+        </Title>
+
+        <Group className="justify-between items-start gap-8">
+          <Box className="flex-1">
+            <Text className="text-sm mb-4">
+              Aliquip laborum id enim minim dolore cillum et aute ex et minim
+              Lorem nisi nostrud non. Nisi ut irure mollit occaecat duis
+              consequat eu laborum. Do mollit non do in Lorem culpa consectetur.
+              Nostrud voluptate nulla aute.
+            </Text>
+            <Text className="text-sm">
+              Consequat velit enim anim velit nostrud et in. Commodo consequat
+              velit ad non incididunt enim culpa eiusmod exercitation labore
+              tempor.
+            </Text>
+          </Box>
+          <Stack className="flex-1 gap-2">
+            <Group className="justify-between items-center text-sm">
+              <Text className="text-sm">Subnet</Text>
+              <Text className="text-sm">{registrationData?.subnet.label}</Text>
+            </Group>
+            <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Verified</Text>
+              <Box>
                 {registrationData?.validator.verified ? (
                   <Badge>Verified</Badge>
                 ) : (
                   <Badge color="black">Unverified</Badge>
                 )}
-              </Table.Td>
-              <Table.Td>
+              </Box>
+            </Group>
+            <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Vtrust</Text>
+              <Text className="text-sm">
                 {registrationData?.validator.vtrust || "HIGH"}
-              </Table.Td>
-              <Table.Td>0.8 ms</Table.Td>
-              <Table.Td>90%</Table.Td>
-              <Table.Td>
-                {registrationData?.subnet?.endpoints?.[0].limit}
-              </Table.Td>
-              <Table.Td>
-                {registrationData?.subnet?.endpoints?.[0].refillInterval}
-              </Table.Td>
-              <Table.Td>
+              </Text>
+            </Group>
+            <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Latency</Text>
+              <Text className="text-sm">0.8ms</Text>
+            </Group>
+            <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Uptime</Text>
+              <Text className="text-sm">90%</Text>
+            </Group>
+            <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Refill Rate</Text>
+              <Text className="text-sm">
                 {registrationData?.subnet?.endpoints?.[0].refillRate}
-              </Table.Td>
-            </Table.Tr>
-          )}
-        </Table.Tbody>
-      </Table>
+              </Text>
+            </Group>
+          </Stack>
+        </Group>
+      </Card>
     </Box>
   );
 }
