@@ -40,7 +40,7 @@ export const signRequest = ({
   apiSecret: string;
 }) => {
   const nonce = Date.now();
-  const message = `${method}${path}${body}${nonce}`;
+  const message = `${method}${path}${body}${apiKey}${nonce}`;
   const signature = crypto
     .createHmac("sha256", apiSecret)
     .update(message)
@@ -93,7 +93,7 @@ export const sendToProxy = async ({
       "x-taoshi-nonce": nonce.toString(),
     },
   });
-  console.log("sendToProxy: ", res);
+
   if (!res.ok) {
     throw new Error(`HTTP error! status: ${res?.status}`);
   }
