@@ -7,14 +7,8 @@ import { db } from "@/db";
 import { subscriptions } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
 import { filterData } from "@/utils/sanitize";
-
-export interface SubscriptionType {
-  id: string;
-  endpointId: string;
-  userId: string;
-  keyId: string;
-  key: string;
-}
+import { SubscriptionType } from "@/db/types/subscription";
+import { generateApiKey, generateApiSecret } from "./apis";
 
 export const getSubscriptions = async (query: object = {}) => {
   try {
@@ -55,8 +49,14 @@ export const updateSubscription = async ({
 export const createSubscription = async (
   subscription: Partial<SubscriptionType>
 ) => {
+  subscription["apiKey"] = generateApiKey();
+  subscription["apiSecret"] = generateApiSecret();
+
   try {
-    const res = await db.insert(subscriptions).values(subscription).returning();
+    const res = await db
+      .insert(subscriptions)
+      .values(subscription as SubscriptionType)
+      .returning();
 
     revalidatePath("/dashboard");
     return parseResult(res, { filter: ["key", "keyId"] });

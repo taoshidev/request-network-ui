@@ -116,25 +116,34 @@ export const endpointsRelations = relations(endpoints, ({ one }) => ({
   }),
 }));
 
-export const subscriptions = pgTable("subscriptions", {
-  id: uuid("id").primaryKey().notNull(),
-  endpointId: uuid("endpoint_id")
-    .notNull()
-    .references(() => endpoints.id, { onDelete: "set null" }),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "set null" }),
-  keyId: varchar("key_id"),
-  apiKey: varchar("api_key"),
-  apiSecret: varchar("api_secret"),
-});
+export const subscriptions = pgTable(
+  "subscriptions",
+  {
+    id: uuid("id")
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
+    endpointId: uuid("endpoint_id")
+      .notNull()
+      .references(() => endpoints.id, { onDelete: "set null" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "set null" }),
+    keyId: varchar("key_id"),
+    apiKey: varchar("api_key"),
+    apiSecret: varchar("api_secret"),
+  },
+  (table) => ({
+    unique: unique().on(table.endpointId, table.userId),
+  })
+);
 
 export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
-  endpointId: one(endpoints, {
+  endpoint: one(endpoints, {
     fields: [subscriptions.endpointId],
     references: [endpoints.id],
   }),
-  userId: one(users, {
+  user: one(users, {
     fields: [subscriptions.userId],
     references: [users.id],
   }),

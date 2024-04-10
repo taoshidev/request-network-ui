@@ -12,18 +12,17 @@ import {
   Card,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { v4 as uuid } from "uuid";
-
 import { generateShortId } from "@/utils/ids";
-
 import { useRegistration, RegistrationData } from "@/providers/registration";
-import { createKey } from "@/actions/keys";
-import { SubscriptionType, createSubscription } from "@/actions/subscriptions";
+import { createKey, updateKey } from "@/actions/keys";
+import { createSubscription } from "@/actions/subscriptions";
 import { getAuthUser } from "@/actions/auth";
 import { useNotification } from "@/hooks/use-notification";
-
 import { Logo } from "@/components/Logo";
 import { KeyModal } from "@components/KeyModal";
+import { EndpointType } from "@/db/types/endpoint";
+import { SubscriptionType } from "@/db/types/subscription";
+import { sendToProxy } from "@/actions/apis";
 
 const REGISTRATION_STEPS = 3;
 
@@ -47,7 +46,10 @@ export function RegistrationStepper({
   StepThree: React.ReactElement;
 }) {
   const [active, setActive] = useState(0);
-  const [key, setKey] = useState("");
+  const [keys, setKeys] = useState<{ apiKey: string; apiSecret: string }>({
+    apiKey: "",
+    apiSecret: "",
+  });
   const [opened, { open, close }] = useDisclosure(false);
   const { updateData, registrationData } = useRegistration();
   const { notifySuccess, notifyError } = useNotification();
@@ -89,38 +91,97 @@ export function RegistrationStepper({
     setLoading(true);
 
     const currentUser = await getAuthUser();
+    const validator = registrationData?.validator;
     const userId = currentUser?.id;
-    const endpointId = registrationData?.validator?.endpoints?.[0].id as string;
+    const endpointId = validator?.endpoints?.[0].id as string;
     const shortId = generateShortId(currentUser?.id as string, endpointId);
+    const apiId = validator?.apiId;
+    const validatorId = validator?.id;
+    const endpoint = validator?.endpoints?.find(
+      (e: EndpointType) => e.id === endpointId
+    );
 
     try {
-      const { result, error: CreateKeyError } = await createKey({
+      const refill = {
+        interval: "daily",
+        amount: 100,
+      };
+
+      const ratelimit = {
+        type: "fast",
+        limit: endpoint?.limit || 10,
+        refillRate: endpoint?.refillRate || 1,
+        refillInterval: endpoint?.refillInterval || 60,
+      };
+
+      const meta = {
+        shortId,
+        type: "consumer",
+        consumerId: userId,
+        endpointId,
+        customEndpoint: endpoint?.url,
+        endpoint: endpoint?.url,
+        validatorId,
+        subscription: "",
+      };
+
+      const { result, error: CreateKeyError } = await createKey(apiId, {
         name: `${currentUser?.user_metadata?.user_name}_request_key_${shortId}`,
         ownerId: userId,
-        meta: {
-          shortId,
-          type: "consumer",
-          endpointId,
-          validatorId: registrationData?.validator?.id,
-          customEndpoint: registrationData?.validator?.endpoints?.[0].url,
-        },
+        roles: ["consumer"],
+        expires: new Date(endpoint?.expires)?.getTime(),
+        remaining: +endpoint?.remaining,
+        refill,
+        ratelimit,
+        meta,
       });
 
       if (CreateKeyError) return;
-      const { key, keyId } = result;
+
+      const { key, keyId } = result as { key: string; keyId: string };
 
       const res = await createSubscription({
-        id: uuid(),
         userId,
         endpointId,
         key,
         keyId,
       } as SubscriptionType);
 
-      if (res?.error) return notifyError(res?.message);
-      notifySuccess(res?.message as string);
-      setKey(key);
-      open();
+      if (res?.error)
+        return notifyError(
+          res?.message || "Something went wrong creating subscription"
+        );
+
+      meta.subscription = res?.data?.[0];
+
+      await updateKey({
+        keyId,
+        params: {
+          meta,
+        },
+      });
+
+      const proxyRes = await sendToProxy({
+        endpoint: {
+          url: endpoint?.url,
+          method: "POST",
+          path: "/register-consumer",
+        },
+        validatorId,
+        data: {
+          type: "consumer",
+          rnConsumerRequestKey: keyId,
+          rnConsumerApiUrl: endpoint?.url,
+          rnValidatorHotkey: registrationData?.validator?.hotkey,
+          rnValidatorMeta: meta,
+        },
+      });
+
+      if (proxyRes) {
+        notifySuccess(res?.message as string);
+        setKeys({ apiKey: key, apiSecret: res?.data?.[0]?.apiSecret });
+        open();
+      }
     } catch (error: Error | unknown) {
       throw new Error((error as Error)?.message);
     } finally {
@@ -131,11 +192,13 @@ export function RegistrationStepper({
   return (
     <>
       <KeyModal
-        apiKey={key}
-        apiSecret=""
+        apiKey={keys.apiKey}
+        apiSecret={keys?.apiSecret}
         opened={opened}
         onClose={close}
-        onCopy={(key: "apiKey" | "apiSecret") => setKey("")}
+        onCopy={(key: "apiKey" | "apiSecret") =>
+          setKeys((prev) => ({ ...prev, [key]: "" }))
+        }
         title="API Access Key"
       />
 
