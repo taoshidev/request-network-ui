@@ -84,13 +84,7 @@ export const sendToProxy = async ({
       apiKey,
       apiSecret,
     });
-    console.log("from signRequest:", {
-      method,
-      path,
-      body,
-      apiKey,
-      apiSecret,
-    });
+
     const res = await fetch(`${url}${path}`, {
       method: method,
       body: data ? JSON.stringify(data) : null,
