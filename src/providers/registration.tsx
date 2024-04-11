@@ -2,6 +2,7 @@ import { createContext, useContext, useState, ReactElement } from "react";
 
 export interface RegistrationData {
   keyName: string;
+  consumerApiUrl: string;
   subnet: any;
   validator: any;
   currentStep: number;
@@ -26,6 +27,7 @@ export const RegistrationProvider = ({
 }) => {
   const [registrationData, setRegistrationData] = useState<RegistrationData>({
     keyName: "",
+    consumerApiUrl: "",
     subnet: null,
     validator: null,
     currentStep: 0,

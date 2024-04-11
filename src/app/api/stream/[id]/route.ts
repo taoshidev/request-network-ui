@@ -29,7 +29,7 @@ export const GET = withUnkey(
       return new NextResponse("unauthorized", { status: 403 });
     }
 
-    const response = await fetch((request.unkey.meta as any).customEndpoint);
+    const response = await fetch((request.unkey.meta as any).endpoint);
     const data = await response.json();
 
     // ensure key is from a consumer

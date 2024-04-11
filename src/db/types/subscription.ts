@@ -7,7 +7,10 @@ export const SubscriptionSchema = z.object({
   keyId: z.string().optional(),
   key: z.string().optional(),
   apiKey: z.string(),
-  apiSecret: z.string()
+  apiSecret: z.string(),
+  consumerApiUrl: z.string().min(1, { message: "Domain is required" }).url({
+    message: "Please enter a valid URL",
+  }),
 });
 
 export type SubscriptionType = z.infer<typeof SubscriptionSchema>;

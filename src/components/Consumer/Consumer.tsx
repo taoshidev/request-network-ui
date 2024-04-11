@@ -68,21 +68,21 @@ export function Consumer({
         </Notification>
       )}
 
+      <Group className="justify-between my-5">
+        <Title className="text-2xl">API Keys</Title>
+        <Box>
+          <Button component="a" href="/registration">
+            {!subscriptionData ? "Register" : "Browse Subnets"}
+          </Button>
+        </Box>
+      </Group>
+
       {!isLoading && isEmpty(subscriptionData) && (
         <Alert className="mb-8" color="orange" icon={<IconAlertCircle />}>
           <Text className="mb-2">You don&apos;t have any API Keys yet</Text>
           <Text>Create your first API key and start receiving requests.</Text>
         </Alert>
       )}
-
-      <Group className="justify-between my-5">
-        <Title className="text-2xl">API Keys</Title>
-        <Box>
-          <Button component="a" href="/registration">
-            Register
-          </Button>
-        </Box>
-      </Group>
 
       {(subscriptionData || []).map((subscription, index) => (
         <Fragment key={index}>

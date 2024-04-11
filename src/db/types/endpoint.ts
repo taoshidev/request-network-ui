@@ -5,7 +5,11 @@ export const EndpointSchema = z.object({
   subnet: z.string().uuid().optional(),
   validator: z.string().uuid().optional(),
   limit: z.number().int().min(1),
-  url: z.string().url(),
+  url: z
+    .string()
+    .regex(/^\/[\w-]+(\/[\w-]+)*$/, {
+      message: "Invalid endpoint path format",
+    }),
   enabled: z.boolean().optional(),
   expires: z.date(),
   refillRate: z.number().int().min(1),

@@ -7,7 +7,7 @@ import {
   Group,
   Text,
   Box,
-  Title,
+  TextInput,
   Center,
   Card,
 } from "@mantine/core";
@@ -23,6 +23,13 @@ import { KeyModal } from "@components/KeyModal";
 import { EndpointType } from "@/db/types/endpoint";
 import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
+import { z } from "zod";
+
+const domainSchema = z.object({
+  consumerApiUrl: z.string().min(1, { message: "Domain is required" }).url({
+    message: "Please enter a valid URL",
+  }),
+});
 
 const REGISTRATION_STEPS = 3;
 
@@ -54,6 +61,7 @@ export function RegistrationStepper({
   const { updateData, registrationData } = useRegistration();
   const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -88,8 +96,21 @@ export function RegistrationStepper({
   }, [registrationData, active]);
 
   const handleCompleteRegistration = async () => {
-    setLoading(true);
+    if (error) setError("");
 
+    const consumerApiUrl = registrationData?.consumerApiUrl;
+
+    const validationResult = domainSchema.safeParse({
+      consumerApiUrl,
+    });
+
+    if (!validationResult.success) {
+      const firstError = validationResult.error.issues[0];
+      setError(firstError.message);
+      return;
+    }
+
+    setLoading(true);
     const currentUser = await getAuthUser();
     const validator = registrationData?.validator;
     const userId = currentUser?.id;
@@ -119,8 +140,7 @@ export function RegistrationStepper({
         type: "consumer",
         consumerId: userId,
         endpointId,
-        customEndpoint: endpoint?.url,
-        endpoint: endpoint?.url,
+        endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
         validatorId,
         subscription: "",
       };
@@ -145,6 +165,7 @@ export function RegistrationStepper({
         endpointId,
         key,
         keyId,
+        consumerApiUrl,
       } as SubscriptionType);
 
       if (res?.error)
@@ -163,17 +184,17 @@ export function RegistrationStepper({
 
       const proxyRes = await sendToProxy({
         endpoint: {
-          url: endpoint?.url,
+          url: validator.baseApiUrl,
           method: "POST",
           path: "/register-consumer",
         },
         validatorId,
         data: {
           type: "consumer",
-          rnConsumerRequestKey: keyId,
-          rnConsumerApiUrl: endpoint?.url,
-          rnValidatorHotkey: registrationData?.validator?.hotkey,
-          rnValidatorMeta: meta,
+          consumerKeyId: keyId,
+          consumerApiUrl,
+          hotkey: registrationData?.validator?.hotkey,
+          meta,
         },
       });
 
@@ -201,7 +222,6 @@ export function RegistrationStepper({
         }
         title="API Access Key"
       />
-
       <Stepper
         size="sm"
         active={active}
@@ -211,36 +231,51 @@ export function RegistrationStepper({
         <Stepper.Step label="Subnet" description="Browse a Subnet">
           <StepOne.type {...StepOne.props} />
         </Stepper.Step>
+
         <Stepper.Step label="Validator" description="Select a Validator">
           <StepTwo.type {...StepTwo.props} />
         </Stepper.Step>
+
         <Stepper.Step label="Review" description="Review Selection">
           <StepThree.type {...StepThree.props} />
         </Stepper.Step>
+
         <Stepper.Completed>
-          <Title className="text-center my-8 text-2xl">
-            Confirm Registration
-          </Title>
-          <Card className="my-14">
-            <Center className="mt-8 mb-14">
+          <Card className="mt-14 h-auto">
+            <Center className="mt-8 mb-12">
               <Box className="max-w-xl">
                 <Text className="text-center text-sm mb-4">
                   Congratulations!
                 </Text>
                 <Text className="text-center text-sm">
-                  You&apos;re one click away from your making your first
-                  request, integrating your app, and start building!
+                  You&apos;re one step away from your making your first request,
+                  integrating your app, and start building! Tell us your domain
+                  name so that we can get you started.
                 </Text>
+                <Box className="mt-7">
+                  <TextInput
+                    withAsterisk
+                    value={registrationData?.consumerApiUrl}
+                    onChange={(e) => {
+                      updateData({
+                        consumerApiUrl: e.target.value,
+                      } as RegistrationData);
+                      if (error) setError("");
+                    }}
+                    error={error}
+                    placeholder="https://example.com"
+                  />
+                </Box>
               </Box>
             </Center>
-
-            <Box className="my-8">
+            <Box>
               <Logo />
             </Box>
           </Card>
         </Stepper.Completed>
       </Stepper>
-      <Group className="justify-center mt-8">
+
+      <Group className="justify-center mt-14">
         <Button variant="default" onClick={prevStep} disabled={active === 0}>
           Back
         </Button>
