@@ -39,9 +39,9 @@ export const components = {
         height: 60,
       },
       main: {
-        height: "100%",
-        paddingTop: 60, // header height
-        paddingBottom: 160,
+        // height: "100%",
+        // paddingTop: 60, // header height
+        // paddingBottom: 160,
       },
     }),
   },

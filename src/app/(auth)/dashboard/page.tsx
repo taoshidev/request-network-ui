@@ -20,7 +20,7 @@ export default async function Page() {
     redirect("/onboarding");
   }
 
-  const validators = await getValidators({
+  let validators = await getValidators({
     with: {
       endpoints: {
         with: {
@@ -30,9 +30,11 @@ export default async function Page() {
     },
   });
 
+  if (validators?.error) validators = [];
+
   // if user is a consumer, render consumer dashboard
   if (user.user_metadata.role === "consumer") {
-    const subs = await getSubscriptions({
+    let subs = await getSubscriptions({
       where: and(eq(subscriptions.userId, user.id)),
       with: {
         endpoint: {
@@ -42,6 +44,8 @@ export default async function Page() {
         },
       },
     });
+
+    if (subs?.error) subs = [];
 
     return <Consumer subscriptions={subs} validators={validators} />;
 

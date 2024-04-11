@@ -57,6 +57,7 @@ export const validators = pgTable("validators", {
     .notNull(),
   name: varchar("name"),
   description: varchar("description"),
+  baseApiUrl: varchar("base_api_url").unique().notNull(),
   apiId: varchar("api_id"),
   apiKey: varchar("api_key"),
   apiSecret: varchar("api_secret"),
@@ -124,14 +125,13 @@ export const subscriptions = pgTable(
       .primaryKey()
       .notNull(),
     endpointId: uuid("endpoint_id")
-      .notNull()
       .references(() => endpoints.id, { onDelete: "set null" }),
     userId: uuid("user_id")
-      .notNull()
       .references(() => users.id, { onDelete: "set null" }),
     keyId: varchar("key_id"),
     apiKey: varchar("api_key"),
     apiSecret: varchar("api_secret"),
+    consumerApiUrl: varchar("consumer_api_url").notNull(),
   },
   (table) => ({
     unique: unique().on(table.endpointId, table.userId),

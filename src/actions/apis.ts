@@ -76,7 +76,7 @@ export const sendToProxy = async ({
     const { url, method, path } = endpoint;
     const body = JSON.stringify(data);
     const validator = await getValidator({ id: validatorId } as ValidatorType);
-    const { apiKey, apiSecret } = validator;
+    const { apiKey, apiSecret, baseApiUrl } = validator;
     const { signature, nonce } = signRequest({
       method,
       path,
@@ -84,8 +84,15 @@ export const sendToProxy = async ({
       apiKey,
       apiSecret,
     });
-
-    const res = await fetch(`${url}${path}`, {
+console.log({
+  method,
+  path,
+  body,
+  apiKey,
+  apiSecret,
+})
+console.log('here::::', signature)
+    const res = await fetch(`${baseApiUrl}${path}`, {
       method: method,
       body: data ? JSON.stringify(data) : null,
       headers: {

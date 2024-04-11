@@ -60,7 +60,7 @@ export function Subnets({
 
   return (
     <Box>
-      <Title className="my-12 text-center" order={2}>
+      <Title className="my-7 text-center" order={2}>
         Choose a Subnet
       </Title>
       <Grid>

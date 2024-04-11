@@ -64,7 +64,7 @@ export const createValidatorEndpoint = async (
   try {
     const res = await db.transaction(async (tx) => {
       const record = await createValidator(validator as ValidatorType);
-
+      console.log('record', record)
       const { id, name } = record?.data[0];
 
       const newEndpoint = await createEndpoint({

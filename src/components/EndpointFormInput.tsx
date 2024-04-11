@@ -33,8 +33,8 @@ export function EndpointFormInput({
       <Box mb="md">
         <TextInput
           withAsterisk
-          label="URL"
-          placeholder="https://example.com/api/v1"
+          label="Endpoint Path"
+          placeholder="/data-endpoint-path"
           {...form.getInputProps("url")}
         />
       </Box>

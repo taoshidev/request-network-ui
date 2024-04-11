@@ -5,6 +5,7 @@ export const ValidatorSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1),
   description: z.string(),
+  baseApiUrl: z.string().url(),
   apiId: z.string().optional(),
   apiKey: z.string().optional(),
   apiSecret: z.string().optional(),

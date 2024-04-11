@@ -25,6 +25,7 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
       hotkey: "",
       subnet: "",
       limit: 10,
+      baseApiUrl: "",
       url: "",
       refillRate: 1,
       refillInterval: 1000,
@@ -36,11 +37,10 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
 
   const onSubmit = async (values: Partial<ValidatorType & EndpointType>) => {
     setLoading(true);
-    const { name, description, userId, hotkey, ...endpoint } = values;
-    const validator = { name, description, userId, hotkey };
+    const { name, description, userId, hotkey, baseApiUrl, ...endpoint } = values;
+    const validator = { name, description, userId, hotkey, baseApiUrl };
     try {
       const res = await createValidatorEndpoint(validator, endpoint);
-
       const { validator: newValidator } = res as {
         validator: ValidatorType;
       };
@@ -77,12 +77,20 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
           placeholder="Enter a brief description for your validator"
           {...form.getInputProps("description")}
         />
-        <Box className="mb-4">
+        <Box mb="md">
           <TextInput
             withAsterisk
             label="Hotkey"
             placeholder="Hotkey"
             {...form.getInputProps("hotkey")}
+          />
+        </Box>
+        <Box mb="md">
+          <TextInput
+            withAsterisk
+            label="Request Network API Url"
+            placeholder="https://example.com:8080"
+            {...form.getInputProps("baseApiUrl")}
           />
         </Box>
         <EndpointFormInput form={form} subnets={subnets} />

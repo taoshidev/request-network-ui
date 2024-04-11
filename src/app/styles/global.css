@@ -6,3 +6,16 @@ body {
 body {
   background-color: var(--mantine-color-grey-0);
 }
+
+.mantine-Stepper-content {
+  overflow-y: auto;
+  height: calc(100vh - 340px);
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.mantine-Stepper-content::-webkit-scrollbar {
+  display: none;
+}
