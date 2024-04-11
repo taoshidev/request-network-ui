@@ -8,13 +8,13 @@ import { parseError, parseResult } from "@/db/error";
 import { filterData } from "@/utils/sanitize";
 import { createEndpoint } from "./endpoints";
 import { createUnkeyApiKey, generateApiKey, generateApiSecret } from "./apis";
-import { EndpointType } from "@/app/(routes)/endpoints/types";
+import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 
 export const getValidators = async (query: object = {}) => {
   try {
     const res = await db.query.validators.findMany(query);
-    return filterData(res, ["hotkey"]);
+    return filterData(res, [""]);
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }

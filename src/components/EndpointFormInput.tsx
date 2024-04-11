@@ -19,7 +19,7 @@ export function EndpointFormInput({
         .filter((v) => v.verified)
         .map((v) => ({
           value: v.id as string,
-          label: v?.account?.meta?.name || "Unknown",
+          label: v?.name || v?.account?.meta?.name || "Unknown",
         }))
     : [];
 
@@ -34,7 +34,7 @@ export function EndpointFormInput({
         <TextInput
           withAsterisk
           label="URL"
-          placeholder="URL"
+          placeholder="https://example.com/api/v1"
           {...form.getInputProps("url")}
         />
       </Box>

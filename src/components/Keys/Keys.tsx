@@ -17,12 +17,12 @@ import { IconCopy } from "@tabler/icons-react";
 import styles from "./keys.module.css";
 
 export function Keys({ apiKey }: { apiKey: any }) {
-  const url = `http://localhost:3000/api/stream/${apiKey.meta.shortId}`;
+  const url = apiKey?.meta?.endpoint;
 
   return (
     <Container>
       <Box my="xl" className={styles.intro} pb="lg">
-        <Title>{apiKey.name}</Title>
+        <Title className="mb-5">{apiKey.name}</Title>
         <Text size="xs" mb="sm">
           Created: {dayjs(apiKey.createdAt).format("MMM DD, YYYY")}
         </Text>

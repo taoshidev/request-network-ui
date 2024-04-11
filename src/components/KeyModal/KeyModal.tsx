@@ -41,7 +41,7 @@ export function KeyModal({
           <CopyButton value={apiKey}>
             {({ copied, copy }) => (
               <Button
-                className="w-full"
+                className="flex w-full"
                 leftSection={<IconCopy size={14} />}
                 variant="subtle"
                 onClick={() => handleCopy(copy, "apiKey")}
@@ -52,10 +52,13 @@ export function KeyModal({
           </CopyButton>
         </Box>
         <Box className="mt-4">
-          <Text className="text-xs mb-2 font-bold text-center">Api Secret Key:</Text>
+          <Text className="text-xs mb-2 font-bold text-center">
+            Api Secret Key:
+          </Text>
           <CopyButton value={apiSecret}>
             {({ copied, copy }) => (
               <Button
+                className="flex w-full"
                 leftSection={<IconCopy size={14} />}
                 variant="subtle"
                 onClick={() => handleCopy(copy, "apiSecret")}

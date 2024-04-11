@@ -3,6 +3,8 @@
 import crypto, { randomBytes } from "crypto";
 const UNKEY_ROOT_KEY = process.env.UNKEY_ROOT_KEY as string;
 const UNKEY_API_URL = process.env.UNKEY_API_URL as string;
+import { getValidator } from "./validators";
+import { ValidatorType } from "@/db/types/validator";
 
 export const createUnkeyApiKey = async ({ name }: { name: object }) => {
   try {
@@ -58,9 +60,8 @@ export const generateApiSecret = () => {
 };
 
 export const sendToProxy = async ({
+  validatorId,
   endpoint,
-  apiKey,
-  apiSecret,
   data,
 }: {
   endpoint: {
@@ -68,35 +69,38 @@ export const sendToProxy = async ({
     method: "GET" | "POST" | "PUT" | "DELETE";
     path: string;
   };
-  apiKey: string;
-  apiSecret: string;
+  validatorId: string;
   data: any;
 }) => {
-  // eg. http://localhost:8080, POST, /register-consumer;
-  const { url, method, path } = endpoint;
-  const body = JSON.stringify(data);
-  const { signature, nonce } = signRequest({
-    method,
-    path,
-    body,
-    apiKey,
-    apiSecret,
-  });
+  try {
+    const { url, method, path } = endpoint;
+    const body = JSON.stringify(data);
+    const validator = await getValidator({ id: validatorId } as ValidatorType);
+    const { apiKey, apiSecret } = validator;
+    const { signature, nonce } = signRequest({
+      method,
+      path,
+      body,
+      apiKey,
+      apiSecret,
+    });
 
-  const res = await fetch(`${url}${path}`, {
-    method: method,
-    body: data ? JSON.stringify(data) : null,
-    headers: {
-      "Content-Type": "application/json",
-      "x-taoshi-request-key": apiKey,
-      "x-taoshi-signature": signature,
-      "x-taoshi-nonce": nonce.toString(),
-    },
-  });
+    const res = await fetch(`${url}${path}`, {
+      method: method,
+      body: data ? JSON.stringify(data) : null,
+      headers: {
+        "Content-Type": "application/json",
+        "x-taoshi-request-key": apiKey,
+        "x-taoshi-signature": signature,
+        "x-taoshi-nonce": nonce.toString(),
+      },
+    });
 
-  if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res?.status}`);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res?.status}`);
+    }
+    return await res.json();
+  } catch (error) {
+    console.error(error);
   }
-
-  return await res.json();
 };

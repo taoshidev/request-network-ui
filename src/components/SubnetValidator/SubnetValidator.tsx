@@ -90,13 +90,14 @@ export function SubnetValidator({
               <Text className="text-xs mb-4">{validator?.description}</Text>
 
               <Button
+                disabled={!validator?.verified}
                 variant={
                   registrationData?.validator === validator ? "" : "outline"
                 }
                 fullWidth
                 onClick={() => handleSubscribeClick(validator)}
               >
-                Subscribe
+                {!validator?.verified ? 'Not Available' : 'Subscribe'}
               </Button>
             </Card>
           </Grid.Col>
