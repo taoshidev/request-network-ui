@@ -1,0 +1,1 @@
+ALTER TABLE "subscriptions" ADD COLUMN "escrow_public_key" varchar;

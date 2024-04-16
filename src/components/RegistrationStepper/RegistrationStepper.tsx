@@ -15,11 +15,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { generateShortId } from "@/utils/ids";
 import { useRegistration, RegistrationData } from "@/providers/registration";
 import { createKey, updateKey } from "@/actions/keys";
-import { createSubscription } from "@/actions/subscriptions";
+import {
+  createSubscription,
+  updateSubscription,
+} from "@/actions/subscriptions";
 import { getAuthUser } from "@/actions/auth";
 import { useNotification } from "@/hooks/use-notification";
 import { Logo } from "@/components/Logo";
-import { KeyModal } from "@components/KeyModal";
+import { KeyModal, keyType } from "@components/KeyModal";
 import { EndpointType } from "@/db/types/endpoint";
 import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
@@ -53,9 +56,16 @@ export function RegistrationStepper({
   StepThree: React.ReactElement;
 }) {
   const [active, setActive] = useState(0);
-  const [keys, setKeys] = useState<{ apiKey: string; apiSecret: string }>({
+  const [keys, setKeys] = useState<{
+    apiKey: string;
+    apiSecret: string;
+    walletKey: string;
+    endpoint: string;
+  }>({
     apiKey: "",
     apiSecret: "",
+    walletKey: "",
+    endpoint: "",
   });
   const [opened, { open, close }] = useDisclosure(false);
   const { updateData, registrationData } = useRegistration();
@@ -142,7 +152,7 @@ export function RegistrationStepper({
         endpointId,
         endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
         validatorId,
-        subscription: "",
+        subscription: {} as SubscriptionType,
       };
 
       const { result, error: CreateKeyError } = await createKey(apiId, {
@@ -175,6 +185,8 @@ export function RegistrationStepper({
 
       meta.subscription = res?.data?.[0];
 
+      const { id, apiSecret } = meta.subscription;
+
       await updateKey({
         keyId,
         params: {
@@ -198,9 +210,29 @@ export function RegistrationStepper({
         },
       });
 
+      if (proxyRes?.error) {
+        return notifyError(proxyRes?.error);
+      }
+
       if (proxyRes) {
+        console.log("proxyRes", proxyRes.publicKey);
+        const updateRes = await updateSubscription({
+          id,
+          escrowPublicKey: proxyRes?.publicKey,
+        });
+        console.log("updateRes", updateRes);
+        if (updateRes?.error)
+          return notifyError(
+            updateRes?.message || "Something went wrong updating subscription"
+          );
+
         notifySuccess(res?.message as string);
-        setKeys({ apiKey: key, apiSecret: res?.data?.[0]?.apiSecret });
+        setKeys({
+          apiKey: key,
+          apiSecret,
+          walletKey: proxyRes?.publicKey,
+          endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
+        });
         open();
       }
     } catch (error: Error | unknown) {
@@ -215,12 +247,14 @@ export function RegistrationStepper({
       <KeyModal
         apiKey={keys.apiKey}
         apiSecret={keys?.apiSecret}
+        walletKey={keys?.walletKey}
+        endpoint={keys?.endpoint}
         opened={opened}
         onClose={close}
-        onCopy={(key: "apiKey" | "apiSecret") =>
-          setKeys((prev) => ({ ...prev, [key]: "" }))
-        }
+        onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
         title="API Access Key"
+        walletKeyTitle="Public Escrow Wallet Key"
+        endpointTitle="Resource Endpoint"
       />
       <Stepper
         size="sm"

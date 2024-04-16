@@ -32,6 +32,7 @@ export const updateSubscription = async ({
   ...values
 }: Partial<SubscriptionType>) => {
   try {
+
     const res = await db
       .update(subscriptions)
       .set({ ...values })
@@ -39,7 +40,6 @@ export const updateSubscription = async ({
       .returning();
 
     // revalidatePath(`/subscriptions/${id}`);
-
     return parseResult(res, { filter: ["key", "keyId"] });
   } catch (error) {
     if (error instanceof Error) return parseError(error);

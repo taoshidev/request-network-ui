@@ -11,7 +11,7 @@ export default function Layout({ children }: any) {
         <Header />
       </AppShell.Header>
       <AppShell.Main className="flex-grow overflow-auto">
-        <Container className="mt-[60px] pt-12 h-[calc(100vh-60px)]">
+        <Container className="mt-[60px] p-12 h-[calc(100vh-60px)] overflow-auto mx-auto max-w-7xl scrollbar-hide">
           {children}
         </Container>
       </AppShell.Main>
