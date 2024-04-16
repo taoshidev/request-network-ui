@@ -215,12 +215,10 @@ export function RegistrationStepper({
       }
 
       if (proxyRes) {
-        console.log("proxyRes", proxyRes.publicKey);
         const updateRes = await updateSubscription({
           id,
           escrowPublicKey: proxyRes?.publicKey,
         });
-        console.log("updateRes", updateRes);
         if (updateRes?.error)
           return notifyError(
             updateRes?.message || "Something went wrong updating subscription"
