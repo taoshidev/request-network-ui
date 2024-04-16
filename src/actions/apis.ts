@@ -84,14 +84,7 @@ export const sendToProxy = async ({
       apiKey,
       apiSecret,
     });
-console.log({
-  method,
-  path,
-  body,
-  apiKey,
-  apiSecret,
-})
-console.log('here::::', signature)
+
     const res = await fetch(`${baseApiUrl}${path}`, {
       method: method,
       body: data ? JSON.stringify(data) : null,
@@ -109,5 +102,6 @@ console.log('here::::', signature)
     return await res.json();
   } catch (error) {
     console.error(error);
+    return { error: JSON.stringify(error) };
   }
 };

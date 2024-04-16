@@ -6,7 +6,7 @@ import { Box, Title, Group, Table, Button, Modal, Badge } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { isEmpty } from "lodash";
 import { CreateValidator } from "@/components/CreateValidator";
-import { KeyModal } from "@components/KeyModal/KeyModal";
+import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -35,13 +35,14 @@ export function Validators({ user, subnets, validators }: any) {
         apiSecret={keys?.apiSecret}
         opened={keyModalOpened}
         onClose={() => setKeyModalOpened(false)}
-        onCopy={(key: "apiKey" | "apiSecret") =>
+        onCopy={(key: keyType) =>
           setKeys((prev) => ({ ...prev, [key]: "" }))
         }
         title="API Access Key"
       />
 
       <Modal
+        size="xl"
         centered
         opened={opened}
         onClose={close}
