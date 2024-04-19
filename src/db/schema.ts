@@ -92,7 +92,7 @@ export const endpoints = pgTable(
     validator: uuid("validator")
       .notNull()
       .references(() => validators.id, { onDelete: "cascade" }),
-
+    price: varchar("price"),
     limit: integer("limit").default(10), // The total amount of burstable requests.
     url: varchar("url").unique().notNull(),
     enabled: boolean("enabled").notNull().default(true).notNull(),

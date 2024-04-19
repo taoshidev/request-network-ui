@@ -22,6 +22,7 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
       userId: user.id,
       verified: false,
       enabled: false,
+      price: "",
       hotkey: "",
       subnet: "",
       limit: 10,

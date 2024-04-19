@@ -131,7 +131,6 @@ export function RegistrationStepper({
     const endpoint = validator?.endpoints?.find(
       (e: EndpointType) => e.id === endpointId
     );
-
     try {
       const refill = {
         interval: "daily",
@@ -206,6 +205,7 @@ export function RegistrationStepper({
           consumerKeyId: keyId,
           consumerApiUrl,
           hotkey: registrationData?.validator?.hotkey,
+          price: endpoint.price,
           meta,
         },
       });
