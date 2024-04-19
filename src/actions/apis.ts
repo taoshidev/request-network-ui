@@ -34,14 +34,16 @@ export const signRequest = ({
   body,
   apiKey,
   apiSecret,
+  nonce = Date.now().toString(),
 }: {
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
   body: string | object;
   apiKey: string;
   apiSecret: string;
+  nonce?: string;
 }) => {
-  const nonce = Date.now();
+  // const nonce = Date.now();
   const message = `${method}${path}${body}${apiKey}${nonce}`;
   const signature = crypto
     .createHmac("sha256", apiSecret)
@@ -92,7 +94,7 @@ export const sendToProxy = async ({
         "Content-Type": "application/json",
         "x-taoshi-request-key": apiKey,
         "x-taoshi-signature": signature,
-        "x-taoshi-nonce": nonce.toString(),
+        "x-taoshi-nonce": nonce,
       },
     });
 
