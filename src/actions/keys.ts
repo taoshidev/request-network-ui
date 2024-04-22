@@ -57,7 +57,6 @@ export const getUserAPIKeys = async ({
   apiId: string;
   ownerId: string;
 }) => {
-  ownerId,)
   const { error, result } = await unkey.apis.listKeys({
     apiId,
     ownerId,
