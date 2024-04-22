@@ -68,14 +68,16 @@ export function Consumer({
         </Notification>
       )}
 
-      <Group className="justify-between my-5">
-        <Title className="text-2xl">API Keys</Title>
-        <Box>
-          <Button component="a" href="/registration">
-            {!subscriptionData ? "Register" : "Browse Subnets"}
-          </Button>
-        </Box>
-      </Group>
+      {!isLoading && (
+        <Group className="justify-between my-5">
+          <Title className="text-2xl">API Keys</Title>
+          <Box>
+            <Button component="a" href="/registration">
+              {!subscriptionData ? "Register" : "Browse Subnets"}
+            </Button>
+          </Box>
+        </Group>
+      )}
 
       {!isLoading && isEmpty(subscriptionData) && (
         <Alert className="mb-8" color="orange" icon={<IconAlertCircle />}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Stepper,
   Button,
@@ -29,6 +29,7 @@ import { sendToProxy } from "@/actions/apis";
 import { z } from "zod";
 
 const domainSchema = z.object({
+  appName: z.string().min(1, { message: "Application name is required" }),
   consumerApiUrl: z.string().min(1, { message: "Domain is required" }).url({
     message: "Please enter a valid URL",
   }),
@@ -72,6 +73,7 @@ export function RegistrationStepper({
   const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [disabled, setDisabled] = useState(true);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -97,21 +99,27 @@ export function RegistrationStepper({
 
   const isLastStep = useMemo(() => active !== 3, [active]);
 
-  const isDisabled = useMemo(() => {
-    return active >= 2
-      ? false
-      : active >= REGISTRATION_STEPS - 1 ||
+  useEffect(() => {
+    console.log("registrationData?.subnet", registrationData?.subnet);
+    console.log("active", active);
+    const disabled =
+      active >= 2
+        ? false
+        : active >= REGISTRATION_STEPS - 1 ||
           (active === 0 && !registrationData?.subnet) ||
           (active === 1 && !registrationData?.validator);
+    setDisabled(disabled);
   }, [registrationData, active]);
 
   const handleCompleteRegistration = async () => {
     if (error) setError("");
 
     const consumerApiUrl = registrationData?.consumerApiUrl;
+    const appName = registrationData?.appName;
 
     const validationResult = domainSchema.safeParse({
       consumerApiUrl,
+      appName,
     });
 
     if (!validationResult.success) {
@@ -155,7 +163,7 @@ export function RegistrationStepper({
       };
 
       const { result, error: CreateKeyError } = await createKey(apiId, {
-        name: `${currentUser?.user_metadata?.user_name}_request_key_${shortId}`,
+        name: appName?.split(" ").join(""),
         ownerId: userId,
         roles: ["consumer"],
         expires: new Date(endpoint?.expires)?.getTime(),
@@ -174,6 +182,7 @@ export function RegistrationStepper({
         endpointId,
         key,
         keyId,
+        appName,
         consumerApiUrl,
       } as SubscriptionType);
 
@@ -202,6 +211,7 @@ export function RegistrationStepper({
         validatorId,
         data: {
           type: "consumer",
+          name: appName,
           consumerKeyId: keyId,
           consumerApiUrl,
           hotkey: registrationData?.validator?.hotkey,
@@ -281,10 +291,23 @@ export function RegistrationStepper({
                 </Text>
                 <Text className="text-center text-sm">
                   You&apos;re one step away from your making your first request,
-                  integrating your app, and start building! Tell us your domain
-                  name so that we can get you started.
+                  integrating your app, and start building! Tell us your
+                  application and domain name so that we can get you started.
                 </Text>
                 <Box className="mt-7">
+                  <TextInput
+                    className="mb-4"
+                    withAsterisk
+                    value={registrationData?.appName}
+                    onChange={(e) => {
+                      updateData({
+                        appName: e.target.value,
+                      } as RegistrationData);
+                      if (error) setError("");
+                    }}
+                    error={error}
+                    placeholder="Application Name"
+                  />
                   <TextInput
                     withAsterisk
                     value={registrationData?.consumerApiUrl}
@@ -312,13 +335,13 @@ export function RegistrationStepper({
           Back
         </Button>
         {isLastStep ? (
-          <Button onClick={nextStep} disabled={isDisabled}>
+          <Button onClick={nextStep} disabled={disabled}>
             {stepText[active]}
           </Button>
         ) : (
           <Button
             onClick={handleCompleteRegistration}
-            disabled={isDisabled}
+            disabled={disabled}
             loading={loading}
           >
             Complete Registration

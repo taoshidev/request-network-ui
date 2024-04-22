@@ -9,6 +9,7 @@ export const SubscriptionSchema = z.object({
   apiKey: z.string(),
   apiSecret: z.string(),
   escrowPublicKey: z.string(),
+  appName: z.string().min(1, { message: "Application name is required" }),
   consumerApiUrl: z.string().min(1, { message: "Domain is required" }).url({
     message: "Please enter a valid URL",
   }),

@@ -5,7 +5,7 @@ import { eq, and } from "drizzle-orm";
 import { validators } from "@/db/schema";
 
 /**
- * Handles POST requests for validator registration using arrow functions.
+ * Handles POST requests for validator registration.
  */
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
   const body = await req.json();

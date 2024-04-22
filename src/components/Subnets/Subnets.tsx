@@ -4,9 +4,7 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Title, Text, Box, Grid, Card } from "@mantine/core";
 import { clsx } from "clsx";
-
 import { EndpointType } from "@/app/(auth)/endpoints/types";
-
 import { useRegistration, RegistrationData } from "@/providers/registration";
 
 interface Subnet {
@@ -26,36 +24,32 @@ export function Subnets({
   const router = useRouter();
   const { updateData, registrationData } = useRegistration();
 
-  const [selectedSubnets, setSelectedSubnets] = useState(
-    new Set(registrationData?.subnet?.value),
+  const [selectedSubnet, setSelectedSubnet] = useState<string | null>(
+    registrationData?.subnet?.id || null
   );
 
   const handleItemClick = (subnet: any) => {
-    const newSelectedSubnets = new Set(selectedSubnets);
-
-    if (newSelectedSubnets.has(subnet.id)) {
-      newSelectedSubnets.delete(subnet.id);
+    if (selectedSubnet === subnet.id) {
+      setSelectedSubnet(null);
+      updateData?.({ subnet: null } as RegistrationData);
     } else {
-      newSelectedSubnets.add(subnet.id);
+      setSelectedSubnet(subnet.id);
+      updateData?.({ subnet } as RegistrationData);
     }
-
-    setSelectedSubnets(newSelectedSubnets);
 
     if (mode === "navigation") {
       router.push(`/subnets/${subnet?.id}`);
     }
-
-    updateData?.({ subnet } as RegistrationData);
   };
 
   const selected = useCallback(
-    (subnet: Subnet) => selectedSubnets.has(subnet.id),
-    [selectedSubnets],
+    (subnet: Subnet) => selectedSubnet === subnet.id,
+    [selectedSubnet]
   );
 
   const disabled = useCallback(
     (subnet: Subnet) => subnet?.endpoints?.length === 0,
-    [],
+    []
   );
 
   return (
@@ -72,7 +66,7 @@ export function Subnets({
               className={clsx(
                 "cursor-pointer w-full h-full items-center flex",
                 selected(subnet) && "bg-primary-500  text-white",
-                disabled(subnet) && "pointer-events-none bg-gray-200",
+                disabled(subnet) && "pointer-events-none bg-gray-200"
               )}
             >
               <Text className="font-bold">{subnet.label}</Text>

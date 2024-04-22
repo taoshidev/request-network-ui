@@ -68,7 +68,7 @@ export function EndpointFormInput({
         />
       </Box>
       <Box mb="md">
-        <NumberInput
+        <TextInput
           label="Price"
           withAsterisk
           description="Price in USDC/USDT"
