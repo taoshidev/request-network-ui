@@ -100,8 +100,6 @@ export function RegistrationStepper({
   const isLastStep = useMemo(() => active !== 3, [active]);
 
   useEffect(() => {
-    console.log("registrationData?.subnet", registrationData?.subnet);
-    console.log("active", active);
     const disabled =
       active >= 2
         ? false
