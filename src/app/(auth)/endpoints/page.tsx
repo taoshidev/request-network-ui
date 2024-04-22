@@ -21,7 +21,6 @@ export default async function Page() {
       endpoints={endpoints}
       validators={validators}
       subnets={subnets}
-      user={user}
     />
   );
 }

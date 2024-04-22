@@ -1,45 +1,27 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Title,
-  rem,
-  Box,
-  Table,
-  Badge,
-  Button,
-  Group,
-  Modal,
-  Alert,
-  Flex,
-} from "@mantine/core";
+import { Title, Box, Table, Badge, Button, Group, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useForm } from "@mantine/form";
-import { zodResolver } from "mantine-form-zod-resolver";
-import { z } from "zod";
-import { find, some } from "lodash";
-import { IconSettings, IconGraph } from "@tabler/icons-react";
+import { some } from "lodash";
 import { isEmpty } from "lodash";
-
-import { getSubnets } from "@/actions/subnets";
-import { createEndpoint } from "@/actions/endpoints";
-
 import { Limits } from "@/components/Limits";
-
-interface EndpointsProps {
-  user: any;
-  endpoints: any;
-  validators: any;
-  subnets: any;
-}
+import { getUserAPIKeys } from "@/actions/keys";
+import { ValidatorKeyType } from "@/components/StatTable";
+import { EndpointType } from "@/db/types/endpoint";
+import { ValidatorType } from "@/db/types/validator";
+import { SubnetType } from "@/db/types/subnet";
 
 export function Endpoints({
-  user,
   endpoints,
   validators,
   subnets,
-}: EndpointsProps) {
+}: {
+  endpoints: EndpointType[];
+  validators: ValidatorType[];
+  subnets: SubnetType[];
+}) {
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -60,34 +42,36 @@ export function Endpoints({
         onClose={close}
         title="Create a new Endpoint"
       >
-        <Limits
-          onComplete={close}
-          validators={validators}
-          subnets={subnets}
-        />
+        <Limits onComplete={close} validators={validators} subnets={subnets} />
       </Modal>
 
-      <Box>
-        <Group justify="space-between" my="xl">
-          <Title order={2}>Endpoints</Title>
-          <Button onClick={open} disabled={!enabled}>
-            Create New Endpoint
-          </Button>
-        </Group>
+      {endpoints && !isEmpty(endpoints) && (
+        <Box className="mb-16">
+          <Group justify="space-between" my="xl">
+            <Title order={2}>Endpoints</Title>
+            <Button onClick={open} disabled={!enabled}>
+              Create New Endpoint
+            </Button>
+          </Group>
 
-        <Table>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Endpoint</Table.Th>
-              <Table.Th>Subnet</Table.Th>
-              <Table.Th>Enabled</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {endpoints &&
-              !isEmpty(endpoints) &&
-              endpoints.map((endpoint: any) => (
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Validator</Table.Th>
+                <Table.Th>Endpoint</Table.Th>
+                <Table.Th>Subnet</Table.Th>
+                <Table.Th>Enabled</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {endpoints.map((endpoint: any) => (
                 <Table.Tr key={endpoint.id}>
+                  <Table.Td>
+                    {
+                      validators.find((v: any) => v.id === endpoint.validator)
+                        ?.name
+                    }
+                  </Table.Td>
                   <Table.Td>{endpoint.url}</Table.Td>
                   <Table.Td>{endpoint.subnets?.label}</Table.Td>
                   <Table.Td>
@@ -108,9 +92,10 @@ export function Endpoints({
                   </Table.Td>
                 </Table.Tr>
               ))}
-          </Table.Tbody>
-        </Table>
-      </Box>
+            </Table.Tbody>
+          </Table>
+        </Box>
+      )}
     </>
   );
 }

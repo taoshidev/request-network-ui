@@ -37,7 +37,6 @@ export function Consumer({
   const [subscriptionData, setSubscriptionData] = useState<
     SubscriptionEndpointValidatorType[] | undefined
   >(undefined);
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

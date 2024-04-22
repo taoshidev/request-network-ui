@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect, Fragment } from "react";
+import { useState, Fragment } from "react";
 import dayjs from "dayjs";
 import {
-  Container,
   Title,
   Text,
   Group,
@@ -24,6 +23,8 @@ import { z } from "zod";
 import { deleteKey, updateKey } from "@/actions/keys";
 import { TAOSHI_REQUEST_KEY } from "@/constants";
 import styles from "./settings.module.css";
+import { useNotification } from "@/hooks/use-notification";
+import { StatTable } from "../StatTable";
 
 const updateSchema = z.object({
   name: z
@@ -36,13 +37,13 @@ type User = z.infer<typeof updateSchema>;
 
 export function Settings({ apiKey }: { apiKey: any }) {
   const [opened, { open, close }] = useDisclosure(false);
+  const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
   });
-
+ 
   const {
     register,
     handleSubmit: handleUpdateKey,
@@ -54,7 +55,9 @@ export function Settings({ apiKey }: { apiKey: any }) {
 
   const handleDeleteKey = async () => {
     setLoading(true);
-    await deleteKey({ keyId: apiKey.id });
+    const res = await deleteKey({ keyId: apiKey.id });
+    if (res?.status !== 204) return notifyError(res?.message as string);
+    notifySuccess(res?.message as string);
     setLoading(false);
 
     router.push("/dashboard");
@@ -62,7 +65,10 @@ export function Settings({ apiKey }: { apiKey: any }) {
 
   const onUpdateKey: SubmitHandler<User> = async (values) => {
     setLoading(true);
-    await updateKey({ keyId: apiKey.id, name: values.name });
+    const res = await updateKey({ keyId: apiKey.id, name: values.name });
+    if (res?.status !== 200) return notifyError(res?.message as string);
+    notifySuccess(res?.message as string);
+    setLoading(false);
   };
 
   const handleCopy = (copy: () => void) => {
@@ -148,46 +154,7 @@ export function Settings({ apiKey }: { apiKey: any }) {
           </Group>
         </Box>
       </Box>
-
-      <Box my="xl">
-        <Fragment key="key">
-          <Title order={2}>Usage Statistics</Title>
-          <Table className="mt-3 mb-6">
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Created</Table.Th>
-                <Table.Th>Expires</Table.Th>
-                <Table.Th>Remaining</Table.Th>
-                <Table.Th>Refill Interval</Table.Th>
-                <Table.Th>Refill Amount</Table.Th>
-                <Table.Th>Rate Limit Type</Table.Th>
-                <Table.Th>Rate Limit</Table.Th>
-                <Table.Th>Refill Rate</Table.Th>
-                <Table.Th>Refill Interval</Table.Th>
-                <Table.Th>Status</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              <Table.Tr key="r">
-                <Table.Td>
-                  {dayjs(apiKey.createdAt).format("MMM DD, YYYY")}
-                </Table.Td>
-                <Table.Td>
-                  {dayjs(apiKey.expires).format("MMM DD, YYYY")}
-                </Table.Td>
-                <Table.Td>{apiKey.remaining}</Table.Td>
-                <Table.Td>{apiKey.refill.interval}</Table.Td>
-                <Table.Td>{apiKey.refill.amount}</Table.Td>
-                <Table.Td>{apiKey.ratelimit.type}</Table.Td>
-                <Table.Td>{apiKey.ratelimit.limit}</Table.Td>
-                <Table.Td>{apiKey.ratelimit.refillRate}</Table.Td>
-                <Table.Td>{apiKey.ratelimit.refillInterval}</Table.Td>
-                <Table.Td>{apiKey.enabled ? "Enabled" : "Disabled"}</Table.Td>
-              </Table.Tr>
-            </Table.Tbody>
-          </Table>
-        </Fragment>
-      </Box>
+      <StatTable data={apiKey} />
 
       {/* <Box my="xl">
           <Title order={2}>Requirements</Title>

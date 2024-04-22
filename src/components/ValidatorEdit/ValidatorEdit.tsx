@@ -45,7 +45,7 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
   const [opened, { open, close }] = useDisclosure(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const router = useRouter();
-  console.log("validator", validator);
+
   const form = useForm({
     initialValues: {
       name: validator?.name || "",
@@ -57,11 +57,9 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
   const onSubmit = async (
     values: Pick<ValidatorType, "name" | "description">,
   ) => {
-    console.log("from onSubmit", values);
     setLoading(true);
     try {
       const res = await updateValidator({ id: validator.id, ...values });
-      console.log("res", res);
       if (res?.error) return notifyError(res?.message);
       notifySuccess(res?.message as string);
       router.back();

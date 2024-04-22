@@ -8,6 +8,8 @@ import { ValidatorDashboard } from "@/components/ValidatorDashbord";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { and, eq } from "drizzle-orm";
 import { subscriptions } from "@/db/schema";
+import { getUserAPIKeys } from "@/actions/keys";
+import { ValidatorType } from "@/db/types/validator";
 
 export default async function Page() {
   const user = await getAuthUser();
@@ -54,12 +56,19 @@ export default async function Page() {
     const endpoints = await getEndpoints();
     const subnets = await getSubnets();
 
+    const promises = validators.map(async (v: ValidatorType) => {
+      const res = await getUserAPIKeys({ apiId: v.apiId as string });
+      return { validator: { ...v, ...res?.result } };
+    });
+    const stats = await Promise.all(promises);
+
     return (
       <ValidatorDashboard
         user={user}
         subnets={subnets}
         endpoints={endpoints}
         validators={validators}
+        stats={stats}
       />
     );
   }
