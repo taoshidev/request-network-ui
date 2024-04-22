@@ -69,6 +69,15 @@ export function EndpointFormInput({
       </Box>
       <Box mb="md">
         <NumberInput
+          label="Price"
+          withAsterisk
+          description="Price in USDC/USDT"
+          placeholder="5"
+          {...form.getInputProps("price")}
+        />
+      </Box>
+      <Box mb="md">
+        <NumberInput
           label="Limit"
           withAsterisk
           description="The total amount of burstable requests."
