@@ -23,7 +23,11 @@ export function StatTable({
             {caption ? caption : "Usage Statistics"}
           </Title>
         )}
-        <Table className="mt-3 mb-6" highlightOnHover striped>
+        <Table
+          className="mt-3 mb-6"
+          highlightOnHover
+          striped={Array.isArray(data)}
+        >
           <Table.Thead>
             <Table.Tr>
               {caption && <Table.Th>Key Name</Table.Th>}
