@@ -87,7 +87,7 @@ export function SubnetValidator({
                 </Badge>
               </Group>
 
-              <Text className="text-xs mb-4">{validator?.description}</Text>
+              <Text className="text-xs mb-4" truncate>{validator?.description}</Text>
 
               <Button
                 disabled={!validator?.verified}

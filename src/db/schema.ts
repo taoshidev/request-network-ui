@@ -132,6 +132,7 @@ export const subscriptions = pgTable(
     apiKey: varchar("api_key"),
     apiSecret: varchar("api_secret"),
     escrowPublicKey: varchar("escrow_public_key"),
+    appName: varchar("app_name"),
     consumerApiUrl: varchar("consumer_api_url").notNull(),
   },
   (table) => ({

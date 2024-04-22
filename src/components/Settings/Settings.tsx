@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import superjson from "superjson";
+import { useState, useEffect, Fragment } from "react";
+import dayjs from "dayjs";
 import {
   Container,
   Title,
@@ -13,18 +13,16 @@ import {
   Modal,
   Alert,
   CopyButton,
+  Table,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
-import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
 import { deleteKey, updateKey } from "@/actions/keys";
 import { TAOSHI_REQUEST_KEY } from "@/constants";
-
 import styles from "./settings.module.css";
 
 const updateSchema = z.object({
@@ -149,6 +147,46 @@ export function Settings({ apiKey }: { apiKey: any }) {
             </Button>
           </Group>
         </Box>
+      </Box>
+
+      <Box my="xl">
+        <Fragment key="key">
+          <Title order={2}>Usage Statistics</Title>
+          <Table className="mt-3 mb-6">
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Created</Table.Th>
+                <Table.Th>Expires</Table.Th>
+                <Table.Th>Remaining</Table.Th>
+                <Table.Th>Refill Interval</Table.Th>
+                <Table.Th>Refill Amount</Table.Th>
+                <Table.Th>Rate Limit Type</Table.Th>
+                <Table.Th>Rate Limit</Table.Th>
+                <Table.Th>Refill Rate</Table.Th>
+                <Table.Th>Refill Interval</Table.Th>
+                <Table.Th>Status</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              <Table.Tr key="r">
+                <Table.Td>
+                  {dayjs(apiKey.createdAt).format("MMM DD, YYYY")}
+                </Table.Td>
+                <Table.Td>
+                  {dayjs(apiKey.expires).format("MMM DD, YYYY")}
+                </Table.Td>
+                <Table.Td>{apiKey.remaining}</Table.Td>
+                <Table.Td>{apiKey.refill.interval}</Table.Td>
+                <Table.Td>{apiKey.refill.amount}</Table.Td>
+                <Table.Td>{apiKey.ratelimit.type}</Table.Td>
+                <Table.Td>{apiKey.ratelimit.limit}</Table.Td>
+                <Table.Td>{apiKey.ratelimit.refillRate}</Table.Td>
+                <Table.Td>{apiKey.ratelimit.refillInterval}</Table.Td>
+                <Table.Td>{apiKey.enabled ? "Enabled" : "Disabled"}</Table.Td>
+              </Table.Tr>
+            </Table.Tbody>
+          </Table>
+        </Fragment>
       </Box>
 
       {/* <Box my="xl">

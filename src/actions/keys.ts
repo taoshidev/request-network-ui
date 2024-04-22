@@ -30,7 +30,6 @@ export const deleteKey = async ({ keyId }: { keyId: string }) => {
 
 export const getKey = async ({ keyId }: { keyId: string }) => {
   const { error, result } = await unkey.keys.get({ keyId });
-
   return { error, result };
 };
 
