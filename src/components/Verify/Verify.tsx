@@ -37,8 +37,6 @@ export function Verify({ onComplete, user }: any) {
     const { signature, account } = await sign(message);
     const test = await isValidSignature(message, signature, account.address);
 
-    console.log(test);
-
     // setLoading(true);
     // try {
     //   await createValidator({

@@ -15,6 +15,7 @@ export const updateKey = async ({
       keyId,
       ...params,
     });
+    return { status: 200, message: "Key updated successfully" };
   } catch (error) {
     console.error(error);
   }
@@ -23,6 +24,7 @@ export const updateKey = async ({
 export const deleteKey = async ({ keyId }: { keyId: string }) => {
   try {
     await unkey.keys.delete({ keyId });
+    return { status: 204, message: "Key deleted successfully" };
   } catch (error) {
     console.error(error);
   }
@@ -55,12 +57,13 @@ export const getUserAPIKeys = async ({
   ownerId,
 }: {
   apiId: string;
-  ownerId: string;
+  ownerId?: string;
 }) => {
-  const { error, result } = await unkey.apis.listKeys({
-    apiId,
-    ownerId,
-  });
-
-  return { error, result };
+  const request = {
+    apiId
+  }
+  if(ownerId) {
+    Object.assign(request, {ownerId})
+  }
+  return await unkey.apis.listKeys(request);
 };
