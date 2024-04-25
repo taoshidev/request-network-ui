@@ -29,7 +29,7 @@ import { useNotification } from "@/hooks/use-notification";
 import { useRouter } from "next/navigation";
 
 export const EndpointSchema = z.object({
-  url: z.string().url({ message: "Endpoint must be a valid URL" }),
+  url: z.string().min(1),
   limit: z.number().int().min(1),
   refillRate: z.number().int().min(1),
   refillInterval: z.number().int().min(1),
@@ -65,6 +65,7 @@ export function Endpoint({
       const res = await updateEndpoint({ id, ...values });
       if (res?.error) return notifyError(res?.message);
       notifySuccess(res.message);
+      router.refresh();
       router.back();
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
@@ -126,9 +127,9 @@ export function Endpoint({
         >
           <Box mb="md" flex="2">
             <TextInput
-              label="URL"
+              label="Endpoint Path"
               withAsterisk
-              placeholder="URL"
+              placeholder="/api/v1/my-resource-endpoint"
               {...form.getInputProps("url")}
             />
           </Box>

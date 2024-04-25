@@ -80,17 +80,17 @@ export const rpc = {
     getSubnetsInfo: {
       description: "Get subnets info",
       params: [],
-      type: "Vec<u16>",
+      type: "Vec<u8>",
     },
     getSubnetInfo: {
       description: "Get subnet info",
       params: [
         {
           name: "netuid",
-          type: "u64",
+          type: "u16",
         },
       ],
-      type: "Vec<u16>",
+      type: "Vec<u8>",
     },
   },
 };

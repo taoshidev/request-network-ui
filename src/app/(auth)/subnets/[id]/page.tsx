@@ -3,6 +3,7 @@ import { getValidators } from "@/actions/validators";
 import { SubnetValidator } from "@/components/SubnetValidator";
 import { eq, and } from "drizzle-orm";
 import { endpoints, subnets, validators } from "@/db/schema";
+import { SubnetType } from "@/db/types/subnet";
 
 export default async function Page({ params }: any) {
   const { id } = params;
@@ -25,5 +26,12 @@ export default async function Page({ params }: any) {
       },
     },
   });
-  return <SubnetValidator subnet={subnet?.[0] || {}} validators={vali} />;
+
+  return (
+    <SubnetValidator
+      mode="navigation"
+      subnet={subnet?.[0] as SubnetType}
+      validators={vali}
+    />
+  );
 }

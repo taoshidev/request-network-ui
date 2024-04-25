@@ -23,7 +23,7 @@ const seed = async () => {
     await db
       .insert(subnets)
       .values(seedData)
-      .onConflictDoNothing({ target: subnets.value });
+      .onConflictDoNothing({ target: subnets.id });
 
     console.log("Seeded");
   } catch (error) {

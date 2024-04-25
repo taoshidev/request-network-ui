@@ -4,21 +4,14 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Title, Text, Box, Grid, Card } from "@mantine/core";
 import { clsx } from "clsx";
-import { EndpointType } from "@/app/(auth)/endpoints/types";
 import { useRegistration, RegistrationData } from "@/providers/registration";
-
-interface Subnet {
-  id: string;
-  label: string;
-  name: string;
-  endpoints: Array<EndpointType>;
-}
+import { SubnetType } from "@/db/types/subnet";
 
 export function Subnets({
   subnets,
   mode = "navigation",
 }: {
-  subnets: Subnet[];
+  subnets: SubnetType[];
   mode: "navigation" | "registration";
 }) {
   const router = useRouter();
@@ -34,7 +27,7 @@ export function Subnets({
       updateData?.({ subnet: null } as RegistrationData);
     } else {
       setSelectedSubnet(subnet.id);
-      updateData?.({ subnet } as RegistrationData);
+      updateData?.({ subnet, validator: null } as RegistrationData);
     }
 
     if (mode === "navigation") {
@@ -43,12 +36,12 @@ export function Subnets({
   };
 
   const selected = useCallback(
-    (subnet: Subnet) => selectedSubnet === subnet.id,
+    (subnet: SubnetType) => selectedSubnet === subnet.id,
     [selectedSubnet]
   );
 
   const disabled = useCallback(
-    (subnet: Subnet) => subnet?.endpoints?.length === 0,
+    (subnet: SubnetType) => subnet?.endpoints?.length === 0,
     []
   );
 

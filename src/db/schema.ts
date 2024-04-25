@@ -42,6 +42,7 @@ export const subnets = pgTable("subnets", {
     .default(sql`gen_random_uuid()`)
     .primaryKey()
     .notNull(),
+  netUid: integer("net_uid"),
   label: varchar("label"),
 });
 
@@ -124,10 +125,12 @@ export const subscriptions = pgTable(
       .default(sql`gen_random_uuid()`)
       .primaryKey()
       .notNull(),
-    endpointId: uuid("endpoint_id")
-      .references(() => endpoints.id, { onDelete: "set null" }),
-    userId: uuid("user_id")
-      .references(() => users.id, { onDelete: "set null" }),
+    endpointId: uuid("endpoint_id").references(() => endpoints.id, {
+      onDelete: "set null",
+    }),
+    userId: uuid("user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
     keyId: varchar("key_id"),
     apiKey: varchar("api_key"),
     apiSecret: varchar("api_secret"),
