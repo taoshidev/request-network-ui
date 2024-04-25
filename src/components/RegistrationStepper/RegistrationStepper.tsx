@@ -13,7 +13,11 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { generateShortId } from "@/utils/ids";
-import { useRegistration, RegistrationData } from "@/providers/registration";
+import {
+  useRegistration,
+  RegistrationData,
+  defaultContextValue,
+} from "@/providers/registration";
 import { createKey, updateKey } from "@/actions/keys";
 import {
   createSubscription,
@@ -23,10 +27,11 @@ import { getAuthUser } from "@/actions/auth";
 import { useNotification } from "@/hooks/use-notification";
 import { Logo } from "@/components/Logo";
 import { KeyModal, keyType } from "@components/KeyModal";
+import Loading from "@/app/(auth)/loading";
 import { EndpointType } from "@/db/types/endpoint";
 import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
-import { z } from "zod";
+import { z, ZodIssue } from "zod";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -36,7 +41,6 @@ const domainSchema = z.object({
 });
 
 const REGISTRATION_STEPS = 3;
-
 interface StepText {
   [key: string | number]: string;
 }
@@ -56,7 +60,6 @@ export function RegistrationStepper({
   StepTwo: React.ReactElement;
   StepThree: React.ReactElement;
 }) {
-  const [active, setActive] = useState(0);
   const [keys, setKeys] = useState<{
     apiKey: string;
     apiSecret: string;
@@ -70,9 +73,11 @@ export function RegistrationStepper({
   });
   const [opened, { open, close }] = useDisclosure(false);
   const { updateData, registrationData } = useRegistration();
+  const [active, setActive] = useState(+registrationData?.currentStep || 0);
   const { notifySuccess, notifyError } = useNotification();
+  const [pageLoading, setPageLoading] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<ZodIssue[]>([]);
   const [disabled, setDisabled] = useState(true);
 
   const scrollToTop = () => {
@@ -83,13 +88,15 @@ export function RegistrationStepper({
     setActive((current) =>
       current < REGISTRATION_STEPS ? current + 1 : current
     );
-
+    updateData({
+      currentStep: active < REGISTRATION_STEPS ? active + 1 : active,
+    });
     scrollToTop();
   };
 
   const prevStep = () => {
     setActive((current) => (current > 0 ? current - 1 : current));
-
+    updateData({ currentStep: active > 0 ? active - 1 : active });
     scrollToTop();
   };
 
@@ -98,6 +105,15 @@ export function RegistrationStepper({
   };
 
   const isLastStep = useMemo(() => active !== 3, [active]);
+
+  useEffect(() => () => updateData(defaultContextValue.registrationData), []);
+
+  useEffect(() => {
+    if (registrationData) {
+      setActive(registrationData.currentStep);
+    }
+    setPageLoading(false);
+  }, [registrationData]);
 
   useEffect(() => {
     const disabled =
@@ -110,7 +126,7 @@ export function RegistrationStepper({
   }, [registrationData, active]);
 
   const handleCompleteRegistration = async () => {
-    if (error) setError("");
+    if (errors) setErrors([]);
 
     const consumerApiUrl = registrationData?.consumerApiUrl;
     const appName = registrationData?.appName;
@@ -121,22 +137,25 @@ export function RegistrationStepper({
     });
 
     if (!validationResult.success) {
-      const firstError = validationResult.error.issues[0];
-      setError(firstError.message);
+      setErrors(validationResult.error.issues);
       return;
     }
 
     setLoading(true);
+
     const currentUser = await getAuthUser();
     const validator = registrationData?.validator;
+    const subnet = registrationData?.subnet;
     const userId = currentUser?.id;
-    const endpointId = validator?.endpoints?.[0].id as string;
-    const shortId = generateShortId(currentUser?.id as string, endpointId);
     const apiId = validator?.apiId;
     const validatorId = validator?.id;
     const endpoint = validator?.endpoints?.find(
-      (e: EndpointType) => e.id === endpointId
+      (e: EndpointType) => e.subnet === subnet.id
     );
+
+    const endpointId = endpoint.id;
+    const shortId = generateShortId(currentUser?.id as string, endpointId);
+
     try {
       const refill = {
         interval: "daily",
@@ -245,10 +264,16 @@ export function RegistrationStepper({
       throw new Error((error as Error)?.message);
     } finally {
       setLoading(false);
+      updateData({
+        appName: "",
+        consumerApiUrl: "",
+      });
     }
   };
 
-  return (
+  return pageLoading ? (
+    <Loading />
+  ) : (
     <>
       <KeyModal
         apiKey={keys.apiKey}
@@ -301,9 +326,11 @@ export function RegistrationStepper({
                       updateData({
                         appName: e.target.value,
                       } as RegistrationData);
-                      if (error) setError("");
+                      if (errors) setErrors([]);
                     }}
-                    error={error}
+                    error={
+                      errors?.find((e) => e.path.includes("appName"))?.message
+                    }
                     placeholder="Application Name"
                   />
                   <TextInput
@@ -313,9 +340,12 @@ export function RegistrationStepper({
                       updateData({
                         consumerApiUrl: e.target.value,
                       } as RegistrationData);
-                      if (error) setError("");
+                      if (errors) setErrors([]);
                     }}
-                    error={error}
+                    error={
+                      errors?.find((e) => e.path.includes("consumerApiUrl"))
+                        ?.message
+                    }
                     placeholder="https://example.com"
                   />
                 </Box>
