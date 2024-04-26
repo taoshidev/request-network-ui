@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { isAddress } from "@/utils/address";
+import { EndpointSchema } from "./endpoint";
 
 export const ValidatorSchema = z.object({
   id: z.string().uuid().optional(),
@@ -21,6 +22,7 @@ export const ValidatorSchema = z.object({
   signature: z.string().optional(),
   vtrust: z.string().optional(),
   verified: z.boolean().optional(),
+  endpoints: z.array(EndpointSchema)
 });
 
 export type ValidatorType = z.infer<typeof ValidatorSchema>;
