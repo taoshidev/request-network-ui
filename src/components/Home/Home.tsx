@@ -48,7 +48,7 @@ const groceries = [
 
 export function Home() {
   const items = groceries.map((item) => (
-    <Accordion.Item key={item.value} value={item.value}>
+    <Accordion.Item className="bg-gray-200" key={item.value} value={item.value}>
       <Accordion.Control icon={item.emoji}>{item.value}</Accordion.Control>
       <Accordion.Panel>{item.description}</Accordion.Panel>
     </Accordion.Item>
@@ -280,7 +280,7 @@ export function Home() {
           <h2 className="text-2xl font-bold mb-8">Do You Have Questions?</h2>
           <p>We Have The Answers</p>
         </div>
-        <Accordion variant="separated" defaultValue="Apples">
+        <Accordion radius={0} variant="separated" defaultValue="Apples">
           {items}
         </Accordion>
       </div>
@@ -313,7 +313,29 @@ export function Home() {
         </div>
       </div>
       <div className="bg-primary-500">
-        <div className="container max-w-5xl mx-auto">ken</div>
+        <div className="container max-w-5xl mx-auto py-8">
+          <p className="mb-12 font-adlam-display font-bold text-3xl text-primary-700">
+            taoshi
+          </p>
+          <div className="flex text-white">
+            <div className="flex-1">
+              <p className="font-bold mb-4">Products</p>
+              <div className="flex flex-col text-sm gap-2">
+                <a href="#">Proprietary Trading Network</a>
+                <a href="#">Models</a>
+                <a href="#">Dashboard</a>
+              </div>
+            </div>
+            <div className="flex-1">
+              <p className="font-bold mb-4">Company</p>
+              <div className="flex flex-col text-sm gap-2">
+                <a href="#">Partners</a>
+                <a href="#">Our Team</a>
+                <a href="#">Contact Us</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
