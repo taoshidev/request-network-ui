@@ -1,41 +1,42 @@
-"use client";
-
-import Link from "next/link";
-import NextImage from "next/image";
 import {
-  Image,
-  Anchor,
-  Group,
-  Indicator,
   Burger,
-  Divider,
+  Group,
+  Anchor,
+  Menu,
+  Indicator,
   Button,
   Text,
+  Divider,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import Link from "next/link";
+import { IconLogout, IconUser, IconChevronDown } from "@tabler/icons-react";
 
-import logo from "@/assets/logo.svg";
+import { signout } from "@/actions/auth";
 
-export function Header() {
+export function HeaderHome() {
   const [opened, { toggle }] = useDisclosure();
 
+  const handleSignOut = async () => {
+    await signout();
+  };
+
   return (
-    <Group className="h-full px-2">
+    <Group className="h-full p-4">
       <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
       <Group className="flex-1 justify-between">
-        <Group>
-          <Image component={NextImage} src={logo} alt="Taoshi" w={40} h={40} />
+        <Group className="items-center justify-center">
           <Anchor
-            className="font-adlam-display font-bold text-black"
+            className="mr-1 font-adlam-display font-bold text-2xl text-primary-700"
             component={Link}
-            href="/"
+            href="/dashboard"
           >
             taoshi
           </Anchor>
         </Group>
-        <Group className="ml-1" visibleFrom="sm">
+        <Group gap="xl" className="ml-1" visibleFrom="sm">
           <Anchor
-            className="text-sm text-black"
+            className="text-sm text-primary-800"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
@@ -45,7 +46,7 @@ export function Header() {
             </Indicator>
           </Anchor>
           <Anchor
-            className="text-sm text-black"
+            className="text-sm text-primary-800"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
@@ -53,7 +54,7 @@ export function Header() {
             Docs
           </Anchor>
           <Anchor
-            className="text-sm text-black"
+            className="text-sm text-primary-800"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
@@ -61,17 +62,13 @@ export function Header() {
             Help
           </Anchor>
           <Anchor
-            className="text-sm text-black"
+            className="text-sm text-primary-800"
             component={Link}
             href="docs.taoshi.io"
             target="_blank"
           >
             Support
           </Anchor>
-          <Divider color="black" variant="dashed" orientation="vertical" />
-          <Button component={Link} href="/dashboard">
-            <Text className="text-sm">Dashboard</Text>
-          </Button>
         </Group>
       </Group>
     </Group>

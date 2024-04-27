@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 import { appConfig } from "./src/theme/colors";
-const plugin = require("tailwindcss/plugin");
+import plugin from "tailwindcss/plugin";
 // import plugin from "tailwindcss";
 
 const config: Config = {
