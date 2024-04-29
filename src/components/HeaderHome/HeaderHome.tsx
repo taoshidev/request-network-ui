@@ -1,25 +1,10 @@
-import {
-  Burger,
-  Group,
-  Anchor,
-  Menu,
-  Indicator,
-  Button,
-  Text,
-  Divider,
-} from "@mantine/core";
+import { Burger, Group, Anchor, Button } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
-import { IconLogout, IconUser, IconChevronDown } from "@tabler/icons-react";
-
-import { signout } from "@/actions/auth";
+import { IconHelpSquare, IconScript, IconChartBar } from "@tabler/icons-react";
 
 export function HeaderHome() {
   const [opened, { toggle }] = useDisclosure();
-
-  const handleSignOut = async () => {
-    await signout();
-  };
 
   return (
     <Group className="h-full p-4">
@@ -35,40 +20,40 @@ export function HeaderHome() {
           </Anchor>
         </Group>
         <Group gap="xl" className="ml-1" visibleFrom="sm">
-          <Anchor
-            className="text-sm text-primary-800"
+          <Button
+            className="text-sm text-primary-800 font-normal"
             component={Link}
+            leftSection={<IconChartBar size={14} />}
             href="docs.taoshi.io"
             target="_blank"
           >
-            <Indicator position="top-start" size={6}>
-              Status
-            </Indicator>
-          </Anchor>
-          <Anchor
-            className="text-sm text-primary-800"
+            Status
+          </Button>
+          <Button
+            className="text-sm text-primary-800 font-normal"
             component={Link}
+            leftSection={<IconScript size={14} />}
             href="docs.taoshi.io"
             target="_blank"
           >
             Docs
-          </Anchor>
-          <Anchor
-            className="text-sm text-primary-800"
+          </Button>
+          <Button
+            className="text-sm text-primary-800 font-normal"
             component={Link}
-            href="docs.taoshi.io"
-            target="_blank"
-          >
-            Help
-          </Anchor>
-          <Anchor
-            className="text-sm text-primary-800"
-            component={Link}
+            leftSection={<IconHelpSquare size={14} />}
             href="docs.taoshi.io"
             target="_blank"
           >
             Support
-          </Anchor>
+          </Button>
+          <Button
+            className="text-sm font-normal bg-primary-700"
+            component={Link}
+            href="/dashboard"
+          >
+            Dashboard
+          </Button>
         </Group>
       </Group>
     </Group>

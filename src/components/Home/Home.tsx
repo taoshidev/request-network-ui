@@ -77,10 +77,19 @@ export function Home() {
                 aliquip reprehenderit.
               </p>
               <div className="flex gap-4 justify-center">
-                <Button component={Link} href="/dashboard">
+                <Button
+                  className="bg-primary-700"
+                  component={Link}
+                  href="/dashboard"
+                >
                   <Text size="sm">Get Started</Text>
                 </Button>
-                <Button component={Link} href="/dashboard">
+                <Button
+                  variant="transparent"
+                  className="text-white hover:text-primary-700"
+                  component={Link}
+                  href="/dashboard"
+                >
                   <Text size="sm">Documentation</Text>
                 </Button>
               </div>
@@ -302,10 +311,19 @@ export function Home() {
               reprehenderit.
             </p>
             <div className="flex gap-4 justify-center">
-              <Button component={Link} href="/dashboard">
+              <Button
+                className="text-sm bg-black font-normal"
+                component={Link}
+                href="/dashboard"
+              >
                 <Text size="sm">Get Started</Text>
               </Button>
-              <Button component={Link} href="/dashboard">
+              <Button
+                className="text-black"
+                variant="transparent"
+                component={Link}
+                href="/dashboard"
+              >
                 <Text size="sm">Documentation</Text>
               </Button>
             </div>
@@ -321,17 +339,44 @@ export function Home() {
             <div className="flex-1">
               <p className="font-bold mb-4">Products</p>
               <div className="flex flex-col text-sm gap-2">
-                <a href="#">Proprietary Trading Network</a>
-                <a href="#">Models</a>
-                <a href="#">Dashboard</a>
+                <a href="https://www.taoshi.io/ptn" target="_blank">
+                  Proprietary Trading Network
+                </a>
+                <a href="https://huggingface.co/Taoshi" target="_blank">
+                  Models
+                </a>
+                <a href="https://dashboard.taoshi.io/" target="_blank">
+                  Dashboard
+                </a>
               </div>
             </div>
             <div className="flex-1">
               <p className="font-bold mb-4">Company</p>
               <div className="flex flex-col text-sm gap-2">
-                <a href="#">Partners</a>
-                <a href="#">Our Team</a>
-                <a href="#">Contact Us</a>
+                <a href="https://www.taoshi.io/partners" target="_blank">
+                  Partners
+                </a>
+                <a href="https://www.taoshi.io/#team" target="_blank">
+                  Our Team
+                </a>
+                <a href="mailto:support@taoshi.io">Contact Us</a>
+              </div>
+            </div>
+            <div className="flex-1">
+              <p className="font-bold mb-4">Social Media</p>
+              <div className="flex flex-col text-sm gap-2">
+                <a href="https://twitter.com/taoshiio" target="_blank">
+                  Twitter
+                </a>
+                <a
+                  href="https://www.linkedin.com/company/taoshi/"
+                  target="_blank"
+                >
+                  LinkedIn
+                </a>
+                <a href="https://discord.gg/pXa2Mnqu" target="_blank">
+                  Discord
+                </a>
               </div>
             </div>
           </div>
