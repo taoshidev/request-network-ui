@@ -1,25 +1,20 @@
 "use client";
-import NextImage from "next/image";
+
 import {
   Box,
   Container,
   Divider,
   Flex,
   Group,
-  Image,
   Text,
   Title,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import Logo from "@/assets/logo.svg";
 
 interface PageProps {
   children: React.ReactNode;
 }
 
 export default function Page({ children }: PageProps) {
-  const [opened, { toggle }] = useDisclosure();
-
   return (
     <Flex className="h-full">
       <Box p="md" className="w-6/12" display={{ base: "none", sm: "block" }}>
@@ -29,7 +24,7 @@ export default function Page({ children }: PageProps) {
         >
           <Box>
             <Group className="items-center text-white">
-              <Text className="font-bold" size="xl">
+              <Text className="font-bold font-adlam-display" size="xl">
                 taoshi
               </Text>
               <Divider variant="dashed" orientation="vertical" />
