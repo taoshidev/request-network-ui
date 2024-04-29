@@ -1,18 +1,18 @@
 import { z } from "zod";
 
-export const Refill = z.object({
+export const RefillSchema = z.object({
   interval: z.string(),
   amount: z.number(),
 });
 
-export const RateLimit = z.object({
+export const RateLimitSchema = z.object({
   type: z.string(),
   limit: z.number(),
   refillRate: z.number(),
   refillInterval: z.number(),
 });
 
-export const Meta = z.object({
+export const MetaSchema = z.object({
   shortId: z.string(),
   type: z.string(),
   consumerId: z.string(),
@@ -22,29 +22,29 @@ export const Meta = z.object({
   subscription: z.object({}),
 });
 
-export const Role = z.object({
+export const RoleSchema = z.object({
   roles: z.string(),
 });
 
-export const Key = z.object({
+export const KeySchema = z.object({
   id: z.string().optional(),
   start: z.string(),
   apiId: z.string(),
   workspaceId: z.string(),
   name: z.string().optional(),
   ownerId: z.string().optional(),
-  meta: Meta,
+  meta: MetaSchema,
   createdAt: z.date(),
   expires: z.date(),
   remaining: z.number(),
-  refill: Refill,
-  ratelimit: RateLimit,
-  roles: z.array(Role),
+  refill: RefillSchema,
+  ratelimit: RateLimitSchema,
+  roles: z.array(RoleSchema),
   enabled: z.boolean().optional(),
 });
 
-export type KeyType = z.infer<typeof Key>;
-export type MetaType = z.infer<typeof Meta>;
-export type RefillType = z.infer<typeof Refill>;
-export type RateLimitType = z.infer<typeof RateLimit>;
-export type RoleType = z.infer<typeof Role>;
+export type KeyType = z.infer<typeof KeySchema>;
+export type MetaType = z.infer<typeof MetaSchema>;
+export type RefillType = z.infer<typeof RefillSchema>;
+export type RateLimitType = z.infer<typeof RateLimitSchema>;
+export type RoleType = z.infer<typeof RoleSchema>;
