@@ -1,7 +1,7 @@
-import { createContext, useContext, useState, ReactElement } from "react";
+import { createContext, useContext, ReactElement } from "react";
+import { useLocalStorage } from "@mantine/hooks";
 
 export interface RegistrationData {
-  keyName: string;
   appName: string;
   consumerApiUrl: string;
   subnet: any;
@@ -10,30 +10,44 @@ export interface RegistrationData {
 }
 
 type ProviderValue = {
-  registrationData: RegistrationData | null;
-  updateData: (data: RegistrationData) => void;
+  registrationData: RegistrationData;
+  updateData: (data: Partial<RegistrationData>) => void;
 };
 
-const RegistrationContext = createContext<ProviderValue>({
-  registrationData: null,
+export const defaultContextValue: ProviderValue = {
+  registrationData: {
+    appName: "",
+    consumerApiUrl: "",
+    subnet: null,
+    validator: null,
+    currentStep: 0,
+  },
   updateData: () => {},
-});
+};
 
-export const useRegistration = () => useContext(RegistrationContext);
+const RegistrationContext = createContext<ProviderValue>(defaultContextValue);
+
+export const useRegistration = () => {
+  const context = useContext(RegistrationContext);
+  if (!context) {
+    throw new Error(
+      "useRegistration must be used within a RegistrationProvider"
+    );
+  }
+  return context;
+};
 
 export const RegistrationProvider = ({
   children,
 }: {
   children: ReactElement;
 }) => {
-  const [registrationData, setRegistrationData] = useState<RegistrationData>({
-    keyName: "",
-    appName: "",
-    consumerApiUrl: "",
-    subnet: null,
-    validator: null,
-    currentStep: 0,
-  });
+  const [registrationData, setRegistrationData] =
+    useLocalStorage<RegistrationData>({
+      key: "_reg_data",
+      defaultValue: defaultContextValue.registrationData,
+      getInitialValueInEffect: true,
+    });
 
   const updateData = (data: Partial<RegistrationData>) => {
     setRegistrationData((prev) => ({ ...prev, ...data }));

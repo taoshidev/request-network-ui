@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { nullableSchema } from "@/utils/nullable";
 
 export const SubscriptionSchema = z.object({
   id: z.string().uuid(),
@@ -15,4 +16,5 @@ export const SubscriptionSchema = z.object({
   }),
 });
 
-export type SubscriptionType = z.infer<typeof SubscriptionSchema>;
+const NullableSubscriptionSchema = nullableSchema(SubscriptionSchema);
+export type SubscriptionType = z.infer<typeof NullableSubscriptionSchema>;

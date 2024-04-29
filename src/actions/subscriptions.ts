@@ -32,7 +32,6 @@ export const updateSubscription = async ({
   ...values
 }: Partial<SubscriptionType>) => {
   try {
-
     const res = await db
       .update(subscriptions)
       .set({ ...values })
@@ -55,7 +54,7 @@ export const createSubscription = async (
   try {
     const res = await db
       .insert(subscriptions)
-      .values(subscription as SubscriptionType)
+      .values(subscription as any)
       .returning();
 
     revalidatePath("/dashboard");

@@ -1,0 +1,1 @@
+ALTER TABLE "subnets" ADD COLUMN "net_uid" integer;

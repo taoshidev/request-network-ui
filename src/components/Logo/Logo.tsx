@@ -58,6 +58,7 @@ export const Logo = ({ size = 250 }: LogoProps) => {
     };
 
     animate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -10,33 +10,22 @@ import {
   Stack,
   Divider,
 } from "@mantine/core";
-
+import dayjs from "dayjs";
 import { useRegistration } from "@/providers/registration";
-
 export function SubnetValidatorReview() {
   const { registrationData } = useRegistration();
 
   return (
     <Box>
       <Title className="text-center my-8 text-2xl">Review Selection</Title>
-
       <Card className="my-14 pb-8">
         <Title className="text-xl mb-4">
           {registrationData?.validator.name}
         </Title>
-
         <Group className="justify-between items-start gap-8">
           <Box className="flex-1">
             <Text className="text-sm mb-4">
-              Aliquip laborum id enim minim dolore cillum et aute ex et minim
-              Lorem nisi nostrud non. Nisi ut irure mollit occaecat duis
-              consequat eu laborum. Do mollit non do in Lorem culpa consectetur.
-              Nostrud voluptate nulla aute.
-            </Text>
-            <Text className="text-sm">
-              Consequat velit enim anim velit nostrud et in. Commodo consequat
-              velit ad non incididunt enim culpa eiusmod exercitation labore
-              tempor.
+              {registrationData?.validator?.description}
             </Text>
           </Box>
           <Stack className="flex-1 gap-2">
@@ -57,26 +46,46 @@ export function SubnetValidatorReview() {
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
-              <Text className="text-sm">Vtrust</Text>
+              <Text className="text-sm">V-Trust</Text>
               <Text className="text-sm">
-                {registrationData?.validator.vtrust || "HIGH"}
+                {registrationData?.validator.validator_trust || "LOW"}
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
-              <Text className="text-sm">Latency</Text>
-              <Text className="text-sm">0.8ms</Text>
+              <Text className="text-sm">Price</Text>
+              <Text className="text-sm">
+                {registrationData?.validator?.selectedEndpoint?.price || "-"}
+              </Text>
+            </Group>
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Limit</Text>
+              <Text className="text-sm">
+                {registrationData?.validator?.selectedEndpoint?.limit || "-"}
+              </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
-              <Text className="text-sm">Uptime</Text>
-              <Text className="text-sm">90%</Text>
+              <Text className="text-sm">Refill Interval</Text>
+              <Text className="text-sm">
+                {registrationData?.validator?.selectedEndpoint
+                  ?.refillInterval || "-"}
+              </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Refill Rate</Text>
               <Text className="text-sm">
-                {registrationData?.subnet?.endpoints?.[0].refillRate}
+                {registrationData?.validator?.selectedEndpoint?.refillRate}
+              </Text>
+            </Group>
+            <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Expiry</Text>
+              <Text className="text-sm">
+                {dayjs(
+                  registrationData?.validator?.selectedEndpoint?.expires
+                ).format("MMM DD, YYYY") || "-"}
               </Text>
             </Group>
           </Stack>
