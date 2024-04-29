@@ -43,7 +43,7 @@ export function Settings({ apiKey }: { apiKey: any }) {
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
   });
- 
+
   const {
     register,
     handleSubmit: handleUpdateKey,
@@ -65,7 +65,10 @@ export function Settings({ apiKey }: { apiKey: any }) {
 
   const onUpdateKey: SubmitHandler<User> = async (values) => {
     setLoading(true);
-    const res = await updateKey({ keyId: apiKey.id, name: values.name });
+    const res = await updateKey({
+      keyId: apiKey.id,
+      params: { name: values.name },
+    });
     if (res?.status !== 200) return notifyError(res?.message as string);
     notifySuccess(res?.message as string);
     setLoading(false);

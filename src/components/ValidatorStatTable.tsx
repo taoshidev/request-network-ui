@@ -13,7 +13,7 @@ export function ValidatorStatTable({ data }: { data: ValidatorKeyType[] }) {
         {(data || []).map((item: ValidatorKeyType) => (
           <StatTable
             key={item?.validator.id}
-            data={item?.validator.keys}
+            data={item?.validator.keys as any}
             caption={item?.validator?.name}
           />
         ))}
