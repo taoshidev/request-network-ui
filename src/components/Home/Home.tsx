@@ -27,19 +27,16 @@ import subnet13 from "@/assets/bittensor/subnet-13.png";
 
 const groceries = [
   {
-    emoji: "🍎",
     value: "Consectetur aliqua qui consectetur voluptate mollit?",
     description:
       "Crisp and refreshing fruit. Apples are known for their versatility and nutritional benefits. They come in a variety of flavors and are great for snacking, baking, or adding to salads.",
   },
   {
-    emoji: "🍌",
     value: "Elit enim excepteur Lorem ad?",
     description:
       "Naturally sweet and potassium-rich fruit. Bananas are a popular choice for their energy-boosting properties and can be enjoyed as a quick snack, added to smoothies, or used in baking.",
   },
   {
-    emoji: "🥦",
     value: "Cillum dolore aute nulla ullamco magna proident?",
     description:
       "Nutrient-packed green vegetable. Broccoli is packed with vitamins, minerals, and fiber. It has a distinct flavor and can be enjoyed steamed, roasted, or added to stir-fries.",
@@ -49,7 +46,7 @@ const groceries = [
 export function Home() {
   const items = groceries.map((item) => (
     <Accordion.Item className="bg-gray-200" key={item.value} value={item.value}>
-      <Accordion.Control icon={item.emoji}>{item.value}</Accordion.Control>
+      <Accordion.Control>{item.value}</Accordion.Control>
       <Accordion.Panel>{item.description}</Accordion.Panel>
     </Accordion.Item>
   ));
