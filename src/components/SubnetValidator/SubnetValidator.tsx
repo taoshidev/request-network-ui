@@ -37,7 +37,7 @@ export function SubnetValidator({
   useEffect(() => {
     if (registrationData?.subnet?.endpoints) {
       const updatedValidators = registrationData.subnet.endpoints.flatMap(
-        (endpoint: any) => endpoint?.validators
+        (endpoint: EndpointType) => endpoint?.validators
       );
       const validatorsWithStats = updatedValidators.map(
         (validator: ValidatorType) => {
@@ -56,6 +56,7 @@ export function SubnetValidator({
       );
       setFilteredValidators(validatorsWithStats);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [registrationData]);
 
   const handleSubscribeClick = useCallback(

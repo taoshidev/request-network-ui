@@ -67,14 +67,14 @@ export default async function Page() {
                 );
 
                 return { ...endpoint, stats };
-              } catch (error) {
+              } catch (error: Error | unknown) {
                 console.error(
                   "Failed to fetch validator info for:",
                   validator.hotkey,
                   "with error:",
                   error
                 );
-                return { ...endpoint, error: error?.message };
+                return { ...endpoint, error: (error as Error)?.message };
               }
             })
           );

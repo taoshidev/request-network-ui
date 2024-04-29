@@ -48,7 +48,10 @@ export const updateValidator = async ({
 
 export const createValidator = async (validator: ValidatorType) => {
   try {
-    const res = await db.insert(validators).values(validator).returning();
+
+  
+
+    const res = await db.insert(validators).values(validator as any).returning();
 
     revalidatePath("/dashboard");
     return parseResult(res, { filter: ["hotkey"] });

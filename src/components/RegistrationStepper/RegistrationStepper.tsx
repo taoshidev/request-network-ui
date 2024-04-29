@@ -31,7 +31,7 @@ import Loading from "@/app/(auth)/loading";
 import { EndpointType } from "@/db/types/endpoint";
 import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
-import { z, ZodIssue } from "zod";
+import { z, ZodError, ZodIssue } from "zod";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -106,6 +106,7 @@ export function RegistrationStepper({
 
   const isLastStep = useMemo(() => active !== 3, [active]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => () => updateData(defaultContextValue.registrationData), []);
 
   useEffect(() => {
@@ -137,7 +138,7 @@ export function RegistrationStepper({
     });
 
     if (!validationResult.success) {
-      setErrors(validationResult.error.issues);
+      setErrors((validationResult as any)?.error?.issues as ZodIssue[]);
       return;
     }
 

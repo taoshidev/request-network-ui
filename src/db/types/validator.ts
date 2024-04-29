@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { isAddress } from "@/utils/address";
 import { EndpointSchema } from "./endpoint";
+import { nullableSchema } from "@/utils/nullable";
 
 export const ValidatorSchema = z.object({
   id: z.string().uuid().optional(),
@@ -25,4 +26,5 @@ export const ValidatorSchema = z.object({
   endpoints: z.array(EndpointSchema)
 });
 
-export type ValidatorType = z.infer<typeof ValidatorSchema>;
+const NullableValidatorSchema = nullableSchema(ValidatorSchema);
+export type ValidatorType = z.infer<typeof NullableValidatorSchema>;
