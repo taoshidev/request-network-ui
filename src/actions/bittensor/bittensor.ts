@@ -2,6 +2,7 @@ const { ApiPromise, WsProvider } = require("@polkadot/api");
 import { ApiOptions } from "@polkadot/api/types";
 import { rpc } from "./rpc";
 import { types } from "./types";
+import { ValidatorType } from "@/db/types/validator";
 
 const PROVIDER_URL =
   process.env.NEXT_PUBLIC_NODE_ENV === "development"
@@ -23,7 +24,7 @@ export const createBittensorApi = async () => {
       api.rpc.system.version(),
     ]);
 
-    api.on("error", (error) => console.error("API error:", error));
+    api.on("error", (error: Error) => console.error("API error:", error));
     
     console.log(
       `Connected to chain ${chain} using ${nodeName} v${nodeVersion}`
@@ -47,7 +48,7 @@ export const fetchValidatorInfo = async (netUid: number, hotkey?: string) => {
     const api = await createBittensorApi();
     const result = await fetchNeuronsLite(netUid);
     return (
-      (await (result || []).filter((v) => v.hotkey === hotkey)?.[0]) || null
+      (await (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0]) || null
     );
     // TODO: fetch by uid integer
     // const result = api.createType("NeuronInfo", validatorInfo);
