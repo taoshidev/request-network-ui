@@ -50,6 +50,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.50.0",
+    "sharp": "^0.33.3",
     "simplex-noise": "^4.0.1",
     "types": "link:@polkadot/extension-inject/types",
     "uuid": "^9.0.1",
