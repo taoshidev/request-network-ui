@@ -35,7 +35,7 @@ export const getEndpoint = async ({ id }: { id: string }) => {
 
 export const createEndpoint = async (endpoint: EndpointType) => {
   try {
-    const res = await db.insert(endpoints).values(endpoint).returning();
+    const res = await db.insert(endpoints).values(endpoint as any).returning();
     revalidatePath("/dashboard");
     return parseResult(res);
   } catch (error) {

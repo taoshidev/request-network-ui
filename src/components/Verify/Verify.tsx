@@ -5,12 +5,7 @@ import { Box, Button, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { z } from "zod";
-import { stringToHex, u8aToHex } from "@polkadot/util";
-
 import { isAddress } from "@/utils/address";
-import { updateUser } from "@/actions/auth";
-import { createValidator } from "@/actions/validators";
-
 import { sign, isValidSignature } from "@/lib/polkadot";
 
 const settingsSchema = z.object({

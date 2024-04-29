@@ -12,7 +12,7 @@ export function Subnets({
   mode = "navigation",
 }: {
   subnets: SubnetType[];
-  mode: "navigation" | "registration";
+  mode?: "navigation" | "registration";
 }) {
   const router = useRouter();
   const { updateData, registrationData } = useRegistration();

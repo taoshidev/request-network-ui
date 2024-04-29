@@ -72,7 +72,7 @@ export const sendToProxy = async ({
     path: string;
   };
   validatorId: string;
-  data: any;
+  data;
 }) => {
   try {
     const { url, method, path } = endpoint;

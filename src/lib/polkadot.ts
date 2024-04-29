@@ -9,7 +9,6 @@ import {
   cryptoWaitReady,
 } from "@polkadot/util-crypto";
 import type { HexString } from "@polkadot/util/types";
-
 import { stringToHex, u8aToHex } from "@polkadot/util";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 

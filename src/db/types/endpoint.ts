@@ -1,9 +1,12 @@
 import { z } from "zod";
+import { nullableSchema } from "@/utils/nullable";
+import { ValidatorSchema } from "./validator";
 
 export const EndpointSchema = z.object({
   id: z.string().uuid().optional(),
   subnet: z.string().uuid().optional(),
   validator: z.string().uuid().optional(),
+  validators: z.array(ValidatorSchema).optional(),
   price: z.string(),
   limit: z.number().int().min(1),
   url: z
@@ -18,4 +21,5 @@ export const EndpointSchema = z.object({
   remaining: z.number().int().min(1),
 });
 
-export type EndpointType = z.infer<typeof EndpointSchema>;
+const NullableEndpointSchema = nullableSchema(EndpointSchema);
+export type EndpointType = z.infer<typeof NullableEndpointSchema>;;

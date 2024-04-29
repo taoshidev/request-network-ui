@@ -18,9 +18,9 @@ export default async function Page() {
 
   return (
     <Endpoints
-      endpoints={endpoints}
+      endpoints={endpoints!}
       validators={validators}
-      subnets={subnets}
+      subnets={subnets!}
     />
   );
 }

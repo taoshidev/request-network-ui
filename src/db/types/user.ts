@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { nullableSchema } from "@/utils/nullable";
 
 export const UserSchema = z.object({
   id: z.string().uuid(),
@@ -11,4 +12,5 @@ export const UserSchema = z.object({
   onboardingStep: z.number().int(),
 });
 
-export type UserType = z.infer<typeof UserSchema>;
+const NullableUserSchema = nullableSchema(UserSchema);
+export type UserType = z.infer<typeof NullableUserSchema>;
