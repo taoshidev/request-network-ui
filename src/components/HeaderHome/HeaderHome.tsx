@@ -1,25 +1,24 @@
-import { Burger, Group, Anchor, Button } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Group, Anchor, Button } from "@mantine/core";
 import Link from "next/link";
-import { IconHelpSquare, IconScript, IconChartBar } from "@tabler/icons-react";
+import {
+  IconHelpSquare,
+  IconScript,
+  IconChartBar,
+  IconFileStack,
+} from "@tabler/icons-react";
 
 export function HeaderHome() {
-  const [opened, { toggle }] = useDisclosure();
-
   return (
     <Group className="h-full p-4">
-      <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
       <Group className="flex-1 justify-between">
-        <Group className="items-center justify-center">
-          <Anchor
-            className="mr-1 font-adlam-display font-bold text-2xl text-primary-700"
-            component={Link}
-            href="/dashboard"
-          >
-            taoshi
-          </Anchor>
-        </Group>
-        <Group gap="xl" className="ml-1" visibleFrom="sm">
+        <Anchor
+          className="mr-1 font-adlam-display font-bold text-2xl text-primary-700"
+          component={Link}
+          href="/dashboard"
+        >
+          taoshi
+        </Anchor>
+        <Group className="ml-1" visibleFrom="sm">
           <Button
             className="text-sm text-primary-800 font-normal"
             component={Link}
@@ -33,6 +32,15 @@ export function HeaderHome() {
             className="text-sm text-primary-800 font-normal"
             component={Link}
             leftSection={<IconScript size={14} />}
+            href="docs.taoshi.io"
+            target="_blank"
+          >
+            Whitepaper
+          </Button>
+          <Button
+            className="text-sm text-primary-800 font-normal"
+            component={Link}
+            leftSection={<IconFileStack size={14} />}
             href="docs.taoshi.io"
             target="_blank"
           >

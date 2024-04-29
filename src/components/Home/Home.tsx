@@ -69,9 +69,9 @@ export function Home() {
               />
               <h1 className="text-8xl font-bold mb-8 ">request network</h1>
               <p className="max-w-3xl mx-auto mb-8">
-                Do amet sit anim fugiat quis consectetur dolore enim anim
-                laborum occaecat qui consectetur. Pariatur aliquip amet sunt
-                aliquip reprehenderit.
+                Enter a new service and data exchange era with the Request
+                Network, a versatile platform built for the Bittensor ecosystem
+                and architected by Taoshi.
               </p>
               <div className="flex gap-4 justify-center">
                 <Button
@@ -96,18 +96,16 @@ export function Home() {
         <Image alt="Taoshi" component={NextImage} src={bg} />
       </div>
       <div className="container max-w-5xl mx-auto py-10 mb-32">
-        <div className="max-w-2xl mx-auto text-center mb-16">
-          <p className="text-primary-500">Alit</p>
-          <h2 className="text-2xl font-bold mb-8">
-            Fugiat ut est Lorem et reprehenderit duis est. Nisi nostrud enim
-            eiusmod.
+        <div className="max-w-xl mx-auto text-center mb-16">
+          <h2 className="text-2xl font-bold mb-4">
+            Harnessing the Collective Capabilities of Bittensor Subnets
           </h2>
           <p>Exercitation culpa et aliquip duis.</p>
         </div>
         <div className="flex gap-20 items-center">
           <div className="flex-1 flex flex-col gap-10">
             <div>
-              <p className="text-xl font-bold mb-4">
+              <p className="text-xl font-bold mb-2">
                 Do deserunt nisi minim cillum ad.
               </p>
               <p>
@@ -116,7 +114,7 @@ export function Home() {
               </p>
             </div>
             <div>
-              <p className="text-xl font-bold mb-4">
+              <p className="text-xl font-bold mb-2">
                 Aute aliqua laboris ullamco veniam.
               </p>
               <p>
@@ -125,7 +123,7 @@ export function Home() {
               </p>
             </div>
             <div>
-              <p className="text-xl font-bold mb-4">
+              <p className="text-xl font-bold mb-2">
                 Fugiat culpa commodo culpa ex consequat do magna.
               </p>
               <p>
@@ -271,7 +269,7 @@ export function Home() {
             />
           </div>
           <div className="flex-1">
-            <p className="text-xl mb-4 font-bold">
+            <p className="text-xl mb-2 font-bold">
               Do deserunt nisi minim cillum ad.
             </p>
             <p>
@@ -283,7 +281,7 @@ export function Home() {
       </div>
       <div className="container max-w-5xl mx-auto mb-32">
         <div className="max-w-2xl mx-auto text-center mb-16">
-          <h2 className="text-2xl font-bold mb-8">Do You Have Questions?</h2>
+          <h2 className="text-2xl font-bold mb-4">Do You Have Questions?</h2>
           <p>We Have The Answers</p>
         </div>
         <Accordion radius={0} variant="separated" defaultValue="Apples">
