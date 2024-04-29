@@ -107,7 +107,7 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
 
       const isValid = await isValidSignature(
         message,
-        signature,
+        signature as `0x${string}`,
         account?.address
       );
 
