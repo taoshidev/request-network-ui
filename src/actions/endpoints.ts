@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-
 import { endpoints } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
 import { EndpointType } from "@/db/types/endpoint";
