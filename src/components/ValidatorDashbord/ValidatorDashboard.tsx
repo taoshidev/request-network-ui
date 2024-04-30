@@ -15,7 +15,7 @@ export function ValidatorDashboard({
   return (
     <Fragment>
       <Validators user={user} validators={validators} subnets={subnets} />
-      {validators?.length && (
+      {validators?.length > 0 && (
         <>
           <Endpoints
             endpoints={endpoints}

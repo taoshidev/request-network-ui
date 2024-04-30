@@ -20,7 +20,7 @@ export const getValidators = async (query: object = {}) => {
   }
 };
 
-export const getValidator = async ({ id }: {id: string}) => {
+export const getValidator = async ({ id }: { id: string }) => {
   const res = await db.query.validators.findFirst({
     where: (validators, { eq }) => eq(validators.id, id as string),
   });
@@ -48,10 +48,10 @@ export const updateValidator = async ({
 
 export const createValidator = async (validator: ValidatorType) => {
   try {
-
-  
-
-    const res = await db.insert(validators).values(validator as any).returning();
+    const res = await db
+      .insert(validators)
+      .values(validator as any)
+      .returning();
 
     revalidatePath("/dashboard");
     return parseResult(res, { filter: ["hotkey"] });
@@ -79,7 +79,7 @@ export const createValidatorEndpoint = async (
 
       const newValidator = await updateValidator({
         id,
-        apiId: key?.data.apiId,
+        apiId: key?.data?.apiId,
         apiKey: generateApiKey(),
         apiSecret: generateApiSecret(),
       });

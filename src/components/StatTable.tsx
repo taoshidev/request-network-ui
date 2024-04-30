@@ -44,8 +44,8 @@ export function StatTable({
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {(Array.isArray(data) && data.length ? data : [data]).map((key) => (
-              <Table.Tr key={key.id}>
+            {(Array.isArray(data) && data.length ? data : [data]).map((key, i) => (
+              <Table.Tr key={`${key}-${i}`}>
                 {caption && <Table.Td>{key?.name}</Table.Td>}
                 <Table.Td>
                   {dayjs(key.createdAt).format("MMM DD, YYYY")}
