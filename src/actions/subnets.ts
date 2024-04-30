@@ -3,7 +3,7 @@
 import { db } from "@/db";
 import { SubnetType } from "@/db/types/subnet";
 
-export const getSubnets = async (query?: object): Promise<SubnetType[]> => {
+export const getSubnets = async (query?: object): Promise<SubnetType[] | void> => {
   try {
     const results = await db.query.subnets.findMany(query && query);
 

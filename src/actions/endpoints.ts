@@ -49,7 +49,7 @@ export const updateEndpoint = async ({
   try {
     const res = await db
       .update(endpoints)
-      .set(values)
+      .set(values as any)
       .where(eq(endpoints.id, id as string))
       .returning();
 

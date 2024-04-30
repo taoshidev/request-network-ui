@@ -20,7 +20,7 @@ export const getValidators = async (query: object = {}) => {
   }
 };
 
-export const getValidator = async ({ id }: ValidatorType) => {
+export const getValidator = async ({ id }: {id: string}) => {
   const res = await db.query.validators.findFirst({
     where: (validators, { eq }) => eq(validators.id, id as string),
   });
@@ -35,7 +35,7 @@ export const updateValidator = async ({
   try {
     const res = await db
       .update(validators)
-      .set({ ...values })
+      .set({ ...values } as any)
       .where(eq(validators.id, id as string))
       .returning();
 

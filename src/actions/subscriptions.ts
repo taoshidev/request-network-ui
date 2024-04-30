@@ -21,7 +21,7 @@ export const getSubscriptions = async (query: object = {}) => {
 
 export const getSubscription = async ({ id }: SubscriptionType) => {
   const res = await db.query.subscriptions.findFirst({
-    where: (subscriptions, { eq }) => eq(subscriptions.id, id),
+    where: (subscriptions, { eq }) => eq(subscriptions.id, id as string),
   });
   if (!res) throw new Error(`Subscription with ID ${id} not found.`);
   return filterData(res, ["key", "keyId"]);
@@ -34,7 +34,7 @@ export const updateSubscription = async ({
   try {
     const res = await db
       .update(subscriptions)
-      .set({ ...values })
+      .set({ ...values } as any)
       .where(eq(subscriptions.id, id as string))
       .returning();
 

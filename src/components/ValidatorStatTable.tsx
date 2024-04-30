@@ -14,7 +14,7 @@ export function ValidatorStatTable({ data }: { data: ValidatorKeyType[] }) {
           <StatTable
             key={item?.validator.id}
             data={item?.validator.keys as any}
-            caption={item?.validator?.name}
+            caption={item?.validator?.name as string}
           />
         ))}
       </Fragment>

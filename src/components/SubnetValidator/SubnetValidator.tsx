@@ -42,8 +42,8 @@ export function SubnetValidator({
       const validatorsWithStats = updatedValidators.map(
         (validator: ValidatorType) => {
           const endpoint = validators
-            ?.filter((vali) => vali.id === validator.id)?.[0]
-            .endpoints.find(
+            ?.filter((vali) => vali?.id === validator?.id)?.[0]
+            .endpoints?.find(
               (endpoint: EndpointType) =>
                 endpoint.subnet === registrationData.subnet.id
             );
@@ -112,7 +112,7 @@ export function SubnetValidator({
               <Group className="justify-between items-center mb-2">
                 <Text className="text-sm">Active:</Text>
                 <Badge size="sm" variant="light">
-                  {validator?.stats?.active.toString() || "FALSE"}
+                  {validator?.stats?.active!.toString() || "FALSE"}
                 </Badge>
               </Group>
               <Group className="justify-between items-center mb-2">
@@ -126,13 +126,13 @@ export function SubnetValidator({
               <Group className="justify-between items-center mb-2">
                 <Text className="text-sm">V-Trust:</Text>
                 <Badge size="sm" variant="light">
-                  {validator?.stats?.validator_trust.toString() || "-"}
+                  {validator?.stats?.validator_trust!.toString() || "-"}
                 </Badge>
               </Group>
               <Group className="justify-between items-center mb-2">
                 <Text className="text-sm">Trust:</Text>
                 <Badge size="sm" variant="light">
-                  {validator?.stats?.trust.toString() || "-"}
+                  {validator?.stats?.trust!.toString() || "-"}
                 </Badge>
               </Group>
               <Group className="justify-between items-center mb-2">
@@ -144,31 +144,31 @@ export function SubnetValidator({
               <Group className="justify-between items-center mb-2">
                 <Text className="text-sm">Consensus:</Text>
                 <Badge size="sm" variant="light">
-                  {validator?.stats?.consensus.toString() || "-"}
+                  {validator?.stats?.consensus!.toString() || "-"}
                 </Badge>
               </Group>
               <Group className="justify-between items-center mb-2">
                 <Text className="text-sm">Dividends:</Text>
                 <Badge size="sm" variant="light">
-                  {validator?.stats?.dividends.toString() || "-"}
+                  {validator?.stats?.dividends!.toString() || "-"}
                 </Badge>
               </Group>
               <Group className="justify-between items-center mb-2">
                 <Text className="text-sm">Emission:</Text>
                 <Badge size="sm" variant="light">
-                  {validator?.stats?.emission.toString() || "-"}
+                  {validator?.stats?.emission!.toString() || "-"}
                 </Badge>
               </Group>
               <Group className="justify-between items-center mb-2">
                 <Text className="text-sm">Incentive:</Text>
                 <Badge size="sm" variant="light">
-                  {validator?.stats?.incentive.toString() || "-"}
+                  {validator?.stats?.incentive!.toString() || "-"}
                 </Badge>
               </Group>
               <Group className="justify-between items-center mb-6">
                 <Text className="text-sm">Rank:</Text>
                 <Badge size="sm" variant="light">
-                  {validator?.stats?.rank.toString() || "-"}
+                  {validator?.stats?.rank!.toString() || "-"}
                 </Badge>
               </Group>
 

@@ -17,7 +17,6 @@ import {
 import { isEmpty } from "lodash";
 import dayjs from "dayjs";
 import { IconAlertCircle } from "@tabler/icons-react";
-import { ProductInfo } from "@/components/ProductInfo";
 import { SubscriptionType } from "@/db/types/subscription";
 import { getUserAPIKeys } from "@/actions/keys";
 import { EndpointType } from "@/db/types/endpoint";
@@ -46,7 +45,7 @@ export function Consumer({
       for (const sub of subscriptions) {
         const { result } = await getUserAPIKeys({
           apiId: sub?.endpoint?.validators?.apiId as string,
-          ownerId: sub.userId,
+          ownerId: sub?.userId!,
         });
         const updatedSub = { ...sub, ...result } as any;
         updatedSubscriptions.push(updatedSub);

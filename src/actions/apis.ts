@@ -77,7 +77,7 @@ export const sendToProxy = async ({
   try {
     const { url, method, path } = endpoint;
     const body = JSON.stringify(data);
-    const validator = await getValidator({ id: validatorId } as ValidatorType);
+    const validator = await getValidator({ id: validatorId });
     const { apiKey, apiSecret, baseApiUrl } = validator;
     const { signature, nonce } = signRequest({
       method,
