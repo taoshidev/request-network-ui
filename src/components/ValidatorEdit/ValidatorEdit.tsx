@@ -88,7 +88,10 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
         account,
         verified: true,
       });
+      notifySuccess("Validator verification successful");
+      setTimeout(() => router.back(), 1000);
     } else {
+      notifyError("Validator verification failed");
       console.error("Signing failed or signature is missing");
     }
   };
@@ -179,8 +182,7 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
             icon={<IconAlertCircle />}
           >
             <Text mb="md" size="sm">
-              Nisi ex et do cillum. Proident ullamco eiusmod fugiat nulla
-              occaecat ullamco ex cillum aute officia dolor irure.
+              Your validator has not been verified yet. Please verify your validator so that customers can connect to your service.
             </Text>
             <Button onClick={handleVerify} variant="white">
               Verify
