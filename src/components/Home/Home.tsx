@@ -56,9 +56,9 @@ export function Home() {
         <div className="container max-w-5xl mx-auto mb-10">
           <HeaderHome />
         </div>
-        <div className="container mx-auto mb-10">
+        <div className="container mx-auto py-10 mb-10">
           <div className="flex justify-center items-center h-96">
-            <div className="text-center text-primary-700">
+            <div className="text-center text-primary-900">
               <Image
                 className="mx-auto mb-4 mix-blend-darken"
                 alt="Taoshi"
@@ -67,7 +67,7 @@ export function Home() {
                 w={48}
                 h="auto"
               />
-              <h1 className="text-8xl font-bold mb-8 ">request network</h1>
+              <h1 className="text-8xl font-bold mb-8">request network</h1>
               <p className="max-w-3xl mx-auto mb-8">
                 Enter a new service and data exchange era with the Request
                 Network, a versatile platform built for the Bittensor ecosystem
@@ -75,7 +75,7 @@ export function Home() {
               </p>
               <div className="flex gap-4 justify-center">
                 <Button
-                  className="bg-primary-700"
+                  className="bg-primary-800"
                   component={Link}
                   href="/dashboard"
                 >
@@ -83,7 +83,7 @@ export function Home() {
                 </Button>
                 <Button
                   variant="transparent"
-                  className="text-white hover:text-primary-700"
+                  className="text-white hover:text-primary-900"
                   component={Link}
                   href="/dashboard"
                 >
@@ -327,7 +327,7 @@ export function Home() {
       </div>
       <div className="bg-primary-500">
         <div className="container max-w-5xl mx-auto py-8">
-          <p className="mb-12 font-adlam-display font-bold text-3xl text-primary-700">
+          <p className="mb-12 font-adlam-display font-bold text-3xl text-primary-900">
             taoshi
           </p>
           <div className="flex text-white">

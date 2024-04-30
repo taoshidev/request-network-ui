@@ -12,7 +12,7 @@ export function HeaderHome() {
     <Group className="h-full p-4">
       <Group className="flex-1 justify-between">
         <Anchor
-          className="mr-1 font-adlam-display font-bold text-2xl text-primary-700"
+          className="mr-1 font-adlam-display font-bold text-2xl text-primary-900"
           component={Link}
           href="/dashboard"
         >
@@ -56,7 +56,7 @@ export function HeaderHome() {
             Support
           </Button>
           <Button
-            className="text-sm font-normal bg-primary-700"
+            className="text-sm font-normal bg-primary-900"
             component={Link}
             href="/dashboard"
           >
