@@ -64,7 +64,7 @@ export function Endpoints({
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {endpoints.map((endpoint: any) => (
+              {(endpoints || []).map((endpoint: any) => (
                 <Table.Tr key={endpoint.id}>
                   <Table.Td>
                     {

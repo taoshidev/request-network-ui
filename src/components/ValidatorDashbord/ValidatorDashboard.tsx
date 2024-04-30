@@ -15,12 +15,16 @@ export function ValidatorDashboard({
   return (
     <Fragment>
       <Validators user={user} validators={validators} subnets={subnets} />
-      <Endpoints
-        endpoints={endpoints}
-        validators={validators}
-        subnets={subnets}
-      />
-      <ValidatorStatTable data={stats} />
+      {validators?.length && (
+        <>
+          <Endpoints
+            endpoints={endpoints}
+            validators={validators}
+            subnets={subnets}
+          />
+          <ValidatorStatTable data={stats} />
+        </>
+      )}
     </Fragment>
   );
 }

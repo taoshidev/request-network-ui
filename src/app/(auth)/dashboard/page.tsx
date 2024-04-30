@@ -7,7 +7,7 @@ import { Consumer } from "@/components/Consumer";
 import { ValidatorDashboard } from "@/components/ValidatorDashbord";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { and, eq } from "drizzle-orm";
-import { subscriptions } from "@/db/schema";
+import { subscriptions, validators } from "@/db/schema";
 import { getUserAPIKeys } from "@/actions/keys";
 import { ValidatorType } from "@/db/types/validator";
 
@@ -22,7 +22,8 @@ export default async function Page() {
     redirect("/onboarding");
   }
 
-  let validators = await getValidators({
+  let validatorArr = await getValidators({
+    where: and(eq(validators.userId, user.id)),
     with: {
       endpoints: {
         with: {
@@ -32,7 +33,7 @@ export default async function Page() {
     },
   });
 
-  if (validators?.error) validators = [];
+  if (validatorArr?.error) validatorArr = [];
 
   // if user is a consumer, render consumer dashboard
   if (user.user_metadata.role === "consumer") {
@@ -49,14 +50,14 @@ export default async function Page() {
 
     if (subs?.error) subs = [];
 
-    return <Consumer subscriptions={subs} validators={validators} />;
+    return <Consumer subscriptions={subs} validators={validatorArr} />;
 
     // if user is a validator, render validator dashboard
   } else if (user.user_metadata.role === "validator") {
     const endpoints = await getEndpoints();
     const subnets = await getSubnets();
 
-    const promises = validators.map(async (v: ValidatorType) => {
+    const promises = (validatorArr || [])?.map(async (v: ValidatorType) => {
       const res = await getUserAPIKeys({ apiId: v.apiId as string });
       return { validator: { ...v, ...res?.result } };
     });
@@ -67,7 +68,7 @@ export default async function Page() {
         user={user}
         subnets={subnets}
         endpoints={endpoints}
-        validators={validators}
+        validators={validatorArr}
         stats={stats}
       />
     );

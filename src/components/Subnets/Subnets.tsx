@@ -51,7 +51,7 @@ export function Subnets({
         Choose a Subnet
       </Title>
       <Grid>
-        {subnets?.map((subnet) => (
+        {(subnets || [])?.map((subnet) => (
           <Grid.Col key={subnet.id} span={4}>
             <Card
               component="button"

@@ -23,7 +23,7 @@ export function EndpointFormInput({
         }))
     : [];
 
-  const availableSubnets = subnets.map((s) => ({
+  const availableSubnets = (subnets || []).map((s) => ({
     value: s.id!,
     label: s.label!,
   }));
