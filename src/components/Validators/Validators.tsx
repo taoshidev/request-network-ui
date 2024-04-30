@@ -71,7 +71,7 @@ export function Validators({ user, subnets, validators }: any) {
           <Table.Tbody>
             {validators &&
               !isEmpty(validators) &&
-              validators.map((validator: any) => (
+              (validators || []).map((validator: any) => (
                 <Table.Tr key={validator.id}>
                   <Table.Td>{validator.name}</Table.Td>
                   <Table.Td>

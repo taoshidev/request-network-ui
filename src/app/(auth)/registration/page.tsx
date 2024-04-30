@@ -46,9 +46,9 @@ export default async function Page() {
   ) => {
     try {
       const validatorWithInfo = await Promise.all(
-        validatorArr.map(async (validator) => {
+        (validatorArr || []).map(async (validator) => {
           const endpointsWithInfo = await Promise.all(
-            validator?.endpoints!?.map(async (endpoint) => {
+            (validator?.endpoints! || [])?.map(async (endpoint) => {
               const netUid = subnets.find(
                 (subnet) => subnet.id === endpoint.subnet
               )?.netUid;

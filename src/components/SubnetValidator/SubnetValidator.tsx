@@ -39,7 +39,7 @@ export function SubnetValidator({
       const updatedValidators = registrationData.subnet.endpoints.flatMap(
         (endpoint: EndpointType) => endpoint?.validators
       );
-      const validatorsWithStats = updatedValidators.map(
+      const validatorsWithStats = (updatedValidators || []).map(
         (validator: ValidatorType) => {
           const endpoint = validators
             ?.filter((vali) => vali?.id === validator?.id)?.[0]
@@ -103,7 +103,7 @@ export function SubnetValidator({
         Choose a Validator for {registrationData?.subnet?.label} Subnet
       </Title>
       <Grid>
-        {filteredValidators?.map((validator: ValidatorType) => (
+        {(filteredValidators || [])?.map((validator: ValidatorType) => (
           <Grid.Col key={validator.id} span={3}>
             <Card>
               <Text className="font-bold mb-4" truncate>
