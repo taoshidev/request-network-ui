@@ -48,10 +48,10 @@ export function StatTable({
               <Table.Tr key={`${key?.id}-${i}`}>
                 {caption && <Table.Td>{key?.name}</Table.Td>}
                 <Table.Td>
-                  {dayjs(key.createdAt).format("MMM DD, YYYY")}
+                  {dayjs(key?.createdAt).format("MMM DD, YYYY")}
                 </Table.Td>
-                <Table.Td>{dayjs(key.expires).format("MMM DD, YYYY")}</Table.Td>
-                <Table.Td>{key.remaining}</Table.Td>
+                <Table.Td>{dayjs(key?.expires).format("MMM DD, YYYY")}</Table.Td>
+                <Table.Td>{key?.remaining}</Table.Td>
                 <Table.Td>{key?.refill?.interval || "-"}</Table.Td>
                 <Table.Td>{key?.refill?.amount || "-"}</Table.Td>
                 <Table.Td>{key?.ratelimit?.type || "-"}</Table.Td>

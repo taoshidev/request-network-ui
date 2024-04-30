@@ -80,6 +80,7 @@ export function Endpoint({
       const res = await updateEndpoint({ id: endpoint.id, enabled: isEnabled });
       if (res?.error) return notifyError(res?.message);
       notifySuccess(res.message);
+      router.refresh();
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
     } finally {

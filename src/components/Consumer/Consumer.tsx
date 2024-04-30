@@ -86,7 +86,7 @@ export function Consumer({
 
       {(subscriptionData || []).map((subscription, index) => (
         <Fragment key={index}>
-          <Title order={2}>{subscription.endpoint.validators.name}</Title>
+          <Title order={2}>{subscription?.endpoint?.validators?.name}</Title>
           <Table className="mt-3 mb-6">
             <Table.Thead>
               <Table.Tr>
@@ -98,26 +98,26 @@ export function Consumer({
             </Table.Thead>
             <Table.Tbody>
               {(subscription?.keys || []).map((key: any) => (
-                <Table.Tr key={key.id}>
+                <Table.Tr key={key?.id}>
                   <Table.Td>
                     <Anchor
                       className="font-semibold text-black"
                       component={Link}
-                      href={`/keys/${key.id}`}
+                      href={`/keys/${key?.id}`}
                     >
-                      {key.name}
+                      {key?.name}
                     </Anchor>
                   </Table.Td>
                   <Table.Td>
-                    {dayjs(key.createdAt).format("MMM DD, YYYY")}
+                    {dayjs(key?.createdAt).format("MMM DD, YYYY")}
                   </Table.Td>
-                  <Table.Td>{key.meta.type}</Table.Td>
+                  <Table.Td>{key?.meta?.type}</Table.Td>
                   <Table.Td>52,184</Table.Td>
                   <Table.Td className="text-right">
                     <Anchor
                       className="text-sm"
                       component={Link}
-                      href={`/keys/${key.id}`}
+                      href={`/keys/${key?.id}`}
                     >
                       View Stats
                     </Anchor>

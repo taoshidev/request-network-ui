@@ -15,8 +15,8 @@ export function Login() {
       <Box className="mb-8">
         <Title className="mb-4">Login</Title>
         <Text>
-          Dolor velit cillum occaecat velit deserunt velit irure deserunt
-          incididunt ad nisi anim. Nulla quis pariatur id esse officia veniam.
+          Authentication with the Request Network, simply sign in with Google or Github
+          [google coming soon!]
         </Text>
       </Box>
 
