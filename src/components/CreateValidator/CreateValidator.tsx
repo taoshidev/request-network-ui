@@ -19,7 +19,7 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
     initialValues: {
       name: "",
       description: "",
-      userId: user.id,
+      userId: user?.id || "",
       verified: false,
       enabled: false,
       price: "",
@@ -36,8 +36,11 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
     validate: zodResolver(ValidatorEndpointSchema),
   });
 
+
   const onSubmit = async (values: Partial<ValidatorType & EndpointType>) => {
+
     setLoading(true);
+
     const { name, description, userId, hotkey, baseApiUrl, ...endpoint } = values;
     const validator = { name, description, userId, hotkey, baseApiUrl };
     try {

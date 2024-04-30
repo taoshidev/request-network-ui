@@ -2,131 +2,131 @@ import { v4 as uuidv4 } from "uuid";
 
 export const seedData = [
   {
-    net_uid: 1,
+    netUid: 1,
     label: "Text Prompting",
   },
   {
-    net_uid: 2,
+    netUid: 2,
     label: "Machine Translation",
   },
   {
-    net_uid: 3,
+    netUid: 3,
     label: "Data Scraping",
   },
   {
-    net_uid: 4,
+    netUid: 4,
     label: "Multi Modality",
   },
   {
-    net_uid: 5,
+    netUid: 5,
     label: "Image Generation",
   },
   {
-    net_uid: 6,
+    netUid: 6,
     label: "Nous Finetuning",
   },
   {
-    net_uid: 7,
+    netUid: 7,
     label: "Transtorage",
   },
   {
-    net_uid: 8,
+    netUid: 8,
     label: "Proprietay Trading Network",
   },
   {
-    net_uid: 9,
+    netUid: 9,
     label: "Pretraining",
   },
   {
-    net_uid: 10,
+    netUid: 10,
     label: "Map Reduce",
   },
   {
-    net_uid: 11,
+    netUid: 11,
     label: "Transcription",
   },
   {
-    net_uid: 12,
+    netUid: 12,
     label: "Horde",
   },
   {
-    net_uid: 13,
+    netUid: 13,
     label: "Dataverse",
   },
   {
-    net_uid: 14,
+    netUid: 14,
     label: "LLM Defender",
   },
   {
-    net_uid: 15,
+    netUid: 15,
     label: "Blockchain Insights",
   },
   {
-    net_uid: 16,
+    netUid: 16,
     label: "Music Generation",
   },
   {
-    net_uid: 17,
+    netUid: 17,
     label: "Flavia",
   },
   {
-    net_uid: 18,
+    netUid: 18,
     label: "Cortex.t",
   },
   {
-    net_uid: 19,
+    netUid: 19,
     label: "Vision",
   },
   {
-    net_uid: 20,
+    netUid: 20,
     label: "BitAgent",
   },
   {
-    net_uid: 21,
+    netUid: 21,
     label: "Filetao",
   },
   {
-    net_uid: 22,
+    netUid: 22,
     label: "Datura",
   },
   {
-    net_uid: 23,
+    netUid: 23,
     label: "NicheImage",
   },
   {
-    net_uid: 24,
+    netUid: 24,
     label: "BitAds",
   },
   {
-    net_uid: 25,
+    netUid: 25,
     label: "Hivemind",
   },
   {
-    net_uid: 26,
+    netUid: 26,
     label: "Image Alchemy",
   },
   {
-    net_uid: 27,
+    netUid: 27,
     label: "Compute",
   },
   {
-    net_uid: 28,
+    netUid: 28,
     label: "zktensor",
   },
   {
-    net_uid: 29,
+    netUid: 29,
     label: "unknown",
   },
   {
-    net_uid: 30,
+    netUid: 30,
     label: "Math Logic Net",
   },
   {
-    net_uid: 31,
+    netUid: 31,
     label: "Healthcare",
   },
   {
-    net_uid: 32,
+    netUid: 32,
     label: "3D Generation",
   },
 ];

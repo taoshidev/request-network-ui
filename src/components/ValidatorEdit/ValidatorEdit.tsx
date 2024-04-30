@@ -158,7 +158,7 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
           label="Verify"
           leftSection={<IconCircleCheck size="1rem" stroke={1.5} />}
         />
-        <NavLink
+        {/* <NavLink
           href="#required-for-focus"
           label="With right section"
           leftSection={<IconGauge size="1rem" stroke={1.5} />}
@@ -167,7 +167,7 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
           href="#required-for-focus"
           label="Disabled"
           leftSection={<IconCircleOff size="1rem" stroke={1.5} />}
-        />
+        /> */}
       </Box>
       <Box flex="1">
         {!validator.verified && (
