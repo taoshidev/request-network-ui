@@ -255,7 +255,7 @@ export function RegistrationStepper({
         notifySuccess(res?.message as string);
         setKeys({
           apiKey: key,
-          apiSecret,
+          apiSecret: apiSecret!,
           walletKey: proxyRes?.publicKey,
           endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
         });

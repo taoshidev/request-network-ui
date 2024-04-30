@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
-
 import { getAuthUser } from "@/actions/auth";
 import { getSubnets } from "@/actions/subnets";
-
 import { Subnets } from "@/components/Subnets";
 
 export default async function Page() {
@@ -22,5 +20,5 @@ export default async function Page() {
     redirect("/login");
   }
 
-  return <Subnets subnets={subnets} />;
+  return <Subnets subnets={subnets!} />;
 }

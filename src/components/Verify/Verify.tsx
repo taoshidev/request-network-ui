@@ -29,7 +29,10 @@ export function Verify({ onComplete, user }: any) {
   const onSubmit = async (values: Settings) => {
     const message = "kenneth";
 
-    const { signature, account } = await sign(message);
+    const { signature, account } = (await sign(message)) as {
+      signature: `0x${string}`;
+      account: any;
+    };
     const test = await isValidSignature(message, signature, account.address);
 
     // setLoading(true);

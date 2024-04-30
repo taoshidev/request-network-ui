@@ -48,7 +48,7 @@ export default async function Page() {
       const validatorWithInfo = await Promise.all(
         validatorArr.map(async (validator) => {
           const endpointsWithInfo = await Promise.all(
-            validator.endpoints.map(async (endpoint) => {
+            validator?.endpoints!?.map(async (endpoint) => {
               const netUid = subnets.find(
                 (subnet) => subnet.id === endpoint.subnet
               )?.netUid;
@@ -63,7 +63,7 @@ export default async function Page() {
                 console.log(netUid, validator.hotkey);
                 const stats = await fetchValidatorInfo(
                   netUid,
-                  validator.hotkey
+                  validator.hotkey!
                 );
 
                 return { ...endpoint, stats };
@@ -89,13 +89,13 @@ export default async function Page() {
     }
   };
 
-  const validatorWithInfo = await fetchAllValidatorInfo(validatorArr, subnets);
+  const validatorWithInfo = await fetchAllValidatorInfo(validatorArr, subnets!);
 
   return (
     <Registration
       currentSubscriptions={subscriptions}
       validators={validatorWithInfo}
-      subnets={subnets}
+      subnets={subnets!}
     />
   );
 }
