@@ -32,7 +32,7 @@ export function HeaderHome() {
             className="text-sm text-primary-800 font-normal"
             component={Link}
             leftSection={<IconScript size={14} />}
-            href="https://d391b93f5f62d9c15f67142e43841acc.ipfscdn.io/ipfs/bafybeifjoqs6pjwbpwcstqatyszxmnlyxzl7nhzrtaqdfes4ik6facrke4/Request-Network-Taoshi.pdf"
+            href="https://ipfs.filebase.io/ipfs/QmWuD5B77xBf6TE3mMUdAMaXeqVf6JkUYzhpW85W8jiAZY"
             target="_blank"
           >
             Whitepaper
