@@ -34,7 +34,7 @@ export function StatTable({
               <Table.Th>Created</Table.Th>
               <Table.Th>Expires</Table.Th>
               <Table.Th>Remaining</Table.Th>
-              <Table.Th>Refill Interval</Table.Th>
+              <Table.Th>Refill Frequency</Table.Th>
               <Table.Th>Refill Amount</Table.Th>
               <Table.Th>Rate Limit Type</Table.Th>
               <Table.Th>Rate Limit</Table.Th>

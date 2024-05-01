@@ -35,9 +35,7 @@ export function Validators({ user, subnets, validators }: any) {
         apiSecret={keys?.apiSecret}
         opened={keyModalOpened}
         onClose={() => setKeyModalOpened(false)}
-        onCopy={(key: keyType) =>
-          setKeys((prev) => ({ ...prev, [key]: "" }))
-        }
+        onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
         title="API Access Key"
       />
 
@@ -60,18 +58,16 @@ export function Validators({ user, subnets, validators }: any) {
           <Title order={2}>Validators</Title>
           <Button onClick={open}>Add Your Validator</Button>
         </Group>
-
-        <Table>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Validator</Table.Th>
-              <Table.Th>Subnet</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {validators &&
-              !isEmpty(validators) &&
-              (validators || []).map((validator: any) => (
+        {validators && !isEmpty(validators) && (
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Validator</Table.Th>
+                <Table.Th>Subnet</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {(validators || []).map((validator: any) => (
                 <Table.Tr key={validator.id}>
                   <Table.Td>{validator.name}</Table.Td>
                   <Table.Td>
@@ -101,8 +97,9 @@ export function Validators({ user, subnets, validators }: any) {
                   </Table.Td>
                 </Table.Tr>
               ))}
-          </Table.Tbody>
-        </Table>
+            </Table.Tbody>
+          </Table>
+        )}
       </Box>
     </Box>
   );
