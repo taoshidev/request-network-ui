@@ -8,16 +8,18 @@ import { ValidatorKeyType } from "@/components/StatTable";
 export function ValidatorStatTable({ data }: { data: ValidatorKeyType[] }) {
   return (
     <Box my="xl" className="mb-16">
-      <Fragment key="key">
-        <Title order={2}>Usage Statistics</Title>
-        {(data || []).map((item: ValidatorKeyType) => (
-          <StatTable
-            key={item?.validator.id}
-            data={item?.validator.keys as any}
-            caption={item?.validator?.name as string}
-          />
-        ))}
-      </Fragment>
+      {data?.length > 0 && (
+        <Fragment key="key">
+          <Title order={2}>Usage Statistics</Title>
+          {(data || []).map((item: ValidatorKeyType) => (
+            <StatTable
+              key={item?.validator.id}
+              data={item?.validator.keys as any}
+              caption={item?.validator?.name as string}
+            />
+          ))}
+        </Fragment>
+      )}
     </Box>
   );
 }
