@@ -27,19 +27,9 @@ import subnet13 from "@/assets/bittensor/subnet-13.png";
 
 const groceries = [
   {
-    value: "Consectetur aliqua qui consectetur voluptate mollit?",
+    value: "How is Taoshi Using the Request Network?",
     description:
-      "Crisp and refreshing fruit. Apples are known for their versatility and nutritional benefits. They come in a variety of flavors and are great for snacking, baking, or adding to salads.",
-  },
-  {
-    value: "Elit enim excepteur Lorem ad?",
-    description:
-      "Naturally sweet and potassium-rich fruit. Bananas are a popular choice for their energy-boosting properties and can be enjoyed as a quick snack, added to smoothies, or used in baking.",
-  },
-  {
-    value: "Cillum dolore aute nulla ullamco magna proident?",
-    description:
-      "Nutrient-packed green vegetable. Broccoli is packed with vitamins, minerals, and fiber. It has a distinct flavor and can be enjoyed steamed, roasted, or added to stir-fries.",
+      "Taoshi is using the Request Network to help fulfill our vision to empower traders and institutions by democratizing access to trading signals from our Proprietary Trading Network (PTN). It will act as a digital marketplace where you can select and purchase the most relevant, world-class trading signals for your strategies, tailored to your preferred asset classes and currency pairs.",
   },
 ];
 
@@ -98,37 +88,39 @@ export function Home() {
       <div className="container max-w-5xl mx-auto py-10 mb-32">
         <div className="max-w-xl mx-auto text-center mb-16">
           <h2 className="text-2xl font-bold mb-4">
-            Harnessing the Collective Capabilities of Bittensor Subnets
+            Introducing the Request Network on Bittensor
           </h2>
-          <p>Exercitation culpa et aliquip duis.</p>
+          <p>One for all, all for one.</p>
         </div>
         <div className="flex gap-20 items-center">
           <div className="flex-1 flex flex-col gap-10">
             <div>
               <p className="text-xl font-bold mb-2">
-                Do deserunt nisi minim cillum ad.
+                A Hub for Decentralized Services and Data
               </p>
               <p>
-                Incididunt tempor proident dolore. Culpa esse voluptate
-                incididunt adipisicing aliqua laboris aliqua duis.
+                The Request Network heralds a new paradigm in decentralized
+                services, offering a dynamic marketplace that can be integrated
+                with every subnet built on Bittensor.
               </p>
             </div>
             <div>
               <p className="text-xl font-bold mb-2">
-                Aute aliqua laboris ullamco veniam.
+                Harnessing the Collective Capabilities of Subnets
               </p>
               <p>
-                Incididunt tempor proident dolore. Culpa esse voluptate
-                incididunt adipisicing aliqua laboris aliqua duis.
+                The Request Network is your portal to the vast array of services
+                offered by Bittensor&apos;s subnets.
               </p>
             </div>
             <div>
               <p className="text-xl font-bold mb-2">
-                Fugiat culpa commodo culpa ex consequat do magna.
+                Fostering a Synergistic Ecosystem
               </p>
               <p>
-                Incididunt tempor proident dolore. Culpa esse voluptate
-                incididunt adipisicing aliqua laboris aliqua duis.
+                At the heart of the Bittensor network is a thriving community
+                where every participant&apos;s contribution is valued. The
+                Request Network catalyzes a virtuous cycle within each subnet.
               </p>
             </div>
           </div>
@@ -270,11 +262,15 @@ export function Home() {
           </div>
           <div className="flex-1">
             <p className="text-xl mb-2 font-bold">
-              Do deserunt nisi minim cillum ad.
+              Ready to Integrate your Subnet with the Request Network?
             </p>
             <p>
-              Eu minim occaecat mollit. Quis velit commodo adipisicing eiusmod
-              proident ut commodo do adipisicing mollit aute mollit fugiat est.
+              Any subnet within the Bittensor ecosystem can democratize their
+              highly valuable intelligence through the Request Network. If you’d
+              like to integrate your subnet with the Request Network, please
+              reach out to our team via email at{" "}
+              <a href="mailto:support@taoshi.io">support@taoshi.io</a> - we’ll
+              work with you to complete the integration as soon as possible!
             </p>
           </div>
         </div>
@@ -300,11 +296,6 @@ export function Home() {
               h="auto"
             />
             <h1 className="text-5xl font-bold mb-8">experience seamless</h1>
-            <p className="max-w-3xl mx-auto mb-8">
-              Do amet sit anim fugiat quis consectetur dolore enim anim laborum
-              occaecat qui consectetur. Pariatur aliquip amet sunt aliquip
-              reprehenderit.
-            </p>
             <div className="flex gap-4 justify-center">
               <Button
                 className="text-sm bg-black font-normal"
