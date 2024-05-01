@@ -43,7 +43,7 @@ export function SubnetValidator({
         (validator: ValidatorType) => {
           const endpoint = validators
             ?.filter((vali) => vali?.id === validator?.id)?.[0]
-            .endpoints?.find(
+            ?.endpoints?.find(
               (endpoint: EndpointType) =>
                 endpoint.subnet === registrationData.subnet.id
             );
