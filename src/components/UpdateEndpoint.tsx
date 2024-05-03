@@ -1,51 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Title,
-  Group,
-  Box,
-  Button,
-  TextInput,
-  NumberInput,
-  Switch,
-  NavLink,
-  Select,
-} from "@mantine/core";
-import { DateTimePicker } from "@mantine/dates";
+import { Title, Group, Box, Button, Switch, NavLink } from "@mantine/core";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
-import { z } from "zod";
-import {
-  IconHome2,
-  IconGauge,
-  IconChevronRight,
-  IconActivity,
-  IconCircleOff,
-} from "@tabler/icons-react";
+import { IconHome2, IconGauge, IconCircleOff } from "@tabler/icons-react";
 import { updateEndpoint } from "@/actions/endpoints";
-import { PostSchema } from "../PostSchema";
+import { PostSchema } from "./PostSchema";
 import { useNotification } from "@/hooks/use-notification";
 import { useRouter } from "next/navigation";
+import { EndpointFormInput } from "@/components/EndpointFormInput";
+import { EndpointSchema } from "@/db/types/endpoint";
+import { sendToProxy } from "@/actions/apis";
+import { EndpointType } from "@/db/types/endpoint";
 
-export const EndpointSchema = z.object({
-  url: z.string().min(1),
-  limit: z.number().int().min(1),
-  refillRate: z.number().int().min(1),
-  refillInterval: z.number().int().min(1),
-  remaining: z.number().int().min(1),
-  expires: z.date(),
+const EndpointFormSchema = EndpointSchema.omit({
+  validator: true,
+  subscription: true,
 });
 
-export function Endpoint({
-  user,
-  endpoint,
-  validator,
-}: {
-  user?: any;
-  endpoint: any;
-  validator?: any;
-}) {
+export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
   const [loading, setLoading] = useState(false);
   const [enabled, setEnabled] = useState(endpoint.enabled);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
@@ -55,18 +29,33 @@ export function Endpoint({
     initialValues: {
       ...endpoint,
     },
-    validate: zodResolver(EndpointSchema),
+    validate: zodResolver(EndpointFormSchema),
   });
-
+  // EndpointSchema.parse(endpoint);
   const onSubmit = async (values: any) => {
     setLoading(true);
-    const { id } = endpoint;
+    // NOTE: must remove the keys otherwise it will fail silently
+    delete values.validator;
+    delete values.subscription;
+    const { id, subscription } = endpoint;
+    const { id: validatorId, baseApiUrl: url, apiPrefix } = endpoint?.validator;
+
     try {
       const res = await updateEndpoint({ id, ...values });
+      if (res?.data) {
+        await updateProxy(
+          url,
+          `${apiPrefix}/services/${subscription?.serviceId}`,
+          validatorId,
+          {
+            price: values.price,
+          }
+        );
+      }
       if (res?.error) return notifyError(res?.message);
       notifySuccess(res.message);
       router.refresh();
-      router.back();
+      setTimeout(() => router.back(), 1000);
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
     } finally {
@@ -79,13 +68,52 @@ export function Endpoint({
     try {
       const res = await updateEndpoint({ id: endpoint.id, enabled: isEnabled });
       if (res?.error) return notifyError(res?.message);
+      form.setValues({ enabled: isEnabled });
+
+      if (endpoint?.validator) {
+        const {
+          id: validatorId,
+          baseApiUrl: url,
+          hotkey,
+          apiPrefix,
+        } = endpoint.validator;
+
+        await updateProxy(
+          url,
+          `${apiPrefix}/services/hotkey/${hotkey}`,
+          validatorId,
+          {
+            active: isEnabled,
+          }
+        );
+      }
+
       notifySuccess(res.message);
       router.refresh();
+      setTimeout(() => router.back(), 1000);
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
     } finally {
       setEnabled(isEnabled);
     }
+  };
+
+  const updateProxy = async (
+    url: string,
+    path: string,
+    validatorId: string,
+    data
+  ) => {
+    const res = await sendToProxy({
+      endpoint: {
+        url,
+        method: "PUT",
+        path,
+      },
+      validatorId,
+      data,
+    });
+    return res;
   };
 
   return (
@@ -107,12 +135,10 @@ export function Endpoint({
           leftSection={<IconCircleOff size="1rem" stroke={1.5} />}
         />
       </Box>
-
       <Box flex="1">
         <Title mb="lg" order={2}>
           Update Endpoint
         </Title>
-
         <Box mb="xl">
           <Switch
             label="Enable or Disable Endpoint"
@@ -126,66 +152,13 @@ export function Endpoint({
           component="form"
           onSubmit={form.onSubmit(onSubmit)}
         >
-          <Box mb="md" flex="2">
-            <TextInput
-              label="Endpoint Path"
-              withAsterisk
-              placeholder="/api/v1/my-resource-endpoint"
-              {...form.getInputProps("url")}
-            />
-          </Box>
+          <EndpointFormInput mode="update" form={form} />
           <Group justify="flex-end">
             <Button type="submit" loading={loading}>
               Update
             </Button>
           </Group>
-          <Title mb="xs" order={3}>
-            Rate Limits.
-          </Title>
-          <Box mb="md" flex="2">
-            <NumberInput
-              label="Limit"
-              description="The total amount of burstable requests."
-              placeholder="Input placeholder"
-              defaultValue={10}
-              {...form.getInputProps("limit")}
-            />
-          </Box>
-          <Box mb="md">
-            <NumberInput
-              label="Refill Rate"
-              description="How many tokens to refill during each refillInterval"
-              placeholder="Input placeholder"
-              defaultValue={1}
-              {...form.getInputProps("refillRate")}
-            />
-          </Box>
-          <Box mb="md">
-            <DateTimePicker
-              label="Expiry Date"
-              description="When should your keys expire?"
-              withSeconds
-              placeholder="Pick date"
-              {...form.getInputProps("expires")}
-            />
-          </Box>
-          <Box mb="md" flex="2">
-            <NumberInput
-              label="Refill Interval"
-              description="Determines the speed at which tokens are refilled."
-              placeholder="Input placeholder"
-              defaultValue={1}
-              {...form.getInputProps("refillInterval")}
-            />
-          </Box>
         </Box>
-
-        <Group justify="flex-end">
-          <Button type="submit" loading={loading}>
-            Update
-          </Button>
-        </Group>
-
         <PostSchema />
       </Box>
     </Group>

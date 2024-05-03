@@ -92,7 +92,6 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
       setTimeout(() => router.back(), 1000);
     } else {
       notifyError("Validator verification failed");
-      console.error("Signing failed or signature is missing");
     }
   };
 
@@ -154,14 +153,14 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
           </List>
         </Box>
       </Modal>
-      <Box>
+      {/* <Box>
         <NavLink
           active
           href="#required-for-focus"
           label="Verify"
           leftSection={<IconCircleCheck size="1rem" stroke={1.5} />}
         />
-        {/* <NavLink
+        <NavLink
           href="#required-for-focus"
           label="With right section"
           leftSection={<IconGauge size="1rem" stroke={1.5} />}
@@ -170,8 +169,8 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
           href="#required-for-focus"
           label="Disabled"
           leftSection={<IconCircleOff size="1rem" stroke={1.5} />}
-        /> */}
-      </Box>
+        />
+      </Box> */}
       <Box flex="1">
         {!validator.verified && (
           <Alert
@@ -215,7 +214,7 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
             />
           </Box>
           <Box mb="md">
-            <Button type="submit" loading={loading} w="100%">
+            <Button type="submit" loading={loading} className="float-right">
               Update
             </Button>
           </Box>

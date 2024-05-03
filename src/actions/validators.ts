@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { eq, asc, exists } from "drizzle-orm";
 import { db } from "@/db";
 import { validators } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
@@ -13,7 +13,11 @@ import { ValidatorType } from "@/db/types/validator";
 
 export const getValidators = async (query: object = {}) => {
   try {
-    const res = await db.query.validators.findMany(query);
+    const res = await db.query.validators.findMany(
+      Object.assign(query, {
+        orderBy: (validators, { asc }) => [asc(validators?.name)],
+      })
+    );
     return filterData(res, [""]);
   } catch (error) {
     if (error instanceof Error) return parseError(error);
@@ -91,6 +95,18 @@ export const createValidatorEndpoint = async (
     });
     revalidatePath("/dashboard");
     return res;
+  } catch (error) {
+    if (error instanceof Error) return parseError(error);
+  }
+};
+
+export const checkHotkeyExists = async (hotkey: string) => {
+  try {
+    const res = await db
+      .select()
+      .from(validators)
+      .where(eq(validators.hotkey, hotkey));
+    return res?.length > 0;
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }

@@ -1,19 +1,33 @@
+import { useEffect, useState } from "react";
 import { Box, NumberInput, TextInput, Select, Group } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { UseFormReturnType } from "@mantine/form";
 import { EndpointType } from "@/db/types/endpoint";
+import clsx from "clsx";
 
 export function EndpointFormInput({
   form,
   validators,
   subnets,
+  mode = "create",
 }: {
   form: UseFormReturnType<Partial<ValidatorType & EndpointType>>;
-  subnets: Array<SubnetType>;
+  mode?: "create" | "update";
+  subnets?: Array<SubnetType>;
   validators?: Array<ValidatorType>;
 }) {
+  const [showPriceInput, setShowPriceInput] = useState(false);
+  const [animate, setAnimate] = useState(mode === "create");
+
+  useEffect(() => {
+    const isCryptoCurrencyType =
+      form.getInputProps("currencyType").value === "Crypto";
+    setShowPriceInput(isCryptoCurrencyType);
+    // eslint-disable-next-line
+  }, [form.getInputProps("currencyType").value]);
+
   const verifiedValidators = validators
     ? (validators || [])
         .filter((v) => v.verified)
@@ -28,17 +42,29 @@ export function EndpointFormInput({
     label: s.label!,
   }));
 
+  // Fiat currency types, validator will need to self manage
+  const currencyTypes = [
+    {
+      value: "Fiat",
+      label: "Fiat",
+    },
+    {
+      value: "Crypto",
+      label: "Crypto",
+    },
+  ];
+
   return (
     <>
       <Box mb="md">
         <TextInput
           withAsterisk
           label="Endpoint Path"
-          placeholder="/data-endpoint-path"
+          placeholder="/api/v1/data-endpoint-path"
           {...form.getInputProps("url")}
         />
       </Box>
-      {validators && (
+      {mode === "create" && validators && (
         <Box mb="md">
           <Select
             withAsterisk
@@ -49,15 +75,39 @@ export function EndpointFormInput({
           />
         </Box>
       )}
-      <Box mb="md">
-        <Select
-          label="Which Subnet"
-          withAsterisk
-          placeholder="Pick value or enter anything"
-          data={availableSubnets}
-          {...form.getInputProps("subnet")}
-        />
-      </Box>
+      {mode === "create" && (
+        <>
+          <Box mb="md">
+            <Select
+              label="Which Subnet"
+              withAsterisk
+              placeholder="Pick value or enter anything"
+              data={availableSubnets}
+              {...form.getInputProps("subnet")}
+            />
+          </Box>
+          <Box mb="md">
+            <Select
+              label="Currency Type"
+              withAsterisk
+              placeholder="Choose a currency type"
+              data={currencyTypes}
+              {...form.getInputProps("currencyType")}
+            />
+          </Box>
+        </>
+      )}
+      {showPriceInput && (
+        <Box mb="md">
+          <TextInput
+            className={clsx(animate && "animate-slide-down")}
+            label="Price"
+            description="Price in USDC/USDT"
+            placeholder="5"
+            {...form.getInputProps("price")}
+          />
+        </Box>
+      )}
       <Box mb="md">
         <DateTimePicker
           label="Expiry Date"
@@ -65,15 +115,6 @@ export function EndpointFormInput({
           withSeconds
           placeholder="Pick date"
           {...form.getInputProps("expires")}
-        />
-      </Box>
-      <Box mb="md">
-        <TextInput
-          label="Price"
-          withAsterisk
-          description="Price in USDC/USDT"
-          placeholder="5"
-          {...form.getInputProps("price")}
         />
       </Box>
       <Box mb="md">

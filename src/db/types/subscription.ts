@@ -8,6 +8,7 @@ export const SubscriptionSchema = z.object({
   keyId: z.string().optional(),
   key: z.string().optional(),
   apiKey: z.string(),
+  serviceId: z.string().optional(),
   apiSecret: z.string(),
   escrowPublicKey: z.string(),
   appName: z.string().min(1, { message: "Application name is required" }),

@@ -33,6 +33,8 @@ export function Limits({
       url: "",
       subnet: "",
       validator: "",
+      currencyType: "Fiat",
+      price: "",
       refillRate: 1,
       refillInterval: 1000,
       remaining: 1000,

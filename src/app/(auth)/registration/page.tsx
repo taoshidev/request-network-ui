@@ -60,7 +60,6 @@ export default async function Page() {
                 return endpoint;
               }
               try {
-                console.log(netUid, validator.hotkey);
                 const stats = await fetchValidatorInfo(
                   netUid,
                   validator.hotkey!
@@ -84,7 +83,6 @@ export default async function Page() {
 
       return validatorWithInfo;
     } catch (error) {
-      console.error("Error fetching validator information:", error);
       throw error;
     }
   };
