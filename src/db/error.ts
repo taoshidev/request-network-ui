@@ -50,10 +50,12 @@ export const parseError = (error: any): DatabaseResponseType => {
 
 const prepareErrorMessage = (error: any): string => {
   switch (error.constraint_name) {
-    case "endpoints_validator_subnet_unique":
+    case "endpoints_validator_id_subnet_id_unique":
       return "An endpoint with this validator and subnet already exists.";
     case "endpoints_url_unique":
       return "The url endpoint already exists.";
+    case "validators_base_api_url_unique":
+      return "A validator with this base api url already exists.";
     default:
       return `Cannot process database action on table ${error?.table_name}`;
   }

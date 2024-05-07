@@ -12,11 +12,14 @@ import {
 import { ValidatorSchema, ValidatorType } from "@/db/types/validator";
 import { EndpointSchema, EndpointType } from "@/db/types/endpoint";
 import { useNotification } from "@/hooks/use-notification";
+import { DatabaseResponseType } from "@/db/error";
 
 const ValidatorEndpointSchema = ValidatorSchema.merge(EndpointSchema);
+
 export function CreateValidator({ onComplete, user, subnets }: any) {
   const [loading, setLoading] = useState(false);
   const [hotkeyExists, setHotkeyExists] = useState<boolean>(false);
+  const [walletExists, setWalletExists] = useState<boolean>(false);
   const { notifySuccess, notifyError } = useNotification();
 
   const form = useForm<Partial<ValidatorType & EndpointType>>({
@@ -26,10 +29,11 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
       userId: user?.id || "",
       verified: false,
       enabled: false,
-      currencyType: "Fiat",
+      currencyType: "Crypto",
+      walletAddress: "",
       price: "",
       hotkey: "",
-      subnet: "",
+      subnetId: "",
       limit: 10,
       baseApiUrl: "",
       url: "",
@@ -49,10 +53,12 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
     const validator = { name, description, userId, hotkey, baseApiUrl };
     try {
       const res = await createValidatorEndpoint(validator, endpoint);
+
+      if ((res as DatabaseResponseType)?.error)
+        throw new Error((res as DatabaseResponseType)?.message);
       const { validator: newValidator } = res as {
         validator: ValidatorType;
       };
-
       const { apiId: apiKey, apiSecret } = newValidator;
       onComplete({ apiKey, apiSecret });
 
@@ -67,6 +73,7 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
   const { values } = form;
 
   const handleOnBlurHotkey = async (evt) => {
+
     const hotkey = values.hotkey;
     if (hotkey) {
       try {
@@ -78,12 +85,6 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
       } catch (error: Error | unknown) {
         throw new Error((error as Error)?.message);
       }
-    }
-  };
-
-  const handleOnChangeHotkey = () => {
-    if (!values.hotkey) {
-      setHotkeyExists(false);
     }
   };
 
@@ -119,13 +120,13 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
               handleOnBlurHotkey(event);
             }}
             onChange={(event) => {
-              form.getInputProps("hotkey").onChange(event); // Call form onChange
-              handleOnChangeHotkey(); // Call custom onChange handler
+              form.getInputProps("hotkey").onChange(event);
+              setHotkeyExists(false);
             }}
           />
           {hotkeyExists && (
-            <p className="text-xs text-[#fa5252] mantine-TextInput-error">
-              Hotkey already exists
+            <p className="pt-1 text-xs text-[#fa5252] mantine-TextInput-error">
+              Hotkey already in use by another validator.
             </p>
           )}
         </Box>
@@ -137,13 +138,19 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
             {...form.getInputProps("baseApiUrl")}
           />
         </Box>
-        <EndpointFormInput form={form} subnets={subnets} />
+        <EndpointFormInput
+          form={form}
+          subnets={subnets}
+          onError={(event) => {
+            setWalletExists(event.error);
+          }}
+        />
         <Box>
           <Button
             type="submit"
             className="w-full"
             loading={loading}
-            disabled={hotkeyExists}
+            disabled={hotkeyExists || walletExists}
           >
             Create
           </Button>

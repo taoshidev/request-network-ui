@@ -31,13 +31,13 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
     },
     validate: zodResolver(EndpointFormSchema),
   });
-  // EndpointSchema.parse(endpoint);
+
   const onSubmit = async (values: any) => {
     setLoading(true);
     // NOTE: must remove the keys otherwise it will fail silently
     delete values.validator;
     delete values.subscription;
-    const { id, subscription } = endpoint;
+    const { id } = endpoint;
     const { id: validatorId, baseApiUrl: url, apiPrefix } = endpoint?.validator;
 
     try {
@@ -45,13 +45,14 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
       if (res?.data) {
         await updateProxy(
           url,
-          `${apiPrefix}/services/${subscription?.serviceId}`,
+          `${apiPrefix}/services/endpointId/${id}`,
           validatorId,
           {
             price: values.price,
           }
         );
       }
+
       if (res?.error) return notifyError(res?.message);
       notifySuccess(res.message);
       router.refresh();
@@ -74,23 +75,21 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
         const {
           id: validatorId,
           baseApiUrl: url,
-          hotkey,
           apiPrefix,
         } = endpoint.validator;
 
         await updateProxy(
           url,
-          `${apiPrefix}/services/hotkey/${hotkey}`,
+          `${apiPrefix}/services/endpointId/${endpoint?.id}`,
           validatorId,
           {
-            active: isEnabled,
+            enabled: isEnabled,
           }
         );
       }
 
       notifySuccess(res.message);
       router.refresh();
-      setTimeout(() => router.back(), 1000);
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
     } finally {
@@ -102,7 +101,7 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
     url: string,
     path: string,
     validatorId: string,
-    data
+    data: any
   ) => {
     const res = await sendToProxy({
       endpoint: {

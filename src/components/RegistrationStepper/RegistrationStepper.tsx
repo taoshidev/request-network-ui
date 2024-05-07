@@ -31,13 +31,27 @@ import Loading from "@/app/(auth)/loading";
 import { EndpointType } from "@/db/types/endpoint";
 import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
-import { z, ZodError, ZodIssue } from "zod";
+import { z, ZodIssue } from "zod";
+import { isValidEthereumAddress } from "@/utils/address";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
   consumerApiUrl: z.string().min(1, { message: "Domain is required" }).url({
     message: "Please enter a valid URL",
   }),
+  consumerWalletAddress: z
+    .string()
+    .min(42, {
+      message:
+        "Wallet address must be at least 42 characters long including the '0x' prefix",
+    })
+    .max(42, {
+      message:
+        "Wallet address must be no more than 42 characters long including the '0x' prefix",
+    })
+    .refine(isValidEthereumAddress, {
+      message: "Please enter a valid Ethereum wallet address",
+    }),
 });
 
 const REGISTRATION_STEPS = 3;
@@ -63,12 +77,12 @@ export function RegistrationStepper({
   const [keys, setKeys] = useState<{
     apiKey: string;
     apiSecret: string;
-    walletKey: string;
+    walletAddress: string;
     endpoint: string;
   }>({
     apiKey: "",
     apiSecret: "",
-    walletKey: "",
+    walletAddress: "",
     endpoint: "",
   });
   const [opened, { open, close }] = useDisclosure(false);
@@ -131,10 +145,12 @@ export function RegistrationStepper({
 
     const consumerApiUrl = registrationData?.consumerApiUrl;
     const appName = registrationData?.appName;
+    const consumerWalletAddress = registrationData?.consumerWalletAddress || "";
 
     const validationResult = domainSchema.safeParse({
       consumerApiUrl,
       appName,
+      consumerWalletAddress,
     });
 
     if (!validationResult.success) {
@@ -151,7 +167,7 @@ export function RegistrationStepper({
     const apiId = validator?.apiId;
     const validatorId = validator?.id;
     const endpoint = validator?.endpoints?.find(
-      (e: EndpointType) => e.subnet === subnet.id
+      (e: EndpointType) => e.subnetId === subnet.id
     );
 
     const endpointId = endpoint.id;
@@ -175,6 +191,9 @@ export function RegistrationStepper({
         type: "consumer",
         consumerId: userId,
         endpointId,
+        consumerWalletAddress,
+        currencyType: endpoint?.currencyType,
+        validatorWalletAddress: endpoint?.walletAddress,
         endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
         validatorId,
         subscription: {} as SubscriptionType,
@@ -202,12 +221,14 @@ export function RegistrationStepper({
         keyId,
         appName,
         consumerApiUrl,
+        consumerWalletAddress,
       } as SubscriptionType);
 
       if (res?.error)
         return notifyError(
           res?.message || "Something went wrong creating subscription"
         );
+
       const subscription = res?.data?.[0];
       meta.subscription = subscription;
 
@@ -235,6 +256,9 @@ export function RegistrationStepper({
           subscriptionId,
           consumerKeyId: keyId,
           consumerApiUrl,
+          currencyType: endpoint?.currencyType,
+          consumerWalletAddress: subscription?.consumerWalletAddress,
+          validatorWalletAddress: endpoint?.walletAddress,
           hotkey: registrationData?.validator?.hotkey,
           price: endpoint.price,
           meta,
@@ -247,8 +271,7 @@ export function RegistrationStepper({
 
       const updateRes = await updateSubscription({
         id: subscriptionId,
-        escrowPublicKey: proxyRes?.publicKey,
-        serviceId: proxyRes?.wallet?.serviceId,
+        serviceId: proxyRes?.serviceId,
       });
       if (updateRes?.error)
         return notifyError(
@@ -259,7 +282,7 @@ export function RegistrationStepper({
       setKeys({
         apiKey: key,
         apiSecret: apiSecret!,
-        walletKey: proxyRes?.publicKey,
+        walletAddress: endpoint?.walletAddress,
         endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
       });
       open();
@@ -270,6 +293,7 @@ export function RegistrationStepper({
       updateData({
         appName: "",
         consumerApiUrl: "",
+        consumerWalletAddress: "",
       });
     }
   };
@@ -281,14 +305,14 @@ export function RegistrationStepper({
       <KeyModal
         apiKey={keys.apiKey}
         apiSecret={keys?.apiSecret}
-        walletKey={keys?.walletKey}
+        walletAddress={keys?.walletAddress}
         endpoint={keys?.endpoint}
         opened={opened}
         onClose={close}
         onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
         title="API Access Key"
-        walletKeyTitle="Public Escrow Wallet Key"
-        endpointTitle="Resource Endpoint"
+        walletAddressTitle="Validator's ERC-20 Public Address"
+        endpointTitle="Validator's Resource Endpoint"
       />
       <Stepper
         size="sm"
@@ -318,10 +342,14 @@ export function RegistrationStepper({
                 <Text className="text-center text-sm">
                   You&apos;re one step away from your making your first request,
                   integrating your app, and start building! Tell us your
-                  application and domain name so that we can get you started.
+                  application, domain name and attach an ERC-20 Wallet address
+                  so that we can get you started. The wallet address is the
+                  public address of the ERC-20 wallet you want to use to make
+                  monthly payment.
                 </Text>
                 <Box className="mt-7">
                   <TextInput
+                    label="Application Name"
                     className="mb-4"
                     withAsterisk
                     value={registrationData?.appName}
@@ -337,6 +365,7 @@ export function RegistrationStepper({
                     placeholder="Application Name"
                   />
                   <TextInput
+                    label="Your Domain Name"
                     withAsterisk
                     value={registrationData?.consumerApiUrl}
                     onChange={(e) => {
@@ -349,13 +378,31 @@ export function RegistrationStepper({
                       errors?.find((e) => e.path.includes("consumerApiUrl"))
                         ?.message
                     }
-                    placeholder="https://example.com"
+                    placeholder="https://mysite.com"
+                  />
+                  <TextInput
+                    label="Wallet Address"
+                    className="mt-4"
+                    withAsterisk
+                    value={registrationData?.consumerWalletAddress}
+                    onChange={(e) => {
+                      updateData({
+                        consumerWalletAddress: e.target.value,
+                      } as RegistrationData);
+                      if (errors) setErrors([]);
+                    }}
+                    error={
+                      errors?.find((e) =>
+                        e.path.includes("consumerWalletAddress")
+                      )?.message
+                    }
+                    placeholder="0xe985528e9BC951a462BCFAb6f3B1F395DF9aeA3e"
                   />
                 </Box>
               </Box>
             </Center>
             <Box>
-              <Logo />
+              <Logo size={75} />
             </Box>
           </Card>
         </Stepper.Completed>
