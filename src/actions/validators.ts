@@ -10,6 +10,7 @@ import { createEndpoint } from "./endpoints";
 import { createUnkeyApiKey, generateApiKey, generateApiSecret } from "./apis";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
+import { DatabaseResponseType } from "@/db/error";
 
 export const getValidators = async (query: object = {}) => {
   try {
@@ -67,19 +68,32 @@ export const createValidator = async (validator: ValidatorType) => {
 export const createValidatorEndpoint = async (
   validator: Partial<ValidatorType>,
   endpoint: Partial<EndpointType>
-) => {
+): Promise<
+  { validator: ValidatorType; endpoint: EndpointType } | DatabaseResponseType
+> => {
   try {
     const res = await db.transaction(async (tx) => {
       const record = await createValidator(validator as ValidatorType);
+
+      if (record?.error) {
+        throw new Error(`Failed to create validator: ${record?.message}`);
+      }
 
       const { id, name } = record?.data[0];
 
       const newEndpoint = await createEndpoint({
         ...endpoint,
-        validator: id,
+        validatorId: id,
       } as any);
 
+      if (newEndpoint?.error) {
+        throw new Error(`Failed to create endpoint: ${newEndpoint?.message}`);
+      }
+
       const key = await createUnkeyApiKey({ name });
+      if (key?.error) {
+        throw new Error(`Failed to create API key: ${key?.error}`);
+      }
 
       const newValidator = await updateValidator({
         id,
@@ -87,6 +101,9 @@ export const createValidatorEndpoint = async (
         apiKey: generateApiKey(),
         apiSecret: generateApiSecret(),
       });
+      if (newValidator?.error) {
+        throw new Error(`Failed to update validator: ${newValidator?.message}`);
+      }
 
       return {
         validator: newValidator?.data?.[0],
@@ -94,7 +111,23 @@ export const createValidatorEndpoint = async (
       };
     });
     revalidatePath("/dashboard");
+
     return res;
+  } catch (error) {
+    return {
+      error: true,
+      message: (error as Error)?.message,
+    };
+  }
+};
+
+export const checkHotkeyExists = async (hotkey: string) => {
+  try {
+    const res = await db
+      .select()
+      .from(validators)
+      .where(eq(validators.hotkey, hotkey));
+    return res?.length > 0;
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }

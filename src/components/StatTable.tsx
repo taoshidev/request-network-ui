@@ -17,7 +17,7 @@ export function StatTable({
 }) {
   return (
     <Box my="xl">
-      {Array.isArray(data) && data?.length > 0 && (
+      {(caption.length === 0 || (Array.isArray(data) && data?.length > 0)) && (
         <Fragment>
           {data && (
             <Title size="sm" order={2}>
@@ -45,7 +45,7 @@ export function StatTable({
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {(Array.isArray(data) && data.length > 0 ? data : []).map(
+              {(Array.isArray(data) && data.length > 0 ? data : [data]).map(
                 (key, i) => (
                   <Table.Tr key={`${key?.id}-${i}`}>
                     {caption && <Table.Td>{key?.name}</Table.Td>}

@@ -10,3 +10,8 @@ export const isAddress = ({ address }: { address: string }) => {
     return false;
   }
 };
+
+export const isValidEthereumAddress = (address: string): boolean => {
+  const re = /^0x[a-fA-F0-9]{40}$/;
+  return re.test(address);
+};

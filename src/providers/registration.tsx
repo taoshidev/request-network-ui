@@ -4,6 +4,7 @@ import { useLocalStorage } from "@mantine/hooks";
 export interface RegistrationData {
   appName: string;
   consumerApiUrl: string;
+  consumerWalletAddress: string;
   subnet: any;
   validator: any;
   currentStep: number;
@@ -18,6 +19,7 @@ export const defaultContextValue: ProviderValue = {
   registrationData: {
     appName: "",
     consumerApiUrl: "",
+    consumerWalletAddress: "",
     subnet: null,
     validator: null,
     currentStep: 0,

@@ -3,7 +3,7 @@
 import { Button, Text, Box, CopyButton, Alert, Modal } from "@mantine/core";
 import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
 
-export type keyType = "apiKey" | "apiSecret" | "walletKey" | "endpoint";
+export type keyType = "apiKey" | "apiSecret" | "walletAddress" | "endpoint";
 
 const KeyCopyButton = ({
   title,
@@ -45,8 +45,8 @@ export function KeyModal({
   apiKey,
   title,
   apiSecret = "",
-  walletKey = "",
-  walletKeyTitle = "",
+  walletAddress = "",
+  walletAddressTitle = "",
   endpointTitle = "",
   endpoint = "",
 }: {
@@ -56,8 +56,8 @@ export function KeyModal({
   apiKey: string;
   title: string;
   apiSecret: string;
-  walletKeyTitle?: string;
-  walletKey?: string;
+  walletAddress?: string;
+  walletAddressTitle?: string;
   endpointTitle?: string;
   endpoint?: string;
 }) {
@@ -91,11 +91,11 @@ export function KeyModal({
           type="apiSecret"
           onCopy={onCopy}
         />
-        {walletKeyTitle && (
+        {walletAddressTitle && (
           <KeyCopyButton
-            title={walletKeyTitle}
-            value={walletKey}
-            type="walletKey"
+            title={walletAddressTitle}
+            value={walletAddress}
+            type="walletAddress"
             onCopy={onCopy}
           />
         )}

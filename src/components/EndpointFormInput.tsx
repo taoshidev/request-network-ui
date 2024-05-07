@@ -5,6 +5,8 @@ import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { UseFormReturnType } from "@mantine/form";
 import { EndpointType } from "@/db/types/endpoint";
+import { checkEndpointWalletAddressExists } from "@/actions/endpoints";
+import { useNotification } from "@/hooks/use-notification";
 import clsx from "clsx";
 
 export function EndpointFormInput({
@@ -12,19 +14,23 @@ export function EndpointFormInput({
   validators,
   subnets,
   mode = "create",
+  onError,
 }: {
   form: UseFormReturnType<Partial<ValidatorType & EndpointType>>;
   mode?: "create" | "update";
   subnets?: Array<SubnetType>;
   validators?: Array<ValidatorType>;
+  onError?: ({ error, reason }: { error: boolean; reason: string }) => void;
 }) {
-  const [showPriceInput, setShowPriceInput] = useState(false);
-  const [animate, setAnimate] = useState(mode === "create");
+  const [isCryptoType, setIsCryptoType] = useState(false);
+  const [addressExists, setAddressExists] = useState<boolean>(false);
+  const { notifyError } = useNotification();
 
   useEffect(() => {
     const isCryptoCurrencyType =
       form.getInputProps("currencyType").value === "Crypto";
-    setShowPriceInput(isCryptoCurrencyType);
+    setIsCryptoType(isCryptoCurrencyType);
+    if (isCryptoCurrencyType) delete values.walletAddress;
     // eslint-disable-next-line
   }, [form.getInputProps("currencyType").value]);
 
@@ -54,6 +60,31 @@ export function EndpointFormInput({
     },
   ];
 
+  const { values } = form;
+
+  const handleOnBlurWalletAddress = async (evt) => {
+    const walletAddress = values.walletAddress;
+    if (walletAddress) {
+      try {
+        const exists = await checkEndpointWalletAddressExists(walletAddress);
+        if (exists) {
+          notifyError(
+            "ERC-20 wallet address already in use by another endpoint."
+          );
+          setAddressExists(exists as boolean);
+          onError?.({ error: true, reason: "Wallet address exists" });
+        }
+      } catch (error: Error | unknown) {
+        throw new Error((error as Error)?.message);
+      }
+    }
+  };
+
+  const handleOnChangeWalletAddress = () => {
+    setAddressExists(false);
+    onError?.({ error: false, reason: "Reset on edit" });
+  };
+
   return (
     <>
       <Box mb="md">
@@ -69,9 +100,9 @@ export function EndpointFormInput({
           <Select
             withAsterisk
             label="Which Validator"
-            placeholder="Pick value or enter anything"
+            placeholder="Choose a validator"
             data={verifiedValidators}
-            {...form.getInputProps("validator")}
+            {...form.getInputProps("validatorId")}
           />
         </Box>
       )}
@@ -81,9 +112,9 @@ export function EndpointFormInput({
             <Select
               label="Which Subnet"
               withAsterisk
-              placeholder="Pick value or enter anything"
+              placeholder="Choose a subnet"
               data={availableSubnets}
-              {...form.getInputProps("subnet")}
+              {...form.getInputProps("subnetId")}
             />
           </Box>
           <Box mb="md">
@@ -95,25 +126,48 @@ export function EndpointFormInput({
               {...form.getInputProps("currencyType")}
             />
           </Box>
+          {isCryptoType && (
+            <Box mb="md">
+              <TextInput
+                className={clsx(isCryptoType && "animate-slide-down")}
+                label="ERC-20 wallet address"
+                withAsterisk={isCryptoType}
+                placeholder="Enter ERC-20 wallet address"
+                {...form.getInputProps("walletAddress")}
+                onBlur={(event) => {
+                  form.getInputProps("walletAddress").onBlur(event);
+                  handleOnBlurWalletAddress(event);
+                }}
+                onChange={(event) => {
+                  form.getInputProps("walletAddress").onChange(event);
+                  handleOnChangeWalletAddress();
+                }}
+              />
+              {addressExists && (
+                <p className="pt-1 text-xs text-[#fa5252] mantine-TextInput-error">
+                  Wallet address is already in use by another endpoint.
+                </p>
+              )}
+            </Box>
+          )}
         </>
       )}
-      {showPriceInput && (
-        <Box mb="md">
-          <TextInput
-            className={clsx(animate && "animate-slide-down")}
-            label="Price"
-            description="Price in USDC/USDT"
-            placeholder="5"
-            {...form.getInputProps("price")}
-          />
-        </Box>
-      )}
+      <Box mb="md">
+        <TextInput
+          label="Price"
+          description={
+            "Price in" + (isCryptoType ? " USDC/USDT" : "Price in USD")
+          }
+          placeholder="5"
+          {...form.getInputProps("price")}
+        />
+      </Box>
       <Box mb="md">
         <DateTimePicker
           label="Expiry Date"
           description="When should your keys expire?"
           withSeconds
-          placeholder="Pick date"
+          placeholder="Expiry Date"
           {...form.getInputProps("expires")}
         />
       </Box>
@@ -122,7 +176,7 @@ export function EndpointFormInput({
           label="Limit"
           withAsterisk
           description="The total amount of burstable requests."
-          placeholder="Input placeholder"
+          placeholder="Limit"
           {...form.getInputProps("limit")}
         />
       </Box>
@@ -132,7 +186,7 @@ export function EndpointFormInput({
             label="Refill Rate"
             withAsterisk
             description="How many tokens to refill during each refillInterval"
-            placeholder="Input placeholder"
+            placeholder="Refill Rate"
             {...form.getInputProps("refillRate")}
           />
         </Box>
@@ -141,7 +195,7 @@ export function EndpointFormInput({
             label="Refill Interval"
             withAsterisk
             description="Determines the speed at which tokens are refilled."
-            placeholder="Input placeholder"
+            placeholder="Refill Interval"
             {...form.getInputProps("refillInterval")}
           />
         </Box>

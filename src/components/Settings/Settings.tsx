@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Fragment } from "react";
+import { useState } from "react";
 import {
   Title,
   Text,
@@ -11,7 +11,6 @@ import {
   Modal,
   Alert,
   CopyButton,
-  Table,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
@@ -71,6 +70,8 @@ export function Settings({ apiKey }: { apiKey: any }) {
     if (res?.status !== 200) return notifyError(res?.message as string);
     notifySuccess(res?.message as string);
     setLoading(false);
+    router.refresh();
+    setTimeout(() => router.back(), 1000);
   };
 
   const handleCopy = (copy: () => void) => {
@@ -175,7 +176,7 @@ export function Settings({ apiKey }: { apiKey: any }) {
               able to access the Taoshi&apos;s API.
             </Box>
             <Group justify="flex-end" mt="lg">
-              <Button variant="orange" onClick={open}>
+              <Button variant="orange" onClick={open} disabled>
                 Delete Key
               </Button>
             </Group>

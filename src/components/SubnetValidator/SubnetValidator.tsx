@@ -37,7 +37,7 @@ export function SubnetValidator({
   useEffect(() => {
     if (registrationData?.subnet?.endpoints) {
       const updatedValidators = registrationData.subnet.endpoints.flatMap(
-        (endpoint: EndpointType) => endpoint?.validators
+        (endpoint: EndpointType) => endpoint?.validator
       );
       const validatorsWithStats = (updatedValidators || []).map(
         (validator: ValidatorType) => {
@@ -45,7 +45,7 @@ export function SubnetValidator({
             ?.filter((vali) => vali?.id === validator?.id)?.[0]
             ?.endpoints?.find(
               (endpoint: EndpointType) =>
-                endpoint.subnet === registrationData.subnet.id
+                endpoint.subnetId === registrationData.subnet.id
             );
           return {
             ...validator,
@@ -76,7 +76,7 @@ export function SubnetValidator({
         (s) => s.endpointId === validator?.endpoints?.[0]?.id
       );
       const isEnabled = validator?.endpoints?.some(
-        (e) => e?.subnet === registrationData?.subnet?.id && e.enabled
+        (e) => e?.subnetId === registrationData?.subnet?.id && e.enabled
       );
       return !validator.verified || !isEnabled || isAlreadySubscribed;
     },

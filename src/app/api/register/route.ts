@@ -92,12 +92,14 @@ const validateSignature = (
  * Registers the validator with the provided API URL.
  */
 const registerValidator = async (
-  body: { apiUrl: string; apiPrefix: string },
+
+  body: { baseApiUrl: string; apiPrefix: string },
   validatorId: string
 ): Promise<NextResponse> => {
+  const { baseApiUrl, apiPrefix } = body;
   const updated = await updateValidator({
     id: validatorId,
-    ...body,
+    ...{ baseApiUrl, apiPrefix },
   });
   if (updated?.data) {
     return jsonResponse(200, "Registration complete");
@@ -110,20 +112,24 @@ const registerValidator = async (
  * Sync validators with apiPrefixes.
  */
 const syncValidators = async (
-  validators: Array<{ id: string; apiPrefix: string }>
+
+  validators: Array<{ id: string; apiPrefix: string; baseApiUrl: string }>
 ): Promise<NextResponse> => {
   try {
-    const promises = validators.map(
-      (validator: { id: string; apiPrefix: string }) => {
-        return updateValidator({
-          ...validator,
-        });
-      }
-    );
+    if (validators.length > 0) {
+      const promises = validators.map(
+        (validator: { id: string; apiPrefix: string }) => {
+          return updateValidator({
+            ...validator,
+          });
+        }
+      );
 
-    const resArr = await Promise.all(promises);
+      const resArr = await Promise.all(promises);
 
-    return jsonResponse(200, "Validator's API Prefixes synced.");
+      return jsonResponse(200, "Validator's API Prefixes synced.");
+    }
+    return jsonResponse(200, "Validator has no subscriptions to sync.");
   } catch (error) {
     return jsonResponse(500, "Failed to sync validator.");
   }

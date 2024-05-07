@@ -95,11 +95,14 @@ export function Endpoints({
                   </Table.Td>
                   <Table.Td>
                     {
-                      validators.find((v: any) => v?.id === endpoint?.validator)
+                      validators.find((v: any) => v?.id === endpoint?.validatorId)
                         ?.name
                     }
                   </Table.Td>
-                  <Table.Td>{endpoint.subnets?.label}</Table.Td>
+                  <Table.Td>{endpoint.subnet?.label}</Table.Td>
+                  <Table.Td>
+                    {dayjs(endpoint?.expires).format("MMM DD, YYYY")}
+                  </Table.Td>
                   <Table.Td>
                     {dayjs(endpoint?.expires).format("MMM DD, YYYY")}
                   </Table.Td>
