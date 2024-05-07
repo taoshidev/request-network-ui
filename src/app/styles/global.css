@@ -9,7 +9,7 @@ body {
 
 .mantine-Stepper-content {
   overflow-y: auto;
-  height: calc(100vh - 340px);
+  height: calc(100vh - 320px);
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   -ms-overflow-style: none;

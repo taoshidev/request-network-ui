@@ -13,7 +13,7 @@ export const getEndpoints = async () => {
   try {
     const results = await db.query.endpoints.findMany({
       orderBy: (endpoints, { asc }) => [asc(endpoints.url)],
-      with: { subnets: true },
+      with: { subnet: true },
     });
 
     return results;
@@ -36,7 +36,30 @@ export const getEndpoint = async ({ id }: { id: string }) => {
         },
       } as any)
       .from(endpoints)
-      .innerJoin(validators, eq(validators.id, endpoints.validator))
+      .innerJoin(validators, eq(validators.id, endpoints?.validatorId))
+      .leftJoin(subscriptions, eq(subscriptions.endpointId, endpoints.id))
+      .where(eq(endpoints.id, id));
+
+    return results;
+  } catch (error) {
+    if (error instanceof Error) console.log(error.stack);
+  }
+};
+
+export const getEndpointWithSubscription = async ({ id }: { id: string }) => {
+  try {
+    const results = await db
+      .select({
+        ...endpoints,
+        validator: {
+          id: validators.id,
+          baseApiUrl: validators.baseApiUrl,
+          hotkey: validators.hotkey,
+          apiPrefix: validators.apiPrefix,
+        },
+      } as any)
+      .from(endpoints)
+      .innerJoin(validators, eq(validators.id, endpoints.validatorId))
       .leftJoin(subscriptions, eq(subscriptions.endpointId, endpoints.id))
       .where(eq(endpoints.id, id));
 
@@ -73,5 +96,17 @@ export const updateEndpoint = async ({
     return parseResult(res, { filter: ["url", "subnet", "validator"] });
   } catch (error) {
     return parseError(error);
+  }
+};
+
+export const checkEndpointWalletAddressExists = async (address: string) => {
+  try {
+    const res = await db
+      .select()
+      .from(endpoints)
+      .where(eq(endpoints.walletAddress, address));
+    return res?.length > 0;
+  } catch (error) {
+    if (error instanceof Error) return parseError(error);
   }
 };

@@ -79,7 +79,7 @@ export function Validators({ user, subnets, validators }: any) {
                     <Group>
                       {(validator.endpoints || []).map((endpoint: any) => (
                         <Badge key={endpoint.id} color="grey">
-                          {endpoint?.subnets?.label}
+                          {endpoint?.subnet?.label}
                         </Badge>
                       ))}
                     </Group>

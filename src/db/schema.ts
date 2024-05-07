@@ -88,14 +88,15 @@ export const endpoints = pgTable(
       .default(sql`gen_random_uuid()`)
       .primaryKey()
       .notNull(),
-    subnet: uuid("subnet")
+    subnetId: uuid("subnet_id") // subnet becomes subnetId
       .notNull()
       .references(() => subnets.id, { onDelete: "cascade" }),
-    validator: uuid("validator")
+    validatorId: uuid("validator_id") // validator becomes validatorId
       .notNull()
       .references(() => validators.id, { onDelete: "cascade" }),
     price: varchar("price"),
     currencyType: varchar("currency_type"),
+    walletAddress: varchar("wallet_address"),
     limit: integer("limit").default(10), // The total amount of burstable requests.
     url: varchar("url").unique().notNull(),
     enabled: boolean("enabled").notNull().default(true).notNull(),
@@ -105,17 +106,17 @@ export const endpoints = pgTable(
     remaining: integer("remaining").default(1000),
   },
   (table) => ({
-    unique: unique().on(table.validator, table.subnet),
+    unique: unique().on(table.validatorId, table.subnetId), // endpoints.validator becomes endpoint.validatorId
   })
 );
 
 export const endpointsRelations = relations(endpoints, ({ one }) => ({
-  subnets: one(subnets, {
-    fields: [endpoints.subnet],
+  subnet: one(subnets, { // subnets becomes subnet
+    fields: [endpoints.subnetId], // endpoint.subnet becomes endpoint.subnetId
     references: [subnets.id],
   }),
-  validators: one(validators, {
-    fields: [endpoints.validator],
+  validator: one(validators, { // validators becomes validator
+    fields: [endpoints.validatorId], // endpoints.validator becomes endpoint.validatorId
     references: [validators.id],
   }),
 }));
@@ -137,9 +138,9 @@ export const subscriptions = pgTable(
     keyId: varchar("key_id"),
     apiKey: varchar("api_key"),
     apiSecret: varchar("api_secret"),
-    escrowPublicKey: varchar("escrow_public_key"),
     appName: varchar("app_name"),
     consumerApiUrl: varchar("consumer_api_url").notNull(),
+    consumerWalletAddress: varchar("consumer_wallet_address"),
   },
   (table) => ({
     unique: unique().on(table.endpointId, table.userId),

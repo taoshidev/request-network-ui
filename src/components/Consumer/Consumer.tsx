@@ -44,7 +44,7 @@ export function Consumer({
 
       for (const sub of subscriptions) {
         const { result } = await getUserAPIKeys({
-          apiId: sub?.endpoint?.validators?.apiId as string,
+          apiId: sub?.endpoint?.validator?.apiId as string,
           ownerId: sub?.userId!,
         });
         const updatedSub = { ...sub, ...result } as any;
@@ -86,7 +86,7 @@ export function Consumer({
 
       {(subscriptionData || []).map((subscription, index) => (
         <Fragment key={index}>
-          <Title order={2}>{subscription?.endpoint?.validators?.name}</Title>
+          <Title order={2}>{subscription?.endpoint?.validator?.name}</Title>
           <Table className="mt-3 mb-6">
             <Table.Thead>
               <Table.Tr>
