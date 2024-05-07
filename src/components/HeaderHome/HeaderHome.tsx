@@ -9,10 +9,10 @@ import {
 
 export function HeaderHome() {
   return (
-    <Group className="h-full p-4">
-      <Group className="flex-1 justify-between">
+    <div className="h-full py-4">
+      <div className="flex-1 flex justify-between">
         <Anchor
-          className="mr-1 font-adlam-display font-bold text-2xl text-primary-900"
+          className="mr-1 font-adlam-display font-bold text-2xl text-white"
           component={Link}
           href="/dashboard"
         >
@@ -20,7 +20,7 @@ export function HeaderHome() {
         </Anchor>
         <Group className="ml-1" visibleFrom="sm">
           <Button
-            className="text-sm text-primary-800 font-normal"
+            className="text-sm font-normal"
             component={Link}
             leftSection={<IconChartBar size={14} />}
             href="docs.taoshi.io"
@@ -29,7 +29,7 @@ export function HeaderHome() {
             Status
           </Button>
           <Button
-            className="text-sm text-primary-800 font-normal"
+            className="text-sm font-normal"
             component={Link}
             leftSection={<IconScript size={14} />}
             href="https://ipfs.filebase.io/ipfs/QmWuD5B77xBf6TE3mMUdAMaXeqVf6JkUYzhpW85W8jiAZY"
@@ -38,7 +38,7 @@ export function HeaderHome() {
             Whitepaper
           </Button>
           <Button
-            className="text-sm text-primary-800 font-normal"
+            className="text-sm font-normal"
             component={Link}
             leftSection={<IconFileStack size={14} />}
             href="docs.taoshi.io"
@@ -47,7 +47,7 @@ export function HeaderHome() {
             Docs
           </Button>
           <Button
-            className="text-sm text-primary-800 font-normal"
+            className="text-sm font-normal"
             component={Link}
             leftSection={<IconHelpSquare size={14} />}
             href="docs.taoshi.io"
@@ -56,14 +56,15 @@ export function HeaderHome() {
             Support
           </Button>
           <Button
-            className="text-sm font-normal bg-primary-900"
+            variant="white"
+            className="text-sm font-normal"
             component={Link}
             href="/dashboard"
           >
             Dashboard
           </Button>
         </Group>
-      </Group>
-    </Group>
+      </div>
+    </div>
   );
 }
