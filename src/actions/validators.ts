@@ -132,15 +132,3 @@ export const checkHotkeyExists = async (hotkey: string) => {
     if (error instanceof Error) return parseError(error);
   }
 };
-
-export const checkHotkeyExists = async (hotkey: string) => {
-  try {
-    const res = await db
-      .select()
-      .from(validators)
-      .where(eq(validators.hotkey, hotkey));
-    return res?.length > 0;
-  } catch (error) {
-    if (error instanceof Error) return parseError(error);
-  }
-};

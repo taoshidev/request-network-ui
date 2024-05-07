@@ -36,7 +36,7 @@ export const getEndpoint = async ({ id }: { id: string }) => {
         },
       } as any)
       .from(endpoints)
-      .innerJoin(validators, eq(validators.id, endpoints.validator))
+      .innerJoin(validators, eq(validators.id, endpoints?.validatorId))
       .leftJoin(subscriptions, eq(subscriptions.endpointId, endpoints.id))
       .where(eq(endpoints.id, id));
 
