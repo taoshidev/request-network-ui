@@ -208,10 +208,10 @@ export function RegistrationStepper({
         return notifyError(
           res?.message || "Something went wrong creating subscription"
         );
+      const subscription = res?.data?.[0];
+      meta.subscription = subscription;
 
-      meta.subscription = res?.data?.[0];
-
-      const { id, apiSecret } = meta.subscription;
+      const { id: subscriptionId, apiSecret } = subscription;
 
       await updateKey({
         keyId,
@@ -230,6 +230,9 @@ export function RegistrationStepper({
         data: {
           type: "consumer",
           name: appName,
+          validatorId,
+          endpointId,
+          subscriptionId,
           consumerKeyId: keyId,
           consumerApiUrl,
           hotkey: registrationData?.validator?.hotkey,
@@ -242,25 +245,24 @@ export function RegistrationStepper({
         return notifyError(proxyRes?.error);
       }
 
-      if (proxyRes) {
-        const updateRes = await updateSubscription({
-          id,
-          escrowPublicKey: proxyRes?.publicKey,
-        });
-        if (updateRes?.error)
-          return notifyError(
-            updateRes?.message || "Something went wrong updating subscription"
-          );
+      const updateRes = await updateSubscription({
+        id: subscriptionId,
+        escrowPublicKey: proxyRes?.publicKey,
+        serviceId: proxyRes?.wallet?.serviceId,
+      });
+      if (updateRes?.error)
+        return notifyError(
+          updateRes?.message || "Something went wrong updating subscription"
+        );
 
-        notifySuccess(res?.message as string);
-        setKeys({
-          apiKey: key,
-          apiSecret: apiSecret!,
-          walletKey: proxyRes?.publicKey,
-          endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
-        });
-        open();
-      }
+      notifySuccess(res?.message as string);
+      setKeys({
+        apiKey: key,
+        apiSecret: apiSecret!,
+        walletKey: proxyRes?.publicKey,
+        endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
+      });
+      open();
     } catch (error: Error | unknown) {
       throw new Error((error as Error)?.message);
     } finally {

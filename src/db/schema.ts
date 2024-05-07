@@ -59,6 +59,7 @@ export const validators = pgTable("validators", {
   name: varchar("name"),
   description: varchar("description"),
   baseApiUrl: varchar("base_api_url").unique().notNull(),
+  apiPrefix: varchar("api_prefix"),
   apiId: varchar("api_id"),
   apiKey: varchar("api_key"),
   apiSecret: varchar("api_secret"),
@@ -94,6 +95,7 @@ export const endpoints = pgTable(
       .notNull()
       .references(() => validators.id, { onDelete: "cascade" }),
     price: varchar("price"),
+    currencyType: varchar("currency_type"),
     limit: integer("limit").default(10), // The total amount of burstable requests.
     url: varchar("url").unique().notNull(),
     enabled: boolean("enabled").notNull().default(true).notNull(),
@@ -131,6 +133,7 @@ export const subscriptions = pgTable(
     userId: uuid("user_id").references(() => users.id, {
       onDelete: "set null",
     }),
+    serviceId: varchar("service_id"),
     keyId: varchar("key_id"),
     apiKey: varchar("api_key"),
     apiSecret: varchar("api_secret"),

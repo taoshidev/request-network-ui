@@ -6,12 +6,13 @@ import { EndpointSchema } from "./endpoint";
 
 export const ValidatorSchema = z.object({
   id: z.string().uuid().optional(),
-  name: z.string().min(1),
+  name: z.string().min(1).optional(),
   description: z.string(),
   baseApiUrl: z.string().url().optional(),
   apiId: z.string().optional(),
   apiKey: z.string().optional(),
   apiSecret: z.string().optional(),
+  apiPrefix: z.string().optional(),
   hotkey: z
     .string()
     .min(1)

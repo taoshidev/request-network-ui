@@ -7,7 +7,8 @@ export const EndpointSchema = z.object({
   subnet: z.string().uuid().optional(),
   validator: z.string().uuid().optional(),
   validators: z.lazy(() => ValidatorSchema).optional(),
-  price: z.string(),
+  price: z.string().optional(),
+  currencyType: z.string(),
   limit: z.number().int().min(1),
   url: z.string().regex(/^\/[\w-]+(\/[\w-]+)*$/, {
     message: "Invalid endpoint path format",

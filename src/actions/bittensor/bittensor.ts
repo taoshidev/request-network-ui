@@ -24,11 +24,11 @@ export const createBittensorApi = async () => {
       api.rpc.system.version(),
     ]);
 
-    api.on("error", (error: Error) => console.error("API error:", error));
+    // api.on("error", (error: Error) => console.error("API error:", error));
     
-    console.log(
-      `Connected to chain ${chain} using ${nodeName} v${nodeVersion}`
-    );
+    // console.log(
+    //   `Connected to chain ${chain} using ${nodeName} v${nodeVersion}`
+    // );
   }
   await api.isReadyOrError;
   return api;
