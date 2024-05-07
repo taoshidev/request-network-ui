@@ -69,7 +69,7 @@ export function Header() {
           <Anchor
             className="text-sm text-black"
             component={Link}
-            href="docs.taoshi.io"
+            href="https://github.com/taoshidev/request-network/blob/main/VALIDATOR_INSTRUCTIONS.md"
             target="_blank"
           >
             Docs
@@ -85,7 +85,7 @@ export function Header() {
           <Anchor
             className="text-sm text-black"
             component={Link}
-            href="docs.taoshi.io"
+            href="mailto: lphan@taoshi.io"
             target="_blank"
           >
             Support

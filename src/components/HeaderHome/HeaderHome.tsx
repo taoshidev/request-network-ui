@@ -41,7 +41,7 @@ export function HeaderHome() {
             className="text-sm text-primary-800 font-normal"
             component={Link}
             leftSection={<IconFileStack size={14} />}
-            href="docs.taoshi.io"
+            href="https://github.com/taoshidev/request-network/blob/main/VALIDATOR_INSTRUCTIONS.md"
             target="_blank"
           >
             Docs
@@ -50,7 +50,7 @@ export function HeaderHome() {
             className="text-sm text-primary-800 font-normal"
             component={Link}
             leftSection={<IconHelpSquare size={14} />}
-            href="docs.taoshi.io"
+            href="mailto: lphan@taoshi.io"
             target="_blank"
           >
             Support
