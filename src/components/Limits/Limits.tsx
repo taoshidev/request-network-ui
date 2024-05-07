@@ -5,7 +5,6 @@ import { Box, Button } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { v4 as uuid } from "uuid";
-import { z } from "zod";
 import { createEndpoint } from "@/actions/endpoints";
 import { useNotification } from "@/hooks/use-notification";
 import { EndpointFormInput } from "@components/EndpointFormInput";
@@ -31,8 +30,11 @@ export function Limits({
       id: uuid(),
       limit: 10,
       url: "",
-      subnet: "",
-      validator: "",
+      subnetId: "",
+      validatorId: "",
+      currencyType: "Crypto",
+      walletAddress: "",
+      price: "",
       refillRate: 1,
       refillInterval: 1000,
       remaining: 1000,

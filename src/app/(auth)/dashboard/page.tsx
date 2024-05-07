@@ -27,7 +27,7 @@ export default async function Page() {
     with: {
       endpoints: {
         with: {
-          subnets: true,
+          subnet: true,
         },
       },
     },
@@ -42,7 +42,7 @@ export default async function Page() {
       with: {
         endpoint: {
           with: {
-            validators: true,
+            validator: true,
           },
         },
       },

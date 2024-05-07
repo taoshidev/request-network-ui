@@ -1,6 +1,6 @@
-import { getEndpoint } from "@/actions/endpoints";
+import { getEndpointWithSubscription, getEndpoint } from "@/actions/endpoints";
 
-import { Endpoint } from "@/components/Endpoint";
+import { UpdateEndpoint } from "@/components/UpdateEndpoint";
 interface PageProps {
   params: {
     id: string;
@@ -9,7 +9,7 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { id } = params;
-  const [result = {}] = await getEndpoint({ id }) ?? [];
+  const [result = {}] = await getEndpointWithSubscription({ id }) ?? [];
 
-  return <Endpoint endpoint={result} />;
+  return <UpdateEndpoint endpoint={result} />;
 }

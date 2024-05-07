@@ -60,10 +60,10 @@ export const getUserAPIKeys = async ({
   ownerId?: string;
 }) => {
   const request = {
-    apiId
-  }
-  if(ownerId) {
-    Object.assign(request, {ownerId})
+    apiId,
+  };
+  if (ownerId) {
+    Object.assign(request, { ownerId });
   }
   return await unkey.apis.listKeys(request);
 };

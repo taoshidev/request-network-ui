@@ -32,7 +32,13 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     return jsonResponse(403, "Unauthorized");
   }
 
-  return await registerValidator(body.apiUrl, validator.id);
+  const resp = await registerValidator(body, validator.id);
+
+  if (resp?.status === 500) {
+    return resp;
+  }
+
+  return await syncValidators(body.validators);
 };
 
 /**
@@ -86,17 +92,44 @@ const validateSignature = (
  * Registers the validator with the provided API URL.
  */
 const registerValidator = async (
-  apiUrl: string,
+  body: { baseApiUrl: string; apiPrefix: string },
   validatorId: string
 ): Promise<NextResponse> => {
+  const { baseApiUrl, apiPrefix } = body;
   const updated = await updateValidator({
     id: validatorId,
-    baseApiUrl: apiUrl,
+    ...{ baseApiUrl, apiPrefix },
   });
   if (updated?.data) {
     return jsonResponse(200, "Registration complete");
   } else {
     return jsonResponse(500, "Failed to update validator information");
+  }
+};
+
+/**
+ * Sync validators with apiPrefixes.
+ */
+const syncValidators = async (
+  validators: Array<{ id: string; apiPrefix: string; baseApiUrl: string }>
+): Promise<NextResponse> => {
+  try {
+    if (validators.length > 0) {
+      const promises = validators.map(
+        (validator: { id: string; apiPrefix: string }) => {
+          return updateValidator({
+            ...validator,
+          });
+        }
+      );
+
+      const resArr = await Promise.all(promises);
+
+      return jsonResponse(200, "Validator's API Prefixes synced.");
+    }
+    return jsonResponse(200, "Validator has no subscriptions to sync.");
+  } catch (error) {
+    return jsonResponse(500, "Failed to sync validator.");
   }
 };
 

@@ -1,0 +1,1 @@
+ALTER TABLE "subscriptions" ADD COLUMN "consumer_wallet_address" varchar;

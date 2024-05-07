@@ -4,11 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-interface FormData {
-  email: string;
-  password: string;
-}
-
 export async function getSupabaseSession() {
   const supabase = createClient();
   try {

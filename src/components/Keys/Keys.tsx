@@ -22,7 +22,7 @@ export function Keys({ apiKey }: { apiKey: any }) {
   return (
     <Container>
       <Box my="xl" className={styles.intro} pb="lg">
-        <Title className="mb-5">{apiKey.name}</Title>
+        <Title className="mb-5">{apiKey?.name}</Title>
         <Text size="xs" mb="sm">
           Created: {dayjs(apiKey?.createdAt).format("MMM DD, YYYY")}
         </Text>

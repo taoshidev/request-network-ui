@@ -20,7 +20,7 @@ export function SubnetValidatorReview() {
       <Title className="text-center my-8 text-2xl">Review Selection</Title>
       <Card className="my-14 pb-8">
         <Title className="text-xl mb-4">
-          {registrationData?.validator.name}
+          {registrationData?.validator.name?.name}
         </Title>
         <Group className="justify-between items-start gap-8">
           <Box className="flex-1">

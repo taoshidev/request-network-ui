@@ -6,12 +6,13 @@ import { EndpointSchema } from "./endpoint";
 
 export const ValidatorSchema = z.object({
   id: z.string().uuid().optional(),
-  name: z.string().min(1),
-  description: z.string(),
+  name: z.string().min(1).optional(),
+  description: z.string().nullish(),
   baseApiUrl: z.string().url().optional(),
   apiId: z.string().optional(),
   apiKey: z.string().optional(),
   apiSecret: z.string().optional(),
+  apiPrefix: z.string().nullish(),
   hotkey: z
     .string()
     .min(1)
@@ -19,7 +20,7 @@ export const ValidatorSchema = z.object({
     .refine((value) => isAddress({ address: value || "" }), {
       message: "Invalid Bittensor address",
     }),
-  userId: z.string().uuid(),
+  userId: z.string().uuid().nullish(),
   account: z.any().optional(),
   signature: z.string().optional(),
   vtrust: z.string().optional(),

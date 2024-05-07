@@ -59,22 +59,27 @@ export function Validators({ user, subnets, validators }: any) {
           <Button onClick={open}>Add Your Validator</Button>
         </Group>
         {validators && !isEmpty(validators) && (
-          <Table>
+          <Table highlightOnHover striped>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>Validator</Table.Th>
+                <Table.Th>ReqNet Api Url</Table.Th>
                 <Table.Th>Subnet</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
               {(validators || []).map((validator: any) => (
-                <Table.Tr key={validator.id}>
-                  <Table.Td>{validator.name}</Table.Td>
+                <Table.Tr key={validator?.id}>
+                  <Table.Td>{validator?.name}</Table.Td>
+                  <Table.Td>
+                    {validator?.baseApiUrl +
+                      (validator?.apiPrefix ? validator?.apiPrefix : "")}
+                  </Table.Td>
                   <Table.Td>
                     <Group>
                       {(validator.endpoints || []).map((endpoint: any) => (
                         <Badge key={endpoint.id} color="grey">
-                          {endpoint?.subnets?.label}
+                          {endpoint?.subnet?.label}
                         </Badge>
                       ))}
                     </Group>

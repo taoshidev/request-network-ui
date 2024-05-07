@@ -19,7 +19,7 @@ export default async function Page() {
     with: {
       endpoints: {
         with: {
-          validators: {
+          validator: {
             with: {
               endpoints: true,
             },
@@ -50,17 +50,16 @@ export default async function Page() {
           const endpointsWithInfo = await Promise.all(
             (validator?.endpoints! || [])?.map(async (endpoint) => {
               const netUid = subnets.find(
-                (subnet) => subnet.id === endpoint.subnet
+                (subnet) => subnet.id === endpoint.subnetId
               )?.netUid;
               if (!netUid) {
                 console.error(
                   "No netUid found for subnet ID:",
-                  endpoint.subnet
+                  endpoint.subnetId
                 );
                 return endpoint;
               }
               try {
-                console.log(netUid, validator.hotkey);
                 const stats = await fetchValidatorInfo(
                   netUid,
                   validator.hotkey!
@@ -84,7 +83,6 @@ export default async function Page() {
 
       return validatorWithInfo;
     } catch (error) {
-      console.error("Error fetching validator information:", error);
       throw error;
     }
   };
