@@ -4,7 +4,7 @@ export const validatorQuestions = [
       "What do I do with the API key and secret after I register a new Validator?",
     content: (
       <>
-        The key and secret should be copied to the request network server's
+        The key and secret should be copied to the request network server&apos;s
         environment variables.
         <br />
         <br />
