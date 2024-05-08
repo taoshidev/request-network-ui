@@ -2,7 +2,7 @@ import { HeaderHome } from "@/components/HeaderHome";
 import ReactMarkdown from "react-markdown";
 import { readFileSync } from "fs";
 import { join } from "path";
-import * as classes from "./page.module.css";
+import * as classes from "../documentation/page.module.css";
 import React from "react";
 
 export default function ContributingPage() {
