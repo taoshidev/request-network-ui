@@ -42,12 +42,12 @@ export const consumerQuestions = [
           &emsp;- https://testnet.taoshi.io/validator-checkpoint
         </div>
         <div className="code">
-          curl -L -X GET "https://testnet.taoshi.io/validator-checkpoint" \
+          curl -L -X GET &quot;https://testnet.taoshi.io/validator-checkpoint&quot; \
           <br />
-          &emsp;-H "Content-Type: application/json" \<br />
-          &emsp;-H "x-taoshi-consumer-request-key: req_xxxxxxxxxxxxxxxxxxxxxxxx"
+          &emsp;-H &quot;Content-Type: application/json&quot; \<br />
+          &emsp;-H &quot;x-taoshi-consumer-request-key: req_xxxxxxxxxxxxxxxxxxxxxxxx&quot;
           \<br />
-          &emsp;-H "Authorization: Bearer xxxx"
+          &emsp;-H &quot;Authorization: Bearer xxxx&quot;
         </div>
       </>
     ),
