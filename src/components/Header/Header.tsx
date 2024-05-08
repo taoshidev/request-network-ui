@@ -83,8 +83,7 @@ export function Header() {
           <Anchor
             className="text-sm text-black"
             component={Link}
-            href="docs.taoshi.io"
-            target="_blank"
+            href="/faq"
           >
             Help
           </Anchor>
