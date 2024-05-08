@@ -18,7 +18,7 @@ export default function ContributingPage() {
       </div>
       <div className="container mx-auto py-1 px-2 lg:px-20 pb-20">
         <div className={classes["markdown-container"]}>
-          <ReactMarkdown children={markdown} />
+          <ReactMarkdown>{markdown}</ReactMarkdown>
         </div>
       </div>
     </div>
