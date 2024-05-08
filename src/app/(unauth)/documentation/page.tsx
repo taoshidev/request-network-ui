@@ -34,6 +34,29 @@ export default function DocumentationPage() {
         </h2>
       );
     },
+    h3: (props) => {
+      const children = Array.isArray(props.children)
+        ? props.children
+        : [props.children];
+      const heading = children
+        .flatMap((element) =>
+          typeof element === "string"
+            ? element
+            : element?.type !== undefined &&
+              typeof element.props.children === "string"
+            ? element.props.children
+            : []
+        )
+        .join("");
+
+      const slug = generateSlug(heading);
+
+      return (
+        <h3 id={slug}>
+          <a href={`#${slug}`} {...props}></a>
+        </h3>
+      );
+    },
   };
 
   return (
