@@ -1,0 +1,25 @@
+.markdown-container h1, .markdown-container h2, .markdown-container h3 {
+  font-weight: 700;
+  padding: 1rem 0;
+}
+.markdown-container h1 {
+    text-align: center;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+}
+.markdown-container h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+.markdown-container h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.markdown-container ol {
+  list-style-type: decimal;
+  padding: 1rem 0 1rem 2rem;
+}
+.markdown-container ul {
+  list-style-type: disc;
+  padding: 1rem 0 1rem 1rem;
+}
