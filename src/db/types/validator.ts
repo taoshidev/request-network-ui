@@ -19,7 +19,7 @@ export const ValidatorSchema = z.object({
     .max(48)
     .refine((value) => isAddress({ address: value || "" }), {
       message: "Invalid Bittensor address",
-    }),
+    }).nullish(),
   userId: z.string().uuid().nullish(),
   account: z.any().optional(),
   signature: z.string().optional(),
