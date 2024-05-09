@@ -307,6 +307,7 @@ export function RegistrationStepper({
           subject: "Welcome to Request Network",
           templateVariables: {
             attachments,
+            role: 'consumer'
           },
           attachments,
         });

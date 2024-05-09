@@ -35,9 +35,7 @@ export default class EmailService {
       this.mailTransport = nodemailer.createTransport({
         SES
       });
-    }
-
-    if (user && pass) {
+    } else if (user && pass) {
       this.mailTransport = nodemailer.createTransport({
         service: "Gmail",
         host: "smtp.gmail.com",
