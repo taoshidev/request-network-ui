@@ -65,7 +65,7 @@ export function Endpoints({
           <Table highlightOnHover striped>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th>Endpoint</Table.Th>
+                <Table.Th>Path</Table.Th>
                 <Table.Th>Currency</Table.Th>
                 <Table.Th>Price</Table.Th>
                 <Table.Th>Validator</Table.Th>

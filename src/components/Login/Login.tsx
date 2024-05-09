@@ -16,7 +16,6 @@ export function Login() {
         <Title className="mb-4">Login</Title>
         <Text>
           Authentication with the Request Network, simply sign in with Google or Github
-          [google coming soon!]
         </Text>
       </Box>
 

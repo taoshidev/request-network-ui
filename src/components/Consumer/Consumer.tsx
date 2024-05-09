@@ -18,19 +18,24 @@ import { isEmpty } from "lodash";
 import dayjs from "dayjs";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { SubscriptionType } from "@/db/types/subscription";
-import { getUserAPIKeys } from "@/actions/keys";
+import { getKey } from "@/actions/keys";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
+import Loading from "@/app/(auth)/loading";
 
-type SubscriptionEndpointValidatorType = SubscriptionType & { keys: any } & {
-  endpoint: EndpointType & { validators: ValidatorType };
+type SubscriptionEndpointValidatorType = SubscriptionType & {
+  keyId: string;
+  endpoint: EndpointType;
 };
 
 export function Consumer({
   subscriptions,
   validators,
 }: {
-  subscriptions: SubscriptionEndpointValidatorType[];
+  subscriptions: SubscriptionType & {
+    keyId: string;
+    endpoint: EndpointType;
+  }[];
   validators: Array<ValidatorType>;
 }) {
   const [subscriptionData, setSubscriptionData] = useState<
@@ -40,25 +45,36 @@ export function Consumer({
 
   useEffect(() => {
     const fetchKeys = async () => {
-      const updatedSubscriptions: SubscriptionEndpointValidatorType[] = [];
-
+      const validatorsMap = new Map();
       for (const sub of subscriptions) {
-        const { result } = await getUserAPIKeys({
-          apiId: sub?.endpoint?.validator?.apiId as string,
-          ownerId: sub?.userId!,
+        const { result: keyData } = await getKey({
+          keyId: sub.keyId as string,
         });
-        const updatedSub = { ...sub, ...result } as any;
-        updatedSubscriptions.push(updatedSub);
+        const validatorId = sub.endpoint.validator.id;
+        if (!validatorsMap.has(validatorId)) {
+          validatorsMap.set(validatorId, {
+            ...sub.endpoint.validator,
+            subscriptions: [],
+          });
+        }
+        const validator = validatorsMap.get(validatorId);
+        validator.subscriptions.push({
+          ...sub,
+          keyData,
+        });
       }
 
-      setSubscriptionData(updatedSubscriptions);
+      setSubscriptionData(Array.from(validatorsMap.values()));
       setIsLoading(false);
     };
 
     fetchKeys();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptions]);
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <Container className="my-8">
       {!validators && (
         <Notification title="No Validators Found">
@@ -84,55 +100,55 @@ export function Consumer({
         </Alert>
       )}
 
-      {(subscriptionData || []).map((subscription, index) => (
-        <Fragment key={index}>
-          <Title order={2}>{subscription?.endpoint?.validator?.name}</Title>
-          <Table className="mt-3 mb-6">
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Name</Table.Th>
-                <Table.Th>Created</Table.Th>
-                <Table.Th>Role</Table.Th>
-                <Table.Th>Request</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {(subscription?.keys || []).map((key: any) => (
-                <Table.Tr key={key?.id}>
-                  <Table.Td>
-                    <Anchor
-                      className="font-semibold text-black"
-                      component={Link}
-                      href={`/keys/${key?.id}`}
-                    >
-                      {key?.name}
-                    </Anchor>
-                  </Table.Td>
-                  <Table.Td>
-                    {dayjs(key?.createdAt).format("MMM DD, YYYY")}
-                  </Table.Td>
-                  <Table.Td>{key?.meta?.type}</Table.Td>
-                  <Table.Td>52,184</Table.Td>
-                  <Table.Td className="text-right">
-                    <Anchor
-                      className="text-sm"
-                      component={Link}
-                      href={`/keys/${key?.id}`}
-                    >
-                      View Stats
-                    </Anchor>
-                  </Table.Td>
+      {!isLoading &&
+        subscriptionData &&
+        subscriptionData.length > 0 &&
+        subscriptionData.map((validator: any) => (
+          <Fragment key={validator?.id}>
+            <Title order={2}>{validator?.name}</Title>
+            <Table className="mt-3 mb-6">
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Name</Table.Th>
+                  <Table.Th>Created</Table.Th>
+                  <Table.Th>Role</Table.Th>
+                  <Table.Th>Request</Table.Th>
                 </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
-        </Fragment>
-      ))}
-      {/* TODO: Add Products */}
-      {/* <Space h="xl" />
-      <ProductInfo />
-      <Space h="xl" />
-      <ProductInfo /> */}
+              </Table.Thead>
+              <Table.Tbody>
+                {validator?.subscriptions?.map?.((subscription) => (
+                  <Table.Tr key={subscription?.keyData?.id}>
+                    <Table.Td>
+                      <Anchor
+                        className="font-semibold text-black"
+                        component={Link}
+                        href={`/keys/${subscription?.keyData?.id}`}
+                      >
+                        {subscription?.keyData?.name}
+                      </Anchor>
+                    </Table.Td>
+                    <Table.Td>
+                      {dayjs(subscription?.keyData?.createdAt).format(
+                        "MMM DD, YYYY"
+                      )}
+                    </Table.Td>
+                    <Table.Td>{subscription?.keyData?.meta?.type}</Table.Td>
+                    <Table.Td>{subscription?.keyData?.remaining}</Table.Td>
+                    <Table.Td className="text-right">
+                      <Anchor
+                        className="text-sm"
+                        component={Link}
+                        href={`/keys/${subscription?.keyData?.id}`}
+                      >
+                        View Stats
+                      </Anchor>
+                    </Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </Fragment>
+        ))}
     </Container>
   );
 }

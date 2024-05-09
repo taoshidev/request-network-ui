@@ -9,6 +9,7 @@ import { checkEndpointWalletAddressExists } from "@/actions/endpoints";
 import { useNotification } from "@/hooks/use-notification";
 import clsx from "clsx";
 
+const SN8_ONLY = true;
 export function EndpointFormInput({
   form,
   validators,
@@ -46,7 +47,10 @@ export function EndpointFormInput({
   const availableSubnets = (subnets || []).map((s) => ({
     value: s.id!,
     label: s.label!,
+    disabled: SN8_ONLY && s.netUid !== 8,
   }));
+
+  const sortedSubnets = availableSubnets.sort((a, b) => a.label.localeCompare(b.label));
 
   // Fiat currency types, validator will need to self manage
   const currencyTypes = [
@@ -113,7 +117,8 @@ export function EndpointFormInput({
               label="Which Subnet"
               withAsterisk
               placeholder="Choose a subnet"
-              data={availableSubnets}
+              clearable
+              data={sortedSubnets}
               {...form.getInputProps("subnetId")}
             />
           </Box>
