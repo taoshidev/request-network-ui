@@ -2,17 +2,27 @@
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Technology Stack Overview](#technology-stack-overview)
-3. [Setup Process](#setup-process)
-4. [Uphold API Integration](#uphold-api-integration)
-5. [Registering as a Validator](#registering-as-a-validator)
-6. [Output Server Connection](#output-server-connection)
-7. [Deployment Workflow](#deployment-workflow)
-8. [Payment Integration](#payment-integration)
-9. [Maintenance and Monitoring](#maintenance-and-monitoring)
-10. [Bittensor Validator Registration](#bittensor-validator-registration)
-11. [Cron Server and Event Listener](#cron-server)
+- [Request Network Validator Setup Instructions](#request-network-validator-setup-instructions)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Technology Stack Overview](#technology-stack-overview)
+  - [Setup Process](#setup-process)
+    - [Environment Configuration](#environment-configuration)
+    - [Initial Configuration](#initial-configuration)
+    - [Configuring Environment Variables](#configuring-environment-variables)
+  - [Registering as a Validator](#registering-as-a-validator)
+    - [API Keys and Endpoint Configuration](#api-keys-and-endpoint-configuration)
+    - [Setup and Configuration](#setup-and-configuration)
+    - [Endpoint Creation](#endpoint-creation)
+  - [Output Server Connection](#output-server-connection)
+  - [Deployment Workflow](#deployment-workflow)
+    - [Deployment Workflow](#deployment-workflow-1)
+      - [General Deployment Information](#general-deployment-information)
+      - [Deploying with AWS Elastic Beanstalk CLI (EB CLI)](#deploying-with-aws-elastic-beanstalk-cli-eb-cli)
+        - [Installation and Configuration](#installation-and-configuration)
+  - [Payment Integration](#payment-integration)
+  - [Bittensor Validator Registration](#bittensor-validator-registration)
+  - [Cron Server](#cron-server)
 
 ## Introduction
 
@@ -278,22 +288,3 @@ For detailed instructions, refer to the [Bittensor Documentation](https://docs.b
 ## Cron Server
 
 ReqNet uses Infura Provider to listen to crypto transfer event and initiates cron services to track payment activities to enable / disable services. For a single instance of ReqNet, there's nothing to do other than to deploy ReqNet to your preferred infrastructure. However, if deployed using a multi instance / autoscaling infrastructure like AWS EB or AWS ECS, an additional cron_handler server is needed. To spin up the cron server (Cron Handler), set the environment variable ROLE to "cron_handler" and deploy ReqNet as a separate instance.
-
-- Generate keys and register:
-
-1. **Create Hot and Cold Keys & Subnet Registration**:
-
-   - Navigate to the the Bittensor documentation page at https://docs.bittensor.com/getting-started/installation and install the Bittensor CLI. Once you have access to the cli, run:
-     ```
-     btcli wallet new_coldkey --wallet.name my-validator
-     btcli wallet new_hotkey --wallet.name my-validator --wallet.hotkey default
-     btcli wallet faucet --wallet.name my-validator --subtensor.network test
-     btcli wallet list
-     btcli subnet register --wallet.name my-validator --wallet.hotkey default --subtensor.network test
-     ```
-
-- You'll be prompted to:
-  - Enter password to unlock key.
-  - Enter netUid (the Subnet to register onto).
-
-For detailed instructions, refer to the [Bittensor Documentation](https://docs.bittensor.com/).

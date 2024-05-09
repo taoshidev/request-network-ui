@@ -7,7 +7,7 @@ import React from "react";
 import { generateSlug } from "@/utils/generate-slug";
 
 export default function DocumentationPage() {
-  const filePath = join(process.cwd(), "public", "VALIDATOR_INSTRUCTIONS.md");
+  const filePath = join(process.cwd(), "public", "validator-instructions.md");
   const markdown = readFileSync(filePath, "utf8");
 
   const MarkdownComponents: object = {
