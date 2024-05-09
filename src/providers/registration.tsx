@@ -1,12 +1,16 @@
 import { createContext, useContext, ReactElement } from "react";
 import { useLocalStorage } from "@mantine/hooks";
+import { SubnetType } from "@/db/types/subnet";
+import { ValidatorType } from "@/db/types/validator";
+import { EndpointType } from "@/db/types/endpoint";
 
 export interface RegistrationData {
   appName: string;
   consumerApiUrl: string;
   consumerWalletAddress: string;
-  subnet: any;
-  validator: any;
+  subnet: SubnetType | null;
+  validator: (ValidatorType & { neuronInfo?: any }) | null;
+  endpoint: EndpointType | null;
   currentStep: number;
 }
 
@@ -22,6 +26,7 @@ export const defaultContextValue: ProviderValue = {
     consumerWalletAddress: "",
     subnet: null,
     validator: null,
+    endpoint: null,
     currentStep: 0,
   },
   updateData: () => {},

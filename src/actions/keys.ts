@@ -5,7 +5,7 @@ const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY as string });
 
 export const updateKey = async ({
   keyId,
-  ...params
+  params
 }: {
   keyId: string;
   params: object;

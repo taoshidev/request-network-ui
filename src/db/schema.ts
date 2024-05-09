@@ -98,16 +98,13 @@ export const endpoints = pgTable(
     currencyType: varchar("currency_type"),
     walletAddress: varchar("wallet_address"),
     limit: integer("limit").default(10), // The total amount of burstable requests.
-    url: varchar("url").unique().notNull(),
-    enabled: boolean("enabled").notNull().default(true).notNull(),
+    url: varchar("url").notNull(),
+    enabled: boolean("enabled").default(true).notNull(),
     expires: timestamp("expires"),
     refillRate: integer("refill_rate").default(1), // The amount of requests that are refilled every refillInterval.
     refillInterval: integer("refill_interval").default(1000), // The interval at which the limit is refilled.
     remaining: integer("remaining").default(1000),
-  },
-  (table) => ({
-    unique: unique().on(table.validatorId, table.subnetId), // endpoints.validator becomes endpoint.validatorId
-  })
+  }
 );
 
 export const endpointsRelations = relations(endpoints, ({ one }) => ({
