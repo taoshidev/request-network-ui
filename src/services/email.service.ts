@@ -67,9 +67,6 @@ export default class EmailService {
     const headers = this.getHeaders(mailerConfig);
 
     try {
-      console.log(await this.compileText(mailerConfig));
-      console.log(await this.compileHtml(mailerConfig));
-      console.log(mailerConfig);
       // await this.mailTransport.sendMail({
       //   html: await this.compileHtml(mailerConfig),
       //   text: await this.compileText(mailerConfig),
