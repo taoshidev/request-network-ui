@@ -2,27 +2,15 @@
 
 ## Table of Contents
 
-- [Request Network Validator Setup Instructions](#request-network-validator-setup-instructions)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Technology Stack Overview](#technology-stack-overview)
-  - [Setup Process](#setup-process)
-    - [Environment Configuration](#environment-configuration)
-    - [Initial Configuration](#initial-configuration)
-    - [Configuring Environment Variables](#configuring-environment-variables)
-  - [Registering as a Validator](#registering-as-a-validator)
-    - [API Keys and Endpoint Configuration](#api-keys-and-endpoint-configuration)
-    - [Setup and Configuration](#setup-and-configuration)
-    - [Endpoint Creation](#endpoint-creation)
-  - [Output Server Connection](#output-server-connection)
-  - [Deployment Workflow](#deployment-workflow)
-    - [Deployment Workflow](#deployment-workflow-1)
-      - [General Deployment Information](#general-deployment-information)
-      - [Deploying with AWS Elastic Beanstalk CLI (EB CLI)](#deploying-with-aws-elastic-beanstalk-cli-eb-cli)
-        - [Installation and Configuration](#installation-and-configuration)
-  - [Payment Integration](#payment-integration)
-  - [Bittensor Validator Registration](#bittensor-validator-registration)
-  - [Cron Server](#cron-server)
+1. [Introduction](#introduction)
+2. [Technology Stack Overview](#technology-stack-overview)
+3. [Setup Process](#setup-process)
+4. [Registering as a Validator](#registering-as-a-validator)
+5. [Output Server Connection](#output-server-connection)
+6. [Deployment Workflow](#deployment-workflow)
+7. [Payment Integration](#payment-integration)
+8.  [Bittensor Validator Registration](#bittensor-validator-registration)
+9.  [Cron Server and Event Listener](#cron-server)
 
 ## Introduction
 
