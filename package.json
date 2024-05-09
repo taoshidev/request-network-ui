@@ -66,6 +66,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.50.0",
     "react-markdown": "^9.0.1",
+    "server-only": "^0.0.1",
     "sharp": "^0.33.3",
     "simplex-noise": "^4.0.1",
     "types": "link:@polkadot/extension-inject/types",
