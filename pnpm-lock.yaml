@@ -1091,9 +1091,6 @@ packages:
   '@substrate/connect-extension-protocol@2.0.0':
     resolution: {integrity: sha512-nKu8pDrE3LNCEgJjZe1iGXzaD6OSIDD4Xzz/yo4KO9mQ6LBvf49BVrt4qxBFGL6++NneLiWUZGoh+VSd4PyVIg==}
 
-  '@substrate/connect-known-chains@1.1.2':
-    resolution: {integrity: sha512-XvyemTVqon+6EF2G7QL0fEXxjuz3nUNFgFV0TSWhSVpPb+Sfs+vfipbEZxGNouxvjCoJdr6CF0rwgGsrrKOnAA==}
-
   '@substrate/connect-known-chains@1.1.4':
     resolution: {integrity: sha512-iT+BdKqvKl/uBLd8BAJysFM1BaMZXRkaXBP2B7V7ob/EyNs5h0EMhTVbO6MJxV/IEOg5OKsyl6FUqQK7pKnqyw==}
 
@@ -4432,9 +4429,6 @@ snapshots:
   '@substrate/connect-extension-protocol@2.0.0':
     optional: true
 
-  '@substrate/connect-known-chains@1.1.2':
-    optional: true
-
   '@substrate/connect-known-chains@1.1.4':
     optional: true
 
@@ -4452,7 +4446,7 @@ snapshots:
   '@substrate/connect@0.8.7':
     dependencies:
       '@substrate/connect-extension-protocol': 2.0.0
-      '@substrate/connect-known-chains': 1.1.2
+      '@substrate/connect-known-chains': 1.1.4
       '@substrate/light-client-extension-helpers': 0.0.3(smoldot@2.0.21)
       smoldot: 2.0.21
     transitivePeerDependencies:
@@ -4467,7 +4461,7 @@ snapshots:
       '@polkadot-api/json-rpc-provider-proxy': 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@polkadot-api/substrate-client': 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@substrate/connect-extension-protocol': 2.0.0
-      '@substrate/connect-known-chains': 1.1.2
+      '@substrate/connect-known-chains': 1.1.4
       rxjs: 7.8.1
       smoldot: 2.0.21
     optional: true

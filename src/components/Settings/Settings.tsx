@@ -67,6 +67,7 @@ export function Settings({ apiKey }: { apiKey: any }) {
       keyId: apiKey.id,
       params: { name: values.name },
     });
+
     if (res?.status !== 200) return notifyError(res?.message as string);
     notifySuccess(res?.message as string);
     setLoading(false);

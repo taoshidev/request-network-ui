@@ -31,7 +31,7 @@ export const seedData = [
   },
   {
     netUid: 8,
-    label: "Proprietay Trading Network",
+    label: "Proprietary Trading Network",
   },
   {
     netUid: 9,

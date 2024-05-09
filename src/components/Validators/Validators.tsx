@@ -63,7 +63,7 @@ export function Validators({ user, subnets, validators }: any) {
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>Validator</Table.Th>
-                <Table.Th>ReqNet Api Url</Table.Th>
+                <Table.Th>Endpoint</Table.Th>
                 <Table.Th>Subnet</Table.Th>
               </Table.Tr>
             </Table.Thead>

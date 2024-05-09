@@ -64,7 +64,8 @@ export function Subnets({
             >
               <Text className="font-bold">{subnet.label}</Text>
               <Text className="text-sm mt-2">
-                Validators: {subnet?.endpoints?.length}
+                Validators:
+                {new Set(subnet?.endpoints?.map((e) => e.validator.id)).size}
               </Text>
             </Card>
           </Grid.Col>

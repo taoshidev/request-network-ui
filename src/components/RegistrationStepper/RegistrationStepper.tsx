@@ -28,7 +28,6 @@ import { useNotification } from "@/hooks/use-notification";
 import { Logo } from "@/components/Logo";
 import { KeyModal, keyType } from "@components/KeyModal";
 import Loading from "@/app/(auth)/loading";
-import { EndpointType } from "@/db/types/endpoint";
 import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
 import { z, ZodIssue } from "zod";
@@ -56,25 +55,28 @@ const domainSchema = z.object({
     }),
 });
 
-const REGISTRATION_STEPS = 3;
+const REGISTRATION_STEPS = 4;
 interface StepText {
   [key: string | number]: string;
 }
 
 const stepText: StepText = {
   "0": "Validator Selection",
-  "1": "Review Selection",
-  "2": "Continue",
+  "1": "Endpoint Selection",
+  "2": "Review Selection",
+  "3": "Continue",
 };
 
 export function RegistrationStepper({
   StepOne,
   StepTwo,
   StepThree,
+  StepFour,
 }: {
   StepOne: React.ReactElement;
   StepTwo: React.ReactElement;
   StepThree: React.ReactElement;
+  StepFour: React.ReactElement;
 }) {
   const [keys, setKeys] = useState<{
     apiKey: string;
@@ -120,7 +122,7 @@ export function RegistrationStepper({
     updateData({ currentStep: value } as RegistrationData);
   };
 
-  const isLastStep = useMemo(() => active !== 3, [active]);
+  const isLastStep = useMemo(() => active !== REGISTRATION_STEPS, [active]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => () => updateData(defaultContextValue.registrationData), []);
@@ -134,11 +136,12 @@ export function RegistrationStepper({
 
   useEffect(() => {
     const disabled =
-      active >= 2
+      active >= 3
         ? false
         : active >= REGISTRATION_STEPS - 1 ||
           (active === 0 && !registrationData?.subnet) ||
-          (active === 1 && !registrationData?.validator);
+          (active === 1 && !registrationData?.validator) ||
+          (active === 2 && !registrationData?.endpoint);
     setDisabled(disabled);
   }, [registrationData, active]);
 
@@ -163,16 +166,14 @@ export function RegistrationStepper({
     setLoading(true);
 
     const currentUser = await getAuthUser();
-    const validator = registrationData?.validator;
     const subnet = registrationData?.subnet;
+    const validator = registrationData?.validator;
+    const endpoint = registrationData?.endpoint;
     const userId = currentUser?.id;
-    const apiId = validator?.apiId;
-    const validatorId = validator?.id;
-    const endpoint = validator?.endpoints?.find(
-      (e: EndpointType) => e.subnetId === subnet.id
-    );
+    const apiId = validator?.apiId!;
+    const validatorId = validator?.id!;
 
-    const endpointId = endpoint.id;
+    const endpointId = endpoint?.id;
     const shortId = generateShortId(currentUser?.id as string, endpointId);
 
     try {
@@ -196,7 +197,7 @@ export function RegistrationStepper({
         consumerWalletAddress,
         currencyType: endpoint?.currencyType,
         validatorWalletAddress: endpoint?.walletAddress,
-        endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
+        endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
         validatorId,
         subscription: {} as SubscriptionType,
       };
@@ -230,6 +231,7 @@ export function RegistrationStepper({
         return notifyError(
           res?.message || "Something went wrong creating subscription"
         );
+
       const subscription = res?.data?.[0];
       meta.subscription = subscription;
 
@@ -244,7 +246,7 @@ export function RegistrationStepper({
 
       const proxyRes = await sendToProxy({
         endpoint: {
-          url: validator.baseApiUrl,
+          url: validator?.baseApiUrl!,
           method: "POST",
           path: "/register-consumer",
         },
@@ -261,7 +263,7 @@ export function RegistrationStepper({
           consumerWalletAddress: subscription?.consumerWalletAddress,
           validatorWalletAddress: endpoint?.walletAddress,
           hotkey: registrationData?.validator?.hotkey,
-          price: endpoint.price,
+          price: endpoint?.price,
           meta,
         },
       });
@@ -284,7 +286,7 @@ export function RegistrationStepper({
         apiKey: key,
         apiSecret: apiSecret!,
         walletAddress: endpoint?.walletAddress,
-        endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
+        endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
       });
       open();
 
@@ -334,7 +336,11 @@ export function RegistrationStepper({
         onClose={close}
         onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
         title="API Access Key"
-        walletAddressTitle="Validator's ERC-20 Public Address"
+        walletAddressTitle={
+          registrationData?.endpoint?.currencyType === "Crypto"
+            ? "Validator's ERC-20 Public Address"
+            : undefined
+        }
         endpointTitle="Validator's Resource Endpoint"
       />
       <Stepper
@@ -351,8 +357,12 @@ export function RegistrationStepper({
           <StepTwo.type {...StepTwo.props} />
         </Stepper.Step>
 
-        <Stepper.Step label="Review" description="Review Selection">
+        <Stepper.Step label="Endpoint" description="Select an Endpoint">
           <StepThree.type {...StepThree.props} />
+        </Stepper.Step>
+
+        <Stepper.Step label="Review" description="Review Selection">
+          <StepFour.type {...StepFour.props} />
         </Stepper.Step>
 
         <Stepper.Completed>
