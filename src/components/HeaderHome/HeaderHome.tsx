@@ -5,6 +5,7 @@ import {
   IconScript,
   IconChartBar,
   IconFileStack,
+  IconCode,
 } from "@tabler/icons-react";
 
 export function HeaderHome() {
@@ -41,16 +42,23 @@ export function HeaderHome() {
             className="text-sm font-normal"
             component={Link}
             leftSection={<IconFileStack size={14} />}
-            href="docs.taoshi.io"
-            target="_blank"
+            href="/documentation"
           >
             Docs
           </Button>
           <Button
             className="text-sm font-normal"
             component={Link}
+            leftSection={<IconCode size={14} />}
+            href="/contributing"
+          >
+            Contribute
+          </Button>
+          <Button
+            className="text-sm font-normal"
+            component={Link}
             leftSection={<IconHelpSquare size={14} />}
-            href="docs.taoshi.io"
+            href="mailto: lphan@taoshi.io"
             target="_blank"
           >
             Support

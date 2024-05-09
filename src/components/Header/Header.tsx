@@ -90,7 +90,7 @@ export function Header() {
           <Anchor
             className="text-sm text-black"
             component={Link}
-            href="emailto: lphan@taoshi.io"
+            href="mailto: lphan@taoshi.io"
             target="_blank"
           >
             Support

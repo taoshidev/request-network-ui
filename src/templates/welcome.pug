@@ -1,0 +1,12 @@
+extends layout
+
+block mainContent
+  row
+    columns
+      div(style="text-align: center; background-color: #ffffff !important")
+        img.image(src='cid:' + attachments[0].cid width="400" style="width: 400px; display: inline-block")
+      br
+      h1(class='text-center') Welcome to Request Network #{user}!
+      p Your account has been created.
+      p
+      p(style="font-style: italic;") This email was sent from an address that cannot accept incoming email. Please do not reply to this message.
