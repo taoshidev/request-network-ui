@@ -22,7 +22,7 @@ export const validatorQuestions = [
 export const consumerQuestions = [
   {
     title:
-      "How do I access data from a validator once I&apos;ve successfully registered with the Request Network?",
+      "How do I access data from a validator once I have successfully registered with the Request Network?",
     content: (
       <>
         Once you&apos;ve successfully registered and make your first payment to

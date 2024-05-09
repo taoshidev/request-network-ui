@@ -33,6 +33,8 @@ import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
 import { z, ZodIssue } from "zod";
 import { isValidEthereumAddress } from "@/utils/address";
+import { randomBytes } from "crypto";
+import { sendEmail } from "@/actions/email";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -285,6 +287,28 @@ export function RegistrationStepper({
         endpoint: `${validator.baseApiUrl}${endpoint?.url}`,
       });
       open();
+
+      // send email to client
+      console.log('Sending to: ', currentUser?.email, ', ', currentUser?.user_metadata?.role);
+      if (currentUser && currentUser?.email && currentUser.user_metadata?.role === 'consumer') {
+        const attachments = [
+          {
+            filename: "request-network.png",
+            path: `${process.cwd()}/src/assets/request-network.png`,
+            cid: `${randomBytes(10).toString("hex")}-request-network.png`, //same cid value as in the html img src
+          },
+        ];
+  
+        sendEmail({
+          to: currentUser.email,
+          template: "welcome",
+          subject: "Welcome to Request Network",
+          templateVariables: {
+            attachments,
+          },
+          attachments,
+        });
+      }
     } catch (error: Error | unknown) {
       throw new Error((error as Error)?.message);
     } finally {
