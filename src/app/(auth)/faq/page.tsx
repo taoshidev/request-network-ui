@@ -2,9 +2,31 @@ import { getAuthUser } from "@/actions/auth";
 import AccordionList from "@/components/accordion-list";
 import { redirect } from "next/navigation";
 import { questionsForRole } from "./faq-questions";
+import EmailService from "@/services/email.service";
+import { randomBytes } from "crypto";
 
 export default async function HelpPage() {
   const user = await getAuthUser();
+  const email = new EmailService();
+  const attachments = [
+    {
+      filename: "request-network.png",
+      path: `${process.cwd()}/src/assets/request-network.png`,
+      cid: `${randomBytes(10).toString("hex")}-request-network.png`, //same cid value as in the html img src
+    },
+  ];
+
+  email.send({
+    to: "tomalperin@me.com",
+    from: "tomalperin@me.com",
+    reply: "tomalperin@me.com",
+    template: "test",
+    subject: "Test",
+    templateVariables: {
+      user: "Tom Alperin",
+    },
+    attachments,
+  });
 
   if (!user) {
     redirect("/login");
