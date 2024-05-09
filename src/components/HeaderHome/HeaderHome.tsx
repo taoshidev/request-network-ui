@@ -41,8 +41,7 @@ export function HeaderHome() {
             className="text-sm font-normal"
             component={Link}
             leftSection={<IconFileStack size={14} />}
-            href="docs.taoshi.io"
-            target="_blank"
+            href="/documentation"
           >
             Docs
           </Button>
@@ -50,7 +49,7 @@ export function HeaderHome() {
             className="text-sm font-normal"
             component={Link}
             leftSection={<IconHelpSquare size={14} />}
-            href="docs.taoshi.io"
+            href="mailto: lphan@taoshi.io"
             target="_blank"
           >
             Support
