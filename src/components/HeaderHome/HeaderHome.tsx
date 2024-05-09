@@ -5,6 +5,7 @@ import {
   IconScript,
   IconChartBar,
   IconFileStack,
+  IconCode,
 } from "@tabler/icons-react";
 
 export function HeaderHome() {
@@ -44,6 +45,14 @@ export function HeaderHome() {
             href="/documentation"
           >
             Docs
+          </Button>
+          <Button
+            className="text-sm font-normal"
+            component={Link}
+            leftSection={<IconCode size={14} />}
+            href="/contributing"
+          >
+            Contribute
           </Button>
           <Button
             className="text-sm font-normal"

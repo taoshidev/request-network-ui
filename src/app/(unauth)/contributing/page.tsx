@@ -6,7 +6,7 @@ import * as classes from "../documentation/page.module.css";
 import React from "react";
 
 export default function ContributingPage() {
-  const filePath = join(process.cwd(), "public", "contributing.md");
+  const filePath = join(process.cwd(), "public", "CONTRIBUTING.md");
   const markdown = readFileSync(filePath, "utf8");
 
   return (

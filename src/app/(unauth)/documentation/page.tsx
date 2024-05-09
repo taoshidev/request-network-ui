@@ -7,7 +7,7 @@ import React from "react";
 import { generateSlug } from "@/utils/generate-slug";
 
 export default function DocumentationPage() {
-  const filePath = join(process.cwd(), "public", "validator-instructions.md");
+  const filePath = join(process.cwd(), "public", "VALIDATOR_INSTRUCTIONS.md");
   const markdown = readFileSync(filePath, "utf8");
 
   const MarkdownComponents: object = {
@@ -68,7 +68,9 @@ export default function DocumentationPage() {
       </div>
       <div className="container mx-auto py-1 px-2 lg:px-20 pb-20">
         <div className={classes["markdown-container"]}>
-          <ReactMarkdown>{markdown}</ReactMarkdown>
+          <ReactMarkdown components={MarkdownComponents}>
+            {markdown}
+          </ReactMarkdown>
         </div>
       </div>
     </div>
