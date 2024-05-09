@@ -69,23 +69,28 @@ export function Header() {
           <Anchor
             className="text-sm text-black"
             component={Link}
-            href="docs.taoshi.io"
-            target="_blank"
+            href="/documentation"
           >
             Docs
           </Anchor>
           <Anchor
             className="text-sm text-black"
             component={Link}
-            href="docs.taoshi.io"
-            target="_blank"
+            href="/contributing"
+          >
+            Contribute
+          </Anchor>
+          <Anchor
+            className="text-sm text-black"
+            component={Link}
+            href="/faq"
           >
             Help
           </Anchor>
           <Anchor
             className="text-sm text-black"
             component={Link}
-            href="docs.taoshi.io"
+            href="emailto: lphan@taoshi.io"
             target="_blank"
           >
             Support
