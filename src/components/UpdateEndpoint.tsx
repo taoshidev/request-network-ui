@@ -66,6 +66,7 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
   };
 
   const handleEnable = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    // This needs to be disabled if there are any subscribed users on endpoint. Disable changing price.
     const isEnabled = event.target.checked;
     try {
       const res = await updateEndpoint({ id: endpoint.id, enabled: isEnabled });
@@ -91,7 +92,6 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
 
       notifySuccess(res.message);
       router.refresh();
-      setTimeout(() => router.back(), 1000);
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
     } finally {
@@ -105,7 +105,7 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
     validatorId: string,
     data: any
   ) => {
-    const res = await sendToProxy({
+    return await sendToProxy({
       endpoint: {
         url,
         method: "PUT",
@@ -114,7 +114,6 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
       validatorId,
       data,
     });
-    return res;
   };
 
   return (

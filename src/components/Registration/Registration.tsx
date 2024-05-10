@@ -1,4 +1,5 @@
 "use client";
+
 import { RegistrationProvider } from "@/providers/registration";
 import { Subnets } from "@/components/Subnets";
 import { SubnetValidator } from "@/components/SubnetValidator";
@@ -7,6 +8,7 @@ import { RegistrationStepper } from "@/components/RegistrationStepper";
 import { SubscriptionType } from "@/db/types/subscription";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
+import { ValidatorEndpoint } from "@/components/ValidatorEndpoint";
 
 export function Registration({
   currentSubscriptions,
@@ -15,9 +17,8 @@ export function Registration({
 }: {
   currentSubscriptions: SubscriptionType[];
   subnets: SubnetType[];
-  validators: ValidatorType[];
+  validators: ValidatorType & { neuronInfo: any }[];
 }) {
-
   return (
     <RegistrationProvider>
       <RegistrationStepper
@@ -30,7 +31,10 @@ export function Registration({
             mode="registration"
           />
         }
-        StepThree={<SubnetValidatorReview />}
+        StepThree={
+          <ValidatorEndpoint currentSubscriptions={currentSubscriptions} />
+        }
+        StepFour={<SubnetValidatorReview />}
       />
     </RegistrationProvider>
   );

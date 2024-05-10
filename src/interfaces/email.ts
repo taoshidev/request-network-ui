@@ -7,13 +7,13 @@ export interface IAttachment {
 
 export interface IEmailOptions {
   to: string;
-  from: string;
+  from?: string;
   reply?: string;
   cc?: string;
   bcc?: string;
   subject: string;
   template: string;
-  templateVariables: object;
+  templateVariables: any;
   attachments?: IAttachment[] | undefined;
 }
 

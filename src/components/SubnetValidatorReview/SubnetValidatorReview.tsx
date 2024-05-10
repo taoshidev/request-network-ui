@@ -20,7 +20,7 @@ export function SubnetValidatorReview() {
       <Title className="text-center my-8 text-2xl">Review Selection</Title>
       <Card className="my-14 pb-8">
         <Title className="text-xl mb-4">
-          {registrationData?.validator.name?.name}
+          {registrationData?.validator?.name}
         </Title>
         <Group className="justify-between items-start gap-8">
           <Box className="flex-1">
@@ -31,13 +31,13 @@ export function SubnetValidatorReview() {
           <Stack className="flex-1 gap-2">
             <Group className="justify-between items-center text-sm">
               <Text className="text-sm">Subnet</Text>
-              <Text className="text-sm">{registrationData?.subnet.label}</Text>
+              <Text className="text-sm">{registrationData?.subnet?.label}</Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Verified</Text>
               <Box>
-                {registrationData?.validator.verified ? (
+                {registrationData?.validator?.verified ? (
                   <Badge>Verified</Badge>
                 ) : (
                   <Badge color="black">Unverified</Badge>
@@ -46,46 +46,65 @@ export function SubnetValidatorReview() {
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
+              <Text className="text-sm">Endpoint</Text>
+              <Text className="text-sm">{registrationData?.endpoint?.url}</Text>
+            </Group>
+            <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Payment Method</Text>
+              <Text className="text-sm">
+                {registrationData?.endpoint?.currencyType}
+              </Text>
+            </Group>
+            <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
               <Text className="text-sm">V-Trust</Text>
               <Text className="text-sm">
-                {registrationData?.validator.validator_trust || "LOW"}
+                {registrationData?.validator?.neuronInfo?.validator_trust ||
+                  "LOW"}
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Price</Text>
               <Text className="text-sm">
-                {registrationData?.validator?.selectedEndpoint?.price || "-"}
+                {registrationData?.endpoint?.price}
+              </Text>
+            </Group>
+            <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Request Limit</Text>
+              <Text className="text-sm">
+                {registrationData?.endpoint?.remaining}
               </Text>
             </Group>
             <Group className="justify-between items-center">
               <Text className="text-sm">Limit</Text>
               <Text className="text-sm">
-                {registrationData?.validator?.selectedEndpoint?.limit || "-"}
+                {registrationData?.endpoint?.limit}
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Refill Interval</Text>
               <Text className="text-sm">
-                {registrationData?.validator?.selectedEndpoint
-                  ?.refillInterval || "-"}
+                {registrationData?.endpoint?.refillInterval}
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Refill Rate</Text>
               <Text className="text-sm">
-                {registrationData?.validator?.selectedEndpoint?.refillRate}
+                {registrationData?.endpoint?.refillRate}
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Expiry</Text>
               <Text className="text-sm">
-                {dayjs(
-                  registrationData?.validator?.selectedEndpoint?.expires
-                ).format("MMM DD, YYYY") || "-"}
+                {dayjs(registrationData?.endpoint?.expires).format(
+                  "MMM DD, YYYY"
+                )}
               </Text>
             </Group>
           </Stack>

@@ -1,3 +1,4 @@
+import 'server-only';
 import { IEmailHeaders, IEmailOptions } from '@/interfaces/email';
 import * as aws from 'aws-sdk';
 import * as nodemailer from 'nodemailer';
@@ -17,16 +18,35 @@ export default class EmailService {
 
 
   constructor() {
-    const SES = new aws.SES({
-      region: process.env.AWS_REGION,
-      accessKeyId: process.env.AWS_KEY,
-      secretAccessKey: process.env.AWS_SECRET,
-      apiVersion: '2010-12-01'
-    });
-    
-    this.mailTransport = nodemailer.createTransport({
-      SES
-    });
+    const region = process.env.AWS_REGION;
+    const accessKeyId = process.env.AWS_KEY;
+    const secretAccessKey = process.env.AWS_SECRET;
+    const user = process.env.EMAIL_FROM;
+    const pass = process.env.EMAIL_PASS;
+
+    if (region && accessKeyId && secretAccessKey) {
+      const SES = new aws.SES({
+        region: process.env.AWS_REGION,
+        accessKeyId: process.env.AWS_KEY,
+        secretAccessKey: process.env.AWS_SECRET,
+        apiVersion: '2010-12-01'
+      });
+      
+      this.mailTransport = nodemailer.createTransport({
+        SES
+      });
+    } else if (user && pass) {
+      this.mailTransport = nodemailer.createTransport({
+        service: "Gmail",
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL_FROM,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+    }
   }
 
   protected getTextPath(mailerConfig: IEmailOptions) {
@@ -42,10 +62,7 @@ export default class EmailService {
   }
 
   protected async compileHtml(mailerConfig: IEmailOptions) {
-    let html = compileFile(this.getHtmlPath(mailerConfig))(mailerConfig.templateVariables);
-
-
-    return html;
+    return compileFile(this.getHtmlPath(mailerConfig))(mailerConfig.templateVariables);
   }
 
   protected getHeaders(mailerConfig: IEmailOptions) {
@@ -67,17 +84,21 @@ export default class EmailService {
     const headers = this.getHeaders(mailerConfig);
 
     try {
-      // await this.mailTransport.sendMail({
-      //   html: await this.compileHtml(mailerConfig),
-      //   text: await this.compileText(mailerConfig),
-      //   from: headers.from,
-      //   replyTo: headers.replyTo,
-      //   subject: headers.subject,
-      //   to: headers.to,
-      //   cc: headers.cc,
-      //   bcc: headers.bcc,
-      //   attachments: mailerConfig.attachments,
-      // });
+      if (this.mailTransport) {
+        await this.mailTransport.sendMail({
+          html: await this.compileHtml(mailerConfig),
+          text: await this.compileText(mailerConfig),
+          from: headers.from,
+          replyTo: headers.replyTo,
+          subject: headers.subject,
+          to: headers.to,
+          cc: headers.cc,
+          bcc: headers.bcc,
+          attachments: mailerConfig.attachments,
+        });
+      } else {
+        throw Error('Transport credentials not set.');
+      }
       return true;
     } catch (error) {
       const { template } = mailerConfig;
