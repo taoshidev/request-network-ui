@@ -66,6 +66,7 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
   };
 
   const handleEnable = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    // This needs to be disabled if there are any subscribed users on endpoint. Disable changing price.
     const isEnabled = event.target.checked;
     try {
       const res = await updateEndpoint({ id: endpoint.id, enabled: isEnabled });

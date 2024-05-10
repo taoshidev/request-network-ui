@@ -22,6 +22,7 @@ export function Validators({ user, subnets, validators }: any) {
     close();
     setKeys({ apiKey, apiSecret });
     setKeyModalOpened(true);
+    // send validator created email
   };
 
   const handleEdit = (validator: any) => {

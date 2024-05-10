@@ -32,7 +32,6 @@ import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
 import { z, ZodIssue } from "zod";
 import { isValidEthereumAddress } from "@/utils/address";
-import { randomBytes } from "crypto";
 import { sendEmail } from "@/actions/email";
 
 const domainSchema = z.object({
@@ -52,7 +51,8 @@ const domainSchema = z.object({
     })
     .refine(isValidEthereumAddress, {
       message: "Please enter a valid Ethereum wallet address",
-    }),
+    })
+    .optional(),
 });
 
 const REGISTRATION_STEPS = 4;
@@ -151,12 +151,20 @@ export function RegistrationStepper({
     const consumerApiUrl = registrationData?.consumerApiUrl;
     const appName = registrationData?.appName;
     const consumerWalletAddress = registrationData?.consumerWalletAddress || "";
-
-    const validationResult = domainSchema.safeParse({
+    const consumerAppInfo: {
+      consumerApiUrl: string;
+      appName: string;
+      consumerWalletAddress?: string;
+    } = {
       consumerApiUrl,
       appName,
-      consumerWalletAddress,
-    });
+    };
+
+    if (registrationData?.endpoint?.currencyType === "Crypto") {
+      consumerAppInfo.consumerWalletAddress = consumerWalletAddress;
+    }
+
+    const validationResult = domainSchema.safeParse(consumerAppInfo);
 
     if (!validationResult.success) {
       setErrors((validationResult as any)?.error?.issues as ZodIssue[]);
@@ -291,24 +299,18 @@ export function RegistrationStepper({
       open();
 
       // send email to client
-      console.log('Sending to: ', currentUser?.email, ', ', currentUser?.user_metadata?.role);
-      if (currentUser && currentUser?.email && currentUser.user_metadata?.role === 'consumer') {
-        const attachments = [
-          {
-            filename: "request-network.png",
-            path: `${process.cwd()}/src/assets/request-network.png`,
-            cid: `${randomBytes(10).toString("hex")}-request-network.png`, //same cid value as in the html img src
-          },
-        ];
-  
+      if (
+        currentUser &&
+        currentUser?.email &&
+        currentUser.user_metadata?.role === "consumer"
+      ) {
         sendEmail({
           to: currentUser.email,
           template: "welcome",
           subject: "Welcome to Request Network",
           templateVariables: {
-            attachments,
+            role: "consumer",
           },
-          attachments,
         });
       }
     } catch (error: Error | unknown) {
@@ -413,24 +415,26 @@ export function RegistrationStepper({
                     }
                     placeholder="https://mysite.com"
                   />
-                  <TextInput
-                    label="Wallet Address"
-                    className="mt-4"
-                    withAsterisk
-                    value={registrationData?.consumerWalletAddress}
-                    onChange={(e) => {
-                      updateData({
-                        consumerWalletAddress: e.target.value,
-                      } as RegistrationData);
-                      if (errors) setErrors([]);
-                    }}
-                    error={
-                      errors?.find((e) =>
-                        e.path.includes("consumerWalletAddress")
-                      )?.message
-                    }
-                    placeholder="0xe985528e9BC951a462BCFAb6f3B1F395DF9aeA3e"
-                  />
+                  {registrationData?.endpoint?.currencyType === "Crypto" && (
+                    <TextInput
+                      label="Wallet Address"
+                      className="mt-4"
+                      withAsterisk
+                      value={registrationData?.consumerWalletAddress}
+                      onChange={(e) => {
+                        updateData({
+                          consumerWalletAddress: e.target.value,
+                        } as RegistrationData);
+                        if (errors) setErrors([]);
+                      }}
+                      error={
+                        errors?.find((e) =>
+                          e.path.includes("consumerWalletAddress")
+                        )?.message
+                      }
+                      placeholder="0xe985528e9BC951a462BCFAb6f3B1F395DF9aeA3e"
+                    />
+                  )}
                 </Box>
               </Box>
             </Center>

@@ -13,7 +13,7 @@ export interface IEmailOptions {
   bcc?: string;
   subject: string;
   template: string;
-  templateVariables: object;
+  templateVariables: any;
   attachments?: IAttachment[] | undefined;
 }
 

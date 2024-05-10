@@ -5,7 +5,6 @@ import { questionsForRole } from "./faq-questions";
 
 export default async function HelpPage() {
   const user = await getAuthUser();
-
   if (!user) {
     redirect("/login");
   }

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { eq, and } from "drizzle-orm";
-import { endpoints, validators } from "@/db/schema";
+import { endpoints, validators, subscriptions } from "@/db/schema";
 import { getAuthUser } from "@/actions/auth";
 import { getSubnets } from "@/actions/subnets";
 import { getValidators } from "@/actions/validators";
@@ -38,7 +38,16 @@ export default async function Page() {
     },
   });
 
-  const subscriptions = await getSubscriptions({ userId: user.id });
+  const userSubscriptions = await getSubscriptions({
+    where: and(eq(subscriptions.userId, user.id)),
+    with: {
+      endpoint: {
+        with: {
+          validator: true,
+        },
+      },
+    },
+  });
 
   const fetchAllValidatorInfo = async (
     validatorArr: ValidatorType[],
@@ -98,7 +107,7 @@ export default async function Page() {
 
   return (
     <Registration
-      currentSubscriptions={subscriptions}
+      currentSubscriptions={userSubscriptions}
       validators={validatorWithInfo}
       subnets={subnets!}
     />
