@@ -26,12 +26,14 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
       if (next && next.length > 1) {
         return NextResponse.redirect(`${origin}${next}`);
       }
+      // send welcome to app email here
+      // check to see if data.user is not onboarded and send email if not onboarded.
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
