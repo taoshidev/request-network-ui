@@ -71,7 +71,7 @@ export function SubnetValidator({
                 <Group className="justify-between items-center mb-2">
                   <Text className="text-sm">Active:</Text>
                   <Badge size="sm" variant="light">
-                    {validator?.neuronInfo?.active!.toString() || "FALSE"}
+                    {validator?.neuronInfo?.active?.toString() || "FALSE"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-2">
@@ -85,13 +85,13 @@ export function SubnetValidator({
                 <Group className="justify-between items-center mb-2">
                   <Text className="text-sm">V-Trust:</Text>
                   <Badge size="sm" variant="light">
-                    {validator?.neuronInfo?.validator_trust!.toString() || "-"}
+                    {validator?.neuronInfo?.validator_trust?.toString() || "-"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-2">
                   <Text className="text-sm">Trust:</Text>
                   <Badge size="sm" variant="light">
-                    {validator?.neuronInfo?.trust!.toString() || "-"}
+                    {validator?.neuronInfo?.trust?.toString() || "-"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-2">
@@ -103,31 +103,31 @@ export function SubnetValidator({
                 <Group className="justify-between items-center mb-2">
                   <Text className="text-sm">Consensus:</Text>
                   <Badge size="sm" variant="light">
-                    {validator?.neuronInfo?.consensus!.toString() || "-"}
+                    {validator?.neuronInfo?.consensus?.toString() || "-"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-2">
                   <Text className="text-sm">Dividends:</Text>
                   <Badge size="sm" variant="light">
-                    {validator?.neuronInfo?.dividends!.toString() || "-"}
+                    {validator?.neuronInfo?.dividends?.toString() || "-"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-2">
                   <Text className="text-sm">Emission:</Text>
                   <Badge size="sm" variant="light">
-                    {validator?.neuronInfo?.emission!.toString() || "-"}
+                    {validator?.neuronInfo?.emission?.toString() || "-"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-2">
                   <Text className="text-sm">Incentive:</Text>
                   <Badge size="sm" variant="light">
-                    {validator?.neuronInfo?.incentive!.toString() || "-"}
+                    {validator?.neuronInfo?.incentive?.toString() || "-"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-6">
                   <Text className="text-sm">Rank:</Text>
                   <Badge size="sm" variant="light">
-                    {validator?.neuronInfo?.rank!.toString() || "-"}
+                    {validator?.neuronInfo?.rank?.toString() || "-"}
                   </Badge>
                 </Group>
 
