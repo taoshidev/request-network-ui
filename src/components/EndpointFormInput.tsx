@@ -16,6 +16,7 @@ export function EndpointFormInput({
   subnets,
   mode = "create",
   onError,
+  hasSubs
 }: {
   form: UseFormReturnType<Partial<ValidatorType & EndpointType>>;
   mode?: "create" | "update";
@@ -165,6 +166,7 @@ export function EndpointFormInput({
           }
           placeholder="5"
           {...form.getInputProps("price")}
+          disabled={hasSubs}
         />
       </Box>
       <Box mb="md">
