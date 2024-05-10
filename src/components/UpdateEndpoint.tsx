@@ -149,7 +149,7 @@ export function UpdateEndpoint({
             label="Enable or Disable Endpoint"
             checked={enabled}
             onChange={handleEnable}
-            disabled={subscriptionCount > 0}
+            disabled={subscriptionCount > 0 && enabled}
           />
         </Box>
         <Box

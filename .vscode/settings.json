@@ -8,7 +8,9 @@
   "deno.lint": true,
   "deno.unstable": true,
   "cSpell.words": [
+    "mantine",
     "onboarded",
-    "supabase"
+    "supabase",
+    "tabler"
   ]
 }

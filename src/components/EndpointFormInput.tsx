@@ -23,6 +23,7 @@ export function EndpointFormInput({
   subnets?: Array<SubnetType>;
   validators?: Array<ValidatorType>;
   onError?: ({ error, reason }: { error: boolean; reason: string }) => void;
+  hasSubs?: boolean
 }) {
   const [isCryptoType, setIsCryptoType] = useState(false);
   const [addressExists, setAddressExists] = useState<boolean>(false);
