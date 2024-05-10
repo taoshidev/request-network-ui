@@ -31,6 +31,7 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
       enabled: false,
       currencyType: "Crypto",
       walletAddress: "",
+      termsOfService: "",
       price: "",
       hotkey: "",
       subnetId: "",

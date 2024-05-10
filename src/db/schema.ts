@@ -11,6 +11,7 @@ import {
   pgEnum,
   unique,
   jsonb,
+  text,
 } from "drizzle-orm/pg-core";
 
 export const authSchema = pgSchema("auth");
@@ -36,7 +37,29 @@ export const usersRelations = relations(users, ({ many }) => ({
   validators: many(validators),
 }));
 
-// TODO: Value because maintine select takes label and value
+export const contracts = pgTable("contract", {
+  id: uuid("id")
+    .default(sql`gen_random_uuid()`)
+    .primaryKey()
+    .notNull(),
+  validatorId: uuid("validator_id")
+    .notNull()
+    .references(() => validators.id, { onDelete: "cascade" }),
+  title: varchar("title").notNull().default(""),
+  content: text("content").notNull().default(""),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const contractValidatorRelations = relations(contracts, ({ one }) => ({
+  validator: one(validators, {
+    fields: [contracts.validatorId],
+    references: [validators.id],
+  }),
+}));
+
 export const subnets = pgTable("subnets", {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
@@ -44,6 +67,10 @@ export const subnets = pgTable("subnets", {
     .notNull(),
   netUid: integer("net_uid"),
   label: varchar("label"),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+  deletedAt: timestamp("deleted_at"),
 });
 
 export const subnetsRelations = relations(subnets, ({ many }) => ({
@@ -71,10 +98,15 @@ export const validators = pgTable("validators", {
   signature: varchar("signature"),
   vtrust: numeric("vtrust", { precision: 7, scale: 5 }),
   verified: boolean("verified").notNull().default(false),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+  deletedAt: timestamp("deleted_at"),
 });
 
 export const validatorsRelations = relations(validators, ({ many, one }) => ({
   endpoints: many(endpoints),
+  contracts: many(contracts),
   user: one(users, {
     fields: [validators.userId],
     references: [users.id],
@@ -88,33 +120,47 @@ export const endpoints = pgTable(
       .default(sql`gen_random_uuid()`)
       .primaryKey()
       .notNull(),
-    subnetId: uuid("subnet_id") // subnet becomes subnetId
+    subnetId: uuid("subnet_id")
       .notNull()
       .references(() => subnets.id, { onDelete: "cascade" }),
-    validatorId: uuid("validator_id") // validator becomes validatorId
+    validatorId: uuid("validator_id")
       .notNull()
       .references(() => validators.id, { onDelete: "cascade" }),
+    contractId: uuid("contract_id")
+      .notNull()
+      .references(() => contracts.id, { onDelete: "set null" }),
     price: varchar("price"),
     currencyType: varchar("currency_type"),
     walletAddress: varchar("wallet_address"),
-    limit: integer("limit").default(10), // The total amount of burstable requests.
+    limit: integer("limit").default(10),
     url: varchar("url").notNull(),
     enabled: boolean("enabled").default(true).notNull(),
     expires: timestamp("expires"),
-    refillRate: integer("refill_rate").default(1), // The amount of requests that are refilled every refillInterval.
-    refillInterval: integer("refill_interval").default(1000), // The interval at which the limit is refilled.
+    refillRate: integer("refill_rate").default(1),
+    refillInterval: integer("refill_interval").default(1000),
     remaining: integer("remaining").default(1000),
-  }
+    active: boolean("active").default(true).notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+    deletedAt: timestamp("deleted_at"),
+  },
+  (table) => ({
+    unique: unique().on(table.validatorId, table.url),
+  })
 );
 
 export const endpointsRelations = relations(endpoints, ({ one }) => ({
-  subnet: one(subnets, { // subnets becomes subnet
-    fields: [endpoints.subnetId], // endpoint.subnet becomes endpoint.subnetId
+  subnet: one(subnets, {
+    fields: [endpoints.subnetId],
     references: [subnets.id],
   }),
-  validator: one(validators, { // validators becomes validator
-    fields: [endpoints.validatorId], // endpoints.validator becomes endpoint.validatorId
+  validator: one(validators, {
+    fields: [endpoints.validatorId],
     references: [validators.id],
+  }),
+  contract: one(contracts, {
+    fields: [endpoints.contractId],
+    references: [contracts.id],
   }),
 }));
 
@@ -138,6 +184,10 @@ export const subscriptions = pgTable(
     appName: varchar("app_name"),
     consumerApiUrl: varchar("consumer_api_url").notNull(),
     consumerWalletAddress: varchar("consumer_wallet_address"),
+    active: boolean("active").default(true).notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+    deletedAt: timestamp("deleted_at"),
   },
   (table) => ({
     unique: unique().on(table.endpointId, table.userId),

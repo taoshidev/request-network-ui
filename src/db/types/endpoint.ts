@@ -29,6 +29,7 @@ export const EndpointSchema = z.object({
   url: z.string().regex(/^\/[\w-]+(\/[\w-]+)*$/, {
     message: "Invalid endpoint path format",
   }),
+  termsOfService: z.string(),
   enabled: z.boolean().optional(),
   expires: z.date(),
   refillRate: z.number().int().min(1),

@@ -211,6 +211,13 @@
       "when": 1715208089196,
       "tag": "0029_stale_deadpool",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "5",
+      "when": 1715326513605,
+      "tag": "0030_sudden_scream",
+      "breakpoints": true
     }
   ]
 }
