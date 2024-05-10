@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   Grid,
+  Avatar,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
@@ -31,21 +32,18 @@ export function Profile({ user }: any) {
     <Container h="100%">
       <Box mb="xl">
         <Grid grow>
-          <Grid.Col span={6} order={{ base: 2, xs: 1 }}>
-            <Text size="sm">Account Email</Text>
-            <Title>{user.email}</Title>
-          </Grid.Col>
-          <Grid.Col span={3} order={{ base: 1, xs: 2 }}>
+          <Grid.Col span="auto">
             {user.user_metadata?.avatar_url && (
-              <Image
+              <Avatar
                 src={user.user_metadata.avatar_url}
-                radius="md"
-                h={75}
-                w={75}
-                fit="cover"
-                className="float-right"
+                radius={100}
+                size="xl"
               />
             )}
+          </Grid.Col>
+          <Grid.Col span={10}>
+            <Text size="sm">Account Email</Text>
+            <Title>{user.email}</Title>
           </Grid.Col>
         </Grid>
       </Box>
