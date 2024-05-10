@@ -218,6 +218,13 @@
       "when": 1715326513605,
       "tag": "0030_sudden_scream",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "5",
+      "when": 1715336676921,
+      "tag": "0031_tan_master_chief",
+      "breakpoints": true
     }
   ]
 }

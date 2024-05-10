@@ -76,6 +76,8 @@ export const createEndpoint = async (endpoint: EndpointType) => {
       .values(endpoint as any)
       .returning();
     revalidatePath("/dashboard");
+    console.log('res from createEndpoint::::', res);
+    console.log('args::::: from createEndpoint', endpoint)
     return parseResult(res);
   } catch (error) {
     return parseError(error);

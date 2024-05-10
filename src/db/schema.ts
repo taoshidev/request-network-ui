@@ -42,7 +42,7 @@ export const contracts = pgTable("contract", {
     .default(sql`gen_random_uuid()`)
     .primaryKey()
     .notNull(),
-  validatorId: uuid("validator_id")
+  userId: uuid("user_id")
     .notNull()
     .references(() => validators.id, { onDelete: "cascade" }),
   title: varchar("title").notNull().default(""),
@@ -53,10 +53,10 @@ export const contracts = pgTable("contract", {
   deletedAt: timestamp("deleted_at"),
 });
 
-export const contractValidatorRelations = relations(contracts, ({ one }) => ({
-  validator: one(validators, {
-    fields: [contracts.validatorId],
-    references: [validators.id],
+export const contractUserRelations = relations(contracts, ({ one }) => ({
+  user: one(users, {
+    fields: [contracts.userId],
+    references: [users.id],
   }),
 }));
 
@@ -106,7 +106,6 @@ export const validators = pgTable("validators", {
 
 export const validatorsRelations = relations(validators, ({ many, one }) => ({
   endpoints: many(endpoints),
-  contracts: many(contracts),
   user: one(users, {
     fields: [validators.userId],
     references: [users.id],

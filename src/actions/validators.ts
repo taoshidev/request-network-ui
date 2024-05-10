@@ -74,7 +74,7 @@ export const createValidatorEndpoint = async (
   try {
     const res = await db.transaction(async (tx) => {
       const record = await createValidator(validator as ValidatorType);
-
+      console.log('record::::', record)
       if (record?.error) {
         throw new Error(`Failed to create validator: ${record?.message}`);
       }
@@ -86,6 +86,8 @@ export const createValidatorEndpoint = async (
         validatorId: id,
       } as any);
 
+      console.log('newEndpoint::::', newEndpoint);
+      console.log('endpoint:::: ', endpoint)
       if (newEndpoint?.error) {
         throw new Error(`Failed to create endpoint: ${newEndpoint?.message}`);
       }
