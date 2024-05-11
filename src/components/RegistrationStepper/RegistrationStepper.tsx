@@ -298,7 +298,7 @@ export function RegistrationStepper({
       });
       open();
 
-      // send email to client
+      // send subscribed email to client
       if (
         currentUser &&
         currentUser?.email &&
@@ -306,11 +306,9 @@ export function RegistrationStepper({
       ) {
         sendEmail({
           to: currentUser.email,
-          template: "welcome",
-          subject: "Welcome to Request Network",
-          templateVariables: {
-            role: "consumer",
-          },
+          template: "subscription-created",
+          subject: `Subscribed to Validator ${ appName }`,
+          templateVariables: { appName },
         });
       }
     } catch (error: Error | unknown) {

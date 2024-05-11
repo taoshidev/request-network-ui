@@ -16,12 +16,14 @@ export function EndpointFormInput({
   subnets,
   mode = "create",
   onError,
+  hasSubs
 }: {
   form: UseFormReturnType<Partial<ValidatorType & EndpointType>>;
   mode?: "create" | "update";
   subnets?: Array<SubnetType>;
   validators?: Array<ValidatorType>;
   onError?: ({ error, reason }: { error: boolean; reason: string }) => void;
+  hasSubs?: boolean
 }) {
   const [isCryptoType, setIsCryptoType] = useState(false);
   const [addressExists, setAddressExists] = useState<boolean>(false);
@@ -165,6 +167,7 @@ export function EndpointFormInput({
           }
           placeholder="5"
           {...form.getInputProps("price")}
+          disabled={hasSubs}
         />
       </Box>
       <Box mb="md">

@@ -1,3 +1,4 @@
+import { sendEmail } from "@/actions/email";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -32,8 +33,16 @@ export async function GET(request: NextRequest) {
       if (next && next.length > 1) {
         return NextResponse.redirect(`${origin}${next}`);
       }
-      // send welcome to app email here
-      // check to see if data.user is not onboarded and send email if not onboarded.
+      // send welcome to request network email
+      if (data.user?.email && !data.user.user_metadata?.onboarded) {
+        sendEmail({
+          to: data.user.email,
+          template: "welcome",
+          subject: "Welcome to Request Network",
+          templateVariables: {},
+        });
+      }
+
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
