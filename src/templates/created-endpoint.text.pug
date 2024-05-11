@@ -1,10 +1,13 @@
-| New Endpoint Created!
-| Your new endpoint has been created.
-|
-| Endpoint Path: #{endPointPath || ''}
-| Expires: #{expires || ''}
-| Limit: #{limit || ''}
-| Refill Rate: #{refillRate || ''},
-| Refill Interval: #{refillInterval || ''}
-|
-| This email was sent from an address that cannot accept incoming email. Please do not reply to this message.
+extends layout-text
+
+block mainContent
+  | New Endpoint Created!
+  | Your new endpoint has been created.
+  |
+  | Endpoint Path: #{endPointPath || ''}
+  | Expires: #{formatDateTime(expires) || ''}
+  | Limit: #{limit || ''}
+  | Refill Rate: #{refillRate || ''},
+  | Refill Interval: #{refillInterval || ''}
+  |
+  | This email was sent from an address that cannot accept incoming email. Please do not reply to this message.
