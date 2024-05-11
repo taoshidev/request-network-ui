@@ -4,6 +4,7 @@ import * as aws from 'aws-sdk';
 import * as nodemailer from 'nodemailer';
 import path from 'path';
 import { compileFile } from 'pug';
+import { DateTime } from 'luxon';
 
 /**
  * EmailService class provides for sending emails using node-mailer.
@@ -82,6 +83,7 @@ export default class EmailService {
 
   async send(mailerConfig: IEmailOptions) {
     const headers = this.getHeaders(mailerConfig);
+    mailerConfig.templateVariables.DateTime = DateTime;
 
     try {
       if (this.mailTransport) {

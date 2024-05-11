@@ -175,6 +175,7 @@ export function EndpointFormInput({
           label="Expiry Date"
           description="When should your keys expire?"
           withSeconds
+          valueFormat="MM/DD/YYYY hh:mm:ss A"
           placeholder="Expiry Date"
           {...form.getInputProps("expires")}
         />

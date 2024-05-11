@@ -11,6 +11,8 @@ import { EndpointFormInput } from "@components/EndpointFormInput";
 import { EndpointSchema, EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
+import { sendEmail } from "@/actions/email";
+import { getAuthUser } from "@/actions/auth";
 
 export function Limits({
   onComplete,
@@ -46,10 +48,24 @@ export function Limits({
     setLoading(true);
 
     try {
+      const user = await getAuthUser();
       const res = await createEndpoint(values as EndpointType);
       if (res?.error) return notifyError(res?.message);
       onComplete?.();
       notifySuccess(res?.message);
+
+      sendEmail({
+        to: user?.email as string,
+        template: "created-endpoint",
+        subject: "New Endpoint Created",
+        templateVariables: {
+          endPointPath: values.url,
+          expires: new Date(values.expires),
+          limit: values.limit,
+          refillRate: values.refillRate,
+          refillInterval: values.refillInterval,
+        },
+      });
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
     } finally {
