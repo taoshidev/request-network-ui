@@ -21,6 +21,8 @@ export function Profile({ user }: any) {
     initialValues: {},
     validate: zodResolver(UserSchema),
   });
+  const provider = getTitle(user.identities?.[0]?.provider);
+  const role = getTitle(user.user_metadata.role);
 
   function getTitle(title) {
     return (
@@ -74,14 +76,14 @@ export function Profile({ user }: any) {
         )}
         <TextInput
           label="Logged in With"
-          placeholder="Role"
-          defaultValue={getTitle(user.identities?.[0]?.provider)}
+          placeholder="Provider"
+          defaultValue={provider}
           readOnly
         />
         <TextInput
           label="Role"
           placeholder="Role"
-          defaultValue={getTitle(user.user_metadata.role)}
+          defaultValue={role}
           readOnly
         />
       </Box>
