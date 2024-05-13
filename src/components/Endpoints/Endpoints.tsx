@@ -20,15 +20,18 @@ import { Limits } from "@/components/Limits";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
+import { ContractType } from "@/db/types/contract";
 
 export function Endpoints({
   endpoints,
   validators,
   subnets,
+  contracts,
 }: {
   endpoints: EndpointType[];
   validators: ValidatorType[];
   subnets: SubnetType[];
+  contracts: ContractType[];
 }) {
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
@@ -50,7 +53,12 @@ export function Endpoints({
         onClose={close}
         title="Create a new Endpoint"
       >
-        <Limits onComplete={close} validators={validators} subnets={subnets} />
+        <Limits
+          contracts={contracts}
+          onComplete={close}
+          validators={validators}
+          subnets={subnets}
+        />
       </Modal>
 
       {endpoints && !isEmpty(endpoints) && (
@@ -58,7 +66,7 @@ export function Endpoints({
           <Group justify="space-between" my="xl">
             <Title order={2}>Endpoints</Title>
             <Button onClick={open} disabled={!enabled}>
-              Create New Endpoint
+              Add New Endpoint
             </Button>
           </Group>
 
@@ -95,8 +103,9 @@ export function Endpoints({
                   </Table.Td>
                   <Table.Td>
                     {
-                      validators.find((v: any) => v?.id === endpoint?.validatorId)
-                        ?.name
+                      validators.find(
+                        (v: any) => v?.id === endpoint?.validatorId
+                      )?.name
                     }
                   </Table.Td>
                   <Table.Td>{endpoint.subnet?.label}</Table.Td>

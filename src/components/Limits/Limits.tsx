@@ -13,15 +13,18 @@ import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { sendEmail } from "@/actions/email";
 import { getAuthUser } from "@/actions/auth";
+import { ContractType } from "@/db/types/contract";
 
 export function Limits({
   onComplete,
   validators,
   subnets,
+  contracts,
 }: {
   onComplete: () => void;
   validators: Array<ValidatorType>;
   subnets: Array<SubnetType>;
+  contracts: Array<ContractType>;
 }) {
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
@@ -41,7 +44,14 @@ export function Limits({
       refillInterval: 1000,
       remaining: 1000,
     },
-    validate: zodResolver(EndpointSchema),
+    validate: zodResolver(
+      EndpointSchema.omit({
+        active: true,
+        updatedAt: true,
+        createdAt: true,
+        deletedAt: true,
+      })
+    ),
   });
 
   const onSubmit = async (values: Partial<EndpointType>) => {
@@ -77,6 +87,7 @@ export function Limits({
     <Box component="form" w="100%" onSubmit={form.onSubmit(onSubmit)}>
       <EndpointFormInput
         form={form}
+        contracts={contracts}
         validators={validators}
         subnets={subnets}
       />

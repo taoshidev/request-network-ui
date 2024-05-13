@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
-
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-
 import { theme, fonts } from "@/theme";
-
 import "./styles/styles.css";
+import '@mantine/tiptap/styles.css';
 
 export const metadata: Metadata = {
   title: "Taoshi",

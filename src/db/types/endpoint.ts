@@ -3,6 +3,8 @@ import { nullableSchema } from "@/utils/nullable";
 import { isValidEthereumAddress } from "@/utils/address";
 import { ValidatorSchema } from "./validator";
 import { SubnetSchema } from "./subnet";
+import { ContractSchema } from "./contract";
+import { SubscriptionSchema } from "./subscription";
 
 export const EndpointSchema = z.object({
   id: z.string().uuid().optional(),
@@ -10,6 +12,9 @@ export const EndpointSchema = z.object({
   subnet: SubnetSchema.optional().nullish(),
   validatorId: z.string().uuid().optional(),
   validator: ValidatorSchema.optional().nullish(),
+  contractId: z.string().uuid().optional(),
+  contract: ContractSchema.optional().nullish(),
+  subscriptions: z.lazy(() => z.array(SubscriptionSchema)).optional(),
   price: z.string().min(1),
   currencyType: z.string().min(1),
   walletAddress: z
@@ -34,6 +39,14 @@ export const EndpointSchema = z.object({
   refillRate: z.number().int().min(1),
   refillInterval: z.number().int().min(1),
   remaining: z.number().int().min(1),
+  active: z.boolean().optional(),
+  createdAt: z.date().transform((arg) => new Date(arg)).optional(),
+  updatedAt: z.date().transform((arg) => new Date(arg)).optional(),
+  deletedAt: z
+    .date()
+    .optional()
+    .nullable()
+    .transform((arg) => (arg ? new Date(arg) : null)).optional(),
 });
 
 const NullableEndpointSchema = nullableSchema(EndpointSchema);

@@ -1,15 +1,15 @@
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/actions/auth";
-import { getEndpoints } from "@/actions/endpoints";
 import { getValidators } from "@/actions/validators";
 import { getSubnets } from "@/actions/subnets";
 import { Consumer } from "@/components/Consumer";
 import { ValidatorDashboard } from "@/components/ValidatorDashbord";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { and, eq } from "drizzle-orm";
-import { subscriptions, validators } from "@/db/schema";
+import { subscriptions, validators, contracts, endpoints } from "@/db/schema";
 import { getUserAPIKeys } from "@/actions/keys";
 import { ValidatorType } from "@/db/types/validator";
+import { getContracts } from "@/actions/contracts";
 
 export default async function Page() {
   const user = await getAuthUser();
@@ -51,10 +51,10 @@ export default async function Page() {
     if (subs?.error) subs = [];
 
     return <Consumer subscriptions={subs} validators={validatorArr} />;
-
     // if user is a validator, render validator dashboard
   } else if (user.user_metadata.role === "validator") {
-    const endpoints = await getEndpoints();
+    const validatorEndpoints = validatorArr?.map(v => v.endpoints);
+
     const subnets = await getSubnets();
 
     const promises = (validatorArr || [])?.map(async (v: ValidatorType) => {
@@ -63,11 +63,15 @@ export default async function Page() {
     });
     const stats = await Promise.all(promises);
 
+    const userContracts = await getContracts({
+      where: and(eq(contracts.userId, user.id)),
+    });
+
     return (
       <ValidatorDashboard
         user={user}
+        contracts={userContracts}
         subnets={subnets}
-        endpoints={endpoints}
         validators={validatorArr}
         stats={stats}
       />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Button, TextInput, Textarea } from "@mantine/core";
+import { Box, Button, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { EndpointFormInput } from "@components/EndpointFormInput";
@@ -13,10 +13,25 @@ import { ValidatorSchema, ValidatorType } from "@/db/types/validator";
 import { EndpointSchema, EndpointType } from "@/db/types/endpoint";
 import { useNotification } from "@/hooks/use-notification";
 import { DatabaseResponseType } from "@/db/error";
+import { UserType } from "@/db/types/user";
+import { SubnetType } from "@/db/types/subnet";
+import { ContractType } from "@/db/types/contract";
+import { KeyType } from "@/components/Validators/Validators";
+import { TextEditor } from "@/components/TextEditor";
 
 const ValidatorEndpointSchema = ValidatorSchema.merge(EndpointSchema);
 
-export function CreateValidator({ onComplete, user, subnets }: any) {
+export function CreateValidator({
+  onComplete,
+  user,
+  subnets,
+  contracts,
+}: {
+  user: UserType;
+  subnets: SubnetType[];
+  contracts: ContractType[];
+  onComplete: ({ apiKey, apiSecret }: KeyType) => void;
+}) {
   const [loading, setLoading] = useState(false);
   const [hotkeyExists, setHotkeyExists] = useState<boolean>(false);
   const [walletExists, setWalletExists] = useState<boolean>(false);
@@ -31,9 +46,11 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
       enabled: false,
       currencyType: "Crypto",
       walletAddress: "",
+      termsOfService: "",
       price: "",
       hotkey: "",
       subnetId: "",
+      contractId: "",
       limit: 10,
       baseApiUrl: "",
       url: "",
@@ -59,8 +76,8 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
       const { validator: newValidator } = res as {
         validator: ValidatorType;
       };
-      const { apiId: apiKey, apiSecret } = newValidator;
-      onComplete({ apiKey, apiSecret });
+      const { apiId: apiKey = "", apiSecret = "" } = newValidator;
+      onComplete({ apiKey, apiSecret } as KeyType);
 
       notifySuccess("Validator registered successfully");
     } catch (error: Error | unknown) {
@@ -101,12 +118,12 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
           placeholder="Enter a name for your validator"
           {...form.getInputProps("name")}
         />
-        <Textarea
-          mb="md"
-          withAsterisk
-          label="Description"
-          placeholder="Enter a brief description for your validator"
-          {...form.getInputProps("description")}
+        <TextEditor<ValidatorType>
+          type="BubbleEditor"
+          prop="description"
+          form={form}
+          label={{ text: "Description (Rich text format)", required: true }}
+          // onChange={handleEditorChange}
         />
         <Box mb="md">
           <TextInput
@@ -140,6 +157,7 @@ export function CreateValidator({ onComplete, user, subnets }: any) {
         <EndpointFormInput
           form={form}
           subnets={subnets}
+          contracts={contracts}
           onError={(event) => {
             setWalletExists(event.error);
           }}
