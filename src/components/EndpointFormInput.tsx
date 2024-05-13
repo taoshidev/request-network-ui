@@ -7,12 +7,16 @@ import { UseFormReturnType } from "@mantine/form";
 import { EndpointType } from "@/db/types/endpoint";
 import { checkEndpointWalletAddressExists } from "@/actions/endpoints";
 import { useNotification } from "@/hooks/use-notification";
+import { ContractType } from "@/db/types/contract";
+import { sortObjectsByString } from "@/utils/sort";
+
 import clsx from "clsx";
 
 const SN8_ONLY = true;
 export function EndpointFormInput({
   form,
   validators,
+  contracts,
   subnets,
   mode = "create",
   onError,
@@ -20,6 +24,7 @@ export function EndpointFormInput({
 }: {
   form: UseFormReturnType<Partial<ValidatorType & EndpointType>>;
   mode?: "create" | "update";
+  contracts: Array<ContractType>;
   subnets?: Array<SubnetType>;
   validators?: Array<ValidatorType>;
   onError?: ({ error, reason }: { error: boolean; reason: string }) => void;
@@ -41,18 +46,27 @@ export function EndpointFormInput({
     ? (validators || [])
         .filter((v) => v.verified)
         .map((v) => ({
-          value: v.id as string,
+          value: v?.id as string,
           label: v?.name || v?.account?.meta?.name || "Unknown",
         }))
     : [];
 
-  const availableSubnets = (subnets || []).map((s) => ({
+  const availableSubnets = (subnets || [])?.map((s) => ({
     value: s.id!,
     label: s.label!,
     disabled: SN8_ONLY && s.netUid !== 8,
   }));
 
-  const sortedSubnets = availableSubnets.sort((a, b) => a.label.localeCompare(b.label));
+  const availableContracts =
+    (contracts || []).map((c) => ({
+      value: c.id,
+      label: c.title,
+      disabled: !c.active,
+    }));
+console.log('avaliableContracts', availableContracts)
+  const sortedSubnets = availableSubnets.sort((a, b) =>
+    a.label.localeCompare(b.label)
+  );
 
   // Fiat currency types, validator will need to self manage
   const currencyTypes = [
@@ -112,6 +126,16 @@ export function EndpointFormInput({
           />
         </Box>
       )}
+      <Box mb="md">
+        <Select
+          label="Contract"
+          withAsterisk
+          placeholder="Choose a contract"
+          clearable
+          data={availableContracts}
+          {...form.getInputProps("contractId")}
+        />
+      </Box>
       {mode === "create" && (
         <>
           <Box mb="md">

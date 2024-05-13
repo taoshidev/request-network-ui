@@ -9,7 +9,6 @@ import {
   Title,
   Button,
   TextInput,
-  Textarea,
   Text,
   Modal,
   List,
@@ -31,6 +30,10 @@ import { ValidatorType } from "@/db/types/validator";
 import { useDisclosure } from "@mantine/hooks";
 import { useNotification } from "@/hooks/use-notification";
 import { useRouter } from "next/navigation";
+import { TextEditor } from "@/components/TextEditor";
+import { Contracts } from "@/components/Contracts";
+import { UserType } from "@/db/types/user";
+import { ContractType } from "@/db/types/contract";
 
 export const ValidatorEditSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -39,14 +42,23 @@ export const ValidatorEditSchema = z.object({
     .min(64, { message: "Description must be at least 64 characters" }),
 });
 
-export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
+export function ValidatorEdit({
+  validator,
+  contracts,
+  user,
+}: {
+  validator: ValidatorType;
+  contracts: ContractType[];
+  user: UserType;
+}) {
   const [loading, setLoading] = useState(false);
   const [verified, setVerified] = useState(false);
+  const [activeSection, setActiveSection] = useState("edit");
   const [opened, { open, close }] = useDisclosure(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const router = useRouter();
 
-  const form = useForm({
+  const form = useForm<Partial<ValidatorType>>({
     initialValues: {
       name: validator?.name || "",
       description: validator?.description || "",
@@ -55,7 +67,7 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
   });
 
   const onSubmit = async (
-    values: Pick<ValidatorType, "name" | "description">,
+    values: Pick<ValidatorType, "name" | "description">
   ) => {
     setLoading(true);
     try {
@@ -123,6 +135,9 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
     }
   }, [validator]);
 
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section);
+  };
   return (
     <Group align="flex-start">
       <Modal
@@ -153,24 +168,27 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
           </List>
         </Box>
       </Modal>
-      {/* <Box>
+      <Box className="w-64">
         <NavLink
-          active
-          href="#required-for-focus"
-          label="Verify"
+          active={activeSection === "edit"}
+          label="Edit"
           leftSection={<IconCircleCheck size="1rem" stroke={1.5} />}
+          onClick={() => handleSectionChange("edit")}
         />
         <NavLink
-          href="#required-for-focus"
-          label="With right section"
+          active={activeSection === "contracts"}
+          label="Contracts"
           leftSection={<IconGauge size="1rem" stroke={1.5} />}
+          onClick={() => handleSectionChange("contracts")}
         />
         <NavLink
-          href="#required-for-focus"
-          label="Disabled"
+          disabled
+          active={activeSection === "packages"}
+          label="Packages"
           leftSection={<IconCircleOff size="1rem" stroke={1.5} />}
+          onClick={() => handleSectionChange("packages")}
         />
-      </Box> */}
+      </Box>
       <Box flex="1">
         {!validator.verified && (
           <Alert
@@ -181,44 +199,55 @@ export function ValidatorEdit({ validator }: { validator: ValidatorType }) {
             icon={<IconAlertCircle />}
           >
             <Text mb="md" size="sm">
-              Your validator has not been verified yet. Please verify your validator so that customers can connect to your service.
+              Your validator has not been verified yet. Please verify your
+              validator so that customers can connect to your service.
             </Text>
             <Button onClick={handleVerify} variant="white">
               Verify
             </Button>
           </Alert>
         )}
-        <Title mb="lg" order={2}>
-          Edit your Validator
-        </Title>
-        <Box
-          mb="lg"
-          w="100%"
-          component="form"
-          onSubmit={form.onSubmit(onSubmit)}
-        >
-          <Box mb="md">
-            <TextInput
-              mb="md"
-              withAsterisk
-              label="Validator Name"
-              placeholder="Enter a name for your validator"
-              {...form.getInputProps("name")}
-            />
-            <Textarea
-              mb="md"
-              withAsterisk
-              label="Description"
-              placeholder="Enter a brief description for your validator"
-              {...form.getInputProps("description")}
-            />
-          </Box>
-          <Box mb="md">
-            <Button type="submit" loading={loading} className="float-right">
-              Update
-            </Button>
-          </Box>
-        </Box>
+        {activeSection === "edit" && (
+          <>
+            <Title mb="lg" order={2}>
+              Edit Validator
+            </Title>
+            <Box
+              mb="lg"
+              w="100%"
+              component="form"
+              onSubmit={form.onSubmit(onSubmit)}
+            >
+              <Box mb="md">
+                <TextInput
+                  mb="md"
+                  withAsterisk
+                  label="Validator Name"
+                  placeholder="Enter a name for your validator"
+                  {...form.getInputProps("name")}
+                />
+                <TextEditor<ValidatorType>
+                  type="BubbleEditor"
+                  editable={true}
+                  prop="description"
+                  form={form}
+                  label={{ text: "Description", required: true }}
+                />
+              </Box>
+              <Box mb="md">
+                <Button type="submit" loading={loading} className="float-right">
+                  Update
+                </Button>
+              </Box>
+            </Box>
+          </>
+        )}
+        {activeSection === "contracts" && (
+          <Contracts contracts={contracts} user={user} />
+        )}
+        {/* {activeSection === "packages" && (
+          <Text>Packages section content here.</Text>
+        )} */}
       </Box>
     </Group>
   );

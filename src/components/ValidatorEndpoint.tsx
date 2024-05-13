@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import {
   Title,
   Text,
@@ -15,6 +15,8 @@ import dayjs from "dayjs";
 import { useRegistration } from "@/providers/registration";
 import { EndpointType } from "@/db/types/endpoint";
 import { SubscriptionType } from "@/db/types/subscription";
+import { useDisclosure } from "@mantine/hooks";
+import { ContractDisplayModal } from "@/components/ContractDisplayModal";
 
 export function ValidatorEndpoint({
   currentSubscriptions,
@@ -22,6 +24,10 @@ export function ValidatorEndpoint({
   currentSubscriptions?: SubscriptionType[];
 }) {
   const { updateData, registrationData } = useRegistration();
+  const [selectedEndpoint, setSelectedEndpoint] = useState<EndpointType | null>(
+    null
+  );
+  const [opened, { open, close }] = useDisclosure(false);
 
   const handleSubscribeClick = useCallback(
     (endpoint: EndpointType) => {
@@ -40,7 +46,9 @@ export function ValidatorEndpoint({
         (s) => s.endpointId === endpoint?.id
       );
       const isEnabled = endpoint?.enabled;
-      return !isEnabled || isAlreadySubscribed;
+      const termsAccepted = endpoint?.termsAccepted;
+      console.log(isAlreadySubscribed, isEnabled, termsAccepted);
+      return !isEnabled || isAlreadySubscribed || !termsAccepted;
     },
     [currentSubscriptions]
   );
@@ -59,12 +67,33 @@ export function ValidatorEndpoint({
     [currentSubscriptions]
   );
 
+  const handleAcceptTerms = useCallback((endpoint, { termsAccepted }) => {
+    endpoint.termsAccepted = termsAccepted;
+  }, []);
+
+  const openContractModal = (endpoint) => {
+    setSelectedEndpoint(endpoint);
+    open();
+  };
+
   return (
     <Box>
       <Title className="text-2xl text-center my-8">
         Choose an Endpoint for {registrationData?.validator?.name} Subnet
       </Title>
       <Grid>
+        <ContractDisplayModal
+          html={selectedEndpoint?.contract?.content}
+          opened={opened}
+          close={close}
+          review={currentSubscriptions?.some(
+            (s) => s.endpointId === selectedEndpoint?.id
+          )}
+          onTermsAccepted={({ termsAccepted }) =>
+            handleAcceptTerms(selectedEndpoint, { termsAccepted })
+          }
+        />
+
         {registrationData?.validator?.endpoints?.map(
           (endpoint: EndpointType) => (
             <Grid.Col key={endpoint.id} span={3}>
@@ -120,19 +149,26 @@ export function ValidatorEndpoint({
                     {endpoint?.remaining}
                   </Badge>
                 </Group>
-                <Button
-                  disabled={disabled(endpoint)}
-                  variant={
-                    registrationData &&
-                    registrationData?.endpoint?.id === endpoint.id
-                      ? ""
-                      : "outline"
-                  }
-                  fullWidth
-                  onClick={() => handleSubscribeClick(endpoint)}
-                >
-                  {buttonText(endpoint)}
-                </Button>
+                <Box className="mt-4 flex flex-row justify-between items-center">
+                  <Button
+                    variant="outline"
+                    onClick={() => openContractModal(endpoint)}
+                  >
+                    Agreement
+                  </Button>
+                  <Button
+                    disabled={disabled(endpoint)}
+                    variant={
+                      registrationData &&
+                      registrationData?.endpoint?.id === endpoint.id
+                        ? ""
+                        : "outline"
+                    }
+                    onClick={() => handleSubscribeClick(endpoint)}
+                  >
+                    {buttonText(endpoint)}
+                  </Button>
+                </Box>
               </Card>
             </Grid.Col>
           )

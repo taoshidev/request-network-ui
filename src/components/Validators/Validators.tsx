@@ -7,10 +7,24 @@ import { useDisclosure } from "@mantine/hooks";
 import { isEmpty } from "lodash";
 import { CreateValidator } from "@/components/CreateValidator";
 import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
+import { UserType } from "@/db/types/user";
+import { SubnetType } from "@/db/types/subnet";
+import { ValidatorType } from "@/db/types/validator";
+import { ContractType } from "@/db/types/contract";
 
-type KeyType = { apiKey: string; apiSecret: string };
+export type KeyType = { apiKey: string; apiSecret: string };
 
-export function Validators({ user, subnets, validators }: any) {
+export function Validators({
+  user,
+  subnets,
+  validators,
+  contracts,
+}: {
+  user: UserType;
+  subnets: SubnetType[];
+  validators: ValidatorType[];
+  contracts: ContractType[];
+}) {
   const router = useRouter();
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -37,7 +51,7 @@ export function Validators({ user, subnets, validators }: any) {
         opened={keyModalOpened}
         onClose={() => setKeyModalOpened(false)}
         onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
-        title="API Access Key"
+        title="Api Access Key"
       />
 
       <Modal
@@ -50,6 +64,7 @@ export function Validators({ user, subnets, validators }: any) {
         <CreateValidator
           user={user}
           subnets={subnets}
+          contracts={contracts}
           onComplete={handleRegistrationComplete}
         />
       </Modal>

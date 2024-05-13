@@ -35,16 +35,17 @@ export const users = authSchema.table("users", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   validators: many(validators),
+  contracts: many(contracts),
 }));
 
-export const contracts = pgTable("contract", {
+export const contracts = pgTable("contracts", {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
     .primaryKey()
     .notNull(),
   userId: uuid("user_id")
     .notNull()
-    .references(() => validators.id, { onDelete: "cascade" }),
+    .references(() => users.id, { onDelete: "cascade" }),
   title: varchar("title").notNull().default(""),
   content: text("content").notNull().default(""),
   active: boolean("active").default(true).notNull(),
@@ -84,7 +85,7 @@ export const validators = pgTable("validators", {
     .primaryKey()
     .notNull(),
   name: varchar("name"),
-  description: varchar("description"),
+  description: text("description"),
   baseApiUrl: varchar("base_api_url").unique().notNull(),
   apiPrefix: varchar("api_prefix"),
   apiId: varchar("api_id"),
@@ -148,7 +149,8 @@ export const endpoints = pgTable(
   })
 );
 
-export const endpointsRelations = relations(endpoints, ({ one }) => ({
+export const endpointsRelations = relations(endpoints, ({ many, one }) => ({
+  subscriptions: many(subscriptions),
   subnet: one(subnets, {
     fields: [endpoints.subnetId],
     references: [subnets.id],
@@ -183,6 +185,7 @@ export const subscriptions = pgTable(
     appName: varchar("app_name"),
     consumerApiUrl: varchar("consumer_api_url").notNull(),
     consumerWalletAddress: varchar("consumer_wallet_address"),
+    termsAccepted: boolean("terms_accepted").default(true).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),

@@ -9,11 +9,18 @@ import {
   Text,
   Stack,
   Divider,
+  Button,
 } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRegistration } from "@/providers/registration";
+import { ValidatorType } from "@/db/types/validator";
+import { TextEditor } from "@/components/TextEditor";
+import { useDisclosure } from "@mantine/hooks";
+import { ContractDisplayModal } from "@/components/ContractDisplayModal";
+
 export function SubnetValidatorReview() {
   const { registrationData } = useRegistration();
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <Box>
@@ -24,9 +31,20 @@ export function SubnetValidatorReview() {
         </Title>
         <Group className="justify-between items-start gap-8">
           <Box className="flex-1">
-            <Text className="text-sm mb-4">
-              {registrationData?.validator?.description}
-            </Text>
+            <Box className="h-[353px] mb-5 overflow-auto">
+              <TextEditor<ValidatorType>
+                type="BubbleEditor"
+                editable={false}
+                html={registrationData?.validator?.description as string}
+              />
+            </Box>
+            <Button onClick={open}>View Accepted Terms</Button>
+            <ContractDisplayModal
+              review={true}
+              html={registrationData?.endpoint?.contract?.content}
+              opened={opened}
+              close={close}
+            />
           </Box>
           <Stack className="flex-1 gap-2">
             <Group className="justify-between items-center text-sm">

@@ -34,6 +34,9 @@ export default async function Page() {
     with: {
       endpoints: {
         where: and(eq(endpoints.enabled, true)),
+        with: {
+          contract: true,
+        }
       },
     },
   });

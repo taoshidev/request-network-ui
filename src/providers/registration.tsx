@@ -3,6 +3,7 @@ import { useLocalStorage } from "@mantine/hooks";
 import { SubnetType } from "@/db/types/subnet";
 import { ValidatorType } from "@/db/types/validator";
 import { EndpointType } from "@/db/types/endpoint";
+import { ContractType } from "@/db/types/contract";
 
 export interface RegistrationData {
   appName: string;

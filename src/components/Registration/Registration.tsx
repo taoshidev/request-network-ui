@@ -10,6 +10,8 @@ import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { ValidatorEndpoint } from "@/components/ValidatorEndpoint";
 
+type ValidatorWithInfo = ValidatorType & { neuronInfo: any };
+
 export function Registration({
   currentSubscriptions,
   subnets,
@@ -17,7 +19,7 @@ export function Registration({
 }: {
   currentSubscriptions: SubscriptionType[];
   subnets: SubnetType[];
-  validators: ValidatorType & { neuronInfo: any }[];
+  validators: ValidatorWithInfo[];
 }) {
   return (
     <RegistrationProvider>

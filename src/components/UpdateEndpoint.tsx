@@ -13,6 +13,7 @@ import { EndpointFormInput } from "@/components/EndpointFormInput";
 import { EndpointSchema } from "@/db/types/endpoint";
 import { sendToProxy } from "@/actions/apis";
 import { EndpointType } from "@/db/types/endpoint";
+import { ContractType } from "@/db/types/contract";
 
 const EndpointFormSchema = EndpointSchema.omit({
   validator: true,
@@ -21,9 +22,11 @@ const EndpointFormSchema = EndpointSchema.omit({
 
 export function UpdateEndpoint({
   endpoint,
+  contracts,
   subscriptionCount,
 }: {
   endpoint: EndpointType;
+  contracts: ContractType[];
   subscriptionCount: number;
 }) {
   const [loading, setLoading] = useState(false);
@@ -37,7 +40,7 @@ export function UpdateEndpoint({
     },
     validate: zodResolver(EndpointFormSchema),
   });
-  // EndpointSchema.parse(endpoint);
+
   const onSubmit = async (values: any) => {
     setLoading(true);
     // NOTE: must remove the keys otherwise it will fail silently
@@ -158,7 +161,12 @@ export function UpdateEndpoint({
           component="form"
           onSubmit={form.onSubmit(onSubmit)}
         >
-          <EndpointFormInput mode="update" form={form} hasSubs={subscriptionCount > 0} />
+          <EndpointFormInput
+            contracts={contracts}
+            mode="update"
+            form={form}
+            hasSubs={subscriptionCount > 0}
+          />
           <Group justify="flex-end">
             <Button type="submit" loading={loading}>
               Update

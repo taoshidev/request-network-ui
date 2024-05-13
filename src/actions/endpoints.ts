@@ -9,12 +9,9 @@ import { subscriptions } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
 import { EndpointType } from "@/db/types/endpoint";
 
-export const getEndpoints = async () => {
+export const getEndpoints = async (query: object = {}) => {
   try {
-    const results = await db.query.endpoints.findMany({
-      orderBy: (endpoints, { asc }) => [asc(endpoints.url)],
-      with: { subnet: true },
-    });
+    const results = await db.query.endpoints.findMany(query);
 
     return results;
   } catch (error) {
@@ -76,8 +73,6 @@ export const createEndpoint = async (endpoint: EndpointType) => {
       .values(endpoint as any)
       .returning();
     revalidatePath("/dashboard");
-    console.log('res from createEndpoint::::', res);
-    console.log('args::::: from createEndpoint', endpoint)
     return parseResult(res);
   } catch (error) {
     return parseError(error);

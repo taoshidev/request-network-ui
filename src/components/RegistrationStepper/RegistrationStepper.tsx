@@ -335,7 +335,7 @@ export function RegistrationStepper({
         opened={opened}
         onClose={close}
         onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
-        title="API Access Key"
+        title="Api Access Key"
         walletAddressTitle={
           registrationData?.endpoint?.currencyType === "Crypto"
             ? "Validator's ERC-20 Public Address"
@@ -367,7 +367,7 @@ export function RegistrationStepper({
 
         <Stepper.Completed>
           <Card className="mt-14 h-auto">
-            <Center className="mt-8 mb-12">
+            <Center className="mt-8 mb-4">
               <Box className="max-w-xl">
                 <Text className="text-center text-sm mb-4">
                   Congratulations!

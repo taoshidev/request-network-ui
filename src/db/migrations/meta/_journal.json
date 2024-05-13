@@ -225,6 +225,27 @@
       "when": 1715336676921,
       "tag": "0031_tan_master_chief",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "5",
+      "when": 1715360609731,
+      "tag": "0032_strong_infant_terrible",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "5",
+      "when": 1715381727630,
+      "tag": "0033_regular_jane_foster",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "5",
+      "when": 1715586902248,
+      "tag": "0034_stale_chimera",
+      "breakpoints": true
     }
   ]
 }
