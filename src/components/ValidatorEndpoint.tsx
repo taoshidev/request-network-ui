@@ -47,7 +47,6 @@ export function ValidatorEndpoint({
       );
       const isEnabled = endpoint?.enabled;
       const termsAccepted = endpoint?.termsAccepted;
-      console.log(isAlreadySubscribed, isEnabled, termsAccepted);
       return !isEnabled || isAlreadySubscribed || !termsAccepted;
     },
     [currentSubscriptions]

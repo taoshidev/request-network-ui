@@ -63,7 +63,7 @@ export function EndpointFormInput({
       label: c.title,
       disabled: !c.active,
     }));
-console.log('avaliableContracts', availableContracts)
+
   const sortedSubnets = availableSubnets.sort((a, b) =>
     a.label.localeCompare(b.label)
   );

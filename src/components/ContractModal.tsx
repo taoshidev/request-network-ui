@@ -43,7 +43,7 @@ export function ContractModal({
       })
     ),
   });
-  console.log(ContractSchema.safeParse(form.values));
+
   useEffect(() => {
     form.setValues(getDefaultValues(contract as ContractType));
   }, [contract]);
@@ -51,7 +51,7 @@ export function ContractModal({
   const onSubmit = async (values: Partial<ContractType>) => {
     setLoading(true);
     try {
-      console.log("values;::::", values);
+
       if (!contract) delete values.id;
       const res = contract
         ? await updateContract(values as ContractType)
