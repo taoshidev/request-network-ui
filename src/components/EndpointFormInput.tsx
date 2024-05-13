@@ -20,7 +20,7 @@ export function EndpointFormInput({
   subnets,
   mode = "create",
   onError,
-  hasSubs
+  hasSubs,
 }: {
   form: UseFormReturnType<Partial<ValidatorType & EndpointType>>;
   mode?: "create" | "update";
@@ -28,7 +28,7 @@ export function EndpointFormInput({
   subnets?: Array<SubnetType>;
   validators?: Array<ValidatorType>;
   onError?: ({ error, reason }: { error: boolean; reason: string }) => void;
-  hasSubs?: boolean
+  hasSubs?: boolean;
 }) {
   const [isCryptoType, setIsCryptoType] = useState(false);
   const [addressExists, setAddressExists] = useState<boolean>(false);
@@ -233,6 +233,15 @@ export function EndpointFormInput({
           />
         </Box>
       </Group>
+      <Box mb="md">
+        <Select
+          label="Terms"
+          withAsterisk
+          placeholder="Choose terms"
+          data={[{ value: '1', label: "Test" }]}
+          {...form.getInputProps("terms")}
+        />
+      </Box>
     </>
   );
 }

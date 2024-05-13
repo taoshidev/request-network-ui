@@ -2,13 +2,10 @@
 
 import { useState } from "react";
 import { Box, Button } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { zodResolver } from "mantine-form-zod-resolver";
-import { v4 as uuid } from "uuid";
 import { createEndpoint } from "@/actions/endpoints";
 import { useNotification } from "@/hooks/use-notification";
 import { EndpointFormInput } from "@components/EndpointFormInput";
-import { EndpointSchema, EndpointType } from "@/db/types/endpoint";
+import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { sendEmail } from "@/actions/email";
@@ -16,11 +13,13 @@ import { getAuthUser } from "@/actions/auth";
 import { ContractType } from "@/db/types/contract";
 
 export function Limits({
+  form,
   onComplete,
   validators,
   subnets,
   contracts,
 }: {
+  form: any;
   onComplete: () => void;
   validators: Array<ValidatorType>;
   subnets: Array<SubnetType>;
@@ -28,32 +27,6 @@ export function Limits({
 }) {
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
-
-  const form = useForm<Partial<EndpointType>>({
-    name: "create-new-endpoint",
-    initialValues: {
-      id: uuid(),
-      limit: 10,
-      url: "",
-      subnetId: "",
-      validatorId: "",
-      currencyType: "Crypto",
-      walletAddress: "",
-      price: "",
-      refillRate: 1,
-      refillInterval: 1000,
-      remaining: 1000,
-    },
-    validate: zodResolver(
-      EndpointSchema.omit({
-        active: true,
-        updatedAt: true,
-        createdAt: true,
-        deletedAt: true,
-      })
-    ),
-  });
-
   const onSubmit = async (values: Partial<EndpointType>) => {
     setLoading(true);
 

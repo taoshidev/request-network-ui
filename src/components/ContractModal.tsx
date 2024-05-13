@@ -46,6 +46,7 @@ export function ContractModal({
 
   useEffect(() => {
     form.setValues(getDefaultValues(contract as ContractType));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract]);
 
   const onSubmit = async (values: Partial<ContractType>) => {
