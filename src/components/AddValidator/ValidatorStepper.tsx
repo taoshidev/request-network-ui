@@ -11,8 +11,8 @@ import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
 import { createValidatorEndpoint } from "@/actions/validators";
 import { DatabaseResponseType } from "@/db/error";
 import { useNotification } from "@/hooks/use-notification";
-import { CreateEndpoint1 } from "./steps/CreateEndpoint1";
-import { CreateEndpoint2 } from "./steps/CreateEndpoint2";
+import { EndpointForm1 } from "./steps/EndpointForm1";
+import { EndpointForm2 } from "./steps/EndpointForm2";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -149,7 +149,7 @@ export default function ValidatorStepper({
             label="Create Endpoint"
             description="Endpoint information"
           >
-            <CreateEndpoint1
+            <EndpointForm1
               form={validatorForm}
               subnets={subnets}
               contracts={contracts}
@@ -162,10 +162,8 @@ export default function ValidatorStepper({
             label="Create Endpoint 2"
             description="Endpoint information"
           >
-            <CreateEndpoint2
+            <EndpointForm2
               form={validatorForm}
-              subnets={subnets}
-              contracts={contracts}
               onError={(event) => {
                 setWalletExists(event.error);
               }}

@@ -1,21 +1,15 @@
-import { Box, NumberInput, Select, Group } from "@mantine/core";
+import { Box, NumberInput, Group } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import { ValidatorType } from "@/db/types/validator";
-import { SubnetType } from "@/db/types/subnet";
 import { UseFormReturnType } from "@mantine/form";
 import { EndpointType } from "@/db/types/endpoint";
-import { useNotification } from "@/hooks/use-notification";
-import { ContractType } from "@/db/types/contract";
 
-const SN8_ONLY = true;
-export function CreateEndpoint2({
+export function EndpointForm2({
   form,
   mode = "create",
 }: {
   form: UseFormReturnType<Partial<ValidatorType & EndpointType>>;
   mode?: "create" | "update";
-  contracts: Array<ContractType>;
-  subnets?: Array<SubnetType>;
   validators?: Array<ValidatorType>;
   onError?: ({ error, reason }: { error: boolean; reason: string }) => void;
   hasSubs?: boolean;

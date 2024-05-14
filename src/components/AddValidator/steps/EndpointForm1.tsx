@@ -11,7 +11,7 @@ import { ContractType } from "@/db/types/contract";
 import clsx from "clsx";
 
 const SN8_ONLY = true;
-export function CreateEndpoint1({
+export function EndpointForm1({
   form,
   validators,
   contracts,
