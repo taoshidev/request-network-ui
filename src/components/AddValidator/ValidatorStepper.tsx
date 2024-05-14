@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Group, Stepper } from "@mantine/core";
+import { Box, Button, Group, Stepper, Table, Text, Title } from "@mantine/core";
 import { useState } from "react";
 import { CreateValidator } from "./steps/CreateValidator";
 import { useForm } from "@mantine/form";
@@ -13,6 +13,7 @@ import { DatabaseResponseType } from "@/db/error";
 import { useNotification } from "@/hooks/use-notification";
 import { EndpointForm1 } from "./steps/EndpointForm1";
 import { EndpointForm2 } from "./steps/EndpointForm2";
+import { isEmpty as isEmpty, lte } from "lodash";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -22,14 +23,20 @@ export default function ValidatorStepper({
   contracts,
   expires,
 }) {
+  const stepInputs = [
+    ["name", "description", "hotkey", "baseApiUrl"],
+    ["url", "contractId", "currencyType", "walletAddress", "price"],
+    ["expires", "limit", "refillRate", "refillInterval"],
+  ];
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const [keys, setKeys] = useState<KeyType>({ apiKey: "", apiSecret: "" });
   const [walletExists, setWalletExists] = useState<boolean>(false);
   const [keyModalOpened, setKeyModalOpened] = useState(false);
   const ValidatorEndpointSchema = ValidatorSchema.merge(EndpointSchema);
   const [hotkeyExists, setHotkeyExists] = useState<boolean>(false);
   const { notifySuccess, notifyError } = useNotification();
-  const validatorForm = useForm<Partial<ValidatorType & EndpointType>>({
+  const form = useForm<Partial<ValidatorType & EndpointType>>({
     initialValues: {
       name: "",
       description: "",
@@ -52,35 +59,45 @@ export default function ValidatorStepper({
     validate: zodResolver(ValidatorEndpointSchema),
   });
 
-  const endpointForm = useForm<Partial<EndpointType>>({
-    name: "create-new-endpoint",
-    initialValues: {
-      limit: 10,
-      url: "",
-      subnetId: "",
-      validatorId: "",
-      currencyType: "Crypto",
-      walletAddress: "",
-      price: "",
-      refillRate: 1,
-      refillInterval: 1000,
-      remaining: 1000,
-    },
-    validate: zodResolver(
-      EndpointSchema.omit({
-        active: true,
-        updatedAt: true,
-        createdAt: true,
-        deletedAt: true,
-      })
-    ),
-  });
-
   const [active, setActive] = useState(0);
-  const nextStep = () =>
-    setActive((current) => (current < 3 ? current + 1 : current));
-  const prevStep = () =>
+
+  function getErrors() {
+    const nextErrors =
+      ValidatorEndpointSchema.safeParse(form.values)?.["error"]?.issues?.reduce(
+        (prev, curr) => {
+          prev[curr.path[0]] = curr.message;
+          return prev;
+        },
+        {}
+      ) || {};
+    setErrors(nextErrors);
+    return nextErrors;
+  }
+
+  function valid() {
+    const currentErrors = getErrors();
+    return stepInputs.reduce((prev, curr, index) => {
+      let error = false;
+      for (let key of Object.keys(currentErrors)) {
+        if (curr.includes(key)) error = true;
+      }
+      prev.push(!error as any);
+      return prev;
+    }, []);
+  }
+
+  const setStep = (step) => {
+    if (step === 0 || valid()[step - 1]) setActive(step);
+  };
+
+  const nextStep = () => {
+    if (valid()[active])
+      setActive((current) => (current < 3 ? current + 1 : current));
+  };
+  const prevStep = () => {
+    getErrors();
     setActive((current) => (current > 0 ? current - 1 : current));
+  };
 
   const handleRegistrationComplete = ({ apiKey, apiSecret }: KeyType) => {
     setKeys({ apiKey, apiSecret });
@@ -130,15 +147,15 @@ export default function ValidatorStepper({
       <Box
         component="form"
         className="w-full"
-        onSubmit={validatorForm.onSubmit(onSubmit)}
+        onSubmit={form.onSubmit(onSubmit)}
       >
-        <Stepper active={active} onStepClick={setActive}>
+        <Stepper active={active} onStepClick={setStep}>
           <Stepper.Step
             label="Create Validator"
             description="Validator information"
           >
             <CreateValidator
-              form={validatorForm}
+              form={form}
               subnets={subnets}
               onComplete={handleRegistrationComplete}
               hotkeyExists={hotkeyExists}
@@ -150,7 +167,7 @@ export default function ValidatorStepper({
             description="Endpoint information"
           >
             <EndpointForm1
-              form={validatorForm}
+              form={form}
               subnets={subnets}
               contracts={contracts}
               onError={(event) => {
@@ -163,22 +180,92 @@ export default function ValidatorStepper({
             description="Endpoint information"
           >
             <EndpointForm2
-              form={validatorForm}
+              form={form}
               onError={(event) => {
                 setWalletExists(event.error);
               }}
             />
           </Stepper.Step>
           <Stepper.Completed>
+            <Title order={2} className="text-center">
+              Review Validator Details
+            </Title>
+            <Box className="flex justify-center w-full mb-16">
+              <Box className="w-full overflow-y-auto">
+                <Table miw={600} verticalSpacing="xs">
+                  <Table.Tbody>
+                    <Table.Tr>
+                      <Table.Th colSpan={1} w={200}>
+                        Name
+                      </Table.Th>
+                      <Table.Td colSpan={3}>{form.values.name}</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Th colSpan={1}>Description</Table.Th>
+                      <Table.Td colSpan={3}>{form.values.description}</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Th colSpan={1} w={200}>
+                        Currency Type
+                      </Table.Th>
+                      <Table.Td colSpan={1}>
+                        {form.values.currencyType}
+                      </Table.Td>
+                      <Table.Th colSpan={1}>Wallet Address</Table.Th>
+                      <Table.Td colSpan={1}>
+                        {form.values.walletAddress}
+                      </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Th>Price</Table.Th>
+                      <Table.Td>{form.values.price}</Table.Td>
+                      <Table.Th>Hot Key</Table.Th>
+                      <Table.Td>{form.values.hotkey}</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Th>Limit</Table.Th>
+                      <Table.Td>{form.values.limit}</Table.Td>
+                      <Table.Th>Base API URL</Table.Th>
+                      <Table.Td>{form.values.baseApiUrl}</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Th>URL</Table.Th>
+                      <Table.Td>{form.values.url}</Table.Td>
+                      <Table.Th>Refill Rate</Table.Th>
+                      <Table.Td>{form.values.refillRate}</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Th>Refill Interval</Table.Th>
+                      <Table.Td>{form.values.refillInterval}</Table.Td>
+                      <Table.Th>Remaining</Table.Th>
+                      <Table.Td>{form.values.remaining}</Table.Td>
+                    </Table.Tr>
+                    {/* <Table.Tr>
+                      <Table.Th>Expires</Table.Th>
+                      <Table.Td>{form.values.expires}</Table.Td>
+                    </Table.Tr> */}
+                  </Table.Tbody>
+                </Table>
+              </Box>
+            </Box>
             <Button
               type="submit"
               loading={loading}
               disabled={hotkeyExists || walletExists}
-              className="w-full"
+              className="w-full mb-4"
             >
               Create
             </Button>
-            Completed. Click button to create validator and endpoint.
+            {isEmpty(errors) && (
+              <Text className="text-center">
+                Completed. Click button to create validator and endpoint.
+              </Text>
+            )}
+            {Object.keys(errors).map((key) => (
+              <Text className="text-center text-red-600" key={key}>
+                <b>{key}</b>: {errors[key]}
+              </Text>
+            ))}
           </Stepper.Completed>
         </Stepper>
 
@@ -186,7 +273,9 @@ export default function ValidatorStepper({
           <Button variant="default" onClick={prevStep} disabled={active < 1}>
             Back
           </Button>
-          <Button onClick={nextStep} disabled={active > 2}>Next step</Button>
+          <Button onClick={nextStep} disabled={active > 2}>
+            Next step
+          </Button>
         </Group>
       </Box>
     </>
