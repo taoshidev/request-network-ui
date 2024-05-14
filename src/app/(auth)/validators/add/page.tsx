@@ -1,6 +1,5 @@
 import { getAuthUser } from "@/actions/auth";
 import { getSubnets } from "@/actions/subnets";
-import { getValidators } from "@/actions/validators";
 import ValidatorStepper from "@/components/AddValidator/ValidatorStepper";
 import { redirect } from "next/navigation";
 import { DateTime } from "luxon";
@@ -11,9 +10,8 @@ import { and, eq } from "drizzle-orm";
 export default async function AddValidatorPage() {
   const user = await getAuthUser();
   const subnets = await getSubnets();
-  const validators = await getValidators();
   const userContracts = await getContracts({
-    where: and(eq(contracts.userId, user?.id)),
+    where: and(eq(contracts.userId, user?.id as string)),
   });
   const expires = DateTime.now().plus({ months: 3 }).toJSDate();
 
@@ -29,7 +27,6 @@ export default async function AddValidatorPage() {
     <ValidatorStepper
       user={user}
       subnets={subnets}
-      validators={validators}
       contracts={userContracts}
       expires={expires}
     />

@@ -16,7 +16,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { some } from "lodash";
 import { isEmpty } from "lodash";
-import { Limits } from "@/components/AddValidator/steps/Limits";
+import { Limits } from "@/components/Limits";
 import { EndpointSchema, EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";

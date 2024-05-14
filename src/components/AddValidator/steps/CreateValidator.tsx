@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Box, TextInput, Textarea } from "@mantine/core";
 import {
   checkHotkeyExists,

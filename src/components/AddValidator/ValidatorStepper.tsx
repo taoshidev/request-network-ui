@@ -3,20 +3,25 @@
 import { Box, Button, Group, Stepper } from "@mantine/core";
 import { useState } from "react";
 import { CreateValidator } from "./steps/CreateValidator";
-import { Limits } from "./steps/Limits";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { EndpointSchema, EndpointType } from "@/db/types/endpoint";
 import { ValidatorSchema, ValidatorType } from "@/db/types/validator";
 import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
-import { EndpointFormInput } from "../EndpointFormInput";
 import { createValidatorEndpoint } from "@/actions/validators";
 import { DatabaseResponseType } from "@/db/error";
 import { useNotification } from "@/hooks/use-notification";
+import { CreateEndpoint1 } from "./steps/CreateEndpoint1";
+import { CreateEndpoint2 } from "./steps/CreateEndpoint2";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
-export default function ValidatorStepper({ user, subnets, validators, contracts, expires }) {
+export default function ValidatorStepper({
+  user,
+  subnets,
+  contracts,
+  expires,
+}) {
   const [loading, setLoading] = useState(false);
   const [keys, setKeys] = useState<KeyType>({ apiKey: "", apiSecret: "" });
   const [walletExists, setWalletExists] = useState<boolean>(false);
@@ -42,7 +47,6 @@ export default function ValidatorStepper({ user, subnets, validators, contracts,
       refillRate: 1,
       refillInterval: 1000,
       remaining: 1000,
-      terms: "1",
       expires,
     },
     validate: zodResolver(ValidatorEndpointSchema),
@@ -98,8 +102,11 @@ export default function ValidatorStepper({ user, subnets, validators, contracts,
       const { validator: newValidator } = res as {
         validator: ValidatorType;
       };
-      const { apiId: apiKey = '', apiSecret = '' } = newValidator;
-      handleRegistrationComplete({ apiKey, apiSecret });
+      const { apiId: apiKey = "", apiSecret = "" } = newValidator;
+      handleRegistrationComplete({
+        apiKey: apiKey as string,
+        apiSecret: apiSecret as string,
+      });
 
       notifySuccess("Validator registered successfully");
     } catch (error: Error | unknown) {
@@ -126,7 +133,10 @@ export default function ValidatorStepper({ user, subnets, validators, contracts,
         onSubmit={validatorForm.onSubmit(onSubmit)}
       >
         <Stepper active={active} onStepClick={setActive}>
-          <Stepper.Step label="Validator 1" description="Create validator">
+          <Stepper.Step
+            label="Create Validator"
+            description="Validator information"
+          >
             <CreateValidator
               form={validatorForm}
               subnets={subnets}
@@ -135,8 +145,11 @@ export default function ValidatorStepper({ user, subnets, validators, contracts,
               setHotkeyExists={setHotkeyExists}
             />
           </Stepper.Step>
-          <Stepper.Step label="Validator 2" description="Validator details">
-            <EndpointFormInput
+          <Stepper.Step
+            label="Create Endpoint"
+            description="Endpoint information"
+          >
+            <CreateEndpoint1
               form={validatorForm}
               subnets={subnets}
               contracts={contracts}
@@ -145,32 +158,37 @@ export default function ValidatorStepper({ user, subnets, validators, contracts,
               }}
             />
           </Stepper.Step>
-          <Stepper.Step label="Create Endpoint" description="Create Endpoint">
-            <Limits
-              validators={validators}
+          <Stepper.Step
+            label="Create Endpoint 2"
+            description="Endpoint information"
+          >
+            <CreateEndpoint2
+              form={validatorForm}
               subnets={subnets}
-              onComplete={() => {}}
               contracts={contracts}
-              form={endpointForm}
+              onError={(event) => {
+                setWalletExists(event.error);
+              }}
             />
           </Stepper.Step>
           <Stepper.Completed>
-            Completed, click back button to get to previous step
+            <Button
+              type="submit"
+              loading={loading}
+              disabled={hotkeyExists || walletExists}
+              className="w-full"
+            >
+              Create
+            </Button>
+            Completed. Click button to create validator and endpoint.
           </Stepper.Completed>
         </Stepper>
 
         <Group justify="center" mt="xl">
-          <Button variant="default" onClick={prevStep}>
+          <Button variant="default" onClick={prevStep} disabled={active < 1}>
             Back
           </Button>
-          <Button onClick={nextStep}>Next step</Button>
-          <Button
-            type="submit"
-            loading={loading}
-            disabled={hotkeyExists || walletExists}
-          >
-            Create
-          </Button>
+          <Button onClick={nextStep} disabled={active > 2}>Next step</Button>
         </Group>
       </Box>
     </>
