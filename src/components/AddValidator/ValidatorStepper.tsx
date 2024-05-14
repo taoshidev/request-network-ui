@@ -14,6 +14,7 @@ import { useNotification } from "@/hooks/use-notification";
 import { EndpointForm1 } from "./steps/EndpointForm1";
 import { EndpointForm2 } from "./steps/EndpointForm2";
 import { isEmpty as isEmpty, lte } from "lodash";
+import { DateTime } from "luxon";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -240,10 +241,10 @@ export default function ValidatorStepper({
                       <Table.Th>Remaining</Table.Th>
                       <Table.Td>{form.values.remaining}</Table.Td>
                     </Table.Tr>
-                    {/* <Table.Tr>
+                    <Table.Tr>
                       <Table.Th>Expires</Table.Th>
-                      <Table.Td>{form.values.expires}</Table.Td>
-                    </Table.Tr> */}
+                      <Table.Td>{DateTime.fromJSDate(form.values.expires).toFormat('f')}</Table.Td>
+                    </Table.Tr>
                   </Table.Tbody>
                 </Table>
               </Box>
