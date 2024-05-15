@@ -188,6 +188,7 @@ export function ContractModal({
             type="RichTextEditor"
             prop="content"
             form={form}
+            placeholder="Enter your service contract."
             label={{ text: "Contract Content", required: true }}
           />
 

@@ -9,6 +9,7 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
+import Placeholder from '@tiptap/extension-placeholder';
 import { debounce } from "lodash";
 import clsx from "clsx";
 
@@ -20,6 +21,7 @@ export function TextEditor<T>({
   form,
   label,
   html,
+  placeholder = ""
 }: {
   editable?: boolean;
   onChange?: (content: string) => void;
@@ -28,6 +30,7 @@ export function TextEditor<T>({
   form?: UseFormReturnType<Partial<T>>;
   label?: { text: string; required: boolean };
   html?: string;
+  placeholder?: string;
 }) {
   const editor = useEditor({
     editable,
@@ -39,8 +42,9 @@ export function TextEditor<T>({
       SubScript,
       Highlight,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
+      Placeholder.configure({ placeholder })
     ],
-    content: form?.values?.[prop] || html || "Enter a description",
+    content: form?.values?.[prop] || html || "",
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       handleEditorChange(html);

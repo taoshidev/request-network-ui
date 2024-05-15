@@ -15,7 +15,6 @@ export const EndpointSchema = z.object({
   contractId: z.string().uuid().optional(),
   contract: ContractSchema.optional().nullish(),
   subscriptions: z.lazy(() => z.array(SubscriptionSchema)).optional(),
-  price: z.string().min(1),
   walletAddress: z
     .string()
     .min(42, {
@@ -29,15 +28,10 @@ export const EndpointSchema = z.object({
     .refine(isValidEthereumAddress, {
       message: "Please enter a valid Ethereum wallet address",
     }).optional().nullish(),
-  limit: z.number().int().min(1),
   url: z.string().regex(/^\/[\w-]+(\/[\w-]+)*$/, {
     message: "Invalid endpoint path format",
   }),
   enabled: z.boolean().optional(),
-  expires: z.date(),
-  refillRate: z.number().int().min(1),
-  refillInterval: z.number().int().min(1),
-  remaining: z.number().int().min(1),
   active: z.boolean().optional(),
   createdAt: z.date().transform((arg) => new Date(arg)).optional(),
   updatedAt: z.date().transform((arg) => new Date(arg)).optional(),

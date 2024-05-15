@@ -231,6 +231,7 @@ export function ValidatorEdit({
                   editable={true}
                   prop="description"
                   form={form}
+                  placeholder="Enter validator description."
                   label={{ text: "Description", required: true }}
                 />
               </Box>

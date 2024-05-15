@@ -165,17 +165,6 @@ export default function EndpointForm({
           )}
         </>
       )}
-      <Box mb="md">
-        <TextInput
-          label="Price"
-          description={
-            "Price in" + (isCryptoType ? " USDC/USDT" : "Price in USD")
-          }
-          placeholder="5"
-          {...form.getInputProps("price")}
-          disabled={hasSubs}
-        />
-      </Box>
     </Box>
   );
 }

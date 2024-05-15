@@ -41,9 +41,10 @@ export function CreateValidator({ form, hotkeyExists, setHotkeyExists }: any) {
         type="BubbleEditor"
         prop="description"
         form={form}
+        placeholder="Enter your validator description."
         label={{ text: "Description (Rich text format)", required: true }}
       />
-      <Box mb="md">
+      <Box mb="md" className="pt-3">
         <TextInput
           withAsterisk
           label="Hotkey"

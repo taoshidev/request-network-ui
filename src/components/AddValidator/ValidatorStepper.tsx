@@ -27,7 +27,7 @@ export default function ValidatorStepper({
 }) {
   const stepInputs = [
     ["name", "description", "hotkey", "baseApiUrl"],
-    ["url", "contractId", "currencyType", "walletAddress", "price"],
+    ["url", "contractId", "walletAddress"],
   ];
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -46,16 +46,10 @@ export default function ValidatorStepper({
       enabled: false,
       currencyType: "Crypto",
       walletAddress: "",
-      price: "",
       hotkey: "",
       subnetId: "",
-      limit: 10,
       baseApiUrl: "",
       url: "",
-      refillRate: 1,
-      refillInterval: 1000,
-      remaining: 1000,
-      expires,
     },
     validate: zodResolver(ValidatorEndpointSchema),
   });
@@ -186,7 +180,7 @@ export default function ValidatorStepper({
                   <Table.Tbody>
                     <Table.Tr>
                       <Table.Th colSpan={1} w={200}>
-                        Name
+                        Validator Name
                       </Table.Th>
                       <Table.Td colSpan={3}>{form.values.name}</Table.Td>
                     </Table.Tr>
@@ -201,40 +195,18 @@ export default function ValidatorStepper({
                       </Table.Td>
                     </Table.Tr>
                     <Table.Tr>
-                      <Table.Th colSpan={1} w={200}>
-                        Currency Type
-                      </Table.Th>
-                      <Table.Td colSpan={1}>
-                        {form.values.currencyType}
-                      </Table.Td>
                       <Table.Th colSpan={1}>Wallet Address</Table.Th>
                       <Table.Td colSpan={1}>
                         {form.values.walletAddress}
                       </Table.Td>
+                      <Table.Th colSpan={1}>Hot Key</Table.Th>
+                      <Table.Td colSpan={1}>{form.values.hotkey}</Table.Td>
                     </Table.Tr>
                     <Table.Tr>
-                      <Table.Th>Price</Table.Th>
-                      <Table.Td>{form.values.price}</Table.Td>
-                      <Table.Th>Hot Key</Table.Th>
-                      <Table.Td>{form.values.hotkey}</Table.Td>
-                    </Table.Tr>
-                    <Table.Tr>
-                      <Table.Th>Limit</Table.Th>
-                      <Table.Td>{form.values.limit}</Table.Td>
-                      <Table.Th>Base API URL</Table.Th>
+                      <Table.Th>Base Api Url</Table.Th>
                       <Table.Td>{form.values.baseApiUrl}</Table.Td>
-                    </Table.Tr>
-                    <Table.Tr>
-                      <Table.Th>URL</Table.Th>
+                      <Table.Th>Url</Table.Th>
                       <Table.Td>{form.values.url}</Table.Td>
-                      <Table.Th>Refill Rate</Table.Th>
-                      <Table.Td>{form.values.refillRate}</Table.Td>
-                    </Table.Tr>
-                    <Table.Tr>
-                      <Table.Th>Refill Interval</Table.Th>
-                      <Table.Td>{form.values.refillInterval}</Table.Td>
-                      <Table.Th>Remaining</Table.Th>
-                      <Table.Td>{form.values.remaining}</Table.Td>
                     </Table.Tr>
                     <Table.Tr>
                       <Table.Th>Contract</Table.Th>
@@ -253,7 +225,7 @@ export default function ValidatorStepper({
                       ?.services.map((service, index) => (
                         <React.Fragment key={index}>
                           <Table.Tr>
-                            <Table.Th colSpan={4}>Service {index + 1}</Table.Th>
+                            <Table.Th className="bg-orange-500 text-white" colSpan={4}>{service.name}</Table.Th>
                           </Table.Tr>
                           <Table.Tr>
                             <Table.Th>Refill Rate</Table.Th>
