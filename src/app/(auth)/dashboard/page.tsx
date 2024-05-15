@@ -28,6 +28,11 @@ export default async function Page() {
       endpoints: {
         with: {
           subnet: true,
+          contract: {
+            with: {
+              services: true,
+            },
+          },
         },
       },
     },
@@ -53,7 +58,7 @@ export default async function Page() {
     return <Consumer subscriptions={subs} validators={validatorArr} />;
     // if user is a validator, render validator dashboard
   } else if (user.user_metadata.role === "validator") {
-    const validatorEndpoints = validatorArr?.map(v => v.endpoints);
+    const validatorEndpoints = validatorArr?.map((v) => v.endpoints);
 
     const subnets = await getSubnets();
 

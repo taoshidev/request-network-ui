@@ -11,7 +11,7 @@ import { ContractType } from "@/db/types/contract";
 import clsx from "clsx";
 
 const SN8_ONLY = true;
-export function EndpointForm1({
+export default function EndpointForm({
   form,
   validators,
   contracts,
@@ -33,12 +33,18 @@ export function EndpointForm1({
   const { notifyError } = useNotification();
 
   useEffect(() => {
+    const contract = contracts.find(
+      (contract) => contract.id === form.values.contractId
+    );
     const isCryptoCurrencyType =
-      form.getInputProps("currencyType").value === "Crypto";
+      contract?.services.some(
+        (service) =>
+          service.currencyType === "USDT" || service.currencyType === "USDC"
+      ) || false;
     setIsCryptoType(isCryptoCurrencyType);
-    if (isCryptoCurrencyType) delete values.walletAddress;
+    if (!isCryptoCurrencyType) delete values.walletAddress;
     // eslint-disable-next-line
-  }, [form.getInputProps("currencyType").value]);
+  }, [form.getInputProps("contractId").value]);
 
   const verifiedValidators = validators
     ? (validators || [])
@@ -55,28 +61,15 @@ export function EndpointForm1({
     disabled: SN8_ONLY && s.netUid !== 8,
   }));
 
-  const availableContracts =
-    (contracts || []).map((c) => ({
-      value: c.id,
-      label: c.title,
-      disabled: !c.active,
-    }));
+  const availableContracts = (contracts ? contracts : []).map((c) => ({
+    value: c.id,
+    label: c.title,
+    disabled: !c.active,
+  }));
 
   const sortedSubnets = availableSubnets.sort((a, b) =>
     a.label.localeCompare(b.label)
   );
-
-  // Fiat currency types, validator will need to self manage
-  const currencyTypes = [
-    {
-      value: "Fiat",
-      label: "Fiat",
-    },
-    {
-      value: "Crypto",
-      label: "Crypto",
-    },
-  ];
 
   const { values } = form;
 
@@ -104,7 +97,7 @@ export function EndpointForm1({
   };
 
   return (
-    <>
+    <Box className="pt-8">
       <Box mb="md">
         <TextInput
           withAsterisk
@@ -146,15 +139,6 @@ export function EndpointForm1({
               {...form.getInputProps("subnetId")}
             />
           </Box>
-          <Box mb="md">
-            <Select
-              label="Currency Type"
-              withAsterisk
-              placeholder="Choose a currency type"
-              data={currencyTypes}
-              {...form.getInputProps("currencyType")}
-            />
-          </Box>
           {isCryptoType && (
             <Box mb="md">
               <TextInput
@@ -181,17 +165,6 @@ export function EndpointForm1({
           )}
         </>
       )}
-      <Box mb="md">
-        <TextInput
-          label="Price"
-          description={
-            "Price in" + (isCryptoType ? " USDC/USDT" : "Price in USD")
-          }
-          placeholder="5"
-          {...form.getInputProps("price")}
-          disabled={hasSubs}
-        />
-      </Box>
-    </>
+    </Box>
   );
 }

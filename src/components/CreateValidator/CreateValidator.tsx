@@ -122,8 +122,8 @@ export function CreateValidator({
           type="BubbleEditor"
           prop="description"
           form={form}
+          placeholder="Enter validator description."
           label={{ text: "Description (Rich text format)", required: true }}
-          // onChange={handleEditorChange}
         />
         <Box mb="md">
           <TextInput
