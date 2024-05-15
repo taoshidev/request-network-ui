@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, NumberInput, TextInput, Select, Group } from "@mantine/core";
-import { DateTimePicker } from "@mantine/dates";
+import { Box, TextInput, Select } from "@mantine/core";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { UseFormReturnType } from "@mantine/form";
@@ -8,12 +7,11 @@ import { EndpointType } from "@/db/types/endpoint";
 import { checkEndpointWalletAddressExists } from "@/actions/endpoints";
 import { useNotification } from "@/hooks/use-notification";
 import { ContractType } from "@/db/types/contract";
-import { sortObjectsByString } from "@/utils/sort";
 
 import clsx from "clsx";
 
 const SN8_ONLY = true;
-export function EndpointFormInput({
+export function EndpointForm1({
   form,
   validators,
   contracts,
@@ -192,54 +190,6 @@ export function EndpointFormInput({
           placeholder="5"
           {...form.getInputProps("price")}
           disabled={hasSubs}
-        />
-      </Box>
-      <Box mb="md">
-        <DateTimePicker
-          label="Expiry Date"
-          description="When should your keys expire?"
-          withSeconds
-          valueFormat="MM/DD/YYYY hh:mm:ss A"
-          placeholder="Expiry Date"
-          {...form.getInputProps("expires")}
-        />
-      </Box>
-      <Box mb="md">
-        <NumberInput
-          label="Limit"
-          withAsterisk
-          description="The total amount of burstable requests."
-          placeholder="Limit"
-          {...form.getInputProps("limit")}
-        />
-      </Box>
-      <Group mb="md" grow>
-        <Box>
-          <NumberInput
-            label="Refill Rate"
-            withAsterisk
-            description="How many tokens to refill during each refillInterval"
-            placeholder="Refill Rate"
-            {...form.getInputProps("refillRate")}
-          />
-        </Box>
-        <Box>
-          <NumberInput
-            label="Refill Interval"
-            withAsterisk
-            description="Determines the speed at which tokens are refilled."
-            placeholder="Refill Interval"
-            {...form.getInputProps("refillInterval")}
-          />
-        </Box>
-      </Group>
-      <Box mb="md">
-        <Select
-          label="Terms"
-          withAsterisk
-          placeholder="Choose terms"
-          data={[{ value: '1', label: "Test" }]}
-          {...form.getInputProps("terms")}
         />
       </Box>
     </>

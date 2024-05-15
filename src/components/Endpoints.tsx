@@ -17,10 +17,12 @@ import { useDisclosure } from "@mantine/hooks";
 import { some } from "lodash";
 import { isEmpty } from "lodash";
 import { Limits } from "@/components/Limits";
-import { EndpointType } from "@/db/types/endpoint";
+import { EndpointSchema, EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { ContractType } from "@/db/types/contract";
+import { useForm, zodResolver } from "@mantine/form";
+import { v4 as uuid } from "uuid";
 
 export function Endpoints({
   endpoints,
@@ -45,6 +47,24 @@ export function Endpoints({
     return verified;
   }, [validators]);
 
+  const form = useForm<Partial<EndpointType>>({
+    name: "create-new-endpoint",
+    initialValues: {
+      id: uuid(),
+      limit: 10,
+      url: "",
+      subnetId: "",
+      validatorId: "",
+      currencyType: "Crypto",
+      walletAddress: "",
+      price: "",
+      refillRate: 1,
+      refillInterval: 1000,
+      remaining: 1000,
+    },
+    validate: zodResolver(EndpointSchema),
+  });
+
   return (
     <>
       <Modal
@@ -58,6 +78,7 @@ export function Endpoints({
           onComplete={close}
           validators={validators}
           subnets={subnets}
+          form={form}
         />
       </Modal>
 
