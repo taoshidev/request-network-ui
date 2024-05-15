@@ -16,7 +16,6 @@ export const EndpointSchema = z.object({
   contract: ContractSchema.optional().nullish(),
   subscriptions: z.lazy(() => z.array(SubscriptionSchema)).optional(),
   price: z.string().min(1),
-  currencyType: z.string().min(1),
   walletAddress: z
     .string()
     .min(42, {

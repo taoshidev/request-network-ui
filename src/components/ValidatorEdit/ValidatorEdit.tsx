@@ -183,10 +183,10 @@ export function ValidatorEdit({
         />
         <NavLink
           disabled
-          active={activeSection === "packages"}
-          label="Packages"
+          active={activeSection === "services"}
+          label="Services"
           leftSection={<IconCircleOff size="1rem" stroke={1.5} />}
-          onClick={() => handleSectionChange("packages")}
+          onClick={() => handleSectionChange("services")}
         />
       </Box>
       <Box flex="1">
@@ -245,8 +245,8 @@ export function ValidatorEdit({
         {activeSection === "contracts" && (
           <Contracts contracts={contracts} user={user} />
         )}
-        {/* {activeSection === "packages" && (
-          <Text>Packages section content here.</Text>
+        {/* {activeSection === "services" && (
+          <Text>Services section content here.</Text>
         )} */}
       </Box>
     </Group>
