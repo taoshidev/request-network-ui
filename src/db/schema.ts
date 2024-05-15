@@ -17,8 +17,12 @@ import {
 export const authSchema = pgSchema("auth");
 
 export const roleEnum = pgEnum("role", ["consumer", "validator"]);
+export const currencyTypeEnum = pgEnum("currency_type", [
+  "FIAT",
+  "USDC",
+  "USDT",
+]);
 
-// TODO - All IDS should be auto generated
 export const users = authSchema.table("users", {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
@@ -36,6 +40,7 @@ export const users = authSchema.table("users", {
 export const usersRelations = relations(users, ({ many }) => ({
   validators: many(validators),
   contracts: many(contracts),
+  services: many(services),
 }));
 
 export const contracts = pgTable("contracts", {
@@ -54,11 +59,12 @@ export const contracts = pgTable("contracts", {
   deletedAt: timestamp("deleted_at"),
 });
 
-export const contractUserRelations = relations(contracts, ({ one }) => ({
+export const contractUserRelations = relations(contracts, ({ many, one }) => ({
   user: one(users, {
     fields: [contracts.userId],
     references: [users.id],
   }),
+  services: many(services),
 }));
 
 export const subnets = pgTable("subnets", {
@@ -84,7 +90,7 @@ export const validators = pgTable("validators", {
     .default(sql`gen_random_uuid()`)
     .primaryKey()
     .notNull(),
-  name: varchar("name"),
+  name: varchar("name").unique().notNull(),
   description: text("description"),
   baseApiUrl: varchar("base_api_url").unique().notNull(),
   apiPrefix: varchar("api_prefix"),
@@ -129,16 +135,9 @@ export const endpoints = pgTable(
     contractId: uuid("contract_id")
       .notNull()
       .references(() => contracts.id, { onDelete: "set null" }),
-    price: varchar("price"),
-    currencyType: varchar("currency_type"),
-    walletAddress: varchar("wallet_address"),
-    limit: integer("limit").default(10),
+    walletAddress: varchar("wallet_address").unique(),
     url: varchar("url").notNull(),
     enabled: boolean("enabled").default(true).notNull(),
-    expires: timestamp("expires"),
-    refillRate: integer("refill_rate").default(1),
-    refillInterval: integer("refill_interval").default(1000),
-    remaining: integer("remaining").default(1000),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
@@ -148,6 +147,42 @@ export const endpoints = pgTable(
     unique: unique().on(table.validatorId, table.url),
   })
 );
+
+export const services = pgTable("services", {
+  id: uuid("id")
+    .default(sql`gen_random_uuid()`)
+    .primaryKey()
+    .notNull(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  contractId: uuid("contract_id")
+    .notNull()
+    .references(() => contracts.id, { onDelete: "cascade" }),
+  name: varchar("name"),
+  price: varchar("price"),
+  currencyType: currencyTypeEnum("currency_type").notNull().default("USDC"),
+  limit: integer("limit").default(10),
+  expires: timestamp("expires"),
+  refillRate: integer("refill_rate").default(1),
+  refillInterval: integer("refill_interval").default(1000),
+  remaining: integer("remaining").default(1000),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const serviceRelations = relations(services, ({ many, one }) => ({
+  contract: one(contracts, {
+    fields: [services.contractId],
+    references: [contracts.id],
+  }),
+  user: one(users, {
+    fields: [services.userId],
+    references: [users.id],
+  }),
+}));
 
 export const endpointsRelations = relations(endpoints, ({ many, one }) => ({
   subscriptions: many(subscriptions),

@@ -22,7 +22,7 @@ export function ValidatorDashboard({
   return (
     <Fragment>
       {contracts?.length === 0 ? (
-        <Alert color="orange" icon={<IconAlertCircle />}>
+        <Alert  className="mb-7" color="orange" icon={<IconAlertCircle />}>
           <Text className="mb-7">
             You don&apos;t have any service contracts. Add your Terms of
             Service, create your Validators to start receiving customers.
@@ -57,12 +57,12 @@ export function ValidatorDashboard({
           {stats.length > 0 && <ValidatorStatTable data={stats} />}
         </>
       ) : (
-        <Alert color="orange" icon={<IconAlertCircle />}>
-          <Text className="mb-7">
-            You don&apos;t have any Validators yet. Add your validators, attach
-            endpoints, configure service package to start receiving customers.
-          </Text>
-        </Alert>
+        contracts?.length > 0 && (<Alert color="orange" icon={<IconAlertCircle />}>
+        <Text className="mb-7">
+          You don&apos;t have any Validators yet. Add your validators, attach
+          endpoints, configure services and more.
+        </Text>
+      </Alert>)
       )}
     </Fragment>
   );
