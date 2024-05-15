@@ -1,18 +1,14 @@
 "use client";
 
 import { Box, TextInput, Textarea } from "@mantine/core";
-import {
-  checkHotkeyExists,
-} from "@/actions/validators";
+import { checkHotkeyExists } from "@/actions/validators";
 import { useNotification } from "@/hooks/use-notification";
+import { TextEditor } from "@/components/TextEditor";
+import { ValidatorType } from "@/db/types/validator";
 
 // const ValidatorEndpointSchema = ValidatorSchema.merge(EndpointSchema);
 
-export function CreateValidator({
-  form,
-  hotkeyExists,
-  setHotkeyExists,
-}: any) {
+export function CreateValidator({ form, hotkeyExists, setHotkeyExists }: any) {
   const { notifyError } = useNotification();
 
   const { values } = form;
@@ -33,7 +29,7 @@ export function CreateValidator({
   };
 
   return (
-    <>
+    <Box className="pt-8">
       <TextInput
         mb="md"
         withAsterisk
@@ -41,12 +37,11 @@ export function CreateValidator({
         placeholder="Enter a name for your validator"
         {...form.getInputProps("name")}
       />
-      <Textarea
-        mb="md"
-        withAsterisk
-        label="Description"
-        placeholder="Enter a brief description for your validator"
-        {...form.getInputProps("description")}
+      <TextEditor<ValidatorType>
+        type="BubbleEditor"
+        prop="description"
+        form={form}
+        label={{ text: "Description (Rich text format)", required: true }}
       />
       <Box mb="md">
         <TextInput
@@ -77,6 +72,6 @@ export function CreateValidator({
           {...form.getInputProps("baseApiUrl")}
         />
       </Box>
-    </>
+    </Box>
   );
 }

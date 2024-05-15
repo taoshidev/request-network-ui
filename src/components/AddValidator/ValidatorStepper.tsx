@@ -11,10 +11,10 @@ import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
 import { createValidatorEndpoint } from "@/actions/validators";
 import { DatabaseResponseType } from "@/db/error";
 import { useNotification } from "@/hooks/use-notification";
-import { EndpointForm1 } from "./steps/EndpointForm1";
-import { EndpointForm2 } from "./steps/EndpointForm2";
+import EndpointForm from "./steps/EndpointForm";
 import { isEmpty as isEmpty, lte } from "lodash";
 import { DateTime } from "luxon";
+import { TextEditor } from "../TextEditor";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -27,7 +27,6 @@ export default function ValidatorStepper({
   const stepInputs = [
     ["name", "description", "hotkey", "baseApiUrl"],
     ["url", "contractId", "currencyType", "walletAddress", "price"],
-    ["expires", "limit", "refillRate", "refillInterval"],
   ];
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -167,21 +166,10 @@ export default function ValidatorStepper({
             label="Create Endpoint"
             description="Endpoint information"
           >
-            <EndpointForm1
+            <EndpointForm
               form={form}
               subnets={subnets}
               contracts={contracts}
-              onError={(event) => {
-                setWalletExists(event.error);
-              }}
-            />
-          </Stepper.Step>
-          <Stepper.Step
-            label="Create Endpoint 2"
-            description="Endpoint information"
-          >
-            <EndpointForm2
-              form={form}
               onError={(event) => {
                 setWalletExists(event.error);
               }}
@@ -203,7 +191,13 @@ export default function ValidatorStepper({
                     </Table.Tr>
                     <Table.Tr>
                       <Table.Th colSpan={1}>Description</Table.Th>
-                      <Table.Td colSpan={3}>{form.values.description}</Table.Td>
+                      <Table.Td colSpan={3}>
+                        <TextEditor<ValidatorType>
+                          type="BubbleEditor"
+                          editable={false}
+                          html={form.values.description as string}
+                        />
+                      </Table.Td>
                     </Table.Tr>
                     <Table.Tr>
                       <Table.Th colSpan={1} w={200}>
@@ -243,20 +237,50 @@ export default function ValidatorStepper({
                     </Table.Tr>
                     <Table.Tr>
                       <Table.Th>Expires</Table.Th>
-                      <Table.Td>{DateTime.fromJSDate(form.values.expires).toFormat('f')}</Table.Td>
+                      <Table.Td>
+                        {DateTime.fromJSDate(form.values.expires).toFormat("f")}
+                      </Table.Td>
                     </Table.Tr>
+                    {contracts
+                      .find(
+                        (contract) => contract.id === form.values.contractId
+                      )
+                      ?.services.map((service) => (
+                        <>
+                          <Table.Tr>
+                            <Table.Th>Service Name</Table.Th>
+                            <Table.Td>{service.name}</Table.Td>
+                            <Table.Th>Price</Table.Th>
+                            <Table.Td>{service.price}</Table.Td>
+                          </Table.Tr>
+                          <Table.Tr>
+                            <Table.Th>Refill Rate</Table.Th>
+                            <Table.Td>{service.refillRate}</Table.Td>
+                            <Table.Th>Refill Interval</Table.Th>
+                            <Table.Td>{service.refillInterval}</Table.Td>
+                          </Table.Tr>
+                          <Table.Tr>
+                            <Table.Th>Remaining</Table.Th>
+                            <Table.Td>{service.remaining}</Table.Td>
+                            <Table.Th>Active</Table.Th>
+                            <Table.Td>{service.active ? "Yes" : "No"}</Table.Td>
+                          </Table.Tr>
+                          <Table.Tr>
+                            <Table.Th>Currency Type</Table.Th>
+                            <Table.Td>{service.currencyType}</Table.Td>
+                            <Table.Th>Expires</Table.Th>
+                            <Table.Td>
+                              {DateTime.fromJSDate(service.expires).toFormat(
+                                "f"
+                              )}
+                            </Table.Td>
+                          </Table.Tr>
+                        </>
+                      ))}
                   </Table.Tbody>
                 </Table>
               </Box>
             </Box>
-            <Button
-              type="submit"
-              loading={loading}
-              disabled={hotkeyExists || walletExists}
-              className="w-full mb-4"
-            >
-              Create
-            </Button>
             {isEmpty(errors) && (
               <Text className="text-center">
                 Completed. Click button to create validator and endpoint.
@@ -274,9 +298,20 @@ export default function ValidatorStepper({
           <Button variant="default" onClick={prevStep} disabled={active < 1}>
             Back
           </Button>
-          <Button onClick={nextStep} disabled={active > 2}>
-            Next step
-          </Button>
+          {active < 2 && (
+            <Button onClick={nextStep} disabled={active > 1}>
+              Next step
+            </Button>
+          )}
+          {active === 2 && (
+            <Button
+              type="submit"
+              loading={loading}
+              disabled={hotkeyExists || walletExists}
+            >
+              Create
+            </Button>
+          )}
         </Group>
       </Box>
     </>

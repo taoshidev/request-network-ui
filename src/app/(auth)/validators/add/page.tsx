@@ -12,6 +12,7 @@ export default async function AddValidatorPage() {
   const subnets = await getSubnets();
   const userContracts = await getContracts({
     where: and(eq(contracts.userId, user?.id as string)),
+    with: { services: true }
   });
   const expires = DateTime.now().plus({ months: 3 }).toJSDate();
 

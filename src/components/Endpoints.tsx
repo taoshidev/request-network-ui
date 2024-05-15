@@ -23,6 +23,7 @@ import { SubnetType } from "@/db/types/subnet";
 import { ContractType } from "@/db/types/contract";
 import { useForm, zodResolver } from "@mantine/form";
 import { v4 as uuid } from "uuid";
+import { uniq as _uniq } from 'lodash';
 
 export function Endpoints({
   endpoints,
@@ -96,7 +97,6 @@ export function Endpoints({
               <Table.Tr>
                 <Table.Th>Path</Table.Th>
                 <Table.Th>Currency</Table.Th>
-                <Table.Th>Price</Table.Th>
                 <Table.Th>Validator</Table.Th>
                 <Table.Th>Subnet</Table.Th>
                 <Table.Th>Expiry</Table.Th>
@@ -107,20 +107,10 @@ export function Endpoints({
               {(endpoints || []).map((endpoint: any) => (
                 <Table.Tr key={endpoint?.id}>
                   <Table.Td>{endpoint.url}</Table.Td>
-                  <Table.Td>{endpoint?.currencyType}</Table.Td>
                   <Table.Td>
-                    {endpoint?.price && endpoint?.currencyType === "Crypto" ? (
-                      <NumberFormatter value={endpoint?.price} suffix=" USDC" />
-                    ) : (
-                      (endpoint?.price && (
-                        <NumberFormatter
-                          value={endpoint?.price}
-                          prefix="$"
-                          suffix=" USD"
-                        />
-                      )) ||
-                      "-"
-                    )}
+                    {[
+                      ..._uniq(endpoint?.contract?.services.map((service) => service.currencyType) || [])
+                    ].join(", ")}
                   </Table.Td>
                   <Table.Td>
                     {
