@@ -19,7 +19,7 @@ export default async function Page() {
   }
 
   const userContracts = await getContracts({
-    where: and(eq(contracts.userId, user.id)),
+    where: and(eq(contracts.userId, user.id))
   });
 
   return (

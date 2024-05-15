@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Box, Button } from "@mantine/core";
 import { createEndpoint } from "@/actions/endpoints";
 import { useNotification } from "@/hooks/use-notification";
-import { EndpointFormInput } from "@components/EndpointFormInput";
+import EndpointForm from "./AddValidator/steps/EndpointForm";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
@@ -36,6 +36,7 @@ export function Limits({
       if (res?.error) return notifyError(res?.message);
       onComplete?.();
       notifySuccess(res?.message);
+      form.reset();
 
       sendEmail({
         to: user?.email as string,
@@ -58,7 +59,7 @@ export function Limits({
 
   return (
     <Box component="form" w="100%" onSubmit={form.onSubmit(onSubmit)}>
-      <EndpointFormInput
+      <EndpointForm
         form={form}
         contracts={contracts}
         validators={validators}

@@ -98,9 +98,6 @@ export const updateEndpoint = async ({
       .where(eq(endpoints.id, id as string))
       .returning();
 
-    console.log(currentEndpoint?.[0]?.url);
-    console.log(values.url)
-    console.log(res);
     // Endpoint changed email
     if (currentEndpoint?.[0]?.url !== values.url) {
       // sendEmail({

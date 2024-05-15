@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Box, TextInput, Select } from "@mantine/core";
+import {
+  Box,
+  Text,
+  TextInput,
+  Select,
+  CopyButton,
+  Button,
+} from "@mantine/core";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { UseFormReturnType } from "@mantine/form";
@@ -9,6 +16,8 @@ import { useNotification } from "@/hooks/use-notification";
 import { ContractType } from "@/db/types/contract";
 
 import clsx from "clsx";
+import { IconCopy } from "@tabler/icons-react";
+import { isCrypto } from "@/utils/is-crypto";
 
 const SN8_ONLY = true;
 export default function EndpointForm({
@@ -36,11 +45,7 @@ export default function EndpointForm({
     const contract = contracts.find(
       (contract) => contract.id === form.values.contractId
     );
-    const isCryptoCurrencyType =
-      contract?.services.some(
-        (service) =>
-          service.currencyType === "USDT" || service.currencyType === "USDC"
-      ) || false;
+    const isCryptoCurrencyType = isCrypto(contract?.services);
     setIsCryptoType(isCryptoCurrencyType);
     if (!isCryptoCurrencyType) delete values.walletAddress;
     // eslint-disable-next-line
@@ -97,7 +102,30 @@ export default function EndpointForm({
   };
 
   return (
-    <Box className="pt-8">
+    <Box className={clsx(mode === "create" ? "pt-8" : "")}>
+      {mode !== "create" && form.values?.walletAddress?.length > 0 && (
+        <Box className="mb-4">
+          <Text className="text-sm text-left">Wallet Address</Text>
+          <CopyButton value={form.values?.walletAddress}>
+            {({ copied, copy }) => (
+              <Button
+                className="flex w-full"
+                rightSection={<IconCopy size={14} />}
+                variant="subtle"
+                onClick={() => {
+                  copy();
+                }}
+              >
+                <Text fw="bold">
+                  {copied
+                    ? `Copied wallet address`
+                    : form.values?.walletAddress}
+                </Text>
+              </Button>
+            )}
+          </CopyButton>
+        </Box>
+      )}
       <Box mb="md">
         <TextInput
           withAsterisk
@@ -125,6 +153,7 @@ export default function EndpointForm({
           clearable
           data={availableContracts}
           {...form.getInputProps("contractId")}
+          disabled={hasSubs}
         />
       </Box>
       {mode === "create" && (
