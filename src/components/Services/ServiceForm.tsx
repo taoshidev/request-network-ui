@@ -59,6 +59,7 @@ export function ServiceForm({
 
   useEffect(() => {
     form.setValues(getDefaultValues());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service]);
 
   const onSubmit = async (values: Partial<ServiceType>) => {
@@ -76,7 +77,7 @@ export function ServiceForm({
       const res = await createService(values as ServiceType);
       if (res?.error) return notifyError(res?.message);
       onComplete?.();
-      notifySuccess(res?.message);
+      notifySuccess(res?.message as string);
 
       sendEmail({
         to: user?.email as string,
@@ -84,7 +85,7 @@ export function ServiceForm({
         subject: "New Endpoint Created",
         templateVariables: {
           request: values.remaining,
-          expires: new Date(values?.expires),
+          expires: new Date(values?.expires!),
           limit: values.limit,
           refillRate: values.refillRate,
           refillInterval: values.refillInterval,
