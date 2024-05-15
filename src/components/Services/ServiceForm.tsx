@@ -47,8 +47,8 @@ export function ServiceForm({
     initialValues: getDefaultValues(),
     validate: zodResolver(
       ServiceSchema.omit({
-        id: onDataPrepped != null ? true : false,
-        contractId: onDataPrepped != null ? true : false,
+        id: !!onDataPrepped as true,
+        contractId: !!onDataPrepped as true,
         active: true,
         updatedAt: true,
         createdAt: true,
