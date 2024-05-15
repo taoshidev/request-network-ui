@@ -225,7 +225,7 @@ export default function ValidatorStepper({
                       ?.services.map((service, index) => (
                         <React.Fragment key={index}>
                           <Table.Tr>
-                            <Table.Th className="bg-orange-500 text-white text-lg py-1" colSpan={4}>{service.name}</Table.Th>
+                            <Table.Th className="bg-slate-400 text-white text-lg py-1" colSpan={4}>{service.name}</Table.Th>
                           </Table.Tr>
                           <Table.Tr>
                             <Table.Th>Refill Rate</Table.Th>
