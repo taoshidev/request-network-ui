@@ -15,6 +15,7 @@ import EndpointForm from "./steps/EndpointForm";
 import { isEmpty as isEmpty, lte } from "lodash";
 import { DateTime } from "luxon";
 import { TextEditor } from "../TextEditor";
+import React from "react";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -236,22 +237,23 @@ export default function ValidatorStepper({
                       <Table.Td>{form.values.remaining}</Table.Td>
                     </Table.Tr>
                     <Table.Tr>
-                      <Table.Th>Expires</Table.Th>
+                      <Table.Th>Contract</Table.Th>
                       <Table.Td>
-                        {DateTime.fromJSDate(form.values.expires).toFormat("f")}
+                        {
+                          contracts.find(
+                            (contract) => contract.id === form.values.contractId
+                          )?.title
+                        }
                       </Table.Td>
                     </Table.Tr>
                     {contracts
                       .find(
                         (contract) => contract.id === form.values.contractId
                       )
-                      ?.services.map((service) => (
-                        <>
+                      ?.services.map((service, index) => (
+                        <React.Fragment key={index}>
                           <Table.Tr>
-                            <Table.Th>Service Name</Table.Th>
-                            <Table.Td>{service.name}</Table.Td>
-                            <Table.Th>Price</Table.Th>
-                            <Table.Td>{service.price}</Table.Td>
+                            <Table.Th colSpan={4}>Service {index + 1}</Table.Th>
                           </Table.Tr>
                           <Table.Tr>
                             <Table.Th>Refill Rate</Table.Th>
@@ -275,7 +277,7 @@ export default function ValidatorStepper({
                               )}
                             </Table.Td>
                           </Table.Tr>
-                        </>
+                        </React.Fragment>
                       ))}
                   </Table.Tbody>
                 </Table>
