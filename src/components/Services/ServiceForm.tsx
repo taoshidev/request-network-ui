@@ -56,7 +56,7 @@ export function ServiceForm({
       })
     ),
   });
-  console.log(ServiceSchema.safeParse(form.values));
+
   useEffect(() => {
     form.setValues(getDefaultValues());
   }, [service]);

@@ -17,7 +17,6 @@ import { ContractSchema } from "@/db/types/contract";
 import { createContract, updateContract } from "@/actions/contracts";
 import { UserType } from "@/db/types/user";
 import { ServiceForm } from "@/components/Services/ServiceForm";
-import { ServiceModal } from "@/components/Services/ServiceModal";
 import { useModals } from "@mantine/modals";
 import { ServiceType } from "@/db/types/service";
 import { createService } from "@/actions/services";
@@ -122,7 +121,6 @@ export function ContractModal({
     } else {
       setServices((prevServices) => [...prevServices, service]);
     }
-    // editServiceIndexRef.current = null;
     if (serviceModalRef.current) {
       modals.closeModal(serviceModalRef.current);
     }

@@ -1,41 +1,18 @@
 import { useEffect, useState } from "react";
 import { Box, NumberInput, TextInput, Select, Group } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
-import { ValidatorType } from "@/db/types/validator";
-import { SubnetType } from "@/db/types/subnet";
 import { UseFormReturnType } from "@mantine/form";
-// import { EndpointType } from "@/db/types/endpoint";
-// import { checkEndpointWalletAddressExists } from "@/actions/endpoints";
-// import { useNotification } from "@/hooks/use-notification";
-import { ContractType } from "@/db/types/contract";
-// import { sortObjectsByString } from "@/utils/sort";
 import { ServiceType } from "@/db/types/service";
-// import clsx from "clsx";
-
-// const SN8_ONLY = true;
 export function ServiceFormInput({
   form,
-  //   validators,
-  //   contracts,
-  //   subnets,
-  mode = "create",
-}: //   onError,
-//   hasSubs,
-{
+}: {
   form: UseFormReturnType<Partial<ServiceType>>;
-  mode?: "create" | "update";
-  //   contracts: Array<ContractType>;
-  //   subnets?: Array<SubnetType>;
-  //   validators?: Array<ValidatorType>;
-  //   onError?: ({ error, reason }: { error: boolean; reason: string }) => void;
-  //   hasSubs?: boolean;
 }) {
   const [currencyType, setCurrencyType] = useState("");
 
   useEffect(() => {
     const isCryptoCurrencyType = form.getInputProps("currencyType").value;
     setCurrencyType(isCryptoCurrencyType);
-    // if (isCryptoCurrencyType) delete values.walletAddress;
     // eslint-disable-next-line
   }, [form.getInputProps("currencyType").value]);
 
@@ -54,9 +31,6 @@ export function ServiceFormInput({
     },
   ];
 
-  //   const { values } = form;
-
-console.log(form.values);
   return (
     <>
       <Box mb="md">
