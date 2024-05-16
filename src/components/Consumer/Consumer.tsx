@@ -72,6 +72,7 @@ export function Consumer({
     fetchKeys();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptions]);
+  
   return isLoading ? (
     <Loading />
   ) : (
