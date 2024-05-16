@@ -17,6 +17,7 @@ import { DateTime } from "luxon";
 import { TextEditor } from "../TextEditor";
 import React from "react";
 import ReviewValidatorEndpoint from "./steps/ReviewValidatorEndpoint";
+import { Logo } from "../Logo";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -122,6 +123,7 @@ export default function ValidatorStepper({
 
       notifySuccess("Validator registered successfully");
       setActive((current) => 3);
+      form.reset();
     } catch (error: Error | unknown) {
       notifyError((error as Error).message);
     } finally {
@@ -171,7 +173,7 @@ export default function ValidatorStepper({
               }}
             />
           </Stepper.Step>
-          <Stepper.Step>
+          <Stepper.Step label="Review" description="Review Information">
             <ReviewValidatorEndpoint
               form={form}
               contracts={contracts}
@@ -179,9 +181,14 @@ export default function ValidatorStepper({
             />
           </Stepper.Step>
           <Stepper.Completed>
-            <Title order={2} className="text-center py-20">
-              Validator and Endpoint Saved Successfully
-            </Title>
+            <Box className="py-10">
+              <Title order={2} className="text-center">
+                Validator and Endpoint Saved Successfully
+              </Title>
+              <Box className="mt-10">
+                <Logo size={200} />
+              </Box>
+            </Box>
           </Stepper.Completed>
         </Stepper>
 
