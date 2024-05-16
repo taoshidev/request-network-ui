@@ -8,13 +8,11 @@ import { validators } from "@/db/schema";
 import { subscriptions } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
 import { EndpointType } from "@/db/types/endpoint";
+import { sendEmail } from "./email";
 
-export const getEndpoints = async () => {
+export const getEndpoints = async (query: object = {}) => {
   try {
-    const results = await db.query.endpoints.findMany({
-      orderBy: (endpoints, { asc }) => [asc(endpoints.url)],
-      with: { subnet: true },
-    });
+    const results = await db.query.endpoints.findMany(query);
 
     return results;
   } catch (error) {
@@ -87,12 +85,31 @@ export const updateEndpoint = async ({
   ...values
 }: Partial<EndpointType>) => {
   try {
+    const currentEndpoint = await db
+    .select({
+      url: endpoints.url
+    } as any)
+    .from(endpoints)
+    .where(eq(endpoints.id, id));
+
     const res = await db
       .update(endpoints)
       .set(values as any)
       .where(eq(endpoints.id, id as string))
       .returning();
 
+    // Endpoint changed email
+    if (currentEndpoint?.[0]?.url !== values.url) {
+      // sendEmail({
+      //   to: 'data.user.email',
+      //   template: "endpoint-updated",
+      //   subject: "Endpoint Updated",
+      //   templateVariables: {
+      //     name: res.name;
+      //     url: res.url
+      //   },
+      // });
+    }  
     return parseResult(res, { filter: ["url", "subnet", "validator"] });
   } catch (error) {
     return parseError(error);

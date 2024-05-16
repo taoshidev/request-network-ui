@@ -2,32 +2,39 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Title, Group, Table, Button, Modal, Badge } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Box, Title, Group, Table, Button, Badge } from "@mantine/core";
 import { isEmpty } from "lodash";
-import { CreateValidator } from "@/components/CreateValidator";
 import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
+import { UserType } from "@/db/types/user";
+import { SubnetType } from "@/db/types/subnet";
+import { ValidatorType } from "@/db/types/validator";
+import { ContractType } from "@/db/types/contract";
 
-type KeyType = { apiKey: string; apiSecret: string };
+export type KeyType = { apiKey: string; apiSecret: string };
 
-export function Validators({ user, subnets, validators }: any) {
+export function Validators({
+  user,
+  subnets,
+  validators,
+  contracts,
+}: {
+  user: UserType;
+  subnets: SubnetType[];
+  validators: ValidatorType[];
+  contracts: ContractType[];
+}) {
   const router = useRouter();
-
-  const [opened, { open, close }] = useDisclosure(false);
   const [keyModalOpened, setKeyModalOpened] = useState(false);
 
   const [keys, setKeys] = useState<KeyType>({ apiKey: "", apiSecret: "" });
 
-  const handleRegistrationComplete = ({ apiKey, apiSecret }: KeyType) => {
-    close();
-    setKeys({ apiKey, apiSecret });
-    setKeyModalOpened(true);
-    // send validator created email
-  };
-
   const handleEdit = (validator: any) => {
     router.push(`/validators/${validator?.id}`);
   };
+
+  function addValidator() {
+    router.push("/validators/add");
+  }
 
   return (
     <Box className="mb-16">
@@ -37,27 +44,13 @@ export function Validators({ user, subnets, validators }: any) {
         opened={keyModalOpened}
         onClose={() => setKeyModalOpened(false)}
         onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
-        title="API Access Key"
+        title="Api Access Key"
       />
-
-      <Modal
-        size="xl"
-        centered
-        opened={opened}
-        onClose={close}
-        title="Add Your Validator"
-      >
-        <CreateValidator
-          user={user}
-          subnets={subnets}
-          onComplete={handleRegistrationComplete}
-        />
-      </Modal>
 
       <Box>
         <Group className="justify-between my-8">
           <Title order={2}>Validators</Title>
-          <Button onClick={open}>Add Your Validator</Button>
+          <Button onClick={addValidator}>Add Your Validator</Button>
         </Group>
         {validators && !isEmpty(validators) && (
           <Table highlightOnHover striped>

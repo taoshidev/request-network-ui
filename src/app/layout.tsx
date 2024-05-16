@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
-
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
-
 import { theme, fonts } from "@/theme";
-
 import "./styles/styles.css";
+import "@mantine/tiptap/styles.css";
 
 export const metadata: Metadata = {
   title: "Taoshi",
@@ -30,8 +29,10 @@ export default function RootLayout({
       <body>
         <NextTopLoader color="#D36737" showSpinner={false} shadow={false} />
         <MantineProvider theme={theme}>
-          <Notifications position="top-right" zIndex={1000} />
-          {children}
+          <ModalsProvider>
+            <Notifications position="top-right" zIndex={1000} />
+            {children}
+          </ModalsProvider>
         </MantineProvider>
       </body>
     </html>

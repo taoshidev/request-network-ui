@@ -17,6 +17,8 @@ import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { SubscriptionType } from "@/db/types/subscription";
 
+type ValidatorWithInfo = ValidatorType & { neuronInfo: any };
+
 export function SubnetValidator({
   currentSubscriptions,
   subnet,
@@ -25,7 +27,7 @@ export function SubnetValidator({
 }: {
   mode: "navigation" | "registration";
   subnet: SubnetType;
-  validators?: ValidatorType & { neuronInfo: any }[];
+  validators?: ValidatorWithInfo[];
   currentSubscriptions?: SubscriptionType[];
 }) {
   const { updateData, registrationData } = useRegistration();

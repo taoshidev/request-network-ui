@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Stepper,
   Button,
@@ -33,6 +34,7 @@ import { sendToProxy } from "@/actions/apis";
 import { z, ZodIssue } from "zod";
 import { isValidEthereumAddress } from "@/utils/address";
 import { sendEmail } from "@/actions/email";
+import { isCrypto } from "@/utils/is-crypto";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -89,6 +91,7 @@ export function RegistrationStepper({
     walletAddress: "",
     endpoint: "",
   });
+  const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
   const { updateData, registrationData } = useRegistration();
   const [active, setActive] = useState(+registrationData?.currentStep || 0);
@@ -147,7 +150,7 @@ export function RegistrationStepper({
 
   const handleCompleteRegistration = async () => {
     if (errors) setErrors([]);
-
+    const selectedService = registrationData?.endpoint?.selectedService;
     const consumerApiUrl = registrationData?.consumerApiUrl;
     const appName = registrationData?.appName;
     const consumerWalletAddress = registrationData?.consumerWalletAddress || "";
@@ -160,7 +163,7 @@ export function RegistrationStepper({
       appName,
     };
 
-    if (registrationData?.endpoint?.currencyType === "Crypto") {
+    if (isCrypto(selectedService)) {
       consumerAppInfo.consumerWalletAddress = consumerWalletAddress;
     }
 
@@ -174,15 +177,21 @@ export function RegistrationStepper({
     setLoading(true);
 
     const currentUser = await getAuthUser();
-    const subnet = registrationData?.subnet;
-    const validator = registrationData?.validator;
-    const endpoint = registrationData?.endpoint;
+    const { subnet, validator, endpoint } = registrationData!;
+    // const subnet = registrationData?.subnet;
+    // const validator = registrationData?.validator;
+    // const endpoint = registrationData?.endpoint;
     const userId = currentUser?.id;
     const apiId = validator?.apiId!;
     const validatorId = validator?.id!;
 
     const endpointId = endpoint?.id;
-    const shortId = generateShortId(currentUser?.id as string, endpointId);
+    const shortId = generateShortId(
+      currentUser?.id as string,
+      validatorId,
+      endpointId,
+      selectedService?.id
+    );
 
     try {
       const refill = {
@@ -192,9 +201,9 @@ export function RegistrationStepper({
 
       const ratelimit = {
         type: "fast",
-        limit: endpoint?.limit || 10,
-        refillRate: endpoint?.refillRate || 1,
-        refillInterval: endpoint?.refillInterval || 60,
+        limit: selectedService?.limit || 10,
+        refillRate: selectedService?.refillRate || 1,
+        refillInterval: selectedService?.refillInterval || 60,
       };
 
       const meta = {
@@ -202,25 +211,35 @@ export function RegistrationStepper({
         type: "consumer",
         consumerId: userId,
         endpointId,
+        consumerServiceId: selectedService?.id,
         consumerWalletAddress,
-        currencyType: endpoint?.currencyType,
+        currencyType: selectedService?.currencyType,
         validatorWalletAddress: endpoint?.walletAddress,
+        hotkey: registrationData?.validator?.hotkey,
         endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
         validatorId,
         subscription: {} as SubscriptionType,
       };
 
-      const { result, error: CreateKeyError } = await createKey(apiId, {
+      const keyPayload: { [key: string]: any; expires?: string | number } = {
         name: appName?.split(" ").join(""),
         ownerId: userId,
         roles: ["consumer"],
-        expires: new Date(endpoint?.expires)?.getTime(),
-        remaining: +endpoint?.remaining,
+        remaining: +selectedService?.remaining,
         refill,
         ratelimit,
         meta,
-      });
+      };
 
+      if (selectedService?.expires || selectedService?.expires?.length > 0) {
+        keyPayload.expires = new Date(selectedService?.expires)?.getTime();
+      }
+
+      const { result, error: CreateKeyError } = await createKey(
+        apiId,
+        keyPayload
+      );
+console.log('CreateKeyError:::', CreateKeyError)
       if (CreateKeyError) return;
 
       const { key, keyId } = result as { key: string; keyId: string };
@@ -233,8 +252,10 @@ export function RegistrationStepper({
         appName,
         consumerApiUrl,
         consumerWalletAddress,
+        serviceId: selectedService?.id,
+        contractId: registrationData?.endpoint?.contract?.id
       } as SubscriptionType);
-
+console.log('subs crs', res)
       if (res?.error)
         return notifyError(
           res?.message || "Something went wrong creating subscription"
@@ -266,12 +287,13 @@ export function RegistrationStepper({
           endpointId,
           subscriptionId,
           consumerKeyId: keyId,
+          consumerServiceId: selectedService?.id,
           consumerApiUrl,
-          currencyType: endpoint?.currencyType,
+          currencyType: selectedService?.currencyType,
           consumerWalletAddress: subscription?.consumerWalletAddress,
-          validatorWalletAddress: endpoint?.walletAddress,
           hotkey: registrationData?.validator?.hotkey,
-          price: endpoint?.price,
+          validatorWalletAddress: endpoint?.walletAddress,
+          price: selectedService?.price,
           meta,
         },
       });
@@ -282,7 +304,8 @@ export function RegistrationStepper({
 
       const updateRes = await updateSubscription({
         id: subscriptionId,
-        serviceId: proxyRes?.serviceId,
+        // NOTE: This is the serviceId coming from the proxy
+        proxyServiceId: proxyRes?.serviceId,
       });
       if (updateRes?.error)
         return notifyError(
@@ -298,7 +321,7 @@ export function RegistrationStepper({
       });
       open();
 
-      // send email to client
+      // send subscribed email to client
       if (
         currentUser &&
         currentUser?.email &&
@@ -306,11 +329,9 @@ export function RegistrationStepper({
       ) {
         sendEmail({
           to: currentUser.email,
-          template: "welcome",
-          subject: "Welcome to Request Network",
-          templateVariables: {
-            role: "consumer",
-          },
+          template: "subscription-created",
+          subject: `Subscribed to Validator ${appName}`,
+          templateVariables: { appName },
         });
       }
     } catch (error: Error | unknown) {
@@ -325,6 +346,12 @@ export function RegistrationStepper({
     }
   };
 
+  const handleKeyModalClose = () => {
+    router.push("/dashboard");
+    updateData(defaultContextValue.registrationData);
+    close();
+  };
+
   return pageLoading ? (
     <Loading />
   ) : (
@@ -335,11 +362,11 @@ export function RegistrationStepper({
         walletAddress={keys?.walletAddress}
         endpoint={keys?.endpoint}
         opened={opened}
-        onClose={close}
+        onClose={handleKeyModalClose}
         onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
-        title="API Access Key"
+        title="Api Access Key"
         walletAddressTitle={
-          registrationData?.endpoint?.currencyType === "Crypto"
+          isCrypto(registrationData?.endpoint?.selectedService)
             ? "Validator's ERC-20 Public Address"
             : undefined
         }
@@ -369,7 +396,7 @@ export function RegistrationStepper({
 
         <Stepper.Completed>
           <Card className="mt-14 h-auto">
-            <Center className="mt-8 mb-12">
+            <Center className="mt-8 mb-4">
               <Box className="max-w-xl">
                 <Text className="text-center text-sm mb-4">
                   Congratulations!
@@ -415,7 +442,7 @@ export function RegistrationStepper({
                     }
                     placeholder="https://mysite.com"
                   />
-                  {registrationData?.endpoint?.currencyType === "Crypto" && (
+                  {isCrypto(registrationData?.endpoint?.selectedService) && (
                     <TextInput
                       label="Wallet Address"
                       className="mt-4"

@@ -32,10 +32,11 @@ export function Consumer({
   subscriptions,
   validators,
 }: {
-  subscriptions: SubscriptionType & {
-    keyId: string;
-    endpoint: EndpointType;
-  }[];
+  subscriptions: SubscriptionType &
+    {
+      keyId: string;
+      endpoint: EndpointType;
+    }[];
   validators: Array<ValidatorType>;
 }) {
   const [subscriptionData, setSubscriptionData] = useState<
@@ -71,7 +72,7 @@ export function Consumer({
     fetchKeys();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptions]);
-
+  console.log("validator?.subscriptions", subscriptionData);
   return isLoading ? (
     <Loading />
   ) : (
@@ -110,6 +111,8 @@ export function Consumer({
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th>Name</Table.Th>
+                  <Table.Th>Domain</Table.Th>
+                  <Table.Th>Validator</Table.Th>
                   <Table.Th>Created</Table.Th>
                   <Table.Th>Role</Table.Th>
                   <Table.Th>Request</Table.Th>
@@ -126,6 +129,10 @@ export function Consumer({
                       >
                         {subscription?.keyData?.name}
                       </Anchor>
+                    </Table.Td>
+                    <Table.Td>{subscription?.consumerApiUrl}</Table.Td>
+                    <Table.Td>
+                      {subscription?.endpoint?.validator?.name}
                     </Table.Td>
                     <Table.Td>
                       {dayjs(subscription?.keyData?.createdAt).format(

@@ -9,17 +9,26 @@ import { updateEndpoint } from "@/actions/endpoints";
 import { PostSchema } from "./PostSchema";
 import { useNotification } from "@/hooks/use-notification";
 import { useRouter } from "next/navigation";
-import { EndpointFormInput } from "@/components/EndpointFormInput";
 import { EndpointSchema } from "@/db/types/endpoint";
 import { sendToProxy } from "@/actions/apis";
 import { EndpointType } from "@/db/types/endpoint";
+import { ContractType } from "@/db/types/contract";
+import EndpointForm from "./AddValidator/steps/EndpointForm";
 
 const EndpointFormSchema = EndpointSchema.omit({
   validator: true,
   subscription: true,
 });
 
-export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
+export function UpdateEndpoint({
+  endpoint,
+  contracts,
+  subscriptionCount,
+}: {
+  endpoint: EndpointType;
+  contracts: ContractType[];
+  subscriptionCount: number;
+}) {
   const [loading, setLoading] = useState(false);
   const [enabled, setEnabled] = useState(endpoint.enabled);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
@@ -31,7 +40,7 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
     },
     validate: zodResolver(EndpointFormSchema),
   });
-  // EndpointSchema.parse(endpoint);
+
   const onSubmit = async (values: any) => {
     setLoading(true);
     // NOTE: must remove the keys otherwise it will fail silently
@@ -66,7 +75,6 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
   };
 
   const handleEnable = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    // This needs to be disabled if there are any subscribed users on endpoint. Disable changing price.
     const isEnabled = event.target.checked;
     try {
       const res = await updateEndpoint({ id: endpoint.id, enabled: isEnabled });
@@ -144,6 +152,7 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
             label="Enable or Disable Endpoint"
             checked={enabled}
             onChange={handleEnable}
+            disabled={subscriptionCount > 0 && enabled}
           />
         </Box>
         <Box
@@ -152,7 +161,12 @@ export function UpdateEndpoint({ endpoint }: { endpoint: EndpointType }) {
           component="form"
           onSubmit={form.onSubmit(onSubmit)}
         >
-          <EndpointFormInput mode="update" form={form} />
+          <EndpointForm
+            contracts={contracts}
+            mode="update"
+            form={form}
+            hasSubs={subscriptionCount > 0}
+          />
           <Group justify="flex-end">
             <Button type="submit" loading={loading}>
               Update
