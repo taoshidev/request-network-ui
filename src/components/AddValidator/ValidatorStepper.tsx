@@ -85,7 +85,7 @@ export default function ValidatorStepper({
   };
 
   const nextStep = () => {
-    if (valid()[active])
+    if (valid()[active] && !hotkeyExists)
       setActive((current) => (current < 3 ? current + 1 : current));
     else form.setErrors(_pick(getErrors(), stepInputs[active]));
   };
@@ -192,7 +192,10 @@ export default function ValidatorStepper({
             </Button>
           )}
           {active < 2 && (
-            <Button onClick={nextStep} disabled={active > 1}>
+            <Button
+              disabled={hotkeyExists || (active === 1 && walletExists)}
+              onClick={nextStep}
+            >
               Next step
             </Button>
           )}

@@ -239,7 +239,7 @@ export function RegistrationStepper({
         apiId,
         keyPayload
       );
-console.log('CreateKeyError:::', CreateKeyError)
+
       if (CreateKeyError) return;
 
       const { key, keyId } = result as { key: string; keyId: string };
@@ -255,7 +255,7 @@ console.log('CreateKeyError:::', CreateKeyError)
         serviceId: selectedService?.id,
         contractId: registrationData?.endpoint?.contract?.id
       } as SubscriptionType);
-console.log('subs crs', res)
+
       if (res?.error)
         return notifyError(
           res?.message || "Something went wrong creating subscription"
