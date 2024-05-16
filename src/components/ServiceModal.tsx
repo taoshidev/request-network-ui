@@ -21,7 +21,7 @@ export default function ServiceModal({
   opened: boolean;
   service?: ServiceType | null;
   close: () => void;
-  onSuccess?: (contract: ServiceType) => void;
+  onSuccess?: (service: ServiceType) => void;
 }) {
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError } = useNotification();

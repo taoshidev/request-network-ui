@@ -130,8 +130,7 @@ export default function Services({
         {services.length === 0 && (
           <Alert color="orange" icon={<IconAlertCircle />}>
             <Text className="mb-7">
-              You don&apos;t have any services yet. Add a contract and add
-              services to it.{" "}
+              You don&apos;t have any services yet. Add a service here or from the add contract modal.{" "}
             </Text>
             <Box>
               <Group className="justify-between">
