@@ -12,10 +12,11 @@ import { createValidatorEndpoint } from "@/actions/validators";
 import { DatabaseResponseType } from "@/db/error";
 import { useNotification } from "@/hooks/use-notification";
 import EndpointForm from "./steps/EndpointForm";
-import { isEmpty as isEmpty, lte } from "lodash";
+import { isEmpty as isEmpty, pick as _pick } from "lodash";
 import { DateTime } from "luxon";
 import { TextEditor } from "../TextEditor";
 import React from "react";
+import ReviewValidatorEndpoint from "./steps/ReviewValidatorEndpoint";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -86,6 +87,7 @@ export default function ValidatorStepper({
   const nextStep = () => {
     if (valid()[active])
       setActive((current) => (current < 3 ? current + 1 : current));
+    else form.setErrors(_pick(getErrors(), stepInputs[active]));
   };
   const prevStep = () => {
     getErrors();
@@ -119,6 +121,7 @@ export default function ValidatorStepper({
       });
 
       notifySuccess("Validator registered successfully");
+      setActive((current) => 3);
     } catch (error: Error | unknown) {
       notifyError((error as Error).message);
     } finally {
@@ -168,113 +171,26 @@ export default function ValidatorStepper({
               }}
             />
           </Stepper.Step>
+          <Stepper.Step>
+            <ReviewValidatorEndpoint
+              form={form}
+              contracts={contracts}
+              errors={errors}
+            />
+          </Stepper.Step>
           <Stepper.Completed>
-            <Title order={2} className="text-center">
-              Review Validator Details
+            <Title order={2} className="text-center py-20">
+              Validator and Endpoint Saved Successfully
             </Title>
-            <Box className="flex justify-center w-full mb-16">
-              <Box className="w-full overflow-y-auto">
-                <Table miw={600} verticalSpacing="xs">
-                  <Table.Tbody>
-                    <Table.Tr>
-                      <Table.Th colSpan={1} w={200}>
-                        Validator Name
-                      </Table.Th>
-                      <Table.Td colSpan={3}>{form.values.name}</Table.Td>
-                    </Table.Tr>
-                    <Table.Tr>
-                      <Table.Th colSpan={1}>Description</Table.Th>
-                      <Table.Td colSpan={3}>
-                        <TextEditor<ValidatorType>
-                          type="BubbleEditor"
-                          editable={false}
-                          html={form.values.description as string}
-                        />
-                      </Table.Td>
-                    </Table.Tr>
-                    <Table.Tr>
-                      <Table.Th colSpan={1}>Wallet Address</Table.Th>
-                      <Table.Td colSpan={1}>
-                        {form.values.walletAddress}
-                      </Table.Td>
-                      <Table.Th colSpan={1}>Hot Key</Table.Th>
-                      <Table.Td colSpan={1}>{form.values.hotkey}</Table.Td>
-                    </Table.Tr>
-                    <Table.Tr>
-                      <Table.Th>Base Api Url</Table.Th>
-                      <Table.Td>{form.values.baseApiUrl}</Table.Td>
-                      <Table.Th>Url</Table.Th>
-                      <Table.Td>{form.values.url}</Table.Td>
-                    </Table.Tr>
-                    <Table.Tr>
-                      <Table.Th>Contract</Table.Th>
-                      <Table.Td>
-                        {
-                          contracts?.find(
-                            (contract) => contract.id === form.values.contractId
-                          )?.title
-                        }
-                      </Table.Td>
-                    </Table.Tr>
-                    {contracts
-                      ?.find(
-                        (contract) => contract.id === form.values.contractId
-                      )
-                      ?.services.map((service, index) => (
-                        <React.Fragment key={index}>
-                          <Table.Tr>
-                            <Table.Th
-                              className="bg-slate-400 text-white text-lg py-1"
-                              colSpan={4}
-                            >
-                              {service.name}
-                            </Table.Th>
-                          </Table.Tr>
-                          <Table.Tr>
-                            <Table.Th>Refill Rate</Table.Th>
-                            <Table.Td>{service.refillRate}</Table.Td>
-                            <Table.Th>Refill Interval</Table.Th>
-                            <Table.Td>{service.refillInterval}</Table.Td>
-                          </Table.Tr>
-                          <Table.Tr>
-                            <Table.Th>Remaining</Table.Th>
-                            <Table.Td>{service.remaining}</Table.Td>
-                            <Table.Th>Active</Table.Th>
-                            <Table.Td>{service.active ? "Yes" : "No"}</Table.Td>
-                          </Table.Tr>
-                          <Table.Tr>
-                            <Table.Th>Currency Type</Table.Th>
-                            <Table.Td>{service.currencyType}</Table.Td>
-                            <Table.Th>Expires</Table.Th>
-                            <Table.Td>
-                              {DateTime.fromJSDate(service.expires).toFormat(
-                                "f"
-                              )}
-                            </Table.Td>
-                          </Table.Tr>
-                        </React.Fragment>
-                      ))}
-                  </Table.Tbody>
-                </Table>
-              </Box>
-            </Box>
-            {isEmpty(errors) && (
-              <Text className="text-center">
-                Completed. Click button to create validator and endpoint.
-              </Text>
-            )}
-            {Object.keys(errors).map((key) => (
-              <Text className="text-center text-red-600" key={key}>
-                <b>{key}</b>: {errors[key]}
-              </Text>
-            ))}
           </Stepper.Completed>
         </Stepper>
 
         <Group justify="center" mt="xl">
-          <Button variant="default" onClick={prevStep} disabled={active < 1}>
-            Back
-          </Button>
+          {active < 3 && (
+            <Button variant="default" onClick={prevStep} disabled={active < 1}>
+              Back
+            </Button>
+          )}
           {active < 2 && (
             <Button onClick={nextStep} disabled={active > 1}>
               Next step
