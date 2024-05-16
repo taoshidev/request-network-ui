@@ -2,9 +2,11 @@ import crypto from "crypto";
 
 export const generateShortId = (
   userId: string,
-  validatorId: string | number
+  validatorId: string | number,
+  endpointId: string | number,
+  serviceId: string | number,
 ) => {
-  const combinedString = `${userId}:${validatorId}`;
+  const combinedString = `${userId}:${validatorId}:${endpointId}:${serviceId}`;
 
   const hash = crypto.createHash("sha256").update(combinedString).digest("hex");
 
@@ -16,9 +18,11 @@ export const generateShortId = (
 export const verifyShortId = (
   userId: string,
   validatorId: string,
-  shortIdToVerify: string
+  endpointId: string,
+  serviceId: string,
+  shortIdToVerify: string,
 ) => {
-  const regeneratedShortId = generateShortId(userId, validatorId);
+  const regeneratedShortId = generateShortId(userId, validatorId, endpointId, serviceId);
 
   return regeneratedShortId === shortIdToVerify;
 };

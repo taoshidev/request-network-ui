@@ -40,6 +40,7 @@ export function SubnetValidatorReview() {
             </Box>
             <Button onClick={open}>View Accepted Terms</Button>
             <ContractDisplayModal
+              services={registrationData?.endpoint?.contract?.services}
               review={true}
               html={registrationData?.endpoint?.contract?.content}
               opened={opened}
@@ -71,7 +72,7 @@ export function SubnetValidatorReview() {
             <Group className="justify-between items-center">
               <Text className="text-sm">Payment Method</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.currencyType}
+                {registrationData?.endpoint?.selectedService.currencyType}
               </Text>
             </Group>
             <Divider className="border-dashed" />
@@ -86,34 +87,34 @@ export function SubnetValidatorReview() {
             <Group className="justify-between items-center">
               <Text className="text-sm">Price</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.price}
+                {registrationData?.endpoint?.selectedService.price}
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Request Limit</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.remaining}
+                {registrationData?.endpoint?.selectedService.remaining}
               </Text>
             </Group>
             <Group className="justify-between items-center">
               <Text className="text-sm">Limit</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.limit}
+                {registrationData?.endpoint?.selectedService.limit}
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Refill Interval</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.refillInterval}
+                {registrationData?.endpoint?.selectedService.refillInterval}
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Refill Rate</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.refillRate}
+                {registrationData?.endpoint?.selectedService.refillRate}
               </Text>
             </Group>
             <Divider className="border-dashed" />

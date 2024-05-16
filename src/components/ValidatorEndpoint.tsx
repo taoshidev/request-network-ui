@@ -66,9 +66,13 @@ export function ValidatorEndpoint({
     [currentSubscriptions]
   );
 
-  const handleAcceptTerms = useCallback((endpoint, { termsAccepted }) => {
-    endpoint.termsAccepted = termsAccepted;
-  }, []);
+  const handleAcceptTerms = useCallback(
+    (endpoint, { termsAccepted, selectedService }) => {
+      endpoint.termsAccepted = termsAccepted;
+      endpoint.selectedService = selectedService;
+    },
+    []
+  );
 
   const openContractModal = (endpoint) => {
     setSelectedEndpoint(endpoint);
@@ -82,14 +86,22 @@ export function ValidatorEndpoint({
       </Title>
       <Grid>
         <ContractDisplayModal
+          services={
+            registrationData?.validator?.endpoints?.find(
+              (e) => e.id === selectedEndpoint?.id
+            )?.contract?.services
+          }
           html={selectedEndpoint?.contract?.content}
           opened={opened}
           close={close}
           review={currentSubscriptions?.some(
             (s) => s.endpointId === selectedEndpoint?.id
           )}
-          onTermsAccepted={({ termsAccepted }) =>
-            handleAcceptTerms(selectedEndpoint, { termsAccepted })
+          onTermsAccepted={({ termsAccepted, selectedService }) =>
+            handleAcceptTerms(selectedEndpoint, {
+              termsAccepted,
+              selectedService,
+            })
           }
         />
 
@@ -101,51 +113,27 @@ export function ValidatorEndpoint({
                   {endpoint?.url || "-"}
                 </Text>
                 <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Currency</Text>
+                  <Text className="text-sm">Date Created</Text>
                   <Badge size="sm" variant="light">
-                    {endpoint?.currencyType}
+                    {dayjs(endpoint?.createdAt).format("MMM DD, YYYY") || "-"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Expires:</Text>
+                  <Text className="text-sm">Last Updated</Text>
                   <Badge size="sm" variant="light">
-                    {dayjs(endpoint?.expires).format("MMM DD, YYYY") || "-"}
+                    {dayjs(endpoint?.updatedAt).format("MMM DD, YYYY") || "-"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Payment Method:</Text>
+                  <Text className="text-sm">Status:</Text>
                   <Badge size="sm" variant="light">
-                    {endpoint?.currencyType}
+                    {endpoint?.enabled? "Enabled" : "Disabled"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Price:</Text>
+                  <Text className="text-sm">Active:</Text>
                   <Badge size="sm" variant="light">
-                    {endpoint?.price}
-                  </Badge>
-                </Group>
-                <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Refill Interval:</Text>
-                  <Badge size="sm" variant="light">
-                    {endpoint.refillInterval}
-                  </Badge>
-                </Group>
-                <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Limit:</Text>
-                  <Badge size="sm" variant="light">
-                    {endpoint?.limit}
-                  </Badge>
-                </Group>
-                <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Refill Rate:</Text>
-                  <Badge size="sm" variant="light">
-                    {endpoint.refillRate}
-                  </Badge>
-                </Group>
-                <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Request Limit</Text>
-                  <Badge size="sm" variant="light">
-                    {endpoint?.remaining}
+                    {endpoint?.active ? "Yes" : "No"}
                   </Badge>
                 </Group>
                 <Box className="mt-4 flex flex-row justify-between items-center">

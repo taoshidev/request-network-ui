@@ -29,7 +29,6 @@ export const ValidatorSchema = z.object({
   userId: z.string().uuid().nullish(),
   account: z.any().optional(),
   signature: z.string().optional(),
-  vtrust: z.string().optional(),
   verified: z.boolean().optional(),
   endpoints: z.lazy(() => z.array(EndpointSchema)).optional(),
   stats: StatsSchema.optional(),
