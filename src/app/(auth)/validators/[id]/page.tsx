@@ -5,7 +5,8 @@ import { getAuthUser } from "@/actions/auth";
 import { redirect } from "next/navigation";
 import { getContracts } from "@/actions/contracts";
 import { and, eq } from "drizzle-orm";
-import { contracts } from "@/db/schema";
+import { contracts, services } from "@/db/schema";
+import { getServices } from "@/actions/services";
 
 export default async function Page({ params }: any) {
   const { id } = params;
@@ -19,11 +20,16 @@ export default async function Page({ params }: any) {
     where: and(eq(contracts.userId, user.id)),
   });
 
+  const userServices = await getServices({
+    where: and(eq(services.userId, user.id))
+  });
+
   return (
     <ValidatorEdit
       user={user}
       validator={validator}
       contracts={userContracts}
+      services={userServices}
     />
   );
 }
