@@ -316,6 +316,34 @@
       "when": 1715808463128,
       "tag": "0044_uneven_the_enforcers",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "5",
+      "when": 1715839547776,
+      "tag": "0045_glossy_mandrill",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "5",
+      "when": 1715839741741,
+      "tag": "0046_fixed_the_watchers",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "5",
+      "when": 1715839767299,
+      "tag": "0047_daffy_strong_guy",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "5",
+      "when": 1715840659686,
+      "tag": "0048_sticky_amphibian",
+      "breakpoints": true
     }
   ]
 }

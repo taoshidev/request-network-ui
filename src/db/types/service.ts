@@ -13,7 +13,7 @@ export const ServiceSchema = z.object({
   price: z.string().min(1),
   currencyType: z.string().min(1),
   limit: z.number().int().min(1),
-  expires: z.date(),
+  expires: z.date().optional(),
   refillRate: z.number().int().min(1),
   refillInterval: z.number().int().min(1),
   remaining: z.number().int().min(1),

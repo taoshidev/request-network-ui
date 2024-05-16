@@ -35,8 +35,12 @@ export default async function Page() {
       endpoints: {
         where: and(eq(endpoints.enabled, true)),
         with: {
-          contract: true,
-        }
+          contract: {
+            with: {
+              services: true,
+            },
+          },
+        },
       },
     },
   });
@@ -82,7 +86,7 @@ export default async function Page() {
 
     try {
       const validatorsWithStats = await Promise.all(
-        (validatorArr || []).map(async (validator) => {
+        (validatorArr || [])?.map(async (validator) => {
           const stats = await Promise.all(
             validator?.endpoints?.map((endpoint) =>
               fetchEndpointInfo(endpoint, validator)

@@ -12,10 +12,17 @@ export default async function Page({ params }: any) {
     with: {
       endpoints: {
         where: and(eq(endpoints.enabled, true)),
+        // with: {
+        //   contract: {
+        //     with: {
+        //       services: true,
+        //     },
+        //   },
+        // },
       },
     },
   });
-
+console.log('vali:::::::', vali)
   const subnet = await getSubnets({
     where: eq(subnets.id, id),
     with: {
