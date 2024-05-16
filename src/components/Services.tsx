@@ -19,7 +19,7 @@ export default function Services({
   services: ServiceType[];
 }) {
   const router = useRouter();
-  const { notifySuccess, notifyError, notifyInfo } = useNotification();
+  const { notifySuccess, notifyError } = useNotification();
   const [selectedService, setSelectedService] =
     useState<ServiceType | null>();
   const [opened, { open, close }] = useDisclosure(false);
