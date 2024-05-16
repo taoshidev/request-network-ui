@@ -18,9 +18,11 @@ export const generateShortId = (
 export const verifyShortId = (
   userId: string,
   validatorId: string,
-  shortIdToVerify: string
+  endpointId: string,
+  serviceId: string,
+  shortIdToVerify: string,
 ) => {
-  const regeneratedShortId = generateShortId(userId, validatorId);
+  const regeneratedShortId = generateShortId(userId, validatorId, endpointId, serviceId);
 
   return regeneratedShortId === shortIdToVerify;
 };
