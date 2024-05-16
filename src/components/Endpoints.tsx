@@ -101,7 +101,7 @@ export function Endpoints({
                   <Table.Td>{endpoint.url}</Table.Td>
                   <Table.Td>
                     {[
-                      ..._uniq(endpoint?.contract?.services.map((service) => service.currencyType) || [])
+                      ..._uniq(endpoint?.contract?.services?.map((service) => service.currencyType) || [])
                     ].join(", ")}
                   </Table.Td>
                   <Table.Td>
