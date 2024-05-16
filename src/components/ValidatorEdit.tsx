@@ -34,6 +34,8 @@ import { TextEditor } from "@/components/TextEditor";
 import { Contracts } from "@/components/Contracts";
 import { UserType } from "@/db/types/user";
 import { ContractType } from "@/db/types/contract";
+import Services from "./Services";
+import { ServiceType } from "@/db/types/service";
 
 export const ValidatorEditSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -45,10 +47,12 @@ export const ValidatorEditSchema = z.object({
 export function ValidatorEdit({
   validator,
   contracts,
+  services,
   user,
 }: {
   validator: ValidatorType;
   contracts: ContractType[];
+  services: ServiceType[];
   user: UserType;
 }) {
   const [loading, setLoading] = useState(false);
@@ -182,7 +186,6 @@ export function ValidatorEdit({
           onClick={() => handleSectionChange("contracts")}
         />
         <NavLink
-          disabled
           active={activeSection === "services"}
           label="Services"
           leftSection={<IconCircleOff size="1rem" stroke={1.5} />}
@@ -246,9 +249,9 @@ export function ValidatorEdit({
         {activeSection === "contracts" && (
           <Contracts contracts={contracts} user={user} />
         )}
-        {/* {activeSection === "services" && (
-          <Text>Services section content here.</Text>
-        )} */}
+        {activeSection === "services" && (
+          <Services services={services} user={user} />
+        )}
       </Box>
     </Group>
   );
