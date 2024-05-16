@@ -70,6 +70,7 @@ export default async function Page() {
 
     const userContracts = await getContracts({
       where: and(eq(contracts.userId, user.id)),
+      with: { services: true }
     });
 
     return (

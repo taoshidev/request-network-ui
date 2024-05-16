@@ -103,7 +103,6 @@ export const validators = pgTable("validators", {
     .references(() => users.id, { onDelete: "cascade" }),
   account: jsonb("account"),
   signature: varchar("signature"),
-  vtrust: numeric("vtrust", { precision: 7, scale: 5 }),
   verified: boolean("verified").notNull().default(false),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at").default(sql`now()`),
@@ -136,7 +135,7 @@ export const endpoints = pgTable(
       .notNull()
       .references(() => contracts.id, { onDelete: "set null" }),
     walletAddress: varchar("wallet_address").unique(),
-    url: varchar("url").notNull(),
+    url: varchar("url").unique().notNull(),
     enabled: boolean("enabled").default(true).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),

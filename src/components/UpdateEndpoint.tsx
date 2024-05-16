@@ -9,11 +9,11 @@ import { updateEndpoint } from "@/actions/endpoints";
 import { PostSchema } from "./PostSchema";
 import { useNotification } from "@/hooks/use-notification";
 import { useRouter } from "next/navigation";
-import { EndpointFormInput } from "@/components/EndpointFormInput";
 import { EndpointSchema } from "@/db/types/endpoint";
 import { sendToProxy } from "@/actions/apis";
 import { EndpointType } from "@/db/types/endpoint";
 import { ContractType } from "@/db/types/contract";
+import EndpointForm from "./AddValidator/steps/EndpointForm";
 
 const EndpointFormSchema = EndpointSchema.omit({
   validator: true,
@@ -161,7 +161,7 @@ export function UpdateEndpoint({
           component="form"
           onSubmit={form.onSubmit(onSubmit)}
         >
-          <EndpointFormInput
+          <EndpointForm
             contracts={contracts}
             mode="update"
             form={form}

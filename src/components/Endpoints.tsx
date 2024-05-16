@@ -11,7 +11,6 @@ import {
   Button,
   Group,
   Modal,
-  NumberFormatter,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { some } from "lodash";
@@ -22,7 +21,6 @@ import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { ContractType } from "@/db/types/contract";
 import { useForm, zodResolver } from "@mantine/form";
-import { v4 as uuid } from "uuid";
 import { uniq as _uniq } from 'lodash';
 
 export function Endpoints({
@@ -51,17 +49,11 @@ export function Endpoints({
   const form = useForm<Partial<EndpointType>>({
     name: "create-new-endpoint",
     initialValues: {
-      id: uuid(),
-      limit: 10,
       url: "",
       subnetId: "",
       validatorId: "",
-      currencyType: "Crypto",
       walletAddress: "",
-      price: "",
-      refillRate: 1,
-      refillInterval: 1000,
-      remaining: 1000,
+      contractId: ""
     },
     validate: zodResolver(EndpointSchema),
   });
@@ -109,7 +101,7 @@ export function Endpoints({
                   <Table.Td>{endpoint.url}</Table.Td>
                   <Table.Td>
                     {[
-                      ..._uniq(endpoint?.contract?.services.map((service) => service.currencyType) || [])
+                      ..._uniq(endpoint?.contract?.services?.map((service) => service.currencyType) || [])
                     ].join(", ")}
                   </Table.Td>
                   <Table.Td>
