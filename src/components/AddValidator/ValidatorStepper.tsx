@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Group, Stepper, Table, Text, Title } from "@mantine/core";
+import { Box, Button, Group, Stepper, Title } from "@mantine/core";
 import { useState } from "react";
 import { CreateValidator } from "./steps/CreateValidator";
 import { useForm } from "@mantine/form";
@@ -12,9 +12,7 @@ import { createValidatorEndpoint } from "@/actions/validators";
 import { DatabaseResponseType } from "@/db/error";
 import { useNotification } from "@/hooks/use-notification";
 import EndpointForm from "./steps/EndpointForm";
-import { isEmpty as isEmpty, pick as _pick } from "lodash";
-import { DateTime } from "luxon";
-import { TextEditor } from "../TextEditor";
+import { pick as _pick } from "lodash";
 import React from "react";
 import ReviewValidatorEndpoint from "./steps/ReviewValidatorEndpoint";
 import { Logo } from "../Logo";
