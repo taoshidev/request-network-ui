@@ -22,7 +22,7 @@ export default async function Page({ params }: any) {
       },
     },
   });
-
+console.log('vali:::::::', vali)
   const subnet = await getSubnets({
     where: eq(subnets.id, id),
     with: {
