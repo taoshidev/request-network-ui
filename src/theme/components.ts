@@ -4,38 +4,38 @@ export const components = {
   Input: {
     styles: () => ({
       input: {
-        borderColor: "black",
-        borderStyle: "dashed",
+        // borderColor: "black",
+        // borderStyle: "dashed",
       },
     }),
   },
   Checkbox: {
     styles: () => ({
       input: {
-        borderColor: "black",
-        borderStyle: "dashed",
+        // borderColor: "black",
+        // borderStyle: "dashed",
       },
     }),
   },
   Badge: {
     styles: () => ({
       root: {
-        borderRadius: 0,
+        // borderRadius: 0,
       },
     }),
   },
   Card: {
     styles: () => ({
       root: {
-        borderRadius: 0,
-        border: "1px dashed black",
+        // borderRadius: 0,
+        // border: "1px dashed black",
       },
     }),
   },
   AppShell: {
     styles: () => ({
       header: {
-        borderBottom: "1px dashed black",
+        // borderBottom: "1px dashed black",
         height: 60,
       },
       main: {
@@ -48,14 +48,14 @@ export const components = {
   Stepper: {
     styles: () => ({
       stepIcon: {
-        borderRadius: 0,
+        // borderRadius: 0,
       },
     }),
   },
   Alert: {
     styles: () => ({
       root: {
-        borderRadius: 0,
+        // borderRadius: 0,
       },
     }),
   },

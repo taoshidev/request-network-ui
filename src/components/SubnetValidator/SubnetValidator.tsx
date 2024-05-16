@@ -58,15 +58,15 @@ export function SubnetValidator({
   );
 
   return (
-    <Box>
-      <Title className="text-2xl text-center my-8">
+    <Box className="my-8">
+      {/* <Title className="text-2xl text-center my-8">
         Choose a Validator for {registrationData?.subnet?.label} Subnet
-      </Title>
+      </Title> */}
       <Grid>
         {(validators || [])?.map?.(
           (validator: ValidatorType & { neuronInfo: any }) => (
             <Grid.Col key={validator.id} span={3}>
-              <Card>
+              <Card shadow="sm" padding="lg" withBorder>
                 <Text className="font-bold mb-4" truncate>
                   {validator?.name || "Validator"}
                 </Text>

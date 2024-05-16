@@ -87,6 +87,9 @@ export function ContractDisplayModal({
       >
         {services?.map((service) => (
           <Card
+            withBorder
+            shadow="sm"
+            padding="lg"
             key={service?.id}
             className={clsx(
               "p-1 m-0 cursor-pointer",
