@@ -111,7 +111,6 @@ export function ContractModal({
   };
 
   const handleServicePrepped = (service: ServiceType) => {
-    console.log("from handleServicePrepped", service);
     if (editServiceIndexRef.current !== null) {
       setServices((prevServices: ServiceType[]) =>
         prevServices?.map((s: ServiceType, index: number) =>
@@ -128,7 +127,6 @@ export function ContractModal({
 
   const openServiceModal = (service?: ServiceType, index?: number) => {
     editServiceIndexRef.current = index !== undefined ? index : null;
-    console.log("editServiceIndexRef.current", editServiceIndexRef.current);
     serviceModalRef.current = modals.openModal({
       centered: true,
       title: service ? "Edit Service" : "Add New Service",
