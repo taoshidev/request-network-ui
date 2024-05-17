@@ -72,7 +72,6 @@ export function Consumer({
     fetchKeys();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptions]);
-  console.log("validator?.subscriptions", subscriptionData);
   return isLoading ? (
     <Loading />
   ) : (

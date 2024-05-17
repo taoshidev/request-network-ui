@@ -79,18 +79,19 @@ export function ServiceForm({
       onComplete?.();
       notifySuccess(res?.message as string);
 
-      sendEmail({
-        to: user?.email as string,
-        template: "created-endpoint",
-        subject: "New Endpoint Created",
-        templateVariables: {
-          request: values.remaining,
-          expires: new Date(values?.expires!),
-          limit: values.limit,
-          refillRate: values.refillRate,
-          refillInterval: values.refillInterval,
-        },
-      });
+      // needs to be updated to send on service created
+      // sendEmail({
+      //   to: user?.email as string,
+      //   template: "created-endpoint",
+      //   subject: "New Endpoint Created",
+      //   templateVariables: {
+      //     request: values.remaining,
+      //     expires: new Date(values?.expires!),
+      //     limit: values.limit,
+      //     refillRate: values.refillRate,
+      //     refillInterval: values.refillInterval,
+      //   },
+      // });
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
     } finally {

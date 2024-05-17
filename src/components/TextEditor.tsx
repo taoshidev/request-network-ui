@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Text } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
 import { RichTextEditor, Link } from "@mantine/tiptap";
@@ -9,9 +9,10 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
-import Placeholder from '@tiptap/extension-placeholder';
+import Placeholder from "@tiptap/extension-placeholder";
 import { debounce } from "lodash";
 import clsx from "clsx";
+import Loading from "@/app/(auth)/loading";
 
 export function TextEditor<T>({
   onChange,
@@ -21,7 +22,7 @@ export function TextEditor<T>({
   form,
   label,
   html,
-  placeholder = ""
+  placeholder = "",
 }: {
   editable?: boolean;
   onChange?: (content: string) => void;
@@ -32,6 +33,11 @@ export function TextEditor<T>({
   html?: string;
   placeholder?: string;
 }) {
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
   const editor = useEditor({
     editable,
     extensions: [
@@ -42,7 +48,7 @@ export function TextEditor<T>({
       SubScript,
       Highlight,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
-      Placeholder.configure({ placeholder })
+      Placeholder.configure({ placeholder }),
     ],
     content: form?.values?.[prop] || html || "",
     onUpdate: ({ editor }) => {
@@ -65,7 +71,9 @@ export function TextEditor<T>({
     [handleEditorChangeDebounced]
   );
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <Box>
       {label?.text && (
         <Text size="sm" className="mb-1">
