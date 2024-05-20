@@ -84,13 +84,12 @@ export function ContractModal({
       notifySuccess(
         `Contract ${contract ? "updated" : "created"} successfully`
       );
-      console.log("res: from create:::", res);
+
       if (res?.data) {
         const { id: contractId } = res?.data?.[0];
-        console.log("from onsubmit :::::", services);
+
         const reqs = services.map((s) => {
           if ("id" in s && s?.id!?.length > 0) {
-            console.log("s::::", s);
             return updateService(s);
           }
           delete s.id;
@@ -102,7 +101,7 @@ export function ContractModal({
         });
 
         const serviceRes = await Promise.all(reqs);
-        console.log("serviceRes::::", serviceRes);
+
         serviceRes.forEach((r, i) => {
           if (r?.error) {
             notifyError(`Failed to create service ${services[i]?.name}`);
@@ -144,7 +143,7 @@ export function ContractModal({
   };
 
   const openServiceModal = (service?: ServiceType, index?: number) => {
-    console.log("from openServiceModal::::", service, index);
+
     editServiceIndexRef.current = index !== undefined ? index : null;
     serviceModalRef.current = modals.openModal({
       centered: true,

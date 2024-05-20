@@ -58,7 +58,7 @@ export function Contracts({
     setConfirmDelete(false);
     setSelectedContract(null);
   };
-  console.log("selectedContract::::", selectedContract);
+
   return (
     <Box className="mb-16">
       <ContractModal
