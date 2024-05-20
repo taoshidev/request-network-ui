@@ -24,7 +24,6 @@ export function SubnetValidatorReview() {
 
   return (
     <Box className="mt-10">
-      {/* <Title className="text-center mt-4 text-2xl">Review Selection</Title> */}
       <Card withBorder shadow="sm" padding="lg" className="my-14 pb-8">
         <Title className="text-xl mb-4">
           {registrationData?.validator?.name}

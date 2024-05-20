@@ -81,9 +81,6 @@ export function ValidatorEndpoint({
 
   return (
     <Box className="my-8">
-      {/* <Title className="text-2xl text-center my-8">
-        Choose an Endpoint for {registrationData?.validator?.name} Subnet
-      </Title> */}
       <Grid>
         <ContractDisplayModal
           services={
