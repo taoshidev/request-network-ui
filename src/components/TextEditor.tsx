@@ -134,7 +134,7 @@ export function TextEditor<T>({
           editor={editor}
           className={clsx(
             " text-sm",
-            !editable ? "!border-none" : "!border-dashed !border-black"
+            !editable ? "!border-none" : ""
           )}
         >
           {editor && (

@@ -23,9 +23,8 @@ export function SubnetValidatorReview() {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
-    <Box>
-      <Title className="text-center my-8 text-2xl">Review Selection</Title>
-      <Card className="my-14 pb-8">
+    <Box className="mt-10">
+      <Card withBorder shadow="sm" padding="lg" className="my-14 pb-8">
         <Title className="text-xl mb-4">
           {registrationData?.validator?.name}
         </Title>

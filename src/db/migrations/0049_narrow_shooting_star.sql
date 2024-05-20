@@ -1,0 +1,1 @@
+ALTER TABLE "endpoints" DROP CONSTRAINT "endpoints_url_unique";

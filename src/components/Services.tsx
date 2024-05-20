@@ -20,8 +20,7 @@ export default function Services({
 }) {
   const router = useRouter();
   const { notifySuccess, notifyError } = useNotification();
-  const [selectedService, setSelectedService] =
-    useState<ServiceType | null>();
+  const [selectedService, setSelectedService] = useState<ServiceType | null>();
   const [opened, { open, close }] = useDisclosure(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -128,9 +127,14 @@ export default function Services({
           </Table>
         )}
         {services.length === 0 && (
-          <Alert color="orange" icon={<IconAlertCircle />}>
+          <Alert
+            className="shadow-sm"
+            color="orange"
+            icon={<IconAlertCircle />}
+          >
             <Text className="mb-7">
-              You don&apos;t have any services yet. Add a service here or from the add contract modal.{" "}
+              You don&apos;t have any services yet. Add a service here or from
+              the add contract modal.{" "}
             </Text>
             <Box>
               <Group className="justify-between">

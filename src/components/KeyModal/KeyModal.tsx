@@ -70,7 +70,11 @@ export function KeyModal({
     <Modal size="xl" centered opened={opened} onClose={onClose} title={title}>
       <Box className="mt-4 mb-8">
         <Box className="mb-8">
-          <Alert color="orange" icon={<IconAlertCircle />}>
+          <Alert
+            className="shadow-sm"
+            color="orange"
+            icon={<IconAlertCircle />}
+          >
             <Text className="mb-2 text-xs">
               Please copy and safely store your unique authentication key below.
             </Text>

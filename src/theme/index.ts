@@ -26,8 +26,13 @@ export const theme = createTheme({
   black: appConfig.colors.black,
   primaryColor: "primary",
   primaryShade: 4,
-  fontFamily: fonts.body.style.fontFamily,
-  headings: { fontFamily: fonts.heading.style.fontFamily },
+  fontFamily: "DM Sans', sans-serif",
+  headings: { fontFamily: "DM Sans', sans-serif" },
+  shadows: {
+    md: '1px 1px 3px rgba(0, 0, 0, .25)',
+    xl: '5px 5px 3px rgba(0, 0, 0, .25)',
+  },
+
 });
 
 export { fonts };

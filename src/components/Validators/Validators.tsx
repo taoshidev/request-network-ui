@@ -48,7 +48,7 @@ export function Validators({
       />
 
       <Box>
-        <Group className="justify-between my-8">
+        <Group className="justify-between">
           <Title order={2}>Validators</Title>
           <Button onClick={addValidator}>Add Your Validator</Button>
         </Group>

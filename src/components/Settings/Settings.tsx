@@ -107,6 +107,7 @@ export function Settings({ apiKey }: { apiKey: any }) {
             </Title>
 
             <Alert
+              className="shadow-sm"
               color="orange"
               radius="0"
               title=""
@@ -166,6 +167,7 @@ export function Settings({ apiKey }: { apiKey: any }) {
 
       <Box my="xl">
         <Alert
+          className="shadow-sm"
           variant="light"
           color="orange"
           title="Delete Key"

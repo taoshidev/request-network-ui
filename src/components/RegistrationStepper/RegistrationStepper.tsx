@@ -253,9 +253,9 @@ export function RegistrationStepper({
         consumerApiUrl,
         consumerWalletAddress,
         serviceId: selectedService?.id,
-        contractId: registrationData?.endpoint?.contract?.id
+        contractId: registrationData?.endpoint?.contract?.id,
       } as SubscriptionType);
-
+      
       if (res?.error)
         return notifyError(
           res?.message || "Something went wrong creating subscription"
@@ -395,10 +395,10 @@ export function RegistrationStepper({
         </Stepper.Step>
 
         <Stepper.Completed>
-          <Card className="mt-14 h-auto">
+          <Card withBorder shadow="sm" padding="lg" className="mt-14 h-auto">
             <Center className="mt-8 mb-4">
               <Box className="max-w-xl">
-                <Text className="text-center text-sm mb-4">
+                <Text className="text-center text-xl mb-4">
                   Congratulations!
                 </Text>
                 <Text className="text-center text-sm">

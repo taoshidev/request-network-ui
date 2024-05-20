@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@mantine/core";
 import { Auth } from "@supabase/auth-ui-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -15,10 +16,10 @@ export function Login() {
       <Box className="mb-8">
         <Title className="mb-4">Login</Title>
         <Text>
-          Authentication with the Request Network, simply sign in with Google or Github
+          Authentication with the Request Network, simply sign in with Google or
+          Github
         </Text>
       </Box>
-
       <Auth
         redirectTo={`${process.env.NEXT_PUBLIC_DOMAIN}/callback`}
         supabaseClient={supabase}
