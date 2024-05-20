@@ -72,11 +72,11 @@ export function Consumer({
     fetchKeys();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptions]);
-  
+
   return isLoading ? (
     <Loading />
   ) : (
-    <Container className="my-8">
+    <Container className="mx-0 px-0 max-w-6xl">
       {!validators && (
         <Notification title="No Validators Found">
           To obtain a key, their needs to be at least one validator available.
@@ -84,8 +84,8 @@ export function Consumer({
       )}
 
       {!isLoading && (
-        <Group className="justify-between my-5">
-          <Title className="text-2xl">API Keys</Title>
+        <Group className="justify-between mb-10">
+          <Title className="text-2xl">Api Keys</Title>
           <Box>
             <Button component="a" href="/registration">
               {!subscriptionData ? "Register" : "Browse Subnets"}
@@ -95,8 +95,14 @@ export function Consumer({
       )}
 
       {!isLoading && isEmpty(subscriptionData) && (
-        <Alert className="mb-8" color="orange" icon={<IconAlertCircle />}>
-          <Text className="mb-2">You don&apos;t have any API Keys yet</Text>
+        <Alert
+          className="mb-8 shadow-sm"
+          color="orange"
+          icon={<IconAlertCircle />}
+        >
+          <Text className="mb-2 text-base">
+            You don&apos;t have any Api Keys yet
+          </Text>
           <Text>Create your first API key and start receiving requests.</Text>
         </Alert>
       )}

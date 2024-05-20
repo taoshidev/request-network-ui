@@ -142,6 +142,8 @@ export function ValidatorEdit({
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
   };
+
+  console.log("from contracts:::::", contracts)
   return (
     <Group align="flex-start">
       <Modal
@@ -172,7 +174,7 @@ export function ValidatorEdit({
           </List>
         </Box>
       </Modal>
-      <Box className="w-64">
+      <Box>
         <NavLink
           active={activeSection === "edit"}
           label="Edit"
@@ -195,6 +197,7 @@ export function ValidatorEdit({
       <Box flex="1">
         {!validator.verified && (
           <Alert
+            className="shadow-sm"
             mb="xl"
             color="orange"
             radius="0"
@@ -205,7 +208,7 @@ export function ValidatorEdit({
               Your validator has not been verified yet. Please verify your
               validator so that customers can connect to your service.
             </Text>
-            <Button onClick={handleVerify} variant="white">
+            <Button onClick={handleVerify} variant="light">
               Verify
             </Button>
           </Alert>

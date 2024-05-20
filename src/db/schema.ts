@@ -135,7 +135,7 @@ export const endpoints = pgTable(
       .notNull()
       .references(() => contracts.id, { onDelete: "set null" }),
     walletAddress: varchar("wallet_address").unique(),
-    url: varchar("url").unique().notNull(),
+    url: varchar("url").notNull(),
     enabled: boolean("enabled").default(true).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),

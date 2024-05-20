@@ -171,7 +171,11 @@ export default function EndpointForm({
           {isCryptoType && (
             <Box mb="md">
               <TextInput
-                className={clsx(isCryptoType && "animate-slide-down")}
+                className={clsx(
+                  isCryptoType &&
+                    !form.getInputProps("walletAddress")?.value &&
+                    "animate-slide-down"
+                )}
                 label="ERC-20 wallet address"
                 withAsterisk={isCryptoType}
                 placeholder="Enter ERC-20 wallet address"

@@ -28,6 +28,7 @@ export function StatTable({
             className="mt-3 mb-6"
             highlightOnHover
             striped={Array.isArray(data)}
+            verticalSpacing="md"
           >
             <Table.Thead>
               <Table.Tr>

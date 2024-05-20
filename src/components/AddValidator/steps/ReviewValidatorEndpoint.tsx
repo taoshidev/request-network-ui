@@ -6,6 +6,7 @@ import React from "react";
 import { DateTime } from 'luxon';
 
 export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
+  console.log(form.values)
   return (
     <>
       <Title order={2} className="text-center">

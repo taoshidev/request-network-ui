@@ -4,7 +4,6 @@ import {
   Anchor,
   Menu,
   Indicator,
-  Image,
   Button,
   Text,
   Divider,
@@ -12,12 +11,9 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import NextImage from "next/image";
 import { IconLogout, IconUser, IconChevronDown } from "@tabler/icons-react";
 
 import { signout } from "@/actions/auth";
-
-import logo from "@/assets/logo.svg";
 
 export function Header() {
   const [opened, { toggle }] = useDisclosure();
@@ -28,31 +24,16 @@ export function Header() {
   };
 
   return (
-    <Group className="h-full px-2">
+    <Group className="h-full px-2 py-5 max-w-6xl m-auto">
       <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-      <Group className="flex-1 justify-between">
+      <Group className="flex-1 justify-between h-12">
         <Group className="items-center justify-center">
-          <Image
-            priority
-            component={NextImage}
-            src={logo}
-            alt="Taoshi"
-            w={40}
-            h={40}
-          />
           <Anchor
-            className="mr-1 font-adlam-display font-bold text-black"
+            className="mr-1 font-adlam-display text-zinc-800 text-3xl font-bold no-underline"
             component={Link}
             href="/dashboard"
           >
             taoshi
-          </Anchor>
-          <Anchor
-            className="text-xs text-black"
-            component={Link}
-            href="/dashboard"
-          >
-            Dashboard
           </Anchor>
         </Group>
         <Group className="ml-1" visibleFrom="sm">
@@ -80,11 +61,7 @@ export function Header() {
           >
             Contribute
           </Anchor>
-          <Anchor
-            className="text-sm text-black"
-            component={Link}
-            href="/faq"
-          >
+          <Anchor className="text-sm text-black" component={Link} href="/faq">
             Help
           </Anchor>
           <Anchor
@@ -94,6 +71,13 @@ export function Header() {
             target="_blank"
           >
             Support
+          </Anchor>
+          <Anchor
+            className="text-sm text-black"
+            component={Link}
+            href="/dashboard"
+          >
+            Dashboard
           </Anchor>
 
           <>
@@ -107,7 +91,7 @@ export function Header() {
                   <Text className="text-sm">Settings</Text>
                 </Button>
               </Menu.Target>
-              <Menu.Dropdown className="border border-dashed border-black">
+              <Menu.Dropdown>
                 <Menu.Item
                   component={Link}
                   href="/profile"
@@ -115,7 +99,7 @@ export function Header() {
                 >
                   Profile
                 </Menu.Item>
-                <Menu.Divider className="border-dashed bg-black" />
+                <Menu.Divider />
                 <Menu.Item
                   onClick={handleSignOut}
                   leftSection={<IconLogout size={16} stroke={1} />}
