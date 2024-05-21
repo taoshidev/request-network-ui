@@ -23,6 +23,7 @@ import { TAOSHI_REQUEST_KEY } from "@/constants";
 import styles from "./settings.module.css";
 import { useNotification } from "@/hooks/use-notification";
 import { StatTable } from "../StatTable";
+import { requestPayment } from "@/actions/request-payment";
 
 const updateSchema = z.object({
   name: z
@@ -50,7 +51,6 @@ export function Settings({ apiKey }: { apiKey: any }) {
     mode: "onChange",
     resolver: zodResolver(updateSchema),
   });
-
   const handleDeleteKey = async () => {
     setLoading(true);
     const res = await deleteKey({ keyId: apiKey.id });
@@ -78,6 +78,20 @@ export function Settings({ apiKey }: { apiKey: any }) {
   const handleCopy = (copy: () => void) => {
     localStorage.removeItem(TAOSHI_REQUEST_KEY);
     copy();
+  };
+
+  const sendPaymentRequest = async () => {
+    const requestPaymentRes = await requestPayment(apiKey.meta.proxyServiceId);
+
+    window.open(
+      `${requestPaymentRes.subscription.endpoint?.validator?.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`
+    );
+  };
+
+  const unsubscribe = () => {};
+
+  const stripePayment = () => {
+    !apiKey.meta?.subscription?.active ? unsubscribe() : sendPaymentRequest();
   };
 
   return (
@@ -153,6 +167,17 @@ export function Settings({ apiKey }: { apiKey: any }) {
           />
 
           <Group justify="flex-end" mt="xl">
+            {apiKey.meta?.currencyType === "FIAT" && (
+              <Button
+                onClick={stripePayment}
+                type="button"
+                variant="default"
+              >
+                {apiKey.meta?.subscription?.active
+                  ? "Unsubscribe From Endpoint"
+                  : "Pay For Endpoint"}
+              </Button>
+            )}
             <Button type="submit" variant="primary">
               Update Name
             </Button>
