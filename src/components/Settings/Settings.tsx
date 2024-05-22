@@ -28,7 +28,7 @@ import { TAOSHI_REQUEST_KEY } from "@/constants";
 import styles from "./settings.module.css";
 import { useNotification } from "@/hooks/use-notification";
 import { StatTable } from "../StatTable";
-import { requestPayment } from "@/actions/request-payment";
+import { requestPayment } from "@/actions/payments";
 import { ConfirmModal } from "../ConfirmModal";
 
 const updateSchema = z.object({
@@ -67,7 +67,7 @@ export function Settings({
   });
   const handleDeleteKey = async () => {
     setLoading(true);
-    const res = await deleteKey({ keyId: apiKey.id });
+    const res = await deleteKey({ keyId: apiKey?.id });
     if (res?.status !== 204) return notifyError(res?.message as string);
     notifySuccess(res?.message as string);
     setLoading(false);
@@ -78,7 +78,7 @@ export function Settings({
   const onUpdateKey: SubmitHandler<User> = async (values) => {
     setLoading(true);
     const res = await updateKey({
-      keyId: apiKey.id,
+      keyId: apiKey?.id,
       params: { name: values.name },
     });
 
@@ -185,8 +185,8 @@ export function Settings({
         <Box component="form" onSubmit={handleUpdateKey(onUpdateKey)} w="100%">
           <TextInput
             label="Edit Key Name"
-            defaultValue={apiKey.name}
-            placeholder={apiKey.name}
+            defaultValue={apiKey?.name}
+            placeholder={apiKey?.name}
             error={errors.name?.message}
             {...register("name", { required: true })}
           />
@@ -204,7 +204,7 @@ export function Settings({
           <Title order={2}>Requirements</Title>
         </Box> */}
 
-      {apiKey.meta?.currencyType === "FIAT" && (
+      {apiKey?.meta?.currencyType === "FIAT" && (
         <Box my="xl">
           <Alert
             className="shadow-sm"

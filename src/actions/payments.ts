@@ -5,6 +5,8 @@ import { sendToProxy } from "./apis";
 import { getSubscriptions } from "./subscriptions";
 import { subscriptions } from "@/db/schema";
 import { getAuthUser } from "./auth";
+import { getValidator } from "./validators";
+import { ValidatorType } from "@/db/types/validator";
 
 export async function requestPayment(proxyServiceId: string, redirect: string = '') {
   const currentUser = await getAuthUser();
@@ -36,4 +38,17 @@ export async function requestPayment(proxyServiceId: string, redirect: string = 
   });
 
   return { subscription, token: tokenRes?.token };
+}
+
+export async function checkForStripe(validatorId: string) {
+  const validator: ValidatorType = await getValidator({id: validatorId });
+  return await sendToProxy({
+    endpoint: {
+      url: 'http://localhost:8080' as string,
+      method: "POST",
+      path: "/has-stripe",
+    },
+    validatorId: validator.id as string,
+    data: {}
+  });
 }
