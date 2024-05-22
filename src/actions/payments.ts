@@ -7,9 +7,16 @@ import { subscriptions } from "@/db/schema";
 import { getAuthUser } from "./auth";
 import { getValidator } from "./validators";
 import { ValidatorType } from "@/db/types/validator";
+import { redirect } from "next/navigation";
 
-export async function requestPayment(proxyServiceId: string, redirect: string = '') {
+export async function requestPayment(proxyServiceId: string, returnRedirect: string = '') {
   const currentUser = await getAuthUser();
+
+  if (!currentUser) {
+    redirect("/login");
+    return null;
+  }
+
   const subRes = await getSubscriptions({
     where: and(eq(subscriptions.proxyServiceId, proxyServiceId)),
     with: {
@@ -33,7 +40,7 @@ export async function requestPayment(proxyServiceId: string, redirect: string = 
       url: subscription?.endpoint?.url,
       email: currentUser?.email,
       serviceId: subscription?.proxyServiceId as string,
-      redirect
+      redirect: returnRedirect
     },
   });
 
