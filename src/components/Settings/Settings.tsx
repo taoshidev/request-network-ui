@@ -109,9 +109,7 @@ export function Settings({
   const unsubscribe = async () => {
     const unSubRes = await cancelSubscription(subscription.proxyServiceId);
     console.log(unSubRes);
-    notifySuccess(
-      `Subscription cancelled successfully`
-    );
+    notifySuccess(`Subscription cancelled successfully`);
     unSubClose();
   };
 
@@ -186,33 +184,6 @@ export function Settings({
         </Box>
       )}
 
-      <Box my="xl">
-        <Title order={2} mb="sm">
-          General Settings
-        </Title>
-
-        <Box component="form" onSubmit={handleUpdateKey(onUpdateKey)} w="100%">
-          <TextInput
-            label="Edit Key Name"
-            defaultValue={apiKey?.name}
-            placeholder={apiKey?.name}
-            error={errors.name?.message}
-            {...register("name", { required: true })}
-          />
-
-          <Group justify="flex-end" mt="xl">
-            <Button type="submit" variant="primary">
-              Update Name
-            </Button>
-          </Group>
-        </Box>
-      </Box>
-      <StatTable data={apiKey} />
-
-      {/* <Box my="xl">
-          <Title order={2}>Requirements</Title>
-        </Box> */}
-
       {apiKey?.meta?.currencyType === "FIAT" && (
         <Box my="xl">
           <Alert
@@ -254,6 +225,33 @@ export function Settings({
           </Alert>
         </Box>
       )}
+
+      <Box my="xl">
+        <Title order={2} mb="sm">
+          General Settings
+        </Title>
+
+        <Box component="form" onSubmit={handleUpdateKey(onUpdateKey)} w="100%">
+          <TextInput
+            label="Edit Key Name"
+            defaultValue={apiKey?.name}
+            placeholder={apiKey?.name}
+            error={errors.name?.message}
+            {...register("name", { required: true })}
+          />
+
+          <Group justify="flex-end" mt="xl">
+            <Button type="submit" variant="primary">
+              Update Name
+            </Button>
+          </Group>
+        </Box>
+      </Box>
+      <StatTable data={apiKey} />
+
+      {/* <Box my="xl">
+          <Title order={2}>Requirements</Title>
+        </Box> */}
 
       <Box my="xl">
         <Alert
