@@ -22,6 +22,8 @@ export default async function Page({ params }: any) {
             columns: {
               signature: false,
               description: false,
+              hotkey: false,
+              account: false
             },
           },
         },
