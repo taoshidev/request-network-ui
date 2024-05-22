@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { eq, asc } from "drizzle-orm";
 import { db } from "@/db";
-import { endpoints } from "@/db/schema";
+import { endpoints, users } from "@/db/schema";
 import { validators } from "@/db/schema";
 import { subscriptions } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
@@ -49,6 +49,13 @@ export const getEndpointWithSubscription = async ({ id }: { id: string }) => {
     const results = await db
       .select({
         ...endpoints,
+        subscriptions: {
+          id: subscriptions.id,
+          user: {
+            id: users.id,
+            email: users.email
+          }
+        },
         validator: {
           id: validators.id,
           baseApiUrl: validators.baseApiUrl,
@@ -59,6 +66,7 @@ export const getEndpointWithSubscription = async ({ id }: { id: string }) => {
       .from(endpoints)
       .innerJoin(validators, eq(validators.id, endpoints.validatorId))
       .leftJoin(subscriptions, eq(subscriptions.endpointId, endpoints.id))
+      .leftJoin(users, eq(subscriptions.userId, users.id ))
       .where(eq(endpoints.id, id));
 
     return results;

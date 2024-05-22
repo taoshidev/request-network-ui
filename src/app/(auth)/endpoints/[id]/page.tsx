@@ -1,7 +1,7 @@
 import { getEndpointWithSubscription } from "@/actions/endpoints";
 import { subscriptions } from "@/db/schema";
 import { getSubscriptions } from "@/actions/subscriptions";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { getContracts } from "@/actions/contracts";
 import { contracts } from "@/db/schema";
 import { redirect } from "next/navigation";
@@ -22,19 +22,17 @@ export default async function Page({ params }: PageProps) {
     redirect("/login");
   }
 
-  const [result = {}] = (await getEndpointWithSubscription({ id })) ?? [];
-  const subs = await getSubscriptions({
-    where: and(eq(subscriptions.endpointId, id)),
-  });
+  const [result] = (await getEndpointWithSubscription({ id })) ?? [];
+  console.log(result);
   const userContracts = await getContracts({
     where: and(eq(contracts.userId, user.id)),
-    with: { services: true }
+    with: { services: true },
   });
   return (
     <UpdateEndpoint
-      endpoint={result}
+      endpoint={result || {}}
       contracts={userContracts}
-      subscriptionCount={subs?.length || 0}
+      subscriptionCount={result?.subscriptions?.length || 0}
     />
   );
 }

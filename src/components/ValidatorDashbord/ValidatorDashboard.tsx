@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { Endpoints } from "@/components/Endpoints";
 import { Validators } from "@/components/Validators";
 import { ValidatorStatTable } from "@/components/ValidatorStatTable";
-import { Alert, Divider, Text, Box, Group, Button, Card } from "@mantine/core";
+import { Alert, Text, Box, Group, Button, Card } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { ContractModal } from "@/components/ContractModal";
 import { useDisclosure } from "@mantine/hooks";

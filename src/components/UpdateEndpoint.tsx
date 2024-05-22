@@ -14,6 +14,7 @@ import { sendToProxy } from "@/actions/apis";
 import { EndpointType } from "@/db/types/endpoint";
 import { ContractType } from "@/db/types/contract";
 import EndpointForm from "./AddValidator/steps/EndpointForm";
+import { sendNotification } from "@/actions/notifications";
 
 const EndpointFormSchema = EndpointSchema.omit({
   validator: true,
@@ -64,6 +65,13 @@ export function UpdateEndpoint({
       }
 
       if (res?.error) return notifyError(res?.message);
+      console.log("endpoint service: ", endpoint?.subscriptions);
+      // sendNotification({
+      //   title: 'Endpoint Updated',
+      //   content: 'Endpoint has been updated',
+      //   user:
+      // });
+
       notifySuccess(res.message);
       router.refresh();
       setTimeout(() => router.back(), 1000);
@@ -97,7 +105,6 @@ export function UpdateEndpoint({
           }
         );
       }
-
       notifySuccess(res.message);
       router.refresh();
     } catch (error: Error | unknown) {

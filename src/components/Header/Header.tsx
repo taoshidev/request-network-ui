@@ -139,12 +139,11 @@ export function Header() {
       </Group>
 
       <Drawer
-        offset={8}
-        radius="md"
         position="right"
+        className="app-notifications"
         opened={notificationsOpened}
         onClose={toggleNotifications}
-        title="Authentication"
+        title="Notifications"
       >
         <Notification color={NOTIFICATION_TYPE.SUCCESS}>Test</Notification>
         <br />

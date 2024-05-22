@@ -1,5 +1,42 @@
 import { showNotification } from "@mantine/notifications";
-import { IconCheck, IconX, IconAlertCircle } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconX,
+  IconAlertCircle,
+  IconBomb,
+  IconAlertTriangle,
+} from "@tabler/icons-react";
+
+export enum NOTIFICATION_TYPE {
+  SUCCESS = "success",
+  WARNING = "warning",
+  DANGER = "danger",
+  INFO = "info",
+  BUG = "bug",
+}
+
+export const NotificationTypes = Object.keys(NOTIFICATION_TYPE).reduce(
+  (prev, key) => {
+    prev[NOTIFICATION_TYPE[key]] = key;
+    return prev;
+  },
+  {}
+);
+
+export enum NOTIFICATION_COLOR {
+  SUCCESS = "green",
+  WARNING = "yellow",
+  DANGER = "red",
+  INFO = "blue",
+  BUG = "black",
+}
+export const NOTIFICATION_ICON = {
+  SUCCESS: <IconCheck size={18} />,
+  WARNING: <IconAlertTriangle size={18} />,
+  DANGER: <IconX size={18} />,
+  INFO: <IconAlertCircle size={18} />,
+  BUG: <IconBomb size={18} />,
+};
 
 export const useNotification = () => {
   const notifySuccess = (message: string) => {
@@ -26,5 +63,17 @@ export const useNotification = () => {
     });
   };
 
-  return { notifySuccess, notifyError, notifyInfo };
+  const notify = (notification) => {
+    const type = NotificationTypes[notification.type];
+    showNotification({
+      title: notification.title,
+      message: notification.message,
+      icon: NOTIFICATION_ICON[type],
+      color: NOTIFICATION_COLOR[type],
+      loading: notification.loading || false,
+      autoClose: notification.autoClose,
+    });
+  };
+
+  return { notifySuccess, notifyError, notifyInfo, notify };
 };
