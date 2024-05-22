@@ -28,7 +28,7 @@ import { TAOSHI_REQUEST_KEY } from "@/constants";
 import styles from "./settings.module.css";
 import { useNotification } from "@/hooks/use-notification";
 import { StatTable } from "../StatTable";
-import { requestPayment } from "@/actions/payments";
+import { cancelSubscription, requestPayment } from "@/actions/payments";
 import { ConfirmModal } from "../ConfirmModal";
 
 const updateSchema = z.object({
@@ -95,16 +95,25 @@ export function Settings({
   };
 
   const sendPaymentRequest = async () => {
-
-    const requestPaymentRes = await requestPayment(subscription.proxyServiceId, window.location.pathname);
+    const requestPaymentRes = await requestPayment(
+      subscription.proxyServiceId,
+      window.location.pathname
+    );
 
     window.open(
       `${requestPaymentRes.subscription.endpoint?.validator?.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`,
-      '_blank'
+      "_blank"
     );
   };
 
-  const unsubscribe = () => {};
+  const unsubscribe = async () => {
+    const unSubRes = await cancelSubscription(subscription.proxyServiceId);
+    console.log(unSubRes);
+    notifySuccess(
+      `Subscription cancelled successfully`
+    );
+    unSubClose();
+  };
 
   const stripePayment = () => {
     subscription?.active ? unSubOpen() : sendPaymentRequest();
@@ -134,7 +143,7 @@ export function Settings({
         title="Confirm Unsubscribe"
         message="Are you sure you want to unsubscribe. Any applications using this project's keys will no longer be
         able to access the Taoshi's API."
-        onConfirm={unSubClose}
+        onConfirm={unsubscribe}
         onCancel={unSubClose}
       />
 
