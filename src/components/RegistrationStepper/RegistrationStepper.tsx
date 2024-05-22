@@ -219,6 +219,7 @@ export function RegistrationStepper({
         endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
         validatorId,
         subscription: {} as SubscriptionType,
+        proxyServiceId: ''
       };
 
       const keyPayload: { [key: string]: any; expires?: string | number } = {
@@ -253,9 +254,9 @@ export function RegistrationStepper({
         consumerApiUrl,
         consumerWalletAddress,
         serviceId: selectedService?.id,
-        contractId: registrationData?.endpoint?.contract?.id,
+        contractId: registrationData?.endpoint?.contract?.id
       } as SubscriptionType);
-      
+
       if (res?.error)
         return notifyError(
           res?.message || "Something went wrong creating subscription"
@@ -265,13 +266,6 @@ export function RegistrationStepper({
       meta.subscription = subscription;
 
       const { id: subscriptionId, apiSecret } = subscription;
-
-      await updateKey({
-        keyId,
-        params: {
-          meta,
-        },
-      });
 
       const proxyRes = await sendToProxy({
         endpoint: {
@@ -311,6 +305,16 @@ export function RegistrationStepper({
         return notifyError(
           updateRes?.message || "Something went wrong updating subscription"
         );
+
+      meta.proxyServiceId = proxyRes.serviceId;
+      meta.subscription.proxyServiceId = proxyRes.serviceId;
+
+      await updateKey({
+        keyId,
+        params: {
+          meta,
+        },
+      });
 
       notifySuccess(res?.message as string);
       setKeys({

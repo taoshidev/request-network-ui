@@ -16,6 +16,7 @@ export default async function Page() {
 
   if (!user) {
     redirect("/login");
+    return null;
   }
 
   if (!user.user_metadata.onboarded) {
