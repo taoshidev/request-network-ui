@@ -226,7 +226,7 @@ export const subscriptions = pgTable(
     consumerApiUrl: varchar("consumer_api_url").notNull(),
     consumerWalletAddress: varchar("consumer_wallet_address"),
     termsAccepted: boolean("terms_accepted").default(true).notNull(),
-    active: boolean("active").default(true).notNull(),
+    active: boolean("active").default(false).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
     deletedAt: timestamp("deleted_at"),
@@ -244,6 +244,10 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
   user: one(users, {
     fields: [subscriptions.userId],
     references: [users.id],
+  }),
+  service: one(services, {
+    fields: [subscriptions.serviceId],
+    references: [services.id],
   }),
 }));
 

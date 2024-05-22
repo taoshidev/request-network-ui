@@ -11,10 +11,15 @@ import {
   Modal,
   Alert,
   CopyButton,
+  Grid,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
-import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
+import {
+  IconAlertCircle,
+  IconClockDollar,
+  IconCopy,
+} from "@tabler/icons-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,6 +29,7 @@ import styles from "./settings.module.css";
 import { useNotification } from "@/hooks/use-notification";
 import { StatTable } from "../StatTable";
 import { requestPayment } from "@/actions/request-payment";
+import { ConfirmModal } from "../ConfirmModal";
 
 const updateSchema = z.object({
   name: z
@@ -34,8 +40,16 @@ const updateSchema = z.object({
 
 type User = z.infer<typeof updateSchema>;
 
-export function Settings({ apiKey }: { apiKey: any }) {
+export function Settings({
+  apiKey,
+  subscription,
+}: {
+  apiKey: any;
+  subscription: any;
+}) {
   const [opened, { open, close }] = useDisclosure(false);
+  const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
+    useDisclosure(false);
   const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -81,17 +95,19 @@ export function Settings({ apiKey }: { apiKey: any }) {
   };
 
   const sendPaymentRequest = async () => {
-    const requestPaymentRes = await requestPayment(apiKey.meta.proxyServiceId);
+
+    const requestPaymentRes = await requestPayment(subscription.proxyServiceId, window.location.pathname);
 
     window.open(
-      `${requestPaymentRes.subscription.endpoint?.validator?.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`
+      `${requestPaymentRes.subscription.endpoint?.validator?.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`,
+      '_blank'
     );
   };
 
   const unsubscribe = () => {};
 
   const stripePayment = () => {
-    !apiKey.meta?.subscription?.active ? unsubscribe() : sendPaymentRequest();
+    subscription?.active ? unSubOpen() : sendPaymentRequest();
   };
 
   return (
@@ -112,6 +128,15 @@ export function Settings({ apiKey }: { apiKey: any }) {
           </Button>
         </Box>
       </Modal>
+
+      <ConfirmModal
+        opened={unSubOpened}
+        title="Confirm Unsubscribe"
+        message="Are you sure you want to unsubscribe. Any applications using this project's keys will no longer be
+        able to access the Taoshi's API."
+        onConfirm={unSubClose}
+        onCancel={unSubClose}
+      />
 
       {key && key.id && (
         <Box my="xl" py="md" className={styles["one-time"]}>
@@ -167,17 +192,6 @@ export function Settings({ apiKey }: { apiKey: any }) {
           />
 
           <Group justify="flex-end" mt="xl">
-            {apiKey.meta?.currencyType === "FIAT" && (
-              <Button
-                onClick={stripePayment}
-                type="button"
-                variant="default"
-              >
-                {apiKey.meta?.subscription?.active
-                  ? "Unsubscribe From Endpoint"
-                  : "Pay For Endpoint"}
-              </Button>
-            )}
             <Button type="submit" variant="primary">
               Update Name
             </Button>
@@ -189,6 +203,48 @@ export function Settings({ apiKey }: { apiKey: any }) {
       {/* <Box my="xl">
           <Title order={2}>Requirements</Title>
         </Box> */}
+
+      {apiKey.meta?.currencyType === "FIAT" && (
+        <Box my="xl">
+          <Alert
+            className="shadow-sm"
+            variant="light"
+            color={subscription?.active ? "#33ad47" : "orange"}
+            title={
+              subscription?.active ? "Billing Information" : "Pay For Endpoint"
+            }
+            icon={
+              subscription?.active ? <IconClockDollar /> : <IconAlertCircle />
+            }
+          >
+            <Box>
+              {subscription?.active ? (
+                <Box>
+                  Endpoint subscription active.
+                  <Grid>
+                    <Grid.Col span={6}>
+                      <Text>Price: ${subscription?.service?.price}</Text>
+                      <Text>
+                        Validator: {subscription?.endpoint?.validator?.name}
+                      </Text>
+                    </Grid.Col>
+                    <Grid.Col span={6}></Grid.Col>
+                  </Grid>
+                </Box>
+              ) : (
+                <Box>Pay for endpoint use using Stripe.</Box>
+              )}
+              <Group justify="flex-end" mt="lg">
+                <Button onClick={stripePayment} type="button" variant="default">
+                  {subscription?.active
+                    ? "Unsubscribe From Endpoint"
+                    : "Pay For Endpoint"}
+                </Button>
+              </Group>
+            </Box>
+          </Alert>
+        </Box>
+      )}
 
       <Box my="xl">
         <Alert

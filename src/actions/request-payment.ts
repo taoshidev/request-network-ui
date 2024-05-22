@@ -6,7 +6,7 @@ import { getSubscriptions } from "./subscriptions";
 import { subscriptions } from "@/db/schema";
 import { getAuthUser } from "./auth";
 
-export async function requestPayment(proxyServiceId: string) {
+export async function requestPayment(proxyServiceId: string, redirect: string = '') {
   const currentUser = await getAuthUser();
   const subRes = await getSubscriptions({
     where: and(eq(subscriptions.proxyServiceId, proxyServiceId)),
@@ -31,6 +31,7 @@ export async function requestPayment(proxyServiceId: string) {
       url: subscription?.endpoint?.url,
       email: currentUser?.email,
       serviceId: subscription?.proxyServiceId as string,
+      redirect
     },
   });
 

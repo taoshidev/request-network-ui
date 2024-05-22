@@ -254,7 +254,7 @@ export function RegistrationStepper({
         consumerApiUrl,
         consumerWalletAddress,
         serviceId: selectedService?.id,
-        contractId: registrationData?.endpoint?.contract?.id,
+        contractId: registrationData?.endpoint?.contract?.id
       } as SubscriptionType);
 
       if (res?.error)
