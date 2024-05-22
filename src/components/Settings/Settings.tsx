@@ -100,10 +100,12 @@ export function Settings({
       window.location.pathname
     );
 
-    window.open(
-      `${requestPaymentRes.subscription.endpoint?.validator?.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`,
-      "_blank"
-    );
+    if (requestPaymentRes?.subscription?.endpoint?.validator?.baseApiUrl && requestPaymentRes.token) {
+      window.open(
+        `${requestPaymentRes.subscription.endpoint.validator.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`,
+        "_blank"
+      );
+    }
   };
 
   const unsubscribe = async () => {
