@@ -106,7 +106,7 @@ export function Header() {
             </Anchor>
 
             <>
-              <Divider color="black" variant="dashed" orientation="vertical" />
+              <Divider color="black" orientation="vertical" />
               <Menu position="bottom-end" offset={5} width={200}>
                 <Menu.Target>
                   <Button
