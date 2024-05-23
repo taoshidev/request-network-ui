@@ -103,7 +103,7 @@ export default function RequestOverTime({ data }) {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: "Requests",
+            legend: "Request",
             legendOffset: -40,
             legendPosition: "middle",
           }}
