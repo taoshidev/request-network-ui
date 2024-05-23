@@ -31,7 +31,7 @@ export default function RevenueOverTime({ data }) {
         <Text className="text-base font-bold">Revenue Over Time</Text>
         <Select
           value={timeframe}
-          onChange={(value) => setTimeframe(value)}
+          onChange={(value) => setTimeframe(value as string)}
           data={[
             { value: "daily", label: "Daily" },
             { value: "weekly", label: "Weekly" },
@@ -84,7 +84,7 @@ export default function RevenueOverTime({ data }) {
           axisTop={null}
           axisRight={null}
           axisBottom={{
-            orient: "bottom",
+            // orient: "bottom",
             tickSize: 5,
             tickPadding: 5,
             tickRotation: -30,
@@ -93,7 +93,7 @@ export default function RevenueOverTime({ data }) {
             legendPosition: "middle",
           }}
           axisLeft={{
-            orient: "left",
+            // orient: "left",
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,

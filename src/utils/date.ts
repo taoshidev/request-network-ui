@@ -1,13 +1,13 @@
-import dayjs from 'dayjs';
-import weekOfYear from 'dayjs/plugin/weekOfYear';
-import isoWeek from 'dayjs/plugin/isoWeek';
+import dayjs from "dayjs";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import isoWeek from "dayjs/plugin/isoWeek";
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
 
 export const getStartAndEndTimestamps = () => {
   const end = dayjs().valueOf();
-  const start = dayjs().subtract(30, 'day').valueOf();
+  const start = dayjs().subtract(30, "day").valueOf();
   return { start, end };
 };
 
@@ -27,7 +27,11 @@ export const aggregateDataByWeek = (data) => {
   });
 
   return Object.keys(aggregatedData)
-    .sort((a, b) => dayjs(a.split('-W')[0]).isoWeek(a.split('-W')[1]).unix() - dayjs(b.split('-W')[0]).isoWeek(b.split('-W')[1]).unix())
+    .sort(
+      (a, b) =>
+        dayjs(a.split("-W")[0]).isoWeek(+a.split("-W")[1]).unix() -
+        dayjs(b.split("-W")[0]).isoWeek(+b.split("-W")[1]).unix()
+    )
     .map((key) => ({
       x: key,
       y: aggregatedData[key].y,
@@ -50,7 +54,6 @@ export const aggregateDataByDay = (data) => {
   }));
 };
 
-
 const getStartOfMonth = (date) => {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 };
@@ -66,4 +69,3 @@ const getStartOfPreviousMonth = (date) => {
 const getEndOfPreviousMonth = (date) => {
   return new Date(date.getFullYear(), date.getMonth(), 0);
 };
-

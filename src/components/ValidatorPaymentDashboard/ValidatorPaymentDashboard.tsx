@@ -10,6 +10,7 @@ import { UserType } from "@/db/types/user";
 import { ValidatorType } from "@/db/types/validator";
 import { ContractType } from "@/db/types/contract";
 import { ValidatorKeyType } from "@/components/StatTable";
+import { SubscriptionType } from "@/db/types/subscription";
 import ConsumerTable from "@/components/ValidatorPaymentDashboard/ConsumerTable";
 import RevenueOverTime from "@/components/ValidatorPaymentDashboard/RevenueOverTime";
 import RequestOverTime from "@/components/ValidatorPaymentDashboard/RequestOverTime";
@@ -102,7 +103,6 @@ export function ValidatorPaymentDashboard({
   contracts: ContractType[];
   proxyServices: any;
 }) {
-
   const [transactions, setTransactions] = useState(
     proxyServices?.transactions || []
   );
@@ -117,13 +117,15 @@ export function ValidatorPaymentDashboard({
   const [paymentHistoryData, setPaymentHistoryData] = useState<any[]>([]);
   const [consumerMakeupData, setConsumerMakeupData] = useState<any[]>([]);
 
-  const [subscriptions, setSubscriptions] = useState([]);
+  const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
 
   const totalSuccessfulRequest = useMemo(() => {
     const successes =
-      stats?.flatMap((s) =>
-        (s.validator.keys || [])?.map((k) => k.usage.success)
-      ) || [];
+      stats?.flatMap((s) => {
+        const keys = s?.validator?.keys;
+        if (!Array.isArray(keys)) return 0;
+        return keys.map((k) => k.usage.success);
+      }) || [];
     return successes.reduce((total, success) => total + success, 0);
   }, [stats]);
 
@@ -172,7 +174,11 @@ export function ValidatorPaymentDashboard({
 
   useEffect(() => {
     const usageData = stats
-      ?.flatMap((s) => (s.validator.keys || []).flatMap((k) => k.monthlyUsage))
+      ?.flatMap((s) => {
+        const keys = s?.validator?.keys;
+        if (!Array.isArray(keys)) return 0;
+        return keys.flatMap((k) => k.monthlyUsage);
+      })
       .sort((a, b) => dayjs(a.time).unix() - dayjs(b.time).unix());
 
     const aggregatedRequestData = aggregateData(usageData);
@@ -244,7 +250,11 @@ export function ValidatorPaymentDashboard({
         />
         <StatCard
           title="Consumers"
-          value={stats?.[0]?.validator?.keys?.length}
+          value={
+            Array.isArray(stats?.[0]?.validator?.keys)
+              ? stats?.[0]?.validator?.keys?.length.toString()
+              : "0"
+          }
           percentage="-0.04%"
           comparison="Compared to last month"
           isPositive={false}
@@ -271,8 +281,8 @@ export function ValidatorPaymentDashboard({
             icon={<IconAlertCircle />}
           >
             <Text className="mb-7 text-zinc-800 text-base font-medium">
-              There's not enough data for this validator to generate revenue
-              data.
+              There&apos;s not enough data for this validator to generate
+              revenue data.
             </Text>
             <Text className="mb-7 text-zinc-800 text-base font-normal">
               Once customers the payment data will be aggregated and available
@@ -289,7 +299,7 @@ export function ValidatorPaymentDashboard({
             icon={<IconAlertCircle />}
           >
             <Text className="mb-7 text-zinc-800 text-base font-medium">
-              There's not enough payment history to generate data data.
+              There&apos;s not enough payment history to generate data data.
             </Text>
             <Text className="mb-7 text-zinc-800 text-base font-normal">
               Once customers starts making payments, data will be aggregated and
@@ -308,8 +318,8 @@ export function ValidatorPaymentDashboard({
             icon={<IconAlertCircle />}
           >
             <Text className="mb-7 text-zinc-800 text-base font-medium">
-              There's not enough data for this validator to generate usage data
-              data.
+              There&apos;s not enough data for this validator to generate usage
+              data data.
             </Text>
             <Text className="mb-7 text-zinc-800 text-base font-normal">
               Once customers starts sending requests, data will be aggregated
@@ -326,7 +336,7 @@ export function ValidatorPaymentDashboard({
             icon={<IconAlertCircle />}
           >
             <Text className="mb-7 text-zinc-800 text-base font-medium">
-              There's not customer data for this validator data.
+              There&apos;s not customer data for this validator data.
             </Text>
             <Text className="mb-7 text-zinc-800 text-base font-normal">
               Once there are enough data, the graph will be generated here.

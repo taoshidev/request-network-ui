@@ -104,29 +104,6 @@ export default function EndpointForm({
 
   return (
     <Box className={clsx(mode === "create" ? "pt-8" : "")}>
-      {mode !== "create" && form.values?.walletAddress?.length > 0 && (
-        <Box className="mb-4">
-          <Text className="text-sm text-left">Wallet Address</Text>
-          <CopyButton value={form.values?.walletAddress}>
-            {({ copied, copy }) => (
-              <Button
-                className="flex w-full"
-                rightSection={<IconCopy size={14} />}
-                variant="subtle"
-                onClick={() => {
-                  copy();
-                }}
-              >
-                <Text fw="bold">
-                  {copied
-                    ? `Copied wallet address`
-                    : form.values?.walletAddress}
-                </Text>
-              </Button>
-            )}
-          </CopyButton>
-        </Box>
-      )}
       <Box mb="md">
         <TextInput
           withAsterisk
