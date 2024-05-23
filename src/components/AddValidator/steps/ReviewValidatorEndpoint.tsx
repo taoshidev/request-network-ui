@@ -41,7 +41,7 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
               <Table.Tr>
                 <Table.Th>Base Api Url</Table.Th>
                 <Table.Td>{form.values.baseApiUrl}</Table.Td>
-                <Table.Th>Url</Table.Th>
+                <Table.Th>Path</Table.Th>
                 <Table.Td>{form.values.url}</Table.Td>
               </Table.Tr>
               <Table.Tr>

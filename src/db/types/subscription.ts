@@ -1,12 +1,14 @@
 import { z } from "zod";
 import { nullableSchema } from "@/utils/nullable";
 import { EndpointSchema } from "./endpoint";
+import { UserSchema } from "./user";
 
 export const SubscriptionSchema = z.object({
   id: z.string().uuid(),
   endpointId: z.string().uuid(),
   endpoint: z.lazy(() => EndpointSchema).optional(),
   userId: z.string().uuid(),
+  user: z.lazy(() => UserSchema).optional(),
   keyId: z.string().optional(),
   key: z.string().optional(),
   apiKey: z.string(),

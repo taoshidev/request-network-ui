@@ -143,7 +143,6 @@ export function ValidatorEdit({
     setActiveSection(section);
   };
 
-  console.log("from contracts:::::", contracts)
   return (
     <Group align="flex-start">
       <Modal

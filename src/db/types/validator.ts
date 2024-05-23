@@ -3,6 +3,7 @@ import { isAddress } from "@/utils/address";
 import { nullableSchema } from "@/utils/nullable";
 import { StatsSchema } from "./stat";
 import { EndpointSchema } from "./endpoint";
+import { isValidEthereumAddress } from "@/utils/address";
 
 export const ValidatorSchema = z.object({
   id: z.string().uuid().optional(),
@@ -25,6 +26,21 @@ export const ValidatorSchema = z.object({
     .refine((value) => isAddress({ address: value || "" }), {
       message: "Invalid Bittensor address",
     })
+    .nullish(),
+  walletAddress: z
+    .string()
+    .min(42, {
+      message:
+        "Wallet address must be at least 42 characters long including the '0x' prefix",
+    })
+    .max(42, {
+      message:
+        "Wallet address must be no more than 42 characters long including the '0x' prefix",
+    })
+    .refine(isValidEthereumAddress, {
+      message: "Please enter a valid Ethereum wallet address",
+    })
+    .optional()
     .nullish(),
   userId: z.string().uuid().nullish(),
   account: z.any().optional(),

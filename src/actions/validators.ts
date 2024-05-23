@@ -132,3 +132,39 @@ export const checkHotkeyExists = async (hotkey: string) => {
     if (error instanceof Error) return parseError(error);
   }
 };
+
+export const checkValidatorWalletAddressExists = async (address: string) => {
+  try {
+    const res = await db
+      .select()
+      .from(validators)
+      .where(eq(validators?.walletAddress, address));
+    return res?.length > 0;
+  } catch (error) {
+    if (error instanceof Error) return parseError(error);
+  }
+};
+
+/**
+ * Check if a property exists in the validators table.
+ * @param prop - The property to check. Example: { walletAddress: 'value' }
+ * @returns True if the property exists, false otherwise.
+ */
+export const checkPropExists = async (prop: { [key: string]: any }) => {
+  try {
+    const key = Object.keys(prop)[0];
+    const value = prop[key];
+
+    const res = await db
+      .select()
+      .from(validators)
+      .where(eq(validators[key], value));
+
+    return res.length > 0;
+  } catch (error) {
+    if (error instanceof Error) {
+      return parseError(error);
+    }
+    throw error;
+  }
+};

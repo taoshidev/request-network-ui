@@ -61,16 +61,27 @@ export function ValidatorDashboard({
             />
           </Card>
 
-          {stats.length > 0 && (
+          {stats?.length > 0 ? (
             <Card className="shadow-sm mt-7">
               <ValidatorStatTable data={stats} />
             </Card>
+          ) : (
+            <Alert
+              className="shadow-sm mt-7"
+              color="orange"
+              icon={<IconAlertCircle />}
+            >
+              <Text className="mb-7">
+                You don&apos;t have any customer yet. Verify your validator,
+                enable your endpoints to allow customers registration.
+              </Text>
+            </Alert>
           )}
         </>
       ) : (
         contracts?.length > 0 && (
           <Alert
-            className="shadow-sm"
+            className="shadow-sm mt-7"
             color="orange"
             icon={<IconAlertCircle />}
           >

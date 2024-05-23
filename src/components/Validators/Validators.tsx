@@ -94,6 +94,15 @@ export function Validators({
                       Edit
                     </Button>
                   </Table.Td>
+                  <Table.Td>
+                    <Button
+                      size="sm"
+                      variant="subtle"
+                      onClick={() => router.push(`/validators/${validator?.id}/payment-dashboard`)}
+                    >
+                      insight
+                    </Button>
+                  </Table.Td>
                 </Table.Tr>
               ))}
             </Table.Tbody>

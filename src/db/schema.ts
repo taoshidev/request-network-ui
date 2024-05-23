@@ -97,6 +97,7 @@ export const validators = pgTable("validators", {
   apiId: varchar("api_id"),
   apiKey: varchar("api_key"),
   apiSecret: varchar("api_secret"),
+  walletAddress: varchar("wallet_address").unique(),
   hotkey: varchar("hotkey", { length: 48 }).unique().notNull(),
   userId: uuid("user_id")
     .notNull()
@@ -134,7 +135,7 @@ export const endpoints = pgTable(
     contractId: uuid("contract_id")
       .notNull()
       .references(() => contracts.id, { onDelete: "set null" }),
-    walletAddress: varchar("wallet_address").unique(),
+    // walletAddress: varchar("wallet_address").unique(),
     url: varchar("url").notNull(),
     enabled: boolean("enabled").default(true).notNull(),
     active: boolean("active").default(true).notNull(),
@@ -157,7 +158,7 @@ export const services = pgTable("services", {
     .references(() => users.id, { onDelete: "cascade" }),
   contractId: uuid("contract_id")
     .notNull()
-    .references(() => contracts.id, { onDelete: "cascade" }),
+    .references(() => contracts.id, { onDelete: "set null" }),
   name: varchar("name"),
   price: varchar("price"),
   currencyType: currencyTypeEnum("currency_type").notNull().default("USDC"),
@@ -255,9 +256,9 @@ export const userSubscriptionRelations = relations(users, ({ many }) => ({
   subscriptions: many(subscriptions),
 }));
 
-export const userSubscriptionEndpointRelations = relations(
-  endpoints,
-  ({ many }) => ({
-    endpoints: many(endpoints),
-  })
-);
+// export const userSubscriptionEndpointRelations = relations(
+//   endpoints,
+//   ({ many }) => ({
+//     endpoints: many(endpoints),
+//   })
+// );

@@ -11,7 +11,7 @@ import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { UseFormReturnType } from "@mantine/form";
 import { EndpointType } from "@/db/types/endpoint";
-import { checkEndpointWalletAddressExists } from "@/actions/endpoints";
+import { checkPropExists } from "@/actions/validators";
 import { useNotification } from "@/hooks/use-notification";
 import { ContractType } from "@/db/types/contract";
 
@@ -82,10 +82,11 @@ export default function EndpointForm({
     const walletAddress = values.walletAddress;
     if (walletAddress) {
       try {
-        const exists = await checkEndpointWalletAddressExists(walletAddress);
+        const exists = await checkPropExists({walletAddress});
+
         if (exists) {
           notifyError(
-            "ERC-20 wallet address already in use by another endpoint."
+            "ERC-20 wallet address already in use by another validator."
           );
           setAddressExists(exists as boolean);
           onError?.({ error: true, reason: "Wallet address exists" });
@@ -103,29 +104,6 @@ export default function EndpointForm({
 
   return (
     <Box className={clsx(mode === "create" ? "pt-8" : "")}>
-      {mode !== "create" && form.values?.walletAddress?.length > 0 && (
-        <Box className="mb-4">
-          <Text className="text-sm text-left">Wallet Address</Text>
-          <CopyButton value={form.values?.walletAddress}>
-            {({ copied, copy }) => (
-              <Button
-                className="flex w-full"
-                rightSection={<IconCopy size={14} />}
-                variant="subtle"
-                onClick={() => {
-                  copy();
-                }}
-              >
-                <Text fw="bold">
-                  {copied
-                    ? `Copied wallet address`
-                    : form.values?.walletAddress}
-                </Text>
-              </Button>
-            )}
-          </CopyButton>
-        </Box>
-      )}
       <Box mb="md">
         <TextInput
           withAsterisk
@@ -191,7 +169,7 @@ export default function EndpointForm({
               />
               {addressExists && (
                 <p className="pt-1 text-xs text-[#fa5252] mantine-TextInput-error">
-                  Wallet address is already in use by another endpoint.
+                  Wallet address is already in use by another validator.
                 </p>
               )}
             </Box>
