@@ -116,7 +116,6 @@ export function ValidatorPaymentDashboard({
 
   const [paymentHistoryData, setPaymentHistoryData] = useState<any[]>([]);
   const [consumerMakeupData, setConsumerMakeupData] = useState<any[]>([]);
-
   const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
 
   const totalSuccessfulRequest = useMemo(() => {

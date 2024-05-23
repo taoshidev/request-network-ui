@@ -90,7 +90,6 @@ export default function RequestOverTime({ data }) {
           axisTop={null}
           axisRight={null}
           axisBottom={{
-            // orient: "bottom",
             tickSize: 5,
             tickPadding: 5,
             tickRotation: -30,
@@ -99,7 +98,6 @@ export default function RequestOverTime({ data }) {
             legendPosition: "middle",
           }}
           axisLeft={{
-            // orient: "left",
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
