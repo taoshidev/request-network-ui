@@ -214,7 +214,7 @@ export function RegistrationStepper({
         consumerServiceId: selectedService?.id,
         consumerWalletAddress,
         currencyType: selectedService?.currencyType,
-        validatorWalletAddress: endpoint?.walletAddress,
+        validatorWalletAddress: validator?.walletAddress,
         hotkey: registrationData?.validator?.hotkey,
         endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
         validatorId,
@@ -286,7 +286,7 @@ export function RegistrationStepper({
           currencyType: selectedService?.currencyType,
           consumerWalletAddress: subscription?.consumerWalletAddress,
           hotkey: registrationData?.validator?.hotkey,
-          validatorWalletAddress: endpoint?.walletAddress,
+          validatorWalletAddress: validator?.walletAddress,
           price: selectedService?.price,
           meta,
         },
@@ -320,7 +320,7 @@ export function RegistrationStepper({
       setKeys({
         apiKey: key,
         apiSecret: apiSecret!,
-        walletAddress: endpoint?.walletAddress,
+        walletAddress: validator?.walletAddress!,
         endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
       });
       open();

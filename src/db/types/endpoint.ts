@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { nullableSchema } from "@/utils/nullable";
-import { isValidEthereumAddress } from "@/utils/address";
+// import { isValidEthereumAddress } from "@/utils/address";
 import { ValidatorSchema } from "./validator";
 import { SubnetSchema } from "./subnet";
 import { ContractSchema } from "./contract";
@@ -15,19 +15,19 @@ export const EndpointSchema = z.object({
   contractId: z.string().uuid().optional(),
   contract: ContractSchema.optional().nullish(),
   subscriptions: z.lazy(() => z.array(SubscriptionSchema)).optional(),
-  walletAddress: z
-    .string()
-    .min(42, {
-      message:
-        "Wallet address must be at least 42 characters long including the '0x' prefix",
-    })
-    .max(42, {
-      message:
-        "Wallet address must be no more than 42 characters long including the '0x' prefix",
-    })
-    .refine(isValidEthereumAddress, {
-      message: "Please enter a valid Ethereum wallet address",
-    }).optional().nullish(),
+  // walletAddress: z
+  //   .string()
+  //   .min(42, {
+  //     message:
+  //       "Wallet address must be at least 42 characters long including the '0x' prefix",
+  //   })
+  //   .max(42, {
+  //     message:
+  //       "Wallet address must be no more than 42 characters long including the '0x' prefix",
+  //   })
+  //   .refine(isValidEthereumAddress, {
+  //     message: "Please enter a valid Ethereum wallet address",
+  //   }).optional().nullish(),
   url: z.string().regex(/^\/[\w-]+(\/[\w-]+)*$/, {
     message: "Invalid endpoint path format",
   }),

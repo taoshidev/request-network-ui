@@ -102,9 +102,9 @@ export default function ValidatorStepper({
   const onSubmit = async (values: Partial<ValidatorType & EndpointType>) => {
     setLoading(true);
 
-    const { name, description, userId, hotkey, baseApiUrl, ...endpoint } =
+    const { name, description, userId, hotkey, baseApiUrl, walletAddress, ...endpoint } =
       values;
-    const validator = { name, description, userId, hotkey, baseApiUrl };
+    const validator = { name, description, userId, hotkey, baseApiUrl, walletAddress };
     try {
       const res = await createValidatorEndpoint(validator, endpoint);
 

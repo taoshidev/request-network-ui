@@ -70,10 +70,8 @@ export function ContractModal({
     setServices(contract?.services || []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract]);
-  console.log("contract.services::::", contract?.services);
-  console.log("safeParse.....", ContractSchema.safeParse(form.values));
+
   const onSubmit = async (values: Partial<ContractType>) => {
-    console.log("values::::", values);
     setLoading(true);
     try {
       if (!contract) delete values.id;

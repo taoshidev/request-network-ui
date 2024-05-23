@@ -121,7 +121,7 @@ export const checkEndpointWalletAddressExists = async (address: string) => {
     const res = await db
       .select()
       .from(endpoints)
-      .where(eq(endpoints.walletAddress, address));
+      .where(eq(endpoints?.walletAddress, address));
     return res?.length > 0;
   } catch (error) {
     if (error instanceof Error) return parseError(error);

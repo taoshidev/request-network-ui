@@ -101,9 +101,11 @@ export function Consumer({
           icon={<IconAlertCircle />}
         >
           <Text className="mb-2 text-base">
-            You don&apos;t have any Api Keys yet
+            You don&apos;t have any subscriptions yet. Browse available subnets,
           </Text>
-          <Text>Create your first API key and start receiving requests.</Text>
+          <Text className="mb-2 text-base">
+            subscribe to your favorite validators and start receiving data.
+          </Text>
         </Alert>
       )}
 
