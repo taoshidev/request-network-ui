@@ -110,7 +110,6 @@ export function Settings({
 
   const unsubscribe = async () => {
     const unSubRes = await cancelSubscription(subscription.proxyServiceId);
-    console.log(unSubRes);
     notifySuccess(`Subscription cancelled successfully`);
     unSubClose();
   };

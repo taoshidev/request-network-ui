@@ -14,11 +14,12 @@ import { sendToProxy } from "@/actions/apis";
 import { EndpointType } from "@/db/types/endpoint";
 import { ContractType } from "@/db/types/contract";
 import EndpointForm from "./AddValidator/steps/EndpointForm";
+import { omit as _omit } from "lodash";
 import { sendNotification } from "@/actions/notifications";
 
 const EndpointFormSchema = EndpointSchema.omit({
   validator: true,
-  subscription: true,
+  subscriptions: true,
 });
 
 export function UpdateEndpoint({
@@ -44,15 +45,16 @@ export function UpdateEndpoint({
 
   const onSubmit = async (values: any) => {
     setLoading(true);
-    // NOTE: must remove the keys otherwise it will fail silently
-    delete values.validator;
-    delete values.subscription;
-
     const { id } = endpoint;
     const { id: validatorId, baseApiUrl: url, apiPrefix } = endpoint?.validator;
 
     try {
-      const res = await updateEndpoint({ id, ...values });
+      // NOTE: must remove 'validator' and 'subscriptions' keys otherwise it will fail silently
+      const res = await updateEndpoint({
+        id,
+        ..._omit(values, ["validator", "subscriptions"]),
+      });
+
       if (res?.data) {
         await updateProxy(
           url,
@@ -65,12 +67,26 @@ export function UpdateEndpoint({
       }
 
       if (res?.error) return notifyError(res?.message);
-      console.log("endpoint service: ", endpoint?.subscriptions);
-      // sendNotification({
-      //   title: 'Endpoint Updated',
-      //   content: 'Endpoint has been updated',
-      //   user:
-      // });
+
+      const users = endpoint?.subscriptions.reduce(
+        (prev: any, subscription: any) => {
+          prev[subscription.user.email] = subscription.user;
+          return prev;
+        },
+        {}
+      );
+
+      if (endpoint?.url !== values.url) {
+        Object.keys(users)
+          .map((key) => users[key])
+          .forEach((user) => {
+            sendNotification({
+              title: "Endpoint Updated",
+              content: `Endpoint has been updated. Endpoint "${endpoint.url}" has been changed to "${values.url}".`,
+              user,
+            });
+          });
+      }
 
       notifySuccess(res.message);
       router.refresh();

@@ -44,34 +44,39 @@ export const getEndpoint = async ({ id }: { id: string }) => {
   }
 };
 
-export const getEndpointWithSubscription = async ({ id }: { id: string }) => {
+export const getEndpointWithSubscription = async ({ id }: { id: string }): Promise<EndpointType | Error> => {
   try {
-    const results = await db
-      .select({
-        ...endpoints,
+    const results = await db.query.endpoints.findFirst({
+      where: eq(endpoints.id, id),
+      with: {
         subscriptions: {
-          id: subscriptions.id,
-          user: {
-            id: users.id,
-            email: users.email
+          columns: {
+            id: true
+          },
+          with: {
+            user: {
+              columns: {
+                id: true,
+                email: true
+              }
+            }
           }
         },
         validator: {
-          id: validators.id,
-          baseApiUrl: validators.baseApiUrl,
-          hotkey: validators.hotkey,
-          apiPrefix: validators.apiPrefix,
-        },
-      } as any)
-      .from(endpoints)
-      .innerJoin(validators, eq(validators.id, endpoints.validatorId))
-      .leftJoin(subscriptions, eq(subscriptions.endpointId, endpoints.id))
-      .leftJoin(users, eq(subscriptions.userId, users.id ))
-      .where(eq(endpoints.id, id));
+          columns: {
+            id: true,
+            baseApiUrl: true,
+            hotkey: true,
+            apiPrefix: true
+          }
+        }
+      }
+    });
 
-    return results;
+    return results as EndpointType;
   } catch (error) {
     if (error instanceof Error) console.log(error.stack);
+    return parseError(error);
   }
 };
 
@@ -106,18 +111,6 @@ export const updateEndpoint = async ({
       .where(eq(endpoints.id, id as string))
       .returning();
 
-    // Endpoint changed email
-    if (currentEndpoint?.[0]?.url !== values.url) {
-      // sendEmail({
-      //   to: 'data.user.email',
-      //   template: "endpoint-updated",
-      //   subject: "Endpoint Updated",
-      //   templateVariables: {
-      //     name: res.name;
-      //     url: res.url
-      //   },
-      // });
-    }  
     return parseResult(res, { filter: ["url", "subnet", "validator"] });
   } catch (error) {
     return parseError(error);

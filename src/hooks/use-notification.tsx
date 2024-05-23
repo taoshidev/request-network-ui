@@ -64,10 +64,10 @@ export const useNotification = () => {
   };
 
   const notify = (notification) => {
-    const type = NotificationTypes[notification.type];
+    const type = NotificationTypes[notification.type || NOTIFICATION_TYPE.SUCCESS];
     showNotification({
       title: notification.title,
-      message: notification.message,
+      message: notification.content,
       icon: NOTIFICATION_ICON[type],
       color: NOTIFICATION_COLOR[type],
       loading: notification.loading || false,

@@ -7,6 +7,7 @@ import { contracts } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/actions/auth";
 import { UpdateEndpoint } from "@/components/UpdateEndpoint";
+import { EndpointType } from "@/db/types/endpoint";
 interface PageProps {
   params: {
     id: string;
@@ -22,8 +23,8 @@ export default async function Page({ params }: PageProps) {
     redirect("/login");
   }
 
-  const [result] = (await getEndpointWithSubscription({ id })) ?? [];
-  console.log(result);
+  const result: EndpointType = await getEndpointWithSubscription({ id });
+
   const userContracts = await getContracts({
     where: and(eq(contracts.userId, user.id)),
     with: { services: true },
