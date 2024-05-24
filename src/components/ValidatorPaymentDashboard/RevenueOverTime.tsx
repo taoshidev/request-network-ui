@@ -84,7 +84,6 @@ export default function RevenueOverTime({ data }) {
           axisTop={null}
           axisRight={null}
           axisBottom={{
-            // orient: "bottom",
             tickSize: 5,
             tickPadding: 5,
             tickRotation: -30,
@@ -93,7 +92,6 @@ export default function RevenueOverTime({ data }) {
             legendPosition: "middle",
           }}
           axisLeft={{
-            // orient: "left",
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,

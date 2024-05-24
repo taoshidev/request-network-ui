@@ -6,7 +6,7 @@ import { ServiceSchema } from "./service";
 export const ContractSchema = z.object({
   id: z.string().uuid(),
   userId: z.string().uuid(),
-  user: UserSchema.optional().nullish(),
+  user: z.lazy(() => UserSchema).optional().nullish(),
   services: z.lazy(() => z.array(ServiceSchema)).optional(),
   title: z.string().min(8, { message: "Title must be at least 8 characters" }),
   content: z

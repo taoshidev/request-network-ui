@@ -8,7 +8,10 @@ dayjs.extend(isoWeek);
 export const getStartAndEndTimestamps = () => {
   const end = dayjs().valueOf();
   const start = dayjs().subtract(30, "day").valueOf();
-  return { start, end };
+  const prevEnd = start;
+  const prevStart = dayjs(start).subtract(1, 'month').unix() * 1000;
+
+  return { start, end, prevStart, prevEnd };
 };
 
 export const aggregateDataByWeek = (data) => {

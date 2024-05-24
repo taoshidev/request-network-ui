@@ -3,6 +3,7 @@ import { isAddress } from "@/utils/address";
 import { nullableSchema } from "@/utils/nullable";
 import { StatsSchema } from "./stat";
 import { EndpointSchema } from "./endpoint";
+import { SubscriptionSchema } from "./subscription";
 import { isValidEthereumAddress } from "@/utils/address";
 
 export const ValidatorSchema = z.object({
@@ -47,6 +48,7 @@ export const ValidatorSchema = z.object({
   signature: z.string().optional(),
   verified: z.boolean().optional(),
   endpoints: z.lazy(() => z.array(EndpointSchema)).optional(),
+  subscriptions: z.lazy(() => z.array(SubscriptionSchema)).optional(),
   stats: StatsSchema.optional(),
   active: z.boolean().optional(),
   createdAt: z

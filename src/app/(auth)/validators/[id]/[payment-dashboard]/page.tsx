@@ -2,17 +2,17 @@ import { getValidator } from "@/actions/validators";
 import { ValidatorType } from "@/db/types/validator";
 import { getAuthUser } from "@/actions/auth";
 import { redirect } from "next/navigation";
-import { getContracts } from "@/actions/contracts";
 import { and, eq } from "drizzle-orm";
-import { contracts, services, validators } from "@/db/schema";
-import { getServices } from "@/actions/services";
+import { validators } from "@/db/schema";
 import { ValidatorPaymentDashboard } from "@/components/ValidatorPaymentDashboard/ValidatorPaymentDashboard";
 import { getValidators } from "@/actions/validators";
 import { getUserAPIKeys, getVerifications } from "@/actions/keys";
 import { sendToProxy } from "@/actions/apis";
-import { getSubscriptions } from "@/actions/subscriptions";
-import { subscriptions } from "@/db/schema";
 import { getStartAndEndTimestamps } from "@/utils/date";
+import { fetchSubscriptions } from "@/utils/validators";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function Page({ params }: any) {
   const { id } = params;
@@ -21,24 +21,6 @@ export default async function Page({ params }: any) {
   if (!user) {
     redirect("/login");
   }
-
-  const userServices = await getServices({
-    where: and(eq(services.userId, user.id)),
-  });
-
-  let subs = await getSubscriptions({
-    where: and(eq(subscriptions.userId, user.id)),
-    with: {
-      endpoint: {
-        with: {
-          validator: true,
-        },
-      },
-      user: true,
-    },
-  });
-
-  if (subs?.error) subs = [];
 
   let validatorArr = await getValidators({
     where: and(eq(validators.userId, user.id), eq(validators.id, id)),
@@ -67,13 +49,15 @@ export default async function Page({ params }: any) {
 
   if (validatorArr?.error) validatorArr = [];
 
-  const { start, end } = getStartAndEndTimestamps();
+  const { start, end, prevStart, prevEnd } = getStartAndEndTimestamps();
 
   const fetchVerificationsAndUsage = async (apiId: string) => {
     const res = await getUserAPIKeys({ apiId });
 
     const verifications = res?.result?.keys?.map(async (k) => {
-      const verification = await getVerifications({ keyId: k?.id });
+      const verification = await getVerifications({
+        keyId: k?.id,
+      });
       return Object.assign(k, {
         usage: verification?.result?.verifications?.[0] || {
           time: null,
@@ -95,10 +79,27 @@ export default async function Page({ params }: any) {
       });
     });
 
-    const usage = await Promise.all(verifications!);
-    const usage2 = await Promise.all(monthlyVerifications!);
+    const prevMonthlyVerifications = res?.result?.keys?.map(async (k) => {
+      const prevMonthlyVerification = await getVerifications({
+        keyId: k?.id,
+        start: prevStart,
+        end: prevEnd,
+      });
+      return Object.assign(k, {
+        prevMonthlyUsage: prevMonthlyVerification?.result?.verifications || [],
+      });
+    });
 
-    return { ...res?.result, keys: usage, monthlyKeys: usage2 };
+    const usage = await Promise.all(verifications!);
+    const monthlyUsage = await Promise.all(monthlyVerifications!);
+    const prevMonthlyUsage = await Promise.all(prevMonthlyVerifications!);
+
+    return {
+      ...res?.result,
+      keys: usage,
+      monthlyKeys: monthlyUsage,
+      prevMonthlyKeys: prevMonthlyUsage,
+    };
   };
 
   const promises = (validatorArr || []).map(async (v: ValidatorType) => {
@@ -108,47 +109,81 @@ export default async function Page({ params }: any) {
 
   const stats = await Promise.all(promises);
 
-  const userContracts = await getContracts({
-    where: and(eq(contracts.userId, user.id)),
-    with: { services: true },
-  });
-
   const { id: validatorId, baseApiUrl: url, apiPrefix } = validator!;
 
-  const proxyRes = await sendToProxy({
-    endpoint: {
-      url: validator?.baseApiUrl!,
-      method: "POST",
-      path: `${apiPrefix}/services/query`,
-    },
-    validatorId: validatorId!,
-    data: {
-      where: [
-        {
-          type: "eq",
-          column: "validatorId",
-          value: validatorId,
-        },
-      ],
-      with: {
-        transactions: true,
+  const fetchTransactions = async (start: number, end: number) => {
+    const res = await sendToProxy({
+      endpoint: {
+        url: validator?.baseApiUrl!,
+        method: "POST",
+        path: `${apiPrefix}/services/query`,
       },
-    },
-  });
+      validatorId: validatorId!,
+      data: {
+        where: [
+          {
+            type: "eq",
+            column: "validatorId",
+            value: validatorId!,
+          },
+        ],
+        with: {
+          transactions: {
+            where: [
+              {
+                type: "gte",
+                column: "createdAt",
+                value: start,
+              },
+              {
+                type: "lte",
+                column: "createdAt",
+                value: end,
+              },
+            ],
+          },
+        },
+      },
+    });
 
-  if (proxyRes?.error) {
-    console.log(proxyRes?.error);
-  }
-  const proxyServices = proxyRes?.data || [];
+    if (res?.error) {
+      console.log(res?.error);
+      return [];
+    }
+
+    const services = res?.data || [];
+    const transactions = services.flatMap((service: any) =>
+      service.transactions.map((t: any) => ({
+        ...t,
+        consumerServiceId: service.consumerServiceId,
+      }))
+    );
+
+    return transactions;
+  };
+
+  const currentTransactions = await fetchTransactions(start, end);
+  const previousTransactions = await fetchTransactions(prevStart, prevEnd);
+
+  const currentSubscriptions = await fetchSubscriptions(
+    id,
+    new Date(start).toISOString(),
+    new Date(end).toISOString()
+  );
+  const previousSubscriptions = await fetchSubscriptions(
+    id,
+    new Date(prevStart).toISOString(),
+    new Date(prevEnd).toISOString()
+  );
 
   return (
     <ValidatorPaymentDashboard
-      user={user}
       validator={validatorArr?.[0] || []}
-      contracts={userContracts}
       stats={stats!}
-      proxyServices={proxyServices}
-      // services={userServices}
+      currentTransactions={currentTransactions || []}
+      previousTransactions={previousTransactions || []}
+      currentSubscriptions={currentSubscriptions}
+      previousSubscriptions={previousSubscriptions}
     />
   );
 }
