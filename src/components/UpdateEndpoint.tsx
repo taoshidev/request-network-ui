@@ -14,7 +14,7 @@ import { sendToProxy } from "@/actions/apis";
 import { EndpointType } from "@/db/types/endpoint";
 import { ContractType } from "@/db/types/contract";
 import EndpointForm from "./AddValidator/steps/EndpointForm";
-import { omit as _omit } from "lodash";
+import { omit as _omit, isEmpty as _isEmpty } from "lodash";
 import { sendNotification } from "@/actions/notifications";
 import { UserType } from "@/db/types/user";
 
@@ -79,15 +79,15 @@ export function UpdateEndpoint({
         {}
       );
 
-      if (endpoint?.url !== values.url) {
-          await sendNotification({
-            type: NOTIFICATION_TYPE.WARNING,
-            subject: "Endpoint Updated",
-            content: `Endpoint has been updated. Endpoint "${endpoint.url}" has been changed to "${values.url}".`,
-            fromUser: user.email,
-            fromUserId: user.id,
-            userNotifications: Object.keys(users).map((key) => users[key]),
-          });
+      if (endpoint?.url !== values.url && !_isEmpty(users)) {
+        await sendNotification({
+          type: NOTIFICATION_TYPE.WARNING,
+          subject: "Endpoint Updated",
+          content: `Endpoint has been updated. Endpoint "${endpoint.url}" has been changed to "${values.url}".`,
+          fromUser: user.email,
+          fromUserId: user.id,
+          userNotifications: Object.keys(users).map((key) => users[key]),
+        });
       }
 
       notifySuccess(res.message);

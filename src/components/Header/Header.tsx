@@ -9,10 +9,11 @@ import {
   Divider,
   Drawer,
   Notification,
+  Loader,
+  Box,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   IconLogout,
   IconUser,
@@ -22,15 +23,22 @@ import {
 import useSWR from "swr";
 import { signout } from "@/actions/auth";
 import { getUserNotifications } from "@/actions/notifications";
-import { NOTIFICATION_COLOR, NotificationTypes } from "@/hooks/use-notification";
+import {
+  NOTIFICATION_COLOR,
+  NotificationTypes,
+} from "@/hooks/use-notification";
+import { UserNotificationType } from "@/db/types/user-notifications";
+import { isArray as _isArray } from "lodash";
 
 export function Header() {
-  const { data: userNotifications } = useSWR("/api/notifications", async () => {
-    return await getUserNotifications("c6174b67-6942-4ec0-921c-5f6792e8be0b");
-  });
-  console.log(userNotifications);
+  let { data: userNotifications, isLoading: notificationIsLoading } = useSWR(
+    "/api/user-notifications",
+    async () => await getUserNotifications(),
+    { refreshInterval: 5000 }
+  );
+  if (!_isArray(userNotifications)) userNotifications = [];
+
   const [opened, { toggle }] = useDisclosure();
-  const router = useRouter();
   const [notificationsOpened, { toggle: toggleNotifications }] =
     useDisclosure();
 
@@ -41,10 +49,18 @@ export function Header() {
   return (
     <>
       <Button
-        variant={true ? "filled" : "outline"}
+        variant={
+          userNotifications?.length &&
+          userNotifications.some((un: UserNotificationType) => !un.viewed)
+            ? "filled"
+            : "outline"
+        }
         className={
           "float-end rounded-full px-2 top-6 right-5 notify-bell" +
-          (true ? " active" : "")
+          (userNotifications?.length &&
+          userNotifications.some((un: UserNotificationType) => !un.viewed)
+            ? " active"
+            : "")
         }
         onClick={toggleNotifications}
       >
@@ -147,18 +163,26 @@ export function Header() {
         title="Notifications"
       >
         <br />
-        {(userNotifications || []).map((userNotification) => (
-          <Notification
-            key={userNotification.id}
-            className="shadow-md border-gray-200 mb-3"
-            color={
-              NOTIFICATION_COLOR[NotificationTypes[userNotification.notification.type]]
-            }
-            title={userNotification.notification.subject}
-          >
-            {userNotification.notification.content}
-          </Notification>
-        ))}
+        {notificationIsLoading ? (
+          <Box className="text-center">
+            <Loader size="xl" />
+          </Box>
+        ) : (
+          (userNotifications || []).map((userNotification) => (
+            <Notification
+              key={userNotification.id}
+              className="shadow-md border-gray-200 mb-3"
+              color={
+                NOTIFICATION_COLOR[
+                  NotificationTypes[userNotification.notification.type]
+                ]
+              }
+              title={userNotification.notification.subject}
+            >
+              {userNotification.notification.content}
+            </Notification>
+          ))
+        )}
       </Drawer>
     </>
   );
