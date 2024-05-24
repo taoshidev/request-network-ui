@@ -71,8 +71,7 @@ export function ValidatorEdit({
   });
 
   const onSubmit = async (
-    values: Pick<ValidatorType, "name" | "description">,
-    event: FormEvent<HTMLFormElement> | undefined
+    values: Pick<ValidatorType, "name" | "description">
   ) => {
     setLoading(true);
     try {
