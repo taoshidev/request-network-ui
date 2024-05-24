@@ -70,9 +70,7 @@ export function ValidatorEdit({
     validate: zodResolver(ValidatorEditSchema),
   });
 
-  const onSubmit = async (
-    values: Pick<ValidatorType, "name" | "description">
-  ) => {
+  const onSubmit = async (values) => {
     setLoading(true);
     try {
       const res = await updateValidator({ id: validator.id, ...values });
