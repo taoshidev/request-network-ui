@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { Alert, Text, Box, Button, Title, Select } from "@mantine/core";
 import TransactionsTable from "@/components/ValidatorPaymentDashboard/TransactionTable";
 import { IconAlertCircle } from "@tabler/icons-react";
@@ -21,8 +21,9 @@ import {
   fillMissingDatesForPaymentHistory,
   calculatePercentageChange,
 } from "@/utils/validators";
-
+import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import clsx from "clsx";
 
 const generateConsumerMakeupData = (endpoints: EndpointType[] = []) => {
   return endpoints.map((endpoint) => ({
@@ -47,6 +48,7 @@ export function ValidatorPaymentDashboard({
   currentSubscriptions: SubscriptionType[];
   previousSubscriptions: SubscriptionType[];
 }) {
+  const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState(currentTransactions);
   const [revenueData, setRevenueData] = useState<
     { id: string; color: string; data: { x: string; y: number }[] }[]
@@ -65,6 +67,8 @@ export function ValidatorPaymentDashboard({
   const [selectedSubscription, setSelectedSubscription] = useState<
     string | null
   >(null);
+
+  const router = useRouter();
 
   const monthlyRequests = useMemo(() => {
     const monthlyUsage =
@@ -126,6 +130,14 @@ export function ValidatorPaymentDashboard({
     () => calculatePercentageChange(currentConsumers, previousConsumers),
     [currentConsumers, previousConsumers]
   );
+
+  useEffect(() => {
+    console.log("here");
+    setLoading(true);
+    if (stats && currentTransactions && currentSubscriptions) {
+      setLoading(false);
+    }
+  }, [stats, currentTransactions, currentSubscriptions]);
 
   useEffect(() => {
     let tx = currentTransactions || [];
@@ -203,25 +215,24 @@ export function ValidatorPaymentDashboard({
   }, [stats, selectedSubscription]);
 
   useEffect(() => {
-    const subscriptions =
-      validator?.endpoints?.flatMap((e) => e.subscriptions) || [];
-    setSubscriptions(subscriptions);
-  }, [validator]);
+    const filteredSubscriptions = currentSubscriptions.filter((s) =>
+      selectedSubscription ? s?.id === selectedSubscription : true
+    );
+    setSubscriptions(filteredSubscriptions);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSubscription]);
 
   const handleConsumerChange = (value: string | null) => {
+    setLoading(true);
     setSelectedSubscription(value);
-    const filteredTransactions = currentTransactions.filter((t) =>
-      value ? t.consumerServiceId === value : true
-    );
-    const filteredSubscriptions = currentSubscriptions.filter((s) =>
-      value ? s.id === value : true
-    );
-    setTransactions(filteredTransactions);
-    setSubscriptions(filteredSubscriptions);
+    setTimeout(() => {
+      router.refresh();
+      setLoading(false);
+    }, 0);
   };
 
   return (
-    <Fragment>
+    <Box className={clsx(loading ? "blur-sm" : "blur-none")}>
       <Box className="flex justify-between items-center mb-7">
         <Title className="text-2xl">Network Overview</Title>
         <Select
@@ -237,15 +248,22 @@ export function ValidatorPaymentDashboard({
           onChange={handleConsumerChange}
         />
       </Box>
-      <Box className="grid grid-cols-[70px_134px] gap-2">
-        <Text className="mb-10 text-sm">
+      <Box className="grid grid-cols-[70px_134px_250px] gap-2">
+        <Text className="mb-10 text-sm truncate">
           Subnet:{" "}
           <span className="text-orange-500">
             {Array.from(new Map(validator?.endpoints?.map((e) => e))).length}
           </span>
         </Text>
-        <Text className="mb-10 text-sm">
+        <Text className="mb-10 text-sm truncate">
           Validator: <span className="text-orange-500">{validator?.name}</span>
+        </Text>
+        <Text className="mb-10 text-sm truncate">
+          Customer:{" "}
+          <span className="text-orange-500">
+            {currentSubscriptions?.find((c) => c.id === selectedSubscription)
+              ?.consumerWalletAddress || "All"}
+          </span>
         </Text>
       </Box>
 
@@ -361,6 +379,6 @@ export function ValidatorPaymentDashboard({
         <TransactionsTable transactions={transactions} />
       </Box>
       <ConsumerTable subscriptions={subscriptions} />
-    </Fragment>
+    </Box>
   );
 }
