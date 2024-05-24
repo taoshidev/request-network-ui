@@ -92,6 +92,7 @@
     "sharp": "^0.33.3",
     "simplex-noise": "^4.0.1",
     "starter-kit": "link:@@tiptap/starter-kit",
+    "swr": "^2.2.5",
     "types": "link:@polkadot/extension-inject/types",
     "uuid": "^9.0.1",
     "yarn": "^1.22.22",

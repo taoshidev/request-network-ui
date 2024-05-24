@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { nullableSchema } from "@/utils/nullable";
 import { ContractSchema } from "./contract";
+import { UserNotificationSchema } from "./user-notifications";
+
 export const UserSchema = z.object({
   id: z.string().uuid(),
   role: z.enum(["consumer", "validator"]),
@@ -11,6 +13,7 @@ export const UserSchema = z.object({
   onboarded: z.boolean(),
   onboardingStep: z.number().int(),
   contracts: z.lazy(() => z.array(ContractSchema)).optional(),
+  userNotification: z.lazy(() => z.array(UserNotificationSchema)).optional(),
 });
 
 const NullableUserSchema = nullableSchema(UserSchema);

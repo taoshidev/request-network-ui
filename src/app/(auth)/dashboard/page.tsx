@@ -10,6 +10,7 @@ import { subscriptions, validators, contracts, endpoints } from "@/db/schema";
 import { getUserAPIKeys } from "@/actions/keys";
 import { ValidatorType } from "@/db/types/validator";
 import { getContracts } from "@/actions/contracts";
+import { getUserNotifications } from "@/actions/notifications";
 
 export default async function Page() {
   const user = await getAuthUser();
@@ -18,7 +19,7 @@ export default async function Page() {
     redirect("/login");
     return null;
   }
-
+  
   if (!user.user_metadata.onboarded) {
     redirect("/onboarding");
   }
@@ -71,7 +72,7 @@ export default async function Page() {
 
     const userContracts = await getContracts({
       where: and(eq(contracts.userId, user.id)),
-      with: { services: true }
+      with: { services: true },
     });
 
     return (

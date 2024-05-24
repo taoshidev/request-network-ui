@@ -31,6 +31,7 @@ export default async function Page({ params }: PageProps) {
   });
   return (
     <UpdateEndpoint
+      user={user}
       endpoint={result || {}}
       contracts={userContracts}
       subscriptionCount={result?.subscriptions?.length || 0}

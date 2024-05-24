@@ -19,18 +19,16 @@ import {
   IconChevronDown,
   IconBell,
 } from "@tabler/icons-react";
-
+import useSWR from "swr";
 import { signout } from "@/actions/auth";
-
-enum NOTIFICATION_TYPE {
-  SUCCESS = "green",
-  WARNING = "yellow",
-  DANGER = "red",
-  INFO = "blue",
-  BUG = "black",
-}
+import { getUserNotifications } from "@/actions/notifications";
+import { NOTIFICATION_COLOR, NotificationTypes } from "@/hooks/use-notification";
 
 export function Header() {
+  const { data: userNotifications } = useSWR("/api/notifications", async () => {
+    return await getUserNotifications("c6174b67-6942-4ec0-921c-5f6792e8be0b");
+  });
+  console.log(userNotifications);
   const [opened, { toggle }] = useDisclosure();
   const router = useRouter();
   const [notificationsOpened, { toggle: toggleNotifications }] =
@@ -44,7 +42,10 @@ export function Header() {
     <>
       <Button
         variant={true ? "filled" : "outline"}
-        className={'float-end rounded-full px-2 top-6 right-5 notify-bell' + (true ? ' active' : '')}
+        className={
+          "float-end rounded-full px-2 top-6 right-5 notify-bell" +
+          (true ? " active" : "")
+        }
         onClick={toggleNotifications}
       >
         <IconBell />
@@ -145,16 +146,19 @@ export function Header() {
         onClose={toggleNotifications}
         title="Notifications"
       >
-        <Notification color={NOTIFICATION_TYPE.SUCCESS}>Test</Notification>
         <br />
-        <Notification color={NOTIFICATION_TYPE.SUCCESS}>Test</Notification>
-        <br />
-        <Notification color={NOTIFICATION_TYPE.SUCCESS}>Test</Notification>
-        <br />
-        <Notification color={NOTIFICATION_TYPE.SUCCESS}>Test</Notification>
-        <br />
-        <Notification color={NOTIFICATION_TYPE.SUCCESS}>Test</Notification>
-        <br />
+        {(userNotifications || []).map((userNotification) => (
+          <Notification
+            key={userNotification.id}
+            className="shadow-md border-gray-200 mb-3"
+            color={
+              NOTIFICATION_COLOR[NotificationTypes[userNotification.notification.type]]
+            }
+            title={userNotification.notification.subject}
+          >
+            {userNotification.notification.content}
+          </Notification>
+        ))}
       </Drawer>
     </>
   );

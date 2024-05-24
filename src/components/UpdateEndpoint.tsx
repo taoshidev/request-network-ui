@@ -7,7 +7,7 @@ import { useForm } from "@mantine/form";
 import { IconHome2, IconGauge, IconCircleOff } from "@tabler/icons-react";
 import { updateEndpoint } from "@/actions/endpoints";
 import { PostSchema } from "./PostSchema";
-import { useNotification } from "@/hooks/use-notification";
+import { NOTIFICATION_TYPE, useNotification } from "@/hooks/use-notification";
 import { useRouter } from "next/navigation";
 import { EndpointSchema } from "@/db/types/endpoint";
 import { sendToProxy } from "@/actions/apis";
@@ -16,6 +16,7 @@ import { ContractType } from "@/db/types/contract";
 import EndpointForm from "./AddValidator/steps/EndpointForm";
 import { omit as _omit } from "lodash";
 import { sendNotification } from "@/actions/notifications";
+import { UserType } from "@/db/types/user";
 
 const EndpointFormSchema = EndpointSchema.omit({
   validator: true,
@@ -23,10 +24,12 @@ const EndpointFormSchema = EndpointSchema.omit({
 });
 
 export function UpdateEndpoint({
+  user,
   endpoint,
   contracts,
   subscriptionCount,
 }: {
+  user: UserType;
   endpoint: EndpointType;
   contracts: ContractType[];
   subscriptionCount: number;
@@ -77,14 +80,13 @@ export function UpdateEndpoint({
       );
 
       if (endpoint?.url !== values.url) {
-        Object.keys(users)
-          .map((key) => users[key])
-          .forEach((user) => {
-            sendNotification({
-              title: "Endpoint Updated",
-              content: `Endpoint has been updated. Endpoint "${endpoint.url}" has been changed to "${values.url}".`,
-              user,
-            });
+          await sendNotification({
+            type: NOTIFICATION_TYPE.WARNING,
+            subject: "Endpoint Updated",
+            content: `Endpoint has been updated. Endpoint "${endpoint.url}" has been changed to "${values.url}".`,
+            fromUser: user.email,
+            fromUserId: user.id,
+            userNotifications: Object.keys(users).map((key) => users[key]),
           });
       }
 
