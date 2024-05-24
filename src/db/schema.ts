@@ -113,6 +113,7 @@ export const validators = pgTable("validators", {
 
 export const validatorsRelations = relations(validators, ({ many, one }) => ({
   endpoints: many(endpoints),
+  subscriptions: many(subscriptions),
   user: one(users, {
     fields: [validators.userId],
     references: [users.id],
@@ -135,7 +136,6 @@ export const endpoints = pgTable(
     contractId: uuid("contract_id")
       .notNull()
       .references(() => contracts.id, { onDelete: "set null" }),
-    // walletAddress: varchar("wallet_address").unique(),
     url: varchar("url").notNull(),
     enabled: boolean("enabled").default(true).notNull(),
     active: boolean("active").default(true).notNull(),
@@ -213,6 +213,9 @@ export const subscriptions = pgTable(
     userId: uuid("user_id").references(() => users.id, {
       onDelete: "set null",
     }),
+    validatorId: uuid("validator_id")
+      .notNull()
+      .references(() => validators.id, { onDelete: "set null" }),
     proxyServiceId: varchar("proxy_service_id"),
     serviceId: uuid("service_id").references(() => services.id, {
       onDelete: "set null",
@@ -238,6 +241,10 @@ export const subscriptions = pgTable(
 );
 
 export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
+  validator: one(validators, {
+    fields: [subscriptions.validatorId],
+    references: [validators.id],
+  }),
   endpoint: one(endpoints, {
     fields: [subscriptions.endpointId],
     references: [endpoints.id],

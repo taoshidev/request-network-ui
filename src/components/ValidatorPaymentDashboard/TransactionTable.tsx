@@ -17,7 +17,7 @@ export default function TransactionsTable({
   }, [transactions]);
 
   return (
-    <Card className="h-full shadow-sm border-gray-200 mt-6" withBorder>
+    <Card className="h-full shadow-sm border-gray-200 mt-7" withBorder>
       <Text className="text-base font-bold mb-5">
         Latest {transactions?.length >= 25 ? "25" : transactions?.length} from a
         total of <span className="text-orange-500">{transactions?.length}</span>{" "}

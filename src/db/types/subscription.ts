@@ -2,9 +2,12 @@ import { z } from "zod";
 import { nullableSchema } from "@/utils/nullable";
 import { EndpointSchema } from "./endpoint";
 import { UserSchema } from "./user";
+import { ValidatorSchema } from "./validator";
 
 export const SubscriptionSchema = z.object({
   id: z.string().uuid(),
+  validatorId: z.string().uuid(),
+  validator: z.lazy(() => ValidatorSchema).optional(),
   endpointId: z.string().uuid(),
   endpoint: z.lazy(() => EndpointSchema).optional(),
   userId: z.string().uuid(),

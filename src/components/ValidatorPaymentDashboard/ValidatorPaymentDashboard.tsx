@@ -1,140 +1,136 @@
 "use client";
 
 import { Fragment, useMemo, useEffect, useState } from "react";
-import { Alert, Text, Box, Button, Title } from "@mantine/core";
+import { Alert, Text, Box, Button, Title, Select } from "@mantine/core";
 import TransactionsTable from "@/components/ValidatorPaymentDashboard/TransactionTable";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { formatter } from "@/utils/number-formatter";
 import { StatCard } from "@/components/ValidatorPaymentDashboard/StatCard";
-import { UserType } from "@/db/types/user";
 import { ValidatorType } from "@/db/types/validator";
-import { ContractType } from "@/db/types/contract";
 import { ValidatorKeyType } from "@/components/StatTable";
 import { SubscriptionType } from "@/db/types/subscription";
+import { EndpointType } from "@/db/types/endpoint";
 import ConsumerTable from "@/components/ValidatorPaymentDashboard/ConsumerTable";
 import RevenueOverTime from "@/components/ValidatorPaymentDashboard/RevenueOverTime";
 import RequestOverTime from "@/components/ValidatorPaymentDashboard/RequestOverTime";
 import PaymentHistory from "@/components/ValidatorPaymentDashboard/PaymentHistory";
 import ConsumerMakeup from "@/components/ValidatorPaymentDashboard/ConsumerMakeup";
+import {
+  aggregateData,
+  fillMissingDates,
+  fillMissingDatesForPaymentHistory,
+  calculatePercentageChange,
+} from "@/utils/validators";
+
 import dayjs from "dayjs";
 
-const aggregateData = (data, format = "MM/DD/YY") => {
-  const aggregatedData = {};
-
-  data.forEach(({ time, amount, success }) => {
-    const date = dayjs(time).format(format);
-    const value = amount || success;
-
-    if (aggregatedData[date]) {
-      aggregatedData[date] += value;
-    } else {
-      aggregatedData[date] = value;
-    }
-  });
-
-  return Object.keys(aggregatedData)
-    .sort((a, b) => dayjs(a, format).unix() - dayjs(b, format).unix())
-    .map((date) => ({
-      x: date,
-      y: aggregatedData[date],
-    }));
-};
-
-const fillMissingDates = (data, days = 30) => {
-  const filledData = {};
-  const lastDays = Array.from({ length: days }, (item, i) =>
-    dayjs().subtract(i, "day").format("MM/DD/YY")
-  ).reverse();
-
-  lastDays.forEach((date) => {
-    filledData[date] = 0;
-  });
-
-  data.forEach(({ x, y }) => {
-    filledData[x] = y;
-  });
-
-  return Object.keys(filledData).map((date) => ({
-    x: date,
-    y: filledData[date],
-  }));
-};
-
-const fillMissingDatesForPaymentHistory = (data, days = 60) => {
-  const filledData = {};
-  const lastDays = Array.from({ length: days }, (item, i) =>
-    dayjs().subtract(i, "day").format("YYYY-MM-DD")
-  ).reverse();
-
-  lastDays.forEach((date) => {
-    filledData[date] = 0;
-  });
-
-  data.forEach(({ x, y }) => {
-    filledData[x] = y;
-  });
-
-  return Object.keys(filledData).map((date) => ({
-    day: date,
-    value: filledData[date],
-  }));
-};
-
-const generateConsumerMakeupData = (stats) => {
-  const endpoints = stats?.validator?.endpoints || [];
-
+const generateConsumerMakeupData = (endpoints: EndpointType[] = []) => {
   return endpoints.map((endpoint) => ({
-    id: endpoint.url,
-    label: endpoint.url,
-    value: endpoint.subscriptions?.length || 0,
+    id: endpoint?.url,
+    label: endpoint?.url,
+    value: endpoint?.subscriptions?.length || 0,
   }));
 };
 
 export function ValidatorPaymentDashboard({
-  user,
   validator,
   stats,
-  contracts,
-  proxyServices,
+  currentTransactions,
+  previousTransactions,
+  currentSubscriptions,
+  previousSubscriptions,
 }: {
-  user: UserType;
   validator: ValidatorType;
   stats: ValidatorKeyType[];
-  contracts: ContractType[];
-  proxyServices: any;
+  currentTransactions: any[];
+  previousTransactions: any[];
+  currentSubscriptions: SubscriptionType[];
+  previousSubscriptions: SubscriptionType[];
 }) {
-  const [transactions, setTransactions] = useState(
-    proxyServices?.transactions || []
-  );
+  const [transactions, setTransactions] = useState(currentTransactions);
   const [revenueData, setRevenueData] = useState<
     { id: string; color: string; data: { x: string; y: number }[] }[]
   >([]);
-
   const [requestData, setRequestData] = useState<
     { id: string; color: string; data: { x: string; y: number }[] }[]
   >([]);
+  const [paymentHistoryData, setPaymentHistoryData] = useState<
+    { day: string; value: number }[]
+  >([]);
+  const [consumerMakeupData, setConsumerMakeupData] = useState<
+    { id: string; label: string; value: number }[]
+  >([]);
+  const [subscriptions, setSubscriptions] =
+    useState<SubscriptionType[]>(currentSubscriptions);
+  const [selectedSubscription, setSelectedSubscription] = useState<
+    string | null
+  >(null);
 
-  const [paymentHistoryData, setPaymentHistoryData] = useState<any[]>([]);
-  const [consumerMakeupData, setConsumerMakeupData] = useState<any[]>([]);
-  const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
+  const monthlyRequests = useMemo(() => {
+    const monthlyUsage =
+      stats?.flatMap((s) => {
+        let keys: any = s?.validator?.keys;
+        if (!Array.isArray(keys)) return [];
+        if (selectedSubscription)
+          keys = keys.filter(
+            (k) => k?.meta?.subscription?.serviceId === selectedSubscription
+          );
 
-  const totalSuccessfulRequest = useMemo(() => {
-    const successes =
+        return keys.flatMap((k) => k.monthlyUsage);
+      }) || [];
+    return monthlyUsage.reduce((total, { success }) => total + success, 0);
+  }, [stats, selectedSubscription]);
+
+  const previousMonthlyRequests = useMemo(() => {
+    const prevMonthlyUsage =
       stats?.flatMap((s) => {
         const keys = s?.validator?.keys;
         if (!Array.isArray(keys)) return 0;
-        return keys.map((k) => k.usage.success);
+        return keys.flatMap((k) => k.prevMonthlyUsage);
       }) || [];
-    return successes.reduce((total, success) => total + success, 0);
+    return prevMonthlyUsage.reduce((total, { success }) => total + success, 0);
   }, [stats]);
+
+  const requestPercentageChange = useMemo(
+    () => calculatePercentageChange(monthlyRequests, previousMonthlyRequests),
+    [monthlyRequests, previousMonthlyRequests]
+  );
 
   const totalIncome = useMemo(() => {
     const amount = transactions?.flatMap((t) => t.amount || 0);
     return amount.reduce((total, amt) => total + amt, 0);
   }, [transactions]);
 
+  const previousTotalIncome = useMemo(() => {
+    const amount = previousTransactions?.flatMap((t) => t.amount || 0);
+    return amount.reduce((total, amt) => total + amt, 0);
+  }, [previousTransactions]);
+
+  const incomePercentageChange = useMemo(
+    () => calculatePercentageChange(totalIncome, previousTotalIncome),
+    [totalIncome, previousTotalIncome]
+  );
+
+  const currentConsumers = useMemo(() => {
+    if (selectedSubscription)
+      return (
+        currentSubscriptions?.filter((s) => s.id === selectedSubscription)
+          ?.length || 0
+      );
+    return currentSubscriptions?.length || 0;
+  }, [currentSubscriptions, selectedSubscription]);
+
+  const previousConsumers = previousSubscriptions?.length || 0;
+
+  const consumerPercentageChange = useMemo(
+    () => calculatePercentageChange(currentConsumers, previousConsumers),
+    [currentConsumers, previousConsumers]
+  );
+
   useEffect(() => {
-    const tx = proxyServices?.flatMap((ps) => ps.transactions) || [];
+    let tx = currentTransactions || [];
+    if (selectedSubscription)
+      tx = tx.filter((t) => t.consumerServiceId === selectedSubscription);
     setTransactions(
       tx.sort((a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix())
     );
@@ -169,18 +165,22 @@ export function ValidatorPaymentDashboard({
     );
 
     setPaymentHistoryData(paymentHistory);
-  }, [proxyServices]);
+  }, [currentTransactions, selectedSubscription]);
 
   useEffect(() => {
     const usageData = stats
       ?.flatMap((s) => {
-        const keys = s?.validator?.keys;
+        let keys: any = s?.validator?.keys;
         if (!Array.isArray(keys)) return 0;
+        if (selectedSubscription)
+          keys = keys.filter(
+            (k) => k.meta.subscription.serviceId === selectedSubscription
+          );
         return keys.flatMap((k) => k.monthlyUsage);
       })
       .sort((a, b) => dayjs(a.time).unix() - dayjs(b.time).unix());
 
-    const aggregatedRequestData = aggregateData(usageData);
+    const aggregatedRequestData = fillMissingDates(aggregateData(usageData));
 
     setRequestData([
       {
@@ -190,18 +190,53 @@ export function ValidatorPaymentDashboard({
       },
     ]);
 
-    const consumerMakeup = generateConsumerMakeupData(stats?.[0]);
+    let endpoints = stats?.[0]?.validator?.endpoints;
+
+    if (selectedSubscription) {
+      endpoints = endpoints?.filter((e) =>
+        e?.subscriptions?.some((s) => s.id === selectedSubscription)
+      );
+    }
+
+    const consumerMakeup = generateConsumerMakeupData(endpoints);
     setConsumerMakeupData(consumerMakeup);
-  }, [stats]);
+  }, [stats, selectedSubscription]);
 
   useEffect(() => {
-    const vali = validator?.endpoints?.flatMap((e) => e.subscriptions) || [];
-    setSubscriptions(vali);
+    const subscriptions =
+      validator?.endpoints?.flatMap((e) => e.subscriptions) || [];
+    setSubscriptions(subscriptions);
   }, [validator]);
+
+  const handleConsumerChange = (value: string | null) => {
+    setSelectedSubscription(value);
+    const filteredTransactions = currentTransactions.filter((t) =>
+      value ? t.consumerServiceId === value : true
+    );
+    const filteredSubscriptions = currentSubscriptions.filter((s) =>
+      value ? s.id === value : true
+    );
+    setTransactions(filteredTransactions);
+    setSubscriptions(filteredSubscriptions);
+  };
 
   return (
     <Fragment>
-      <Title className="text-2xl mb-7">Network Overview</Title>
+      <Box className="flex justify-between items-center mb-7">
+        <Title className="text-2xl">Network Overview</Title>
+        <Select
+          placeholder="Select a customer"
+          data={[
+            { value: "", label: "All Customers" },
+            ...currentSubscriptions.map((sub) => ({
+              value: sub?.id as string,
+              label: sub?.appName as string,
+            })),
+          ]}
+          value={selectedSubscription}
+          onChange={handleConsumerChange}
+        />
+      </Box>
       <Box className="grid grid-cols-[70px_134px] gap-2">
         <Text className="mb-10 text-sm">
           Subnet:{" "}
@@ -236,25 +271,21 @@ export function ValidatorPaymentDashboard({
         <StatCard
           title="Total Income"
           value={formatter.format(totalIncome)}
-          percentage="+10.04%"
+          percentage={`${incomePercentageChange}%`}
           comparison="Compared to last month"
           isPositive
         />
         <StatCard
           title="Total Requests"
-          value={totalSuccessfulRequest}
-          percentage="+10.04%"
+          value={monthlyRequests}
+          percentage={`${requestPercentageChange}%`}
           comparison="Compared to last month"
           isPositive
         />
         <StatCard
-          title="Consumers"
-          value={
-            Array.isArray(stats?.[0]?.validator?.keys)
-              ? stats?.[0]?.validator?.keys?.length.toString()
-              : "0"
-          }
-          percentage="-0.04%"
+          title="Customers"
+          value={currentConsumers.toString()}
+          percentage={`${consumerPercentageChange}%`}
           comparison="Compared to last month"
           isPositive={false}
         />
@@ -267,7 +298,6 @@ export function ValidatorPaymentDashboard({
           bgColor="bg-orange-500 text-white"
         />
       </Box>
-
       <Box className="grid grid-cols-[3fr_1fr] gap-5 gap-y-7 mt-7">
         {revenueData.length > 0 ? (
           <Box className="">
@@ -289,23 +319,7 @@ export function ValidatorPaymentDashboard({
             </Text>
           </Alert>
         )}
-        {paymentHistoryData?.length > 0 ? (
-          <PaymentHistory data={paymentHistoryData} />
-        ) : (
-          <Alert
-            className="shadow-sm border-gray-200"
-            color="orange"
-            icon={<IconAlertCircle />}
-          >
-            <Text className="mb-7 text-zinc-800 text-base font-medium">
-              There&apos;s not enough payment history to generate data data.
-            </Text>
-            <Text className="mb-7 text-zinc-800 text-base font-normal">
-              Once customers starts making payments, data will be aggregated and
-              available here.
-            </Text>
-          </Alert>
-        )}
+        <PaymentHistory data={paymentHistoryData} />
         {requestData?.length > 0 ? (
           <Box className="">
             <RequestOverTime data={requestData} />

@@ -6,7 +6,7 @@ import { UserSchema } from "./user";
 export const ServiceSchema = z.object({
   id: z.string().uuid().optional(),
   userId: z.string().uuid(),
-  user: UserSchema.optional().nullish(),
+  user: z.lazy(() => UserSchema).optional().nullish(),
   contractId: z.string().uuid().optional(),
   contract: z.lazy(() => ContractSchema).optional(),
   name: z.string().min(1),

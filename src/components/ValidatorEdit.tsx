@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import {
   Alert,
   NavLink,
@@ -71,7 +71,8 @@ export function ValidatorEdit({
   });
 
   const onSubmit = async (
-    values: Pick<ValidatorType, "name" | "description">
+    values: Pick<ValidatorType, "name" | "description">,
+    event: FormEvent<HTMLFormElement> | undefined
   ) => {
     setLoading(true);
     try {

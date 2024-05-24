@@ -247,6 +247,7 @@ export function RegistrationStepper({
 
       const res = await createSubscription({
         userId,
+        validatorId,
         endpointId,
         key,
         keyId,

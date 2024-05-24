@@ -16,7 +16,7 @@ export default function ConsumerTable({
   }, [subscriptions]);
 
   return (
-    <Card className="h-full shadow-sm border-gray-200 mt-6" withBorder>
+    <Card className="h-full shadow-sm border-gray-200 mt-7" withBorder>
       <Text className="text-base font-bold mb-5">Customers</Text>
       <Table highlightOnHover verticalSpacing="sm" borderColor="#DEE2E6">
         <Table.Thead>
