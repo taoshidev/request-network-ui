@@ -26,9 +26,10 @@ export default function Notifications({
   userNotifications: UserNotificationType[];
 }) {
   const [timer, setTimer] = useState();
-  async function deleteNotification(userNotification: any) {
-    await deleteUserNotification(userNotification.id);
-    userNotification.deletedAt = new Date().toDateString();
+  const [deleted, setDeleted] = useState();
+  function deleteNotification(id) {
+    setDeleted(id);
+    deleteUserNotification(id);
   }
 
   const markAsViewed = () => {
@@ -90,13 +91,13 @@ export default function Notifications({
         (userNotifications || []).map((userNotification) => (
           <Notification
             key={userNotification.id}
-            loading={!!userNotification.deletedAt}
+            loading={deleted === userNotification.id}
             className={`${
               userNotification.viewed ? "viewed" : ""
             } app-notification shadow-md border border-gray-200 mb-3`}
             onClose={deleteNotification.bind(
               null,
-              userNotification as UserNotificationType
+              userNotification.id as string
             )}
             icon={
               NOTIFICATION_ICON[
