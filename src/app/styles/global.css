@@ -47,8 +47,8 @@ a {
   transition: filter 1s ease-in-out;
 }
 .app-notification.viewed {
-  -webkit-filter: brightness(.95) grayscale(.2);
-  filter: brightness(.95) grayscale(.2);
+  -webkit-filter: brightness(.93) grayscale(.3);
+  filter: brightness(.93) grayscale(.3);
 }
 .app-notifications section {
   width: 600px;
