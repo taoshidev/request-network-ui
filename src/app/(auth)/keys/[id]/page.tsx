@@ -15,7 +15,6 @@ export default async function Page({ params }: any) {
 
   if (!user) {
     redirect("/login");
-    return null;
   }
 
   const { id } = params;

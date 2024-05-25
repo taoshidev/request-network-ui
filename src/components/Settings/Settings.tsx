@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Title,
   Text,
@@ -52,10 +52,23 @@ export function Settings({
     useDisclosure(false);
   const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState(false);
+  const [active, setActive] = useState(false);
   const router = useRouter();
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
   });
+  const onFocus = async (event) => {
+    if (!active && document.visibilityState == "visible") {
+      setActive(true);
+      router.refresh();
+    } else {
+      setActive(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("visibilitychange", onFocus);
+  }, []);
 
   const {
     register,
@@ -100,7 +113,10 @@ export function Settings({
       window.location.pathname
     );
 
-    if (requestPaymentRes?.subscription?.endpoint?.validator?.baseApiUrl && requestPaymentRes.token) {
+    if (
+      requestPaymentRes?.subscription?.endpoint?.validator?.baseApiUrl &&
+      requestPaymentRes.token
+    ) {
       window.open(
         `${requestPaymentRes.subscription.endpoint.validator.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`,
         "_blank"

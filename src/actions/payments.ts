@@ -8,6 +8,7 @@ import { getAuthUser } from "./auth";
 import { getValidator } from "./validators";
 import { ValidatorType } from "@/db/types/validator";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function requestPayment(proxyServiceId: string, returnRedirect: string = '') {
   const currentUser = await getAuthUser();
@@ -60,7 +61,7 @@ export async function cancelSubscription(proxyServiceId) {
   });
   const subscription = subRes?.[0];
 
-  return await sendToProxy({
+  const proxyRes = await sendToProxy({
     endpoint: {
       url: subscription?.endpoint?.validator?.baseApiUrl as string,
       method: "POST",
@@ -71,6 +72,9 @@ export async function cancelSubscription(proxyServiceId) {
       serviceId: subscription?.proxyServiceId as string,
     },
   });
+
+  revalidatePath("/keys");
+  return proxyRes;
 }
 
 export async function checkForStripe(validatorId: string) {

@@ -3,14 +3,13 @@ import { getAuthUser } from "@/actions/auth";
 import { getValidators } from "@/actions/validators";
 import { getSubnets } from "@/actions/subnets";
 import { Consumer } from "@/components/Consumer";
-import { ValidatorDashboard } from "@/components/ValidatorDashbord";
+import { ValidatorDashboard } from "@/components/ValidatorDashboard";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { and, eq } from "drizzle-orm";
 import { subscriptions, validators, contracts, endpoints } from "@/db/schema";
 import { getUserAPIKeys } from "@/actions/keys";
 import { ValidatorType } from "@/db/types/validator";
 import { getContracts } from "@/actions/contracts";
-import { getUserNotifications } from "@/actions/notifications";
 
 export default async function Page() {
   const user = await getAuthUser();
