@@ -25,7 +25,7 @@ import Notifications from "./Notifications";
 
 export function Header() {
   let { data: userNotifications, isLoading: notificationIsLoading } = useSWR(
-    "/api/user-notifications",
+    '/user-notifications',
     async () => await getUserNotifications(),
     { refreshInterval: 5000 }
   );
