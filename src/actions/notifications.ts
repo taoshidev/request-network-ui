@@ -2,7 +2,6 @@
 
 import { sendEmail } from "./email"
 import { parseError, parseResult } from "@/db/error";
-import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { userNotifications, notifications } from "@/db/schema";
 import { NotificationType } from "@/db/types/notification";

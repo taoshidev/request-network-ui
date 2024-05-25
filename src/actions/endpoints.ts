@@ -8,7 +8,6 @@ import { validators } from "@/db/schema";
 import { subscriptions } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
 import { EndpointType } from "@/db/types/endpoint";
-import { sendEmail } from "./email";
 
 export const getEndpoints = async (query: object = {}) => {
   try {

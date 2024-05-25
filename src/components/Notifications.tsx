@@ -1,7 +1,15 @@
 "use client";
 
 import { UserNotificationType } from "@/db/types/user-notifications";
-import { Box, Button, Drawer, Loader, Notification } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Drawer,
+  Loader,
+  Notification,
+  Popover,
+  Text,
+} from "@mantine/core";
 import {
   NOTIFICATION_COLOR,
   NOTIFICATION_ICON,
@@ -13,6 +21,8 @@ import {
 } from "@/actions/notifications";
 import { useEffect, useState } from "react";
 import { IconBell } from "@tabler/icons-react";
+import { useDisclosure } from "@mantine/hooks";
+import { NotificationType } from "@/db/types/notification";
 
 export default function Notifications({
   opened,
@@ -26,51 +36,81 @@ export default function Notifications({
   userNotifications: UserNotificationType[];
 }) {
   const [timer, setTimer] = useState();
-  const [deleted, setDeleted] = useState();
-  function deleteNotification(id) {
+  const [deleted, setDeleted] = useState<string | undefined>();
+  const [viewedBtnOpen, { close, open }] = useDisclosure();
+  function deleteNotification(id: string) {
     setDeleted(id);
     deleteUserNotification(id);
   }
 
-  const markAsViewed = () => {
+  const markViewed = async (notification?: NotificationType) => {
+    if (notification && !notification?.viewed) {
+      await updateUserNotification({
+        id: notification.id,
+        viewed: true,
+      });
+      notification.viewed = true;
+    }
+  };
+
+  const markViewedOverTime = () => {
     setTimer(
       setTimeout(async () => {
         if (userNotifications?.length) {
           const notification = userNotifications.find((un) => !un.viewed);
-          if (notification && !notification?.viewed) {
-            await updateUserNotification({
-              id: notification.id,
-              viewed: true,
-            });
-            notification.viewed = true;
-          }
+          await markViewed(notification);
         }
-        markAsViewed();
+        markViewedOverTime();
       }, 5000) as any
     );
+  };
+
+  const markAllAsViewed = async () => {
+    for (let notification of userNotifications) {
+      await markViewed(notification);
+    }
   };
 
   useEffect(() => {
     if (timer) clearTimeout(timer);
     setTimer(undefined);
     if (opened) {
-      markAsViewed();
+      markViewedOverTime();
     }
   }, [opened]);
 
   const title = (
     <>
-      <Button
-        variant={
-          userNotifications?.length &&
-          userNotifications.some((un: UserNotificationType) => !un.viewed)
-            ? "filled"
-            : "outline"
+      <Popover
+        width={200}
+        position="bottom"
+        withArrow
+        shadow="md"
+        opened={viewedBtnOpen}
+        disabled={
+          !userNotifications.some((un: UserNotificationType) => !un.viewed)
         }
-        className="rounded-full px-2 notify-bell"
       >
-        <IconBell />
-      </Button>{" "}
+        <Popover.Target>
+          <Button
+            onClick={markAllAsViewed}
+            onMouseEnter={open}
+            onMouseLeave={close}
+            variant={
+              userNotifications?.length &&
+              userNotifications.some((un: UserNotificationType) => !un.viewed)
+                ? "filled"
+                : "outline"
+            }
+            className="rounded-full px-2 notify-bell"
+          >
+            <IconBell />
+          </Button>
+        </Popover.Target>
+        <Popover.Dropdown style={{ pointerEvents: "none" }}>
+          <Text size="sm">Mark all as viewed.</Text>
+        </Popover.Dropdown>
+      </Popover>{" "}
       Notifications
     </>
   );
