@@ -7,10 +7,6 @@ import {
   Button,
   Text,
   Divider,
-  Drawer,
-  Notification,
-  Loader,
-  Box,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
@@ -22,14 +18,10 @@ import {
 } from "@tabler/icons-react";
 import useSWR from "swr";
 import { signout } from "@/actions/auth";
-import { deleteUserNotification, getUserNotifications } from "@/actions/notifications";
-import {
-  NOTIFICATION_COLOR,
-  NOTIFICATION_ICON,
-  NotificationTypes,
-} from "@/hooks/use-notification";
+import { getUserNotifications } from "@/actions/notifications";
 import { UserNotificationType } from "@/db/types/user-notifications";
 import { isArray as _isArray } from "lodash";
+import Notifications from "./Notifications";
 
 export function Header() {
   let { data: userNotifications, isLoading: notificationIsLoading } = useSWR(
@@ -46,11 +38,6 @@ export function Header() {
   const handleSignOut = async () => {
     await signout();
   };
-
-  async function deleteNotification(id: string) {
-    await deleteUserNotification(id);
-    console.log(id);
-  }
 
   return (
     <>
@@ -161,41 +148,12 @@ export function Header() {
         </Group>
       </Group>
 
-      <Drawer
-        position="right"
-        className="app-notifications"
+      <Notifications
         opened={notificationsOpened}
-        onClose={toggleNotifications}
-        title="Notifications"
-      >
-        <br />
-        {notificationIsLoading ? (
-          <Box className="text-center">
-            <Loader size="xl" />
-          </Box>
-        ) : (
-          (userNotifications || []).map((userNotification) => (
-            <Notification
-              onClose={deleteNotification.bind(null, userNotification.id)}
-              key={userNotification.id}
-              className="shadow-md border-gray-200 mb-3"
-              icon={
-                NOTIFICATION_ICON[
-                  NotificationTypes[userNotification.notification.type]
-                ]
-              }
-              color={
-                NOTIFICATION_COLOR[
-                  NotificationTypes[userNotification.notification.type]
-                ]
-              }
-              title={userNotification.notification.subject}
-            >
-              {userNotification.notification.content}
-            </Notification>
-          ))
-        )}
-      </Drawer>
+        toggle={toggleNotifications}
+        isLoading={notificationIsLoading}
+        userNotifications={userNotifications}
+      />
     </>
   );
 }
