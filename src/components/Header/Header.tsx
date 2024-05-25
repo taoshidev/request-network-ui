@@ -22,9 +22,10 @@ import {
 } from "@tabler/icons-react";
 import useSWR from "swr";
 import { signout } from "@/actions/auth";
-import { getUserNotifications } from "@/actions/notifications";
+import { deleteUserNotification, getUserNotifications } from "@/actions/notifications";
 import {
   NOTIFICATION_COLOR,
+  NOTIFICATION_ICON,
   NotificationTypes,
 } from "@/hooks/use-notification";
 import { UserNotificationType } from "@/db/types/user-notifications";
@@ -45,6 +46,11 @@ export function Header() {
   const handleSignOut = async () => {
     await signout();
   };
+
+  async function deleteNotification(id: string) {
+    await deleteUserNotification(id);
+    console.log(id);
+  }
 
   return (
     <>
@@ -170,8 +176,14 @@ export function Header() {
         ) : (
           (userNotifications || []).map((userNotification) => (
             <Notification
+              onClose={deleteNotification.bind(null, userNotification.id)}
               key={userNotification.id}
               className="shadow-md border-gray-200 mb-3"
+              icon={
+                NOTIFICATION_ICON[
+                  NotificationTypes[userNotification.notification.type]
+                ]
+              }
               color={
                 NOTIFICATION_COLOR[
                   NotificationTypes[userNotification.notification.type]

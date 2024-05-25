@@ -8,9 +8,10 @@ import { userNotifications, notifications } from "@/db/schema";
 import { NotificationType } from "@/db/types/notification";
 import { UserType } from "@/db/types/user";
 import { filterData } from "@/utils/sanitize";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { omit as _omit } from 'lodash';
 import { getAuthUser } from "./auth";
+import { UserNotificationType } from "@/db/types/user-notifications";
 
 export const sendNotification = async (notification: NotificationType, options: { email: boolean } = { email: true }) => {
   try {
@@ -19,7 +20,6 @@ export const sendNotification = async (notification: NotificationType, options: 
           .insert(notifications)
           .values(_omit(notification , ['fromUser']) as any)
           .returning();
-        revalidatePath("/dashboard");
     
         const newNotification = res?.[0];
         if (newNotification?.id) {
@@ -59,6 +59,40 @@ export const sendNotification = async (notification: NotificationType, options: 
   }
 };
 
+export const updateUserNotification = async ({
+  id,
+  ...values
+}: Partial<UserNotificationType>) => {
+  try {
+    const res = await db
+      .update(userNotifications)
+      .set({ ...values } as any)
+      .where(eq(userNotifications.id, id as string))
+      .returning();
+
+    return parseResult(res, { filter: [""] });
+  } catch (error) {
+    if (error instanceof Error) return parseError(error);
+  }
+};
+
+export const deleteUserNotification = async (id: string) => {
+  try {
+    const res = await db
+      .update(userNotifications)
+      .set({ deletedAt: new Date() } as any)
+      .where(eq(userNotifications.id, id as string))
+      .returning();
+
+    return parseResult(res, { filter: [""] });
+  } catch (error) {
+    console.log(error)
+    if (error instanceof Error) return parseError(error);
+  }
+};
+
+
+
 export const getUserNotifications = async () => {
   try {
     const user = await getAuthUser();
@@ -74,7 +108,10 @@ export const getUserNotifications = async () => {
             with: {
               notification: true
             },
-            where: eq(userNotifications.userId, user.id),
+            where: and(
+              eq(userNotifications.userId, user.id),
+              isNull(userNotifications.deletedAt)
+            ),
             orderBy: (notifications, { desc }) => [desc(notifications?.createdAt)],
           });
         return filterData(res, [""]);

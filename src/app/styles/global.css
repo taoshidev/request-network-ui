@@ -41,6 +41,11 @@ a {
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
 }
+.app-notifications section {
+  width: 600px;
+  flex: none;
+  max-width: calc(100% - 2rem);
+}
 .app-notifications header {
   border-bottom: 1px solid rgb(229, 231, 235);
 }
