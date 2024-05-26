@@ -77,6 +77,7 @@ export default function Notifications({
     if (opened) {
       markViewedOverTime();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [opened]);
 
   const title = (

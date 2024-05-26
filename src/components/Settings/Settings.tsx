@@ -57,17 +57,24 @@ export function Settings({
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
   });
-  const onFocus = async (event) => {
-    if (!active && document.visibilityState == "visible") {
-      setActive(true);
-      router.refresh();
-    } else {
-      setActive(false);
-    }
-  };
-
+  
+  // refresh page when it comes back into view
   useEffect(() => {
+    const onFocus = async (event) => {
+      if (!active && document.visibilityState == "visible") {
+        setActive(true);
+
+        router.refresh();
+      } else {
+        setActive(false);
+      }
+    };
+
+    const cleanup = () => window.removeEventListener("visibilitychange", onFocus);
+
     window.addEventListener("visibilitychange", onFocus);
+    return cleanup;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {

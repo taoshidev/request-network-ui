@@ -26,7 +26,15 @@ import Notifications from "./Notifications";
 export function Header() {
   let { data: userNotifications, isLoading: notificationIsLoading } = useSWR(
     '/user-notifications',
-    async () => await getUserNotifications(),
+    async () => {
+      const notifications = await getUserNotifications();
+
+      if (notifications) {
+        return notifications;
+      } else {
+        return userNotifications;
+      }
+    },
     { refreshInterval: 5000 }
   );
   if (!_isArray(userNotifications)) userNotifications = [];
