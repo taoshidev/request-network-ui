@@ -210,7 +210,7 @@ export function ValidatorPaymentDashboard({
       );
     }
 
-    const consumerMakeup = generateConsumerMakeupData(endpoints);
+    const consumerMakeup = generateConsumerMakeupData(endpoints as EndpointType[]);
     setConsumerMakeupData(consumerMakeup);
   }, [stats, selectedSubscription]);
 
