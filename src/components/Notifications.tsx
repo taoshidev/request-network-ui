@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 import { IconBell } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { NotificationType } from "@/db/types/notification";
+import removeMd from 'remove-markdown';
 
 export default function Notifications({
   opened,
@@ -153,7 +154,7 @@ export default function Notifications({
             title={userNotification.notification.subject}
           >
             <span className="text-slate-700">
-              {userNotification.notification.content}
+              {removeMd(userNotification.notification.content)}
             </span>
           </Notification>
         ))

@@ -83,7 +83,7 @@ export function UpdateEndpoint({
         await sendNotification({
           type: NOTIFICATION_TYPE.WARNING,
           subject: "Endpoint Updated",
-          content: `Endpoint has been updated. Endpoint "${endpoint.url}" has been changed to "${values.url}".`,
+          content: `Endpoint has been updated. Endpoint "**${endpoint.url}**" has been changed to "**${values.url}**".`,
           fromUser: user.email,
           fromUserId: user.id,
           userNotifications: Object.keys(users).map((key) => users[key]),

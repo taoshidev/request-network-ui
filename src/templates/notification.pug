@@ -8,6 +8,6 @@ block mainContent
       br
       div(style="text-align: center; max-width: 400px; margin: 0 auto")
         h1(class='text-center') #{title}
-        p #{content}
+        p !{marked(content)}
         p
         p(style="font-style: italic;") This email was sent from an address that cannot accept incoming email. Please do not reply to this message.

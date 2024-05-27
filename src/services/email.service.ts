@@ -5,6 +5,9 @@ import * as nodemailer from 'nodemailer';
 import path from 'path';
 import { compileFile } from 'pug';
 import { DateTime } from 'luxon';
+import { marked } from 'marked';
+import sanitizeHtml from 'sanitize-html';
+const { convert: toText } = require('html-to-text');
 
 /**
  * EmailService class provides for sending emails using node-mailer.
@@ -16,7 +19,6 @@ export default class EmailService {
     from: process.env.EMAIL_FROM || '',
     replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || ''
   }
-
 
   constructor() {
     const region = process.env.AWS_REGION;
@@ -84,7 +86,9 @@ export default class EmailService {
   async send(mailerConfig: IEmailOptions) {
     const headers = this.getHeaders(mailerConfig);
     mailerConfig.templateVariables.DateTime = DateTime;
-
+    mailerConfig.templateVariables.marked = marked;
+    mailerConfig.templateVariables.sanitizeHtml = sanitizeHtml;
+    mailerConfig.templateVariables.toText = toText;
     try {
       if (this.mailTransport) {
         await this.mailTransport.sendMail({

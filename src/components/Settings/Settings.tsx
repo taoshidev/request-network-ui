@@ -164,7 +164,7 @@ export function Settings({
         opened={unSubOpened}
         title="Confirm Unsubscribe"
         message="Are you sure you want to unsubscribe. Any applications using this project's keys will no longer be
-        able to access the Taoshi's API."
+        able to access this Taoshi API."
         onConfirm={unsubscribe}
         onCancel={unSubClose}
       />
