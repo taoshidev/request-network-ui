@@ -255,7 +255,7 @@ export const notifications = pgTable(
     subject: varchar("subject"),
     content: varchar("content"),
     type: notificationTypeEnum("type").notNull().default("info"),
-    active: boolean("active").default(false).notNull(),
+    active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
     deletedAt: timestamp("deleted_at"),
@@ -275,7 +275,7 @@ export const notifications = pgTable(
         onDelete: "cascade",
       }).notNull(),
       viewed: boolean("viewed").default(false).notNull(),
-      active: boolean("active").default(false).notNull(),
+      active: boolean("active").default(true).notNull(),
       createdAt: timestamp("created_at").default(sql`now()`),
       updatedAt: timestamp("updated_at").default(sql`now()`),
       deletedAt: timestamp("deleted_at")
