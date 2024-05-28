@@ -3,7 +3,7 @@ import { getAuthUser } from "@/actions/auth";
 import { getValidators } from "@/actions/validators";
 import { getSubnets } from "@/actions/subnets";
 import { Consumer } from "@/components/Consumer";
-import { ValidatorDashboard } from "@/components/ValidatorDashbord";
+import { ValidatorDashboard } from "@/components/ValidatorDashboard";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { and, eq } from "drizzle-orm";
 import { subscriptions, validators, contracts, endpoints } from "@/db/schema";
@@ -16,9 +16,8 @@ export default async function Page() {
 
   if (!user) {
     redirect("/login");
-    return null;
   }
-
+  
   if (!user.user_metadata.onboarded) {
     redirect("/onboarding");
   }
@@ -71,7 +70,7 @@ export default async function Page() {
 
     const userContracts = await getContracts({
       where: and(eq(contracts.userId, user.id)),
-      with: { services: true }
+      with: { services: true },
     });
 
     return (

@@ -3,12 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { eq, asc } from "drizzle-orm";
 import { db } from "@/db";
-import { endpoints } from "@/db/schema";
+import { endpoints, users } from "@/db/schema";
 import { validators } from "@/db/schema";
 import { subscriptions } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
 import { EndpointType } from "@/db/types/endpoint";
-import { sendEmail } from "./email";
 
 export const getEndpoints = async (query: object = {}) => {
   try {
@@ -44,26 +43,39 @@ export const getEndpoint = async ({ id }: { id: string }) => {
   }
 };
 
-export const getEndpointWithSubscription = async ({ id }: { id: string }) => {
+export const getEndpointWithSubscription = async ({ id }: { id: string }): Promise<EndpointType | Error> => {
   try {
-    const results = await db
-      .select({
-        ...endpoints,
-        validator: {
-          id: validators.id,
-          baseApiUrl: validators.baseApiUrl,
-          hotkey: validators.hotkey,
-          apiPrefix: validators.apiPrefix,
+    const results = await db.query.endpoints.findFirst({
+      where: eq(endpoints.id, id),
+      with: {
+        subscriptions: {
+          columns: {
+            id: true
+          },
+          with: {
+            user: {
+              columns: {
+                id: true,
+                email: true
+              }
+            }
+          }
         },
-      } as any)
-      .from(endpoints)
-      .innerJoin(validators, eq(validators.id, endpoints.validatorId))
-      .leftJoin(subscriptions, eq(subscriptions.endpointId, endpoints.id))
-      .where(eq(endpoints.id, id));
+        validator: {
+          columns: {
+            id: true,
+            baseApiUrl: true,
+            hotkey: true,
+            apiPrefix: true
+          }
+        }
+      }
+    });
 
-    return results;
+    return results as EndpointType;
   } catch (error) {
     if (error instanceof Error) console.log(error.stack);
+    return parseError(error);
   }
 };
 
@@ -98,18 +110,6 @@ export const updateEndpoint = async ({
       .where(eq(endpoints.id, id as string))
       .returning();
 
-    // Endpoint changed email
-    if (currentEndpoint?.[0]?.url !== values.url) {
-      // sendEmail({
-      //   to: 'data.user.email',
-      //   template: "endpoint-updated",
-      //   subject: "Endpoint Updated",
-      //   templateVariables: {
-      //     name: res.name;
-      //     url: res.url
-      //   },
-      // });
-    }  
     return parseResult(res, { filter: ["url", "subnet", "validator"] });
   } catch (error) {
     return parseError(error);

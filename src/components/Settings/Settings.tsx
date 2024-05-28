@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Title,
   Text,
@@ -52,10 +52,30 @@ export function Settings({
     useDisclosure(false);
   const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState(false);
+  const [active, setActive] = useState(false);
   const router = useRouter();
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
   });
+  
+  // refresh page when it comes back into view
+  useEffect(() => {
+    const onFocus = async (event) => {
+      if (!active && document.visibilityState == "visible") {
+        setActive(true);
+
+        router.refresh();
+      } else {
+        setActive(false);
+      }
+    };
+
+    const cleanup = () => window.removeEventListener("visibilitychange", onFocus);
+
+    window.addEventListener("visibilitychange", onFocus);
+    return cleanup;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     register,
@@ -100,7 +120,10 @@ export function Settings({
       window.location.pathname
     );
 
-    if (requestPaymentRes?.subscription?.endpoint?.validator?.baseApiUrl && requestPaymentRes.token) {
+    if (
+      requestPaymentRes?.subscription?.endpoint?.validator?.baseApiUrl &&
+      requestPaymentRes.token
+    ) {
       window.open(
         `${requestPaymentRes.subscription.endpoint.validator.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`,
         "_blank"
@@ -110,7 +133,6 @@ export function Settings({
 
   const unsubscribe = async () => {
     const unSubRes = await cancelSubscription(subscription.proxyServiceId);
-    console.log(unSubRes);
     notifySuccess(`Subscription cancelled successfully`);
     unSubClose();
   };
@@ -142,7 +164,7 @@ export function Settings({
         opened={unSubOpened}
         title="Confirm Unsubscribe"
         message="Are you sure you want to unsubscribe. Any applications using this project's keys will no longer be
-        able to access the Taoshi's API."
+        able to access this Taoshi API."
         onConfirm={unsubscribe}
         onCancel={unSubClose}
       />

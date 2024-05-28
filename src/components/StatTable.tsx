@@ -65,7 +65,7 @@ export function StatTable({
                     <Table.Td>{key?.ratelimit?.refillInterval || "-"}</Table.Td>
                     {!caption && (
                       <Table.Td>
-                        {key.enabled ? "Enabled" : "Disabled"}
+                        {key?.enabled ? "Enabled" : "Disabled"}
                       </Table.Td>
                     )}
                   </Table.Tr>

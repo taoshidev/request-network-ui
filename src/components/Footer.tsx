@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Text, Group, Stack } from "@mantine/core";
+import { Box, Text, Group, Stack, Anchor } from "@mantine/core";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -11,15 +12,27 @@ export default function Footer() {
         <Group className="space-x-16" justify="start" align="start">
           <Stack gap={0} justify="start">
             <Text className="font-bold mb-2">Product</Text>
-            <Text>PTN</Text>
-            <Text>Models</Text>
-            <Text>Dashboard</Text>
-            <Text>FAQ</Text>
+            <Anchor component={Link} href="https://www.taoshi.io/ptn" target="_blank">
+              PTN
+            </Anchor>
+            <Anchor component={Link} href="https://huggingface.co/Taoshi" target="_blank">
+              Models
+            </Anchor>
+            <Anchor component={Link} href="https://dashboard.taoshi.io" target="_blank">
+              Dashboard
+            </Anchor>
+            <Anchor component={Link} href="https://www.taoshi.io/faq" target="_blank">
+              FAQ
+            </Anchor>
           </Stack>
           <Stack gap={0} justify="start">
             <Text className="font-bold mb-2">Company</Text>
-            <Text>Our Team</Text>
-            <Text>Contact Us</Text>
+            <Anchor component={Link} href="https://www.taoshi.io/#team" target="_blank">
+              Our Team
+            </Anchor>
+            <Anchor component={Link} href="mailto: support@taoshi.io" target="_blank">
+              Contact Us
+            </Anchor>
           </Stack>
         </Group>
       </Box>
