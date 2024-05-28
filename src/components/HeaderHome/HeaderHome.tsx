@@ -68,6 +68,7 @@ export function HeaderHome() {
             className="text-sm font-normal"
             component={Link}
             href="/dashboard"
+            data-cy="btn-dashboard"
           >
             Dashboard
           </Button>
