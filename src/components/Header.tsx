@@ -7,6 +7,7 @@ import {
   Button,
   Text,
   Divider,
+  Box,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
@@ -25,7 +26,7 @@ import Notifications from "./Notifications";
 
 export function Header() {
   let { data: userNotifications, isLoading: notificationIsLoading } = useSWR(
-    '/user-notifications',
+    "/user-notifications",
     async () => {
       const notifications = await getUserNotifications();
 
@@ -49,6 +50,11 @@ export function Header() {
 
   return (
     <>
+      {process.env.NEXT_PUBLIC_ENV_NAME && (
+        <Box className="z-10 pointer-events-none text-black absolute px-5 font-bold w-full top-0 opacity-40">
+          {process.env.NEXT_PUBLIC_ENV_NAME}
+        </Box>
+      )}
       <Button
         variant={
           userNotifications?.length &&
