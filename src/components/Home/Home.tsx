@@ -9,6 +9,7 @@ import {
   Accordion,
   Collapse,
   Center,
+  Box,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -218,6 +219,9 @@ export function Home() {
 
   return (
     <div>
+      {process.env.NEXT_PUBLIC_ENV_NAME && (
+        <Box className="z-10 pointer-events-none text-white absolute px-5 font-bold w-full top-0 opacity-60">{process.env.NEXT_PUBLIC_ENV_NAME}</Box>
+      )}
       <div className="bg-primary-500 mb-8">
         <div className="container max-w-5xl mx-auto mb-10">
           <HeaderHome />
