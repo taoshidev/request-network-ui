@@ -21,9 +21,3 @@ runs:
     - name: Install deps
       run: pnpm i
       shell: bash
-
-    - name: Generate
-      run: pnpm generate
-      shell: bash
-      env:
-        API_URL: ${{ inputs.API_URL }}
