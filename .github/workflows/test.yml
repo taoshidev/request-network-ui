@@ -11,15 +11,17 @@ jobs:
   cypress:
     name: Cypress
     runs-on: ubuntu-latest
+    env:
+      API_URL: ${{ vars.TEST_API_URL }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-      # - name: Copy test env vars
-      #   run: cp .env.example .env
-      # - name: Prepare environment
-      #   uses: ./.github/actions/prepare-env
-      #   with:
-      #     API_URL: ${{ vars.TEST_API_URL }}
+      - name: Copy test env vars
+        run: cp .env.example .env
+      - name: Prepare environment
+        uses: ./.github/actions/prepare-env
+        with:
+          API_URL: ${{ vars.TEST_API_URL }}
       - name: Build
         run: pnpm build
         shell: bash

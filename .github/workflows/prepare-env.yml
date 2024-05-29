@@ -1,0 +1,29 @@
+name: Prepare environment
+inputs:
+  API_URL:
+    description: API url
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+
+    - name: ⎔ Setup node
+      uses: actions/setup-node@v4
+      with:
+        cache: pnpm
+        cache-dependency-path: ./pnpm-lock.yaml
+        node-version-file: ./.nvmrc
+
+    - name: Install deps
+      run: pnpm i
+      shell: bash
+
+    - name: Generate
+      run: pnpm generate
+      shell: bash
+      env:
+        API_URL: ${{ inputs.API_URL }}
