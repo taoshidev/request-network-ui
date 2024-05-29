@@ -11,9 +11,6 @@ jobs:
   cypress:
     name: :black_circle:️ Cypress
     runs-on: ubuntu-latest
-    env:
-      API_URL: ${{ vars.TEST_API_URL }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: :arrow_down: Checkout repo
         uses: actions/checkout@v4
