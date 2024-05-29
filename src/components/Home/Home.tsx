@@ -33,6 +33,7 @@ import subnet21 from "@/assets/bittensor/subnet-21.png";
 import subnet22 from "@/assets/bittensor/subnet-22.png";
 import subnet14 from "@/assets/bittensor/subnet-14.png";
 import subnet13 from "@/assets/bittensor/subnet-13.png";
+import React from "react";
 
 const questions = [
   {

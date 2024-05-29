@@ -8,7 +8,11 @@ import {
   IconCode,
 } from "@tabler/icons-react";
 
-export function HeaderHome({ startLink }: { startLink: string }) {
+export function HeaderHome({
+  startLink = "/dashboard",
+}: {
+  startLink?: string;
+}) {
   return (
     <div className="h-full py-4">
       <div className="flex-1 flex justify-between">
