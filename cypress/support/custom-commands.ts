@@ -1,9 +1,9 @@
-Cypress.Commands.add('assertCheckpointOrder', (checkpointOrder) => {
+Cypress.Commands.add('assertCheckpointOrder' as any, (checkpointOrder) => {
   return cy
     .get('[data-cy="checkpoint-order"]')
-    .contains(checkpointOrder);
+    .contains(checkpointOrder as any);
 });
-Cypress.Commands.add('assertCompletionMessage', (completionOrder) => {
+Cypress.Commands.add('assertCompletionMessage' as any, (completionOrder) => {
   return cy.contains(`${completionOrder}/4 checkpoints completed`);
 });
 export const interceptMystery = (alias) => {

@@ -1,0 +1,42 @@
+name: Test NestJS
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the development branch
+on:
+  pull_request:
+    branches: [staging]
+
+# A workflow for testing NestJS
+jobs:
+  cypress:
+    name: :black_circle:️ Cypress
+    runs-on: ubuntu-latest
+    env:
+      API_URL: ${{ vars.TEST_API_URL }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: :arrow_down: Checkout repo
+        uses: actions/checkout@v4
+      - name: :surfer: Copy test env vars
+        run: cp .env.example .env
+      - name: :building_construction: Prepare environment
+        uses: ./.github/actions/prepare-env
+        with:
+          API_URL: ${{ vars.TEST_API_URL }}
+      - name: :hammer_and_wrench: Build
+        run: pnpm build
+        shell: bash
+      - name: :deciduous_tree: Run Cypress e2e tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          start: pnpm start -p 3000
+          wait-on: 'http://localhost:3000'
+          working-directory: .
+      - name: :deciduous_tree: Run cypress component tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          component: true
+          install: false
+          working-directory: .

@@ -214,17 +214,19 @@ const questions = [
   },
 ];
 
-export function Home() {
+export function Home({ startLink }: { startLink: string }) {
   const [opened, { toggle }] = useDisclosure(false);
 
   return (
     <div>
       {process.env.NEXT_PUBLIC_ENV_NAME && (
-        <Box className="z-10 pointer-events-none text-white absolute px-5 font-bold w-full top-0 opacity-60">{process.env.NEXT_PUBLIC_ENV_NAME}</Box>
+        <Box className="z-10 pointer-events-none text-white absolute px-5 font-bold w-full top-0 opacity-60">
+          {process.env.NEXT_PUBLIC_ENV_NAME}
+        </Box>
       )}
       <div className="bg-primary-500 mb-8">
         <div className="container max-w-5xl mx-auto mb-10">
-          <HeaderHome />
+          <HeaderHome startLink={startLink} />
         </div>
         <div className="container mx-auto py-10 mb-10">
           <div className="flex justify-center items-center h-96">
@@ -511,7 +513,7 @@ export function Home() {
             />
             <h1 className="text-5xl font-bold mb-8">experience seamless</h1>
             <div className="flex gap-4 justify-center">
-              <Button component={Link} href="/dashboard">
+              <Button component={Link} href={startLink}>
                 <Text size="sm">Get Started</Text>
               </Button>
               <Button variant="transparent" component={Link} href="#">
