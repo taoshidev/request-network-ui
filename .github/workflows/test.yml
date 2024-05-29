@@ -12,25 +12,25 @@ jobs:
     name: :black_circle:️ Cypress
     runs-on: ubuntu-latest
     steps:
-      - name: :arrow_down: Checkout repo
+      - name: Checkout repo
         uses: actions/checkout@v4
-      - name: :surfer: Copy test env vars
+      - name: Copy test env vars
         run: cp .env.example .env
-      - name: :building_construction: Prepare environment
+      - name: Prepare environment
         uses: ./.github/actions/prepare-env
         with:
           API_URL: ${{ vars.TEST_API_URL }}
-      - name: :hammer_and_wrench: Build
+      - name: Build
         run: pnpm build
         shell: bash
-      - name: :deciduous_tree: Run Cypress e2e tests
+      - name: Run Cypress e2e tests
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
           start: pnpm start -p 3000
           wait-on: 'http://localhost:3000'
           working-directory: .
-      - name: :deciduous_tree: Run cypress component tests
+      - name: Run cypress component tests
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
