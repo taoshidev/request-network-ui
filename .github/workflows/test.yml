@@ -9,7 +9,7 @@ on:
 # A workflow for testing NestJS
 jobs:
   cypress:
-    name: :black_circle:️ Cypress
+    name: Cypress
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
