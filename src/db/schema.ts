@@ -140,7 +140,7 @@ export const endpoints = pgTable(
     enabled: boolean("enabled").default(true).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),
-    updatedAt: timestamp("updated_at").default(sql``),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
     deletedAt: timestamp("deleted_at"),
   },
   (table) => ({

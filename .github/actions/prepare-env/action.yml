@@ -42,6 +42,20 @@ runs:
         cache-dependency-path: ./pnpm-lock.yaml
         node-version-file: ./.nvmrc
 
+    - name: Setup cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          node_modules
+          /home/runner/.cache/Cypress
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
     - name: Install deps
       run: pnpm i
+      shell: bash
+
+    - name: Install Cypress
+      run: npx cypress install
       shell: bash
