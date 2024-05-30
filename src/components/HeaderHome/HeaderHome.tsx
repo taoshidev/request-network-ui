@@ -8,7 +8,11 @@ import {
   IconCode,
 } from "@tabler/icons-react";
 
-export function HeaderHome() {
+export function HeaderHome({
+  startLink = "/dashboard",
+}: {
+  startLink?: string;
+}) {
   return (
     <div className="h-full py-4">
       <div className="flex-1 flex justify-between">
@@ -67,7 +71,8 @@ export function HeaderHome() {
             variant="white"
             className="text-sm font-normal"
             component={Link}
-            href="/dashboard"
+            href={startLink}
+            data-cy="btn-dashboard"
           >
             Dashboard
           </Button>

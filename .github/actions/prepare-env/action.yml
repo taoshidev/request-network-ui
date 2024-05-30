@@ -1,0 +1,47 @@
+name: Prepare environment
+inputs:
+  NODE_OPTIONS:
+    description: Node options
+    required: true
+  API_URL:
+    description: API url
+    required: true
+  DATABASE_URL:
+    description: Database url
+    required: true
+  NEXT_PUBLIC_SUPABASE_ANON_KEY:
+    description: Supabase key
+    required: true
+  SUPABASE_AUTH_GITHUB_CLIENT_ID:
+    description: Github id
+    required: true
+  SUPABASE_AUTH_GITHUB_SECRET:
+    description: Github key
+    required: true
+  SUPABASE_AUTH_GOOGLE_CLIENT_ID:
+    description: Google id
+    required: true
+  SUPABASE_AUTH_GOOGLE_SECRET:
+    description: Google key
+    required: true
+  SENTRY_AUTH_TOKEN:
+    description: Sentry auth
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+
+    - name: ⎔ Setup node
+      uses: actions/setup-node@v4
+      with:
+        cache: pnpm
+        cache-dependency-path: ./pnpm-lock.yaml
+        node-version-file: ./.nvmrc
+
+    - name: Install deps
+      run: pnpm i
+      shell: bash
