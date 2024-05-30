@@ -57,5 +57,5 @@ runs:
       shell: bash
 
     - name: Install Cypress
-      run: cypress install
+      run: npx cypress install
       shell: bash
