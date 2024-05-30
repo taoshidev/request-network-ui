@@ -5,10 +5,10 @@ const nextConfig = {
     optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
   },
 };
+console.log('is testing: ', process.env.NEXT_PUBLIC_NODE_ENV === "testing");
 export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
-
   sourcemaps: {
     disable: process.env.NEXT_PUBLIC_NODE_ENV === "testing",
   },
