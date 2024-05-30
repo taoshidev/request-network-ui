@@ -22,8 +22,7 @@ import {
 import { useEffect, useState } from "react";
 import { IconBell } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
-import { NotificationType } from "@/db/types/notification";
-import removeMd from 'remove-markdown';
+import removeMd from "remove-markdown";
 
 export default function Notifications({
   opened,
@@ -44,13 +43,13 @@ export default function Notifications({
     deleteUserNotification(id);
   }
 
-  const markViewed = async (notification?: NotificationType) => {
-    if (notification && !notification?.viewed) {
+  const markViewed = async (userNotification?: UserNotificationType) => {
+    if (userNotification && !userNotification?.viewed) {
       await updateUserNotification({
-        id: notification.id,
+        id: userNotification.id,
         viewed: true,
       });
-      notification.viewed = true;
+      userNotification.viewed = true;
     }
   };
 
@@ -58,8 +57,8 @@ export default function Notifications({
     setTimer(
       setTimeout(async () => {
         if (userNotifications?.length) {
-          const notification = userNotifications.find((un) => !un.viewed);
-          await markViewed(notification);
+          const userNotification = userNotifications.find((un) => !un.viewed);
+          await markViewed(userNotification);
         }
         markViewedOverTime();
       }, 5000) as any
@@ -67,8 +66,8 @@ export default function Notifications({
   };
 
   const markAllAsViewed = async () => {
-    for (let notification of userNotifications) {
-      await markViewed(notification);
+    for (let userNotification of userNotifications) {
+      await markViewed(userNotification);
     }
   };
 
