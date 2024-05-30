@@ -55,3 +55,7 @@ runs:
     - name: Install deps
       run: pnpm i
       shell: bash
+
+    - name: Install Cypress
+      run: cypress install
+      shell: bash
