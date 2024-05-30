@@ -1,1 +1,1 @@
-import "./commands.tsx";
+import "./commands";
