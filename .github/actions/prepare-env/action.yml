@@ -3,6 +3,24 @@ inputs:
   API_URL:
     description: API url
     required: true
+  DATABASE_URL:
+    description: Database url
+    required: true
+  NEXT_PUBLIC_SUPABASE_ANON_KEY:
+    description: Supabase key
+    required: true
+  SUPABASE_AUTH_GITHUB_CLIENT_ID:
+    description: Github id
+    required: true
+  SUPABASE_AUTH_GITHUB_SECRET:
+    description: Github key
+    required: true
+  SUPABASE_AUTH_GOOGLE_CLIENT_ID:
+    description: Google id
+    required: true
+  SUPABASE_AUTH_GOOGLE_SECRET:
+    description: Google key
+    required: true
 runs:
   using: composite
   steps:
