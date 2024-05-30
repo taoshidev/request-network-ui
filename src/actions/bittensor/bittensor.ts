@@ -5,7 +5,7 @@ import { types } from "./types";
 import { ValidatorType } from "@/db/types/validator";
 
 const PROVIDER_URL =
-  process.env.NEXT_PUBLIC_NODE_ENV === "development"
+  ["development", "testing"].includes(process.env.NEXT_PUBLIC_NODE_ENV as string)
     ? "wss://test.finney.opentensor.ai:443"
     : "wss://entrypoint-finney.opentensor.ai:443";
 
