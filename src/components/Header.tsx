@@ -107,6 +107,7 @@ export function Header() {
               className="text-sm text-black"
               component={Link}
               href="/contributing"
+              data-cy="btn-contribute"
             >
               Contribute
             </Anchor>

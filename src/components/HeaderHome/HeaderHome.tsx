@@ -55,6 +55,7 @@ export function HeaderHome({
             component={Link}
             leftSection={<IconCode size={14} />}
             href="/contributing"
+            data-cy="btn-contribute"
           >
             Contribute
           </Button>
