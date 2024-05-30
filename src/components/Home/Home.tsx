@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import { HeaderHome } from "../HeaderHome";
+import { HeaderHome } from "../HeaderHome/HeaderHome";
 
 import bg from "@/assets/hero-bg.svg";
 import logo from "@/assets/bittensor/logo.svg";
@@ -240,7 +240,7 @@ export function Home({ startLink }: { startLink: string }) {
                 w={48}
                 h="auto"
               />
-              <h1 className="text-6xl md:text-8xl font-bold mb-8">
+              <h1 data-cy="home-h1" className="text-6xl md:text-8xl font-bold mb-8">
                 request network
               </h1>
               <p className="max-w-3xl mx-auto mb-8">
