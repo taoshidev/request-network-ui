@@ -1,5 +1,8 @@
 name: Prepare environment
 inputs:
+  NODE_OPTIONS:
+    description: Node options
+    required: true
   API_URL:
     description: API url
     required: true
@@ -20,6 +23,9 @@ inputs:
     required: true
   SUPABASE_AUTH_GOOGLE_SECRET:
     description: Google key
+    required: true
+  SENTRY_AUTH_TOKEN:
+    description: Sentry auth
     required: true
 runs:
   using: composite
