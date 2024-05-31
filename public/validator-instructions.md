@@ -12,8 +12,8 @@
 8. [Bittensor Validator Registration](#bittensor-validator-registration)
 9. [Cron Server and Event Listener](#cron-server)
 10. [Configuring Stripe Payments](#stripe-payments)
-12. [Sentry Error Tracking](#sentry-error-tracking)
-13. [License](#license)
+11. [Sentry Error Tracking](#sentry-error-tracking)
+12. [Example License](#example-license)
 
 ## Introduction
 
@@ -308,5 +308,5 @@ To enable Stripe payments you will need to create a Stripe account and store the
     SENTRY_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-## License
+## Example License
 [License on Github](https://github.com/taoshidev/request-network/blob/staging/EXAMPLE_TOS.md)
