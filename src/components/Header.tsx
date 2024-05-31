@@ -71,7 +71,7 @@ export function Header() {
             <Anchor
               className="text-sm text-black"
               component={Link}
-              href="docs.taoshi.io"
+              href="https://docs.taoshi.io"
               target="_blank"
             >
               <Indicator position="top-start" size={6}>

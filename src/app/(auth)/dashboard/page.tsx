@@ -55,7 +55,7 @@ export default async function Page() {
 
     if (subs?.error) subs = [];
 
-    return <Consumer subscriptions={subs} validators={validatorArr} />;
+    return <Consumer user={user} subscriptions={subs} validators={validatorArr} />;
     // if user is a validator, render validator dashboard
   } else if (user.user_metadata.role === "validator") {
     const validatorEndpoints = validatorArr?.map((v) => v.endpoints);

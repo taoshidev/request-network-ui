@@ -28,7 +28,7 @@ export function HeaderHome({
             className="text-sm font-normal"
             component={Link}
             leftSection={<IconChartBar size={14} />}
-            href="docs.taoshi.io"
+            href="https://docs.taoshi.io"
             target="_blank"
           >
             Status

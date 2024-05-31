@@ -2,6 +2,139 @@ import { getSubscriptions } from "@/actions/subscriptions";
 import { and, eq, gte, lte } from "drizzle-orm";
 import { subscriptions } from "@/db/schema";
 import dayjs from "dayjs";
+import { sendToProxy } from "@/actions/apis";
+
+export const fetchServiceTransactions = async (validator, proxyServiceId) => {
+  const res = await sendToProxy({
+    endpoint: {
+      url: validator?.baseApiUrl!,
+      method: "POST",
+      path: `${validator?.apiPrefix}/services/query`,
+    },
+    validatorId: validator?.id!,
+    data: {
+      where: [
+        {
+          type: "eq",
+          column: "validatorId",
+          value: validator?.id!,
+        },
+        {
+          type: "eq",
+          column: "id",
+          value: proxyServiceId!,
+        },
+      ],
+    },
+  });
+
+  if (res?.error) {
+    console.log(res?.error);
+    return {};
+  }
+
+  return res?.data?.[0] || [];
+};
+
+export const fetchTransactions = async (
+  start: number,
+  end: number,
+  validator
+) => {
+  const res = await sendToProxy({
+    endpoint: {
+      url: validator?.baseApiUrl!,
+      method: "POST",
+      path: `${validator?.apiPrefix}/services/query`,
+    },
+    validatorId: validator?.id!,
+    data: {
+      where: [
+        {
+          type: "eq",
+          column: "validatorId",
+          value: validator?.id!,
+        },
+      ],
+      with: {
+        transactions: {
+          where: [
+            {
+              type: "gte",
+              column: "createdAt",
+              value: start,
+            },
+            {
+              type: "lte",
+              column: "createdAt",
+              value: end,
+            },
+          ],
+        },
+      },
+    },
+  });
+
+  if (res?.error) {
+    console.log(res?.error);
+    return [];
+  }
+
+  const services = res?.data || [];
+  const transactions = services.flatMap((service: any) =>
+    service.transactions.map((t: any) => ({
+      ...t,
+      service,
+      consumerServiceId: service.consumerServiceId,
+      subscriptionId: service.subscriptionId,
+    }))
+  );
+
+  return transactions;
+};
+
+export const fetchPaymentStatusTransactions = async (
+  start: number,
+  end: number,
+  validator,
+  fromWalletAddress: string
+) => {
+
+  const res = await sendToProxy({
+    endpoint: {
+      url: validator?.baseApiUrl!,
+      method: "POST",
+      path: `${validator?.apiPrefix}/transactions/query`,
+    },
+    validatorId: validator?.id!,
+    data: {
+      where: [
+        {
+          type: "gte",
+          column: "createdAt",
+          value: start,
+        },
+        {
+          type: "lte",
+          column: "createdAt",
+          value: end,
+        },
+        {
+          type: "eq",
+          column: "fromAddress",
+          value: fromWalletAddress!,
+        },
+      ],
+    },
+  });
+
+  if (res?.error) {
+    console.log(res?.error);
+    return [];
+  }
+
+  return res?.data || [];
+};
 
 export const fetchSubscriptions = async (
   validatorId: string,

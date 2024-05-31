@@ -5,7 +5,7 @@ import { Alert, Text, Box, Button, Title, Select } from "@mantine/core";
 import TransactionsTable from "@/components/ValidatorPaymentDashboard/TransactionTable";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { formatter } from "@/utils/number-formatter";
-import { StatCard } from "@/components/ValidatorPaymentDashboard/StatCard";
+import { StatCard } from "@/components/StatCard";
 import { ValidatorType } from "@/db/types/validator";
 import { ValidatorKeyType } from "@/components/StatTable";
 import { SubscriptionType } from "@/db/types/subscription";
@@ -50,6 +50,8 @@ export function ValidatorPaymentDashboard({
 }) {
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState(currentTransactions);
+  const [prevTransactions, setPrevTransactions] =
+    useState(previousTransactions);
   const [revenueData, setRevenueData] = useState<
     { id: string; color: string; data: { x: string; y: number }[] }[]
   >([]);
@@ -77,7 +79,7 @@ export function ValidatorPaymentDashboard({
         if (!Array.isArray(keys)) return [];
         if (selectedSubscription)
           keys = keys.filter(
-            (k) => k?.meta?.subscription?.serviceId === selectedSubscription
+            (k) => k?.meta?.subscription?.id === selectedSubscription
           );
 
         return keys.flatMap((k) => k.monthlyUsage);
@@ -106,9 +108,9 @@ export function ValidatorPaymentDashboard({
   }, [transactions]);
 
   const previousTotalIncome = useMemo(() => {
-    const amount = previousTransactions?.flatMap((t) => t.amount || 0);
+    const amount = prevTransactions?.flatMap((t) => t.amount || 0);
     return amount.reduce((total, amt) => total + amt, 0);
-  }, [previousTransactions]);
+  }, [prevTransactions]);
 
   const incomePercentageChange = useMemo(
     () => calculatePercentageChange(totalIncome, previousTotalIncome),
@@ -132,7 +134,6 @@ export function ValidatorPaymentDashboard({
   );
 
   useEffect(() => {
-    console.log("here");
     setLoading(true);
     if (stats && currentTransactions && currentSubscriptions) {
       setLoading(false);
@@ -141,10 +142,19 @@ export function ValidatorPaymentDashboard({
 
   useEffect(() => {
     let tx = currentTransactions || [];
-    if (selectedSubscription)
-      tx = tx.filter((t) => t.consumerServiceId === selectedSubscription);
+    let prevTx = previousTransactions || [];
+    if (selectedSubscription) {
+      tx = tx.filter((t) => t.subscriptionId === selectedSubscription);
+      prevTx = prevTx.filter((t) => t.subscriptionId === selectedSubscription);
+    }
+
     setTransactions(
       tx.sort((a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix())
+    );
+    setPrevTransactions(
+      prevTx.sort(
+        (a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix()
+      )
     );
 
     const aggregatedRevenueData = fillMissingDates(
@@ -177,7 +187,7 @@ export function ValidatorPaymentDashboard({
     );
 
     setPaymentHistoryData(paymentHistory);
-  }, [currentTransactions, selectedSubscription]);
+  }, [currentTransactions, previousTransactions, selectedSubscription]);
 
   useEffect(() => {
     const usageData = stats
@@ -186,7 +196,7 @@ export function ValidatorPaymentDashboard({
         if (!Array.isArray(keys)) return 0;
         if (selectedSubscription)
           keys = keys.filter(
-            (k) => k.meta.subscription.serviceId === selectedSubscription
+            (k) => k.meta.subscription.id === selectedSubscription
           );
         return keys.flatMap((k) => k.monthlyUsage);
       })
@@ -210,7 +220,9 @@ export function ValidatorPaymentDashboard({
       );
     }
 
-    const consumerMakeup = generateConsumerMakeupData(endpoints as EndpointType[]);
+    const consumerMakeup = generateConsumerMakeupData(
+      endpoints as EndpointType[]
+    );
     setConsumerMakeupData(consumerMakeup);
   }, [stats, selectedSubscription]);
 

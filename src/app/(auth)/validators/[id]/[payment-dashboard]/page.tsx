@@ -7,9 +7,8 @@ import { validators } from "@/db/schema";
 import { ValidatorPaymentDashboard } from "@/components/ValidatorPaymentDashboard/ValidatorPaymentDashboard";
 import { getValidators } from "@/actions/validators";
 import { getUserAPIKeys, getVerifications } from "@/actions/keys";
-import { sendToProxy } from "@/actions/apis";
 import { getStartAndEndTimestamps } from "@/utils/date";
-import { fetchSubscriptions } from "@/utils/validators";
+import { fetchSubscriptions, fetchTransactions } from "@/utils/validators";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -109,62 +108,12 @@ export default async function Page({ params }: any) {
 
   const stats = await Promise.all(promises);
 
-  const { id: validatorId, baseApiUrl: url, apiPrefix } = validator!;
-
-  const fetchTransactions = async (start: number, end: number) => {
-    const res = await sendToProxy({
-      endpoint: {
-        url: validator?.baseApiUrl!,
-        method: "POST",
-        path: `${apiPrefix}/services/query`,
-      },
-      validatorId: validatorId!,
-      data: {
-        where: [
-          {
-            type: "eq",
-            column: "validatorId",
-            value: validatorId!,
-          },
-        ],
-        with: {
-          transactions: {
-            where: [
-              {
-                type: "gte",
-                column: "createdAt",
-                value: start,
-              },
-              {
-                type: "lte",
-                column: "createdAt",
-                value: end,
-              },
-            ],
-          },
-        },
-      },
-    });
-
-    if (res?.error) {
-      console.log(res?.error);
-      return [];
-    }
-
-    const services = res?.data || [];
-    const transactions = services.flatMap((service: any) =>
-      service.transactions.map((t: any) => ({
-        ...t,
-        consumerServiceId: service.consumerServiceId,
-      }))
-    );
-
-    return transactions;
-  };
-
-  const currentTransactions = await fetchTransactions(start, end);
-  const previousTransactions = await fetchTransactions(prevStart, prevEnd);
-
+  const currentTransactions = await fetchTransactions(start, end, validator);
+  const previousTransactions = await fetchTransactions(
+    prevStart,
+    prevEnd,
+    validator
+  );
   const currentSubscriptions = await fetchSubscriptions(
     id,
     new Date(start).toISOString(),
