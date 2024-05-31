@@ -12,8 +12,8 @@
 8. [Bittensor Validator Registration](#bittensor-validator-registration)
 9. [Cron Server and Event Listener](#cron-server)
 10. [Configuring Stripe Payments](#stripe-payments)
-12. [Sentry Error Tracking](#sentry-error-tracking)
-13. [License](#license)
+11. [Sentry Error Tracking](#sentry-error-tracking)
+12. [License](#license)
 
 ## Introduction
 
