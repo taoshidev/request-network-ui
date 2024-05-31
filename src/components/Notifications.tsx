@@ -103,7 +103,7 @@ export default function Notifications({
                 ? "filled"
                 : "outline"
             }
-            className="rounded-full aspect-square px-0 notify-bell mr-1"
+            className="rounded-full aspect-square px-0 notify-bell mr-2"
           >
             <IconBell />
           </Button>

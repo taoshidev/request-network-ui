@@ -40,7 +40,7 @@ export default function Page({ children }: PageProps) {
         </Box>
       </Box>
 
-      <Container flex="1" fluid>
+      <Container flex="1" fluid className="bg-stone-100">
         {children}
       </Container>
     </Flex>
