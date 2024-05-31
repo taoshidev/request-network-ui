@@ -1,5 +1,5 @@
 import { getAuthUser } from "@/actions/auth";
-import { Home } from "@/components/Home";
+import Home from "@/components/Home";
 
 export default  async function Page() {
   const user = await getAuthUser();

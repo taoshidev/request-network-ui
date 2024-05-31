@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import { HeaderHome } from "../HeaderHome/HeaderHome";
+import { HeaderHome } from "./HeaderHome";
 
 import bg from "@/assets/hero-bg.svg";
 import logo from "@/assets/bittensor/logo.svg";
@@ -215,7 +215,7 @@ const questions = [
   },
 ];
 
-export function Home({ startLink }: { startLink: string }) {
+export default function Home({ startLink }: { startLink: string }) {
   const [opened, { toggle }] = useDisclosure(false);
 
   return (
@@ -240,7 +240,10 @@ export function Home({ startLink }: { startLink: string }) {
                 w={48}
                 h="auto"
               />
-              <h1 data-cy="home-h1" className="text-6xl md:text-8xl font-bold mb-8">
+              <h1
+                data-cy="home-h1"
+                className="text-6xl md:text-8xl font-bold mb-8"
+              >
                 request network
               </h1>
               <p className="max-w-3xl mx-auto mb-8">
@@ -249,10 +252,19 @@ export function Home({ startLink }: { startLink: string }) {
                 and architected by Taoshi.
               </p>
               <div className="flex gap-4 justify-center items-center">
-                <Button variant="white" component={Link} href="/dashboard">
+                <Button
+                  variant="white"
+                  component={Link}
+                  href={startLink}
+                  data-cy="btn-dashboard"
+                >
                   <Text size="sm">Get Started</Text>
                 </Button>
-                <Button component={Link} href="/documentation" data-cy="btn-documentation">
+                <Button
+                  component={Link}
+                  href="/documentation"
+                  data-cy="btn-documentation"
+                >
                   <Text size="sm">Documentation</Text>
                 </Button>
               </div>
@@ -496,7 +508,7 @@ export function Home({ startLink }: { startLink: string }) {
           </Accordion>
         </Collapse>
         <Center>
-          <Button variant="subtle" onClick={toggle}>
+          <Button variant="subtle" onClick={toggle} data-cy="btn-questions">
             {opened ? "Less" : "More"} Questions
           </Button>
         </Center>
@@ -514,10 +526,19 @@ export function Home({ startLink }: { startLink: string }) {
             />
             <h1 className="text-5xl font-bold mb-8">experience seamless</h1>
             <div className="flex gap-4 justify-center">
-              <Button component={Link} href={startLink}>
+              <Button
+                component={Link}
+                href={startLink}
+                data-cy="btn-dashboard-2"
+              >
                 <Text size="sm">Get Started</Text>
               </Button>
-              <Button variant="transparent" component={Link} href="#">
+              <Button
+                variant="transparent"
+                component={Link}
+                href="/documentation"
+                data-cy="btn-documentation-2"
+              >
                 <Text size="sm">Documentation</Text>
               </Button>
             </div>
