@@ -55,24 +55,6 @@ export function Header() {
           {process.env.NEXT_PUBLIC_ENV_NAME}
         </Box>
       )}
-      <Button
-        variant={
-          userNotifications?.length &&
-          userNotifications.some((un: UserNotificationType) => !un.viewed)
-            ? "filled"
-            : "outline"
-        }
-        className={
-          "float-end rounded-full px-2 top-6 right-5 notify-bell" +
-          (userNotifications?.length &&
-          userNotifications.some((un: UserNotificationType) => !un.viewed)
-            ? " active"
-            : "")
-        }
-        onClick={toggleNotifications}
-      >
-        <IconBell />
-      </Button>
       <Group className="h-full px-2 py-5 max-w-6xl m-auto">
         <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
         <Group className="flex-1 justify-between h-12">
@@ -160,6 +142,24 @@ export function Header() {
                 </Menu.Dropdown>
               </Menu>
             </>
+            <Button
+              variant={
+                userNotifications?.length &&
+                userNotifications.some((un: UserNotificationType) => !un.viewed)
+                  ? "filled"
+                  : "outline"
+              }
+              className={
+                "rounded-full aspect-square px-0 notify-bell" +
+                (userNotifications?.length &&
+                userNotifications.some((un: UserNotificationType) => !un.viewed)
+                  ? " active"
+                  : "")
+              }
+              onClick={toggleNotifications}
+            >
+              <IconBell />
+            </Button>
           </Group>
         </Group>
       </Group>
