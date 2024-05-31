@@ -18,6 +18,7 @@ jobs:
       SUPABASE_AUTH_GOOGLE_CLIENT_ID: ${{ secrets.SUPABASE_AUTH_GOOGLE_CLIENT_ID }}
       SUPABASE_AUTH_GOOGLE_SECRET: ${{ secrets.SUPABASE_AUTH_GOOGLE_SECRET }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      NEXT_PUBLIC_NODE_ENV: testing
 
     steps:
       - name: Checkout repo
@@ -36,6 +37,7 @@ jobs:
           SUPABASE_AUTH_GOOGLE_CLIENT_ID:  ${{ secrets.SUPABASE_AUTH_GOOGLE_CLIENT_ID }}
           SUPABASE_AUTH_GOOGLE_SECRET:  ${{ secrets.SUPABASE_AUTH_GOOGLE_SECRET }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          NEXT_PUBLIC_NODE_ENV: testing
       - run: npm install -g pnpm
       - run: pnpm install
       - run: pnpm db:push

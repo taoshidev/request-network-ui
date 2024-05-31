@@ -252,7 +252,7 @@ export function Home({ startLink }: { startLink: string }) {
                 <Button variant="white" component={Link} href="/dashboard">
                   <Text size="sm">Get Started</Text>
                 </Button>
-                <Button component={Link} href="#">
+                <Button component={Link} href="/documentation" data-cy="btn-documentation">
                   <Text size="sm">Documentation</Text>
                 </Button>
               </div>

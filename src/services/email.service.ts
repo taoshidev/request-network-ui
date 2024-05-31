@@ -69,7 +69,7 @@ export default class EmailService {
   }
 
   protected getHeaders(mailerConfig: IEmailOptions) {
-    const envName = process.env.ENV_NAME ? `${process.env.ENV_NAME}: ` : '';
+    const envName = process.env.NEXT_PUBLIC_ENV_NAME ? `${process.env.NEXT_PUBLIC_ENV_NAME}: ` : '';
     const emailHeaders: IEmailHeaders = {
       from: mailerConfig.from || this.defaults.from,
       replyTo: mailerConfig.reply || mailerConfig.from || this.defaults.replyTo,

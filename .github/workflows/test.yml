@@ -12,7 +12,7 @@ jobs:
     name: Cypress
     runs-on: ubuntu-latest
     env:
-      NODE_OPTIONS: "--max-old-space-size=4096"  # Adjust size based on needs
+      NODE_OPTIONS: "--max-old-space-size=4096" # Adjust size based on needs
       API_URL: ${{ vars.TEST_API_URL }}
       DATABASE_URL: ${{ secrets.DATABASE_URL}}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
@@ -21,6 +21,8 @@ jobs:
       SUPABASE_AUTH_GOOGLE_CLIENT_ID: ${{ secrets.SUPABASE_AUTH_GOOGLE_CLIENT_ID }}
       SUPABASE_AUTH_GOOGLE_SECRET: ${{ secrets.SUPABASE_AUTH_GOOGLE_SECRET }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      NEXT_PUBLIC_NODE_ENV: testing
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -29,15 +31,16 @@ jobs:
       - name: Prepare environment
         uses: ./.github/actions/prepare-env
         with:
-          NODE_OPTIONS: "--max-old-space-size=4096"  # Adjust size based on needs
+          NODE_OPTIONS: "--max-old-space-size=4096" # Adjust size based on needs
           API_URL: ${{ vars.TEST_API_URL }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_AUTH_GITHUB_CLIENT_ID:  ${{ secrets.SUPABASE_AUTH_GITHUB_CLIENT_ID }}
-          SUPABASE_AUTH_GITHUB_SECRET:  ${{ secrets.SUPABASE_AUTH_GITHUB_SECRET }}
-          SUPABASE_AUTH_GOOGLE_CLIENT_ID:  ${{ secrets.SUPABASE_AUTH_GOOGLE_CLIENT_ID }}
-          SUPABASE_AUTH_GOOGLE_SECRET:  ${{ secrets.SUPABASE_AUTH_GOOGLE_SECRET }}
+          SUPABASE_AUTH_GITHUB_CLIENT_ID: ${{ secrets.SUPABASE_AUTH_GITHUB_CLIENT_ID }}
+          SUPABASE_AUTH_GITHUB_SECRET: ${{ secrets.SUPABASE_AUTH_GITHUB_SECRET }}
+          SUPABASE_AUTH_GOOGLE_CLIENT_ID: ${{ secrets.SUPABASE_AUTH_GOOGLE_CLIENT_ID }}
+          SUPABASE_AUTH_GOOGLE_SECRET: ${{ secrets.SUPABASE_AUTH_GOOGLE_SECRET }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          NEXT_PUBLIC_NODE_ENV: testing
       - name: Build
         run: pnpm build
         shell: bash
@@ -46,7 +49,7 @@ jobs:
         with:
           browser: chrome
           start: pnpm start -p 3000
-          wait-on: 'http://localhost:3000'
+          wait-on: "http://localhost:3000"
           working-directory: .
       - name: Run cypress component tests
         uses: cypress-io/github-action@v6

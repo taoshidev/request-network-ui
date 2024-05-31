@@ -27,6 +27,9 @@ inputs:
   SENTRY_AUTH_TOKEN:
     description: Sentry auth
     required: true
+  NEXT_PUBLIC_NODE_ENV:
+    description: Node environment
+    required: true
 runs:
   using: composite
   steps:
