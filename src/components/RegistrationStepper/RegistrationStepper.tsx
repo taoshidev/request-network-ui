@@ -204,6 +204,7 @@ export function RegistrationStepper({
         limit: selectedService?.limit || 10,
         refillRate: selectedService?.refillRate || 1,
         refillInterval: selectedService?.refillInterval || 60,
+        duration: selectedService?.duration || 1000,
       };
 
       const meta = {
