@@ -309,4 +309,4 @@ To enable Stripe payments you will need to create a Stripe account and store the
 ```
 
 ## License
-[License on Github]()
+[License on Github](https://github.com/taoshidev/request-network/blob/staging/EXAMPLE_TOS.md)
