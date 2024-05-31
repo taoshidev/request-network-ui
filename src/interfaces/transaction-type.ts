@@ -8,4 +8,5 @@ export interface TransactionType {
   transactionHash: string;
   walletAddress: string;
   blockNumber: number;
+  service: any;
 }

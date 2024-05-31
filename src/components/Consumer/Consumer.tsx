@@ -22,6 +22,8 @@ import { getKey } from "@/actions/keys";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import Loading from "@/app/(auth)/loading";
+import { useRouter } from "next/navigation";
+import { UserType } from "@/db/types/user";
 
 type SubscriptionEndpointValidatorType = SubscriptionType & {
   keyId: string;
@@ -31,7 +33,9 @@ type SubscriptionEndpointValidatorType = SubscriptionType & {
 export function Consumer({
   subscriptions,
   validators,
+  user,
 }: {
+  user: UserType;
   subscriptions: SubscriptionType &
     {
       keyId: string;
@@ -43,6 +47,7 @@ export function Consumer({
     SubscriptionEndpointValidatorType[] | undefined
   >(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchKeys = async () => {
@@ -90,6 +95,16 @@ export function Consumer({
             <Button component="a" href="/registration">
               {!subscriptionData ? "Register" : "Browse Subnets"}
             </Button>
+            {subscriptionData && (
+              <Button
+                variant="outline"
+                className="ml-2"
+                component="a"
+                href={`/dashboard/${user?.id}/consumer-payment-dashboard`}
+              >
+                Insights
+              </Button>
+            )}
           </Box>
         </Group>
       )}
@@ -155,7 +170,7 @@ export function Consumer({
                         component={Link}
                         href={`/keys/${subscription?.keyData?.id}`}
                       >
-                        View Stats
+                        View Key
                       </Anchor>
                     </Table.Td>
                   </Table.Tr>

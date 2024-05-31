@@ -36,11 +36,6 @@ export default function TransactionsTable({
           {latestTransactions.map((tx: TransactionType, index) => (
             <Table.Tr key={index} className="text-sm">
               <Table.Td className="truncate max-w-xs">
-                <span className="text-orange-500 capitalize">
-                  {tx?.service?.name}
-                </span>
-              </Table.Td>
-              <Table.Td className="truncate max-w-xs">
                 Hash:{" "}
                 <span className="text-orange-500 capitalize">
                   {tx?.transactionHash}

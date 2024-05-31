@@ -3,6 +3,8 @@ import { nullableSchema } from "@/utils/nullable";
 import { EndpointSchema } from "./endpoint";
 import { UserSchema } from "./user";
 import { ValidatorSchema } from "./validator";
+import { ServiceSchema } from "./service";
+import { ContractSchema } from "./contract";
 
 export const SubscriptionSchema = z.object({
   id: z.string().uuid(),
@@ -16,7 +18,9 @@ export const SubscriptionSchema = z.object({
   key: z.string().optional(),
   apiKey: z.string(),
   serviceId: z.string().uuid().optional(),
+  service: z.lazy(() => ServiceSchema).optional(),
   contractId: z.string().uuid().optional(),
+  contract: z.lazy(() => ContractSchema).optional(),
   proxyServiceId: z.string().uuid().optional(),
   apiSecret: z.string(),
   appName: z.string().min(1, { message: "Application name is required" }),

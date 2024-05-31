@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 import dayjs from "dayjs";
-import { Title, Box, Table, Text } from "@mantine/core";
+import { Title, Box, Table } from "@mantine/core";
 import { KeyType } from "@/db/types/key";
 import { ValidatorType } from "@/db/types/validator";
 
