@@ -13,6 +13,7 @@
 9. [Cron Server and Event Listener](#cron-server)
 10. [Configuring Stripe Payments](#stripe-payments)
 12. [Sentry Error Tracking](#sentry-error-tracking)
+13. [License](#license)
 
 ## Introduction
 
@@ -306,3 +307,6 @@ To enable Stripe payments you will need to create a Stripe account and store the
     SENTRY_DSN=https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     SENTRY_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
+
+## License
+[License on Github]()

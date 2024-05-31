@@ -18,8 +18,7 @@ const config: Config = {
       colors: appConfig.colors,
       fontFamily: {
         "space-mono": "var(--font-space-mono)",
-        // "adlam-display": "var(--font-adlam-display)",
-        "adlam-display": ['ADLaM Display'],
+        "adlam-display": "var(--font-adlam-display)",
         'dm-sans': ['DM Sans', 'sans-serif'],
       },
       keyframes: {
