@@ -30,7 +30,7 @@ export default class EmailService {
 
     if (region && accessKeyId && secretAccessKey) {
       const ses = new aws.SES({
-        region: process.env.AWS_REGION,
+        region,
         apiVersion: '2010-12-01',
         defaultProvider
       } as any);
