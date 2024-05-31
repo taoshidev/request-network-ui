@@ -10,24 +10,6 @@ import {
 import { Box, Text, Card } from "@mantine/core";
 import clsx from "clsx";
 import { TransactionType } from "@/interfaces/transaction-type";
-// interface Transaction {
-//   active: boolean;
-//   amount: string;
-//   blockNumber: number;
-//   confirmed: boolean;
-//   createdAt: string;
-//   deletedAt: string | null;
-//   fromAddress: string;
-//   id: string;
-//   meta: string;
-//   serviceId: string;
-//   toAddress: string;
-//   tokenAddress: string;
-//   transactionHash: string;
-//   transactionType: string;
-//   updatedAt: string;
-//   walletAddress: string;
-// }
 
 interface PaymentStatusCalendarProps {
   transactions: TransactionType[];

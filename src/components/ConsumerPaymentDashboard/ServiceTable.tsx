@@ -11,7 +11,7 @@ export default function ConsumerTable({
 }: {
   subscriptions: SubscriptionType[];
 }) {
-  console.log('subscription' , subscriptions)
+
   return (
     <Card className="h-full shadow-sm border-gray-200 mt-7" withBorder>
       <Text className="text-base font-bold mb-5">All Services</Text>

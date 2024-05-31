@@ -64,7 +64,7 @@ export function ConsumerPaymentDashboard({
   const router = useRouter();
 
   const monthlyRequests = useMemo(() => {
-    console.log(stats.subscriptions);
+
     let subs: any = stats.subscriptions;
     if (selectedSubscription)
       subs = subs.filter((s) => {
@@ -128,8 +128,6 @@ export function ConsumerPaymentDashboard({
       }
       return total + outstandingBalance;
     }, 0);
-
-    console.log("amount:", amount, statuses);
 
     if (statuses.includes("cancelled")) {
       setHealth("0%");

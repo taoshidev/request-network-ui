@@ -99,7 +99,7 @@ export const fetchPaymentStatusTransactions = async (
   validator,
   fromWalletAddress: string
 ) => {
-  console.log("fromWalletAddress:::::", fromWalletAddress);
+
   const res = await sendToProxy({
     endpoint: {
       url: validator?.baseApiUrl!,
