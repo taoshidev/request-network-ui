@@ -47,6 +47,7 @@ export function HeaderHome({
             component={Link}
             leftSection={<IconFileStack size={14} />}
             href="/documentation"
+            data-cy="btn-header-documentation"
           >
             Docs
           </Button>
@@ -55,7 +56,7 @@ export function HeaderHome({
             component={Link}
             leftSection={<IconCode size={14} />}
             href="/contributing"
-            data-cy="btn-contribute"
+            data-cy="btn-header-contribute"
           >
             Contribute
           </Button>
@@ -73,7 +74,7 @@ export function HeaderHome({
             className="text-sm font-normal"
             component={Link}
             href={startLink}
-            data-cy="btn-dashboard"
+            data-cy="btn-header-dashboard"
           >
             Dashboard
           </Button>

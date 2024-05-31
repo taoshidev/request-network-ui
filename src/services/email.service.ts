@@ -1,6 +1,7 @@
 import 'server-only';
 import { IEmailHeaders, IEmailOptions } from '@/interfaces/email';
-import * as aws from 'aws-sdk';
+import * as aws from "@aws-sdk/client-ses";
+import { defaultProvider } from "@aws-sdk/credential-provider-node";
 import * as nodemailer from 'nodemailer';
 import path from 'path';
 import { compileFile } from 'pug';
@@ -22,21 +23,20 @@ export default class EmailService {
 
   constructor() {
     const region = process.env.AWS_REGION;
-    const accessKeyId = process.env.AWS_KEY;
-    const secretAccessKey = process.env.AWS_SECRET;
+    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
     const user = process.env.EMAIL_FROM;
     const pass = process.env.EMAIL_PASS;
 
     if (region && accessKeyId && secretAccessKey) {
-      const SES = new aws.SES({
-        region: process.env.AWS_REGION,
-        accessKeyId: process.env.AWS_KEY,
-        secretAccessKey: process.env.AWS_SECRET,
-        apiVersion: '2010-12-01'
-      });
+      const ses = new aws.SES({
+        region,
+        apiVersion: '2010-12-01',
+        defaultProvider
+      } as any);
       
       this.mailTransport = nodemailer.createTransport({
-        SES
+        SES: { ses, aws }
       });
     } else if (user && pass) {
       this.mailTransport = nodemailer.createTransport({
@@ -44,10 +44,7 @@ export default class EmailService {
         host: "smtp.gmail.com",
         port: 465,
         secure: true,
-        auth: {
-          user: process.env.EMAIL_FROM,
-          pass: process.env.EMAIL_PASS,
-        },
+        auth: { user, pass },
       });
     }
   }
