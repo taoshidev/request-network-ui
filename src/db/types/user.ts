@@ -14,6 +14,7 @@ export const UserSchema = z.object({
   onboardingStep: z.number().int(),
   contracts: z.lazy(() => z.array(ContractSchema)).optional(),
   userNotification: z.lazy(() => z.array(UserNotificationSchema)).optional(),
+  stripeEnabled: z.boolean().optional(),
 });
 
 const NullableUserSchema = nullableSchema(UserSchema);

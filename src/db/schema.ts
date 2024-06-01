@@ -34,6 +34,7 @@ export const users = authSchema.table("users", {
   phone: varchar("phone", { length: 256 }),
   onboarded: boolean("onboarded").notNull().default(false),
   onboardingStep: integer("onboardingStep").notNull().default(0),
+  stripeEnabled: boolean("stripe_enabled").default(false),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -140,7 +141,7 @@ export const endpoints = pgTable(
     enabled: boolean("enabled").default(true).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),
-    updatedAt: timestamp("updated_at").default(sql``),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
     deletedAt: timestamp("deleted_at"),
   },
   (table) => ({
