@@ -33,7 +33,7 @@ export function ServiceFormInput({
     {
       value: "FIAT",
       label: "FIAT",
-      disabled: !user?.user_metadata?.stripeEnabled || true,
+      disabled: !user?.user_metadata?.stripe_enabled,
     },
     {
       value: "USDC",
