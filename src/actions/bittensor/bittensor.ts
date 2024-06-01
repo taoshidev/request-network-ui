@@ -43,13 +43,20 @@ export const checkMetadata = async () => {
   return JSON.stringify(metadata, null, 2);
 };
 
-export const fetchValidatorInfo = async (netUid: number, hotkey?: string) => {
+export const fetchValidatorInfo = async (netUid: number, hotkey?: string, uId?: number) => {
+  console.log('from fetchValidatorInfo....')
   try {
     const api = await createBittensorApi();
     const result = await fetchNeuronsLite(netUid);
-    return (
-      (await (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0]) || null
-    );
+    // console.log('result: ', result)
+    // const test = await fetchNeuronLite(netUid, 67);
+    // console.log('test::::', test)
+    const res = (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0] || null;
+    console.log('res::::', res)
+    return res;
+    // return (
+    //   (await (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0]) || null
+    // );
     // TODO: fetch by uid integer
     // const result = api.createType("NeuronInfo", validatorInfo);
     // return result.toJSON();
@@ -65,6 +72,20 @@ export const fetchNeuronsLite = async (netUid: number) => {
   const result = api.createType("Vec<NeuronInfoLite>", result_bytes);
   return result.toJSON();
 };
+
+export const fetchNeuronLite = async (netUid: number, uId: number) => {
+  const api = await createBittensorApi();
+  const result_bytes = await api.rpc.neuronInfo.getNeuronLite(netUid, uId);
+  try {
+    const result = api.createType("NeuronInfoLite", result_bytes);
+    return result.toJSON();
+  } catch (error) {
+    console.error('Error creating NeuronInfoLite type:', error);
+    console.error('Result bytes:', result_bytes.toHex());
+    throw error;
+  }
+};
+
 
 export const fetchSubnetsInfo = async () => {
   const api = await createBittensorApi();

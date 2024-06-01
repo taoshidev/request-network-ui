@@ -21,6 +21,7 @@ export function Registration({
   subnets: SubnetType[];
   validators: ValidatorWithInfo[];
 }) {
+  console.log("validators::::", validators);
   return (
     <RegistrationProvider>
       <RegistrationStepper

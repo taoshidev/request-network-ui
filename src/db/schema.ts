@@ -91,6 +91,7 @@ export const validators = pgTable("validators", {
     .default(sql`gen_random_uuid()`)
     .primaryKey()
     .notNull(),
+  bittensorUid: integer("bittensor_uid"),
   name: varchar("name").unique().notNull(),
   description: text("description"),
   baseApiUrl: varchar("base_api_url").unique().notNull(),
