@@ -25,7 +25,7 @@ import { isArray as _isArray } from "lodash";
 import Notifications from "./Notifications";
 
 export function Header() {
-  let { data: userNotifications, isLoading: notificationIsLoading } = useSWR(
+  let { data: userNotifications, isLoading: notificationIsLoading, mutate: refreshNotifications } = useSWR(
     "/user-notifications",
     async () => {
       const notifications = await getUserNotifications();
@@ -167,6 +167,7 @@ export function Header() {
       <Notifications
         opened={notificationsOpened}
         toggle={toggleNotifications}
+        refresh={refreshNotifications}
         isLoading={notificationIsLoading}
         userNotifications={userNotifications}
       />
