@@ -29,11 +29,13 @@ export default function Notifications({
   toggle,
   isLoading,
   userNotifications,
+  refresh
 }: {
   opened: boolean;
   toggle: () => void;
   isLoading: boolean;
   userNotifications: UserNotificationType[];
+  refresh: () => void;
 }) {
   const [timer, setTimer] = useState();
   const [deleted, setDeleted] = useState<string | undefined>();
@@ -41,6 +43,7 @@ export default function Notifications({
   function deleteNotification(id: string) {
     setDeleted(id);
     deleteUserNotification(id);
+    refresh();
   }
 
   const markViewed = async (userNotification?: UserNotificationType) => {

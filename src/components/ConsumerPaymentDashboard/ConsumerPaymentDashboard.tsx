@@ -3,7 +3,6 @@
 import { useMemo, useEffect, useState } from "react";
 import { Alert, Text, Box, Button, Title, Select } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
-import { formatter } from "@/utils/number-formatter";
 import { StatCard } from "@/components/StatCard";
 import { SubscriptionType } from "@/db/types/subscription";
 import ServiceTable from "@/components/ConsumerPaymentDashboard/ServiceTable";
@@ -18,6 +17,10 @@ import dayjs from "dayjs";
 import clsx from "clsx";
 import PaymentStatusCalendar from "./PaymentStatusCalendar";
 import { TransactionType } from "@/interfaces/transaction-type";
+import useSWR from "swr";
+import { deleteUserNotification, getUserNotifications } from "@/actions/notifications";
+import { NOTIFICATION_ICON, NotificationTypes } from "@/hooks/use-notification";
+import removeMd from "remove-markdown";
 
 const colors = [
   "hsl(220, 70%, 50%)",
@@ -60,11 +63,18 @@ export function ConsumerPaymentDashboard({
   >(null);
   const [health, setHealth] = useState<string>("");
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
+  const { data: userNotification, isLoading: notificationIsLoading, mutate: refreshNotification } = useSWR(
+    "/user-latest-notification",
+    async () => {
+      const notifications = await getUserNotifications({ limit: 1 });
+      return notifications?.[0];
+    },
+    { refreshInterval: 10000 }
+  );
 
   const router = useRouter();
 
   const monthlyRequests = useMemo(() => {
-
     let subs: any = stats.subscriptions;
     if (selectedSubscription)
       subs = subs.filter((s) => {
@@ -187,6 +197,11 @@ export function ConsumerPaymentDashboard({
     }, 0);
   };
 
+  function deleteNotification(id: string) {
+    deleteUserNotification(id);
+    refreshNotification();
+  }
+
   return (
     <Box className={clsx(loading ? "blur-sm" : "blur-none")}>
       <Box className="flex justify-between items-center mb-7">
@@ -204,23 +219,33 @@ export function ConsumerPaymentDashboard({
           onChange={handleConsumerChange}
         />
       </Box>
-      <Alert
-        className="shadow-sm border-gray-200"
-        color="orange"
-        icon={<IconAlertCircle />}
-      >
-        <Text className="mb-7 text-zinc-800 text-base font-medium">
-          Enim sunt in sint labore. Sit veniam do amet voluptate officia do
-          tempor
-        </Text>
-        <Text className="mb-7 text-zinc-800 text-base font-normal">
-          Qui adipisicing enim sunt ea quis commodo aute consequat ad et qui
-          cillum ipsum pariatur ea. Ad elit Lorem anim cupidatat aliqua pariatur
-          eu eiusmod. Qui esse ut tempor anim nisi velit Lorem quis laboris in
-          amet qui.
-        </Text>
-        <Button>OK, I got it</Button>
-      </Alert>
+
+      {userNotification && (
+        <Alert
+          className="shadow-sm border-gray-200"
+          color="orange"
+          icon={
+            NOTIFICATION_ICON[
+              NotificationTypes[userNotification.notification.type]
+            ]
+          }
+        >
+          <Text className="mb-7 text-zinc-800 text-base font-medium">
+            {userNotification.notification.subject}
+          </Text>
+          <Text className="mb-7 text-zinc-800 text-base font-normal">
+            {removeMd(userNotification.notification.content)}
+          </Text>
+          <Button
+            onClick={deleteNotification.bind(
+              null,
+              userNotification.id as string
+            )}
+          >
+            OK, I got it
+          </Button>
+        </Alert>
+      )}
 
       <Box className="mt-[40px]">
         <PaymentStatusCalendar transactions={transactions} />
