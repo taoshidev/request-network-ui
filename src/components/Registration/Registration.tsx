@@ -9,6 +9,8 @@ import { SubscriptionType } from "@/db/types/subscription";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { ValidatorEndpoint } from "@/components/ValidatorEndpoint";
+import { Alert, Text } from "@mantine/core";
+import { IconAlertCircle } from "@tabler/icons-react";
 
 type ValidatorWithInfo = ValidatorType & { neuronInfo: any };
 
@@ -27,12 +29,24 @@ export function Registration({
       <RegistrationStepper
         StepOne={<Subnets subnets={subnets} mode="registration" />}
         StepTwo={
-          <SubnetValidator
-            currentSubscriptions={currentSubscriptions}
-            subnet={subnets?.[0] || {}}
-            validators={validators}
-            mode="registration"
-          />
+          validators?.length! > 0 ? (
+            <SubnetValidator
+              currentSubscriptions={currentSubscriptions}
+              subnet={subnets?.[0] || {}}
+              validators={validators}
+              mode="registration"
+            />
+          ) : (
+            <Alert
+              className="mt-8 shadow-sm"
+              color="orange"
+              icon={<IconAlertCircle />}
+            >
+              <Text className="mb-2 text-base">
+                There are no validators available at the moment. Please check back soon!
+              </Text>
+            </Alert>
+          )
         }
         StepThree={
           <ValidatorEndpoint currentSubscriptions={currentSubscriptions} />

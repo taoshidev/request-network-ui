@@ -95,7 +95,7 @@ export function Consumer({
             <Button component="a" href="/registration">
               {!subscriptionData ? "Register" : "Browse Subnets"}
             </Button>
-            {subscriptionData && (
+            {subscriptionData?.length! > 0 && (
               <Button
                 variant="outline"
                 className="ml-2"

@@ -44,22 +44,13 @@ export const checkMetadata = async () => {
 };
 
 export const fetchValidatorInfo = async (netUid: number, hotkey?: string, uId?: number) => {
-  console.log('from fetchValidatorInfo....')
   try {
     const api = await createBittensorApi();
-    const result = await fetchNeuronsLite(netUid);
-    // console.log('result: ', result)
-    // const test = await fetchNeuronLite(netUid, 67);
-    // console.log('test::::', test)
-    const res = (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0] || null;
-    console.log('res::::', res)
-    return res;
-    // return (
-    //   (await (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0]) || null
-    // );
-    // TODO: fetch by uid integer
-    // const result = api.createType("NeuronInfo", validatorInfo);
-    // return result.toJSON();
+    if(!uId) {
+      const result = await fetchNeuronsLite(netUid);
+      return (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0] || null;
+    }
+    return await fetchNeuronLite(netUid, uId);
   } catch (error) {
     console.error("Error fetching validator info:", error);
     return null;

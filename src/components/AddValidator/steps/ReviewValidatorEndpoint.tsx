@@ -92,11 +92,6 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
           </Table>
         </Box>
       </Box>
-      {_isEmpty(errors) && (
-        <Text className="text-center">
-          Completed. Click button to create validator and endpoint.
-        </Text>
-      )}
       {Object.keys(errors).map((key) => (
         <Text className="text-center text-red-600" key={key}>
           <b>{key}</b>: {errors[key]}

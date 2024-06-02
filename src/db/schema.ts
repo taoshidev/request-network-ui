@@ -92,6 +92,7 @@ export const validators = pgTable("validators", {
     .primaryKey()
     .notNull(),
   bittensorUid: integer("bittensor_uid"),
+  bittensorNetUid: integer("bittensor_net_uid"),
   name: varchar("name").unique().notNull(),
   description: text("description"),
   baseApiUrl: varchar("base_api_url").unique().notNull(),
@@ -136,7 +137,6 @@ export const endpoints = pgTable(
       .notNull()
       .references(() => validators.id, { onDelete: "cascade" }),
     contractId: uuid("contract_id")
-      .notNull()
       .references(() => contracts.id, { onDelete: "set null" }),
     url: varchar("url").notNull(),
     enabled: boolean("enabled").default(true).notNull(),
@@ -216,7 +216,6 @@ export const subscriptions = pgTable(
       onDelete: "set null",
     }),
     validatorId: uuid("validator_id")
-      .notNull()
       .references(() => validators.id, { onDelete: "set null" }),
     proxyServiceId: varchar("proxy_service_id"),
     serviceId: uuid("service_id").references(() => services.id, {

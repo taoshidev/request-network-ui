@@ -71,14 +71,14 @@ export function KeyModal({
       <Box className="mt-4 mb-8">
         <Box className="mb-8">
           <Alert
-            className="shadow-sm"
+            className="shadow-sm mb-7 border-gray-200"
             color="orange"
             icon={<IconAlertCircle />}
           >
-            <Text className="mb-2 text-xs">
+            <Text className="mb-2 text-md">
               Please copy and safely store your unique authentication key below.
             </Text>
-            <Text className="text-xs">
+            <Text className="text-md">
               This key will not be displayed again.
             </Text>
           </Alert>

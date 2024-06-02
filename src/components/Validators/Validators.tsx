@@ -91,16 +91,16 @@ export function Validators({
                       variant="subtle"
                       onClick={() => handleEdit(validator)}
                     >
-                      Edit
+                      {validator.verified ? "Edit" : "Verify"}
                     </Button>
                   </Table.Td>
                   <Table.Td>
                     <Button
                       size="sm"
-                      variant="subtle"
+                      variant="light"
                       onClick={() => router.push(`/validators/${validator?.id}/payment-dashboard`)}
                     >
-                      insight
+                      insights
                     </Button>
                   </Table.Td>
                 </Table.Tr>

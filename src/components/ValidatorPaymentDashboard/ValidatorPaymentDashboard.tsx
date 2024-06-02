@@ -321,8 +321,8 @@ export function ValidatorPaymentDashboard({
         />
         <StatCard
           title="Health"
-          value="95%"
-          percentage="-0.01%"
+          value="0%"
+          percentage="-"
           comparison="Compared to last month"
           isPositive={false}
           bgColor="bg-orange-500 text-white"
