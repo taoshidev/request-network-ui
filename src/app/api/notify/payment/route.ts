@@ -2,25 +2,14 @@ import { sendNotification } from "@/actions/notifications";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { subscriptions } from "@/db/schema";
 import { NOTIFICATION_TYPE } from "@/hooks/use-notification";
+import { BILLING_EVENT_TYPE } from "@/interfaces/enum/billing-event-type";
+import { SERVICE_STATUS_TYPE } from "@/interfaces/enum/service-status-type";
 import {
   jsonResponse,
   verifyApiServerRequest,
 } from "@/utils/verify-api-server-request";
 import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
-
-enum SERVICE_STATUS_TYPE {
-  NEW = "new",
-  IN_GRACE_PERIOD = "in grace period",
-  ON_TIME = "on time",
-  DELINQUENT = "delinquent",
-  CANCELLED = "cancelled",
-}
-export enum BILLING_EVENT_TYPE {
-  BALANCE_CHECKED = "balance-checked",
-  TRANSACTION_CHECKED = "transaction-checked",
-  TRANSACTION_CONFIRMED = "transaction-confirmed",
-}
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
   try {
