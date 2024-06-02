@@ -73,10 +73,12 @@ export function ValidatorPaymentDashboard({
   const [selectedSubscription, setSelectedSubscription] = useState<
     string | null
   >(null);
+  const [zoomIn, setZoomIn] = useState(true);
   const { data: userNotification, isLoading: notificationIsLoading, mutate: refreshNotification } = useSWR(
     "/user-latest-notification",
     async () => {
       const notifications = await getUserNotifications({ limit: 1 });
+      setZoomIn(true);
       return notifications?.[0];
     },
     { refreshInterval: 10000 }
@@ -256,8 +258,11 @@ export function ValidatorPaymentDashboard({
   };
 
   function deleteNotification(id: string) {
-    deleteUserNotification(id);
-    refreshNotification();
+    setZoomIn(false)
+    setTimeout(() => {
+      deleteUserNotification(id);
+      refreshNotification();
+    }, 500);
   }
 
   return (
@@ -298,7 +303,7 @@ export function ValidatorPaymentDashboard({
 
       {userNotification && (
         <Alert
-          className="shadow-sm border-gray-200"
+          className={"shadow-sm border-gray-200 zoom " + (zoomIn ? "in" : "out")}
           color="orange"
           icon={
             NOTIFICATION_ICON[

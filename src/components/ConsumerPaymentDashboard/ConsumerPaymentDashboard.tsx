@@ -18,7 +18,10 @@ import clsx from "clsx";
 import PaymentStatusCalendar from "./PaymentStatusCalendar";
 import { TransactionType } from "@/interfaces/transaction-type";
 import useSWR from "swr";
-import { deleteUserNotification, getUserNotifications } from "@/actions/notifications";
+import {
+  deleteUserNotification,
+  getUserNotifications,
+} from "@/actions/notifications";
 import { NOTIFICATION_ICON, NotificationTypes } from "@/hooks/use-notification";
 import removeMd from "remove-markdown";
 
@@ -63,10 +66,16 @@ export function ConsumerPaymentDashboard({
   >(null);
   const [health, setHealth] = useState<string>("");
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
-  const { data: userNotification, isLoading: notificationIsLoading, mutate: refreshNotification } = useSWR(
+  const [zoomIn, setZoomIn] = useState(true);
+  const {
+    data: userNotification,
+    isLoading: notificationIsLoading,
+    mutate: refreshNotification,
+  } = useSWR(
     "/user-latest-notification",
     async () => {
       const notifications = await getUserNotifications({ limit: 1 });
+      setZoomIn(true);
       return notifications?.[0];
     },
     { refreshInterval: 10000 }
@@ -198,8 +207,11 @@ export function ConsumerPaymentDashboard({
   };
 
   function deleteNotification(id: string) {
-    deleteUserNotification(id);
-    refreshNotification();
+    setZoomIn(false)
+    setTimeout(() => {
+      deleteUserNotification(id);
+      refreshNotification();
+    }, 500);
   }
 
   return (
@@ -222,7 +234,7 @@ export function ConsumerPaymentDashboard({
 
       {userNotification && (
         <Alert
-          className="shadow-sm border-gray-200"
+          className={"shadow-sm border-gray-200 zoom " + (zoomIn ? "in" : "out")}
           color="orange"
           icon={
             NOTIFICATION_ICON[
