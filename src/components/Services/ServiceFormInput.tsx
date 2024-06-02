@@ -5,6 +5,7 @@ import { UseFormReturnType } from "@mantine/form";
 import { ServiceType } from "@/db/types/service";
 import { getAuthUser } from "@/actions/auth";
 import { UserType } from "@/db/types/user";
+import { useRouter } from "next/navigation";
 
 export function ServiceFormInput({
   form,
@@ -13,10 +14,14 @@ export function ServiceFormInput({
 }) {
   const [currencyType, setCurrencyType] = useState("");
   const [user, setUser] = useState<UserType | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
       const user = await getAuthUser();
+      if (!user) {
+        router.push("/login");
+      }
       setUser(user);
     };
     fetchUser();

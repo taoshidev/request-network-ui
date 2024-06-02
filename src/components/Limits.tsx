@@ -43,11 +43,7 @@ export function Limits({
         template: "created-endpoint",
         subject: "New Endpoint Created",
         templateVariables: {
-          endPointPath: values.url,
-          expires: new Date(values.expires),
-          limit: values.limit,
-          refillRate: values.refillRate,
-          refillInterval: values.refillInterval,
+          endPointPath: values.url
         },
       });
     } catch (error: Error | unknown) {
