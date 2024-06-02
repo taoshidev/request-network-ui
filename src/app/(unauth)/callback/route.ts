@@ -1,4 +1,3 @@
-import { sendEmail } from "@/actions/email";
 import { sendNotification } from "@/actions/notifications";
 import { NOTIFICATION_TYPE } from "@/hooks/use-notification";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
@@ -37,7 +36,7 @@ export async function GET(request: NextRequest) {
       }
       // send welcome to request network email
       if (data.user?.email && !data.user.user_metadata?.onboarded) {
-        await sendNotification({
+        sendNotification({
           type: NOTIFICATION_TYPE.SUCCESS,
           subject: "Welcome to Request Network!",
           content: `Your account has been created.`,

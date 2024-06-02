@@ -38,7 +38,7 @@ export function Limits({
       notifySuccess(res?.message);
       form.reset();
 
-      await sendNotification({
+      sendNotification({
         type: NOTIFICATION_TYPE.SUCCESS,
         subject: "New Endpoint Created!",
         content: `Your new endpoint has been created.\r\n\r\<div style="text-align: left">**Endpoint Path:** ${values.url}<div>`,

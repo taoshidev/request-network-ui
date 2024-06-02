@@ -80,7 +80,7 @@ export function UpdateEndpoint({
       );
 
       if (endpoint?.url !== values.url && !_isEmpty(users)) {
-        await sendNotification({
+        sendNotification({
           type: NOTIFICATION_TYPE.WARNING,
           subject: "Endpoint Updated",
           content: `Endpoint has been updated. Endpoint "**${endpoint.url}**" has been changed to "**${values.url}**".`,
