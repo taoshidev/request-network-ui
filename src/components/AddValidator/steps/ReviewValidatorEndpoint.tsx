@@ -9,7 +9,7 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
 
   return (
     <>
-      <Title order={2} className="text-center">
+      <Title order={2} className="text-center mt-7">
         Review Validator Details
       </Title>
       <Box className="flex justify-center w-full mb-16">

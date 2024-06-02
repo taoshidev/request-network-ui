@@ -71,8 +71,6 @@ export const fetchNeuronLite = async (netUid: number, uId: number) => {
     const result = api.createType("NeuronInfoLite", result_bytes);
     return result.toJSON();
   } catch (error) {
-    console.error('Error creating NeuronInfoLite type:', error);
-    console.error('Result bytes:', result_bytes.toHex());
     throw error;
   }
 };
