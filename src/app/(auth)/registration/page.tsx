@@ -56,14 +56,11 @@ export default async function Page() {
     },
   });
 
-  const fetchAllValidatorInfo = async (
-    validatorArr: ValidatorType[],
-    subnets: SubnetType[]
-  ) => {
-    const subnetMap = new Map(
-      subnets?.map((subnet) => [subnet.id, subnet.netUid])
-    );
+  const subnetMap = new Map(
+    subnets?.map((subnet) => [subnet.id, subnet.netUid])
+  );
 
+  const fetchAllValidatorInfo = async (validatorArr: ValidatorType[]) => {
     const fetchEndpointInfo = async (endpoint, validator) => {
       const netUid = subnetMap.get(endpoint.subnetId);
       if (!netUid) {
@@ -71,15 +68,13 @@ export default async function Page() {
         return { error: "Net UID not found" };
       }
       try {
-        const stats = await fetchValidatorInfo(netUid, validator.hotkey);
+        const stats = await fetchValidatorInfo(
+          netUid,
+          validator.hotkey,
+          validator?.bittensorUid
+        );
         return stats;
       } catch (error) {
-        console.error(
-          "Failed to fetch validator info for:",
-          validator.hotkey,
-          "with error:",
-          error
-        );
         return { error: (error as Error).message };
       }
     };
@@ -110,7 +105,7 @@ export default async function Page() {
     }
   };
 
-  const validatorWithInfo = await fetchAllValidatorInfo(validatorArr, subnets!);
+  const validatorWithInfo = await fetchAllValidatorInfo(validatorArr);
 
   return (
     <Registration

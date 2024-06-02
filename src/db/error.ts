@@ -55,7 +55,9 @@ const prepareErrorMessage = (error: any): string => {
     case "endpoints_url_unique":
       return "The url endpoint already exists.";
     case "validators_base_api_url_unique":
-      return "A validator with this base api url already exists.";
+      return "A validator with this base api url already exists. Try a different url";
+    case "validators_name_unique":
+      return "A validator with this name already exists. Try a different name."
     default:
       return `Cannot process database action on table ${error?.table_name}`;
   }

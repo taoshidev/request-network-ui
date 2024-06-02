@@ -178,13 +178,10 @@ export function RegistrationStepper({
 
     const currentUser = await getAuthUser();
     const { subnet, validator, endpoint } = registrationData!;
-    // const subnet = registrationData?.subnet;
-    // const validator = registrationData?.validator;
-    // const endpoint = registrationData?.endpoint;
     const userId = currentUser?.id;
     const apiId = validator?.apiId!;
     const validatorId = validator?.id!;
-
+    const subnetId = subnet?.id!;
     const endpointId = endpoint?.id;
     const shortId = generateShortId(
       currentUser?.id as string,
@@ -220,7 +217,7 @@ export function RegistrationStepper({
         endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
         validatorId,
         subscription: {} as SubscriptionType,
-        proxyServiceId: ''
+        proxyServiceId: "",
       };
 
       const keyPayload: { [key: string]: any; expires?: string | number } = {
@@ -250,13 +247,14 @@ export function RegistrationStepper({
         userId,
         validatorId,
         endpointId,
-        key,
+        subnetId,
+        reqKey: key,
         keyId,
         appName,
         consumerApiUrl,
         consumerWalletAddress,
         serviceId: selectedService?.id,
-        contractId: registrationData?.endpoint?.contract?.id
+        contractId: registrationData?.endpoint?.contract?.id,
       } as SubscriptionType);
 
       if (res?.error)

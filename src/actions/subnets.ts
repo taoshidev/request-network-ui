@@ -12,3 +12,11 @@ export const getSubnets = async (query?: object): Promise<SubnetType[] | void> =
     if (error instanceof Error) console.log(error.stack);
   }
 };
+
+export const getSubnet = async ({ id }: { id: string }) => {
+  const res = await db.query.subnets.findFirst({
+    where: (subnets, { eq }) => eq(subnets.id, id as string),
+  });
+  if (!res) throw new Error(`Subnet with ID ${id} not found.`);
+  return res as SubnetType;
+};

@@ -61,7 +61,12 @@ export function ValidatorDashboard({
             />
           </Card>
 
-          {stats?.length > 0 ? (
+          {stats &&
+          stats.some(
+            (item) =>
+              Array.isArray(item.validator.keys) &&
+              item.validator.keys.length > 0
+          ) ? (
             <Card className="shadow-sm mt-7">
               <ValidatorStatTable data={stats} />
             </Card>

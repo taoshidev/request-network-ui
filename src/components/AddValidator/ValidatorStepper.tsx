@@ -16,6 +16,8 @@ import { pick as _pick } from "lodash";
 import React from "react";
 import ReviewValidatorEndpoint from "./steps/ReviewValidatorEndpoint";
 import { Logo } from "../Logo";
+import { fetchValidatorInfo } from "@/actions/bittensor/bittensor";
+import { getSubnet } from "@/actions/subnets";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -36,7 +38,7 @@ export default function ValidatorStepper({
   const [keyModalOpened, setKeyModalOpened] = useState(false);
   const ValidatorEndpointSchema = ValidatorSchema.merge(EndpointSchema);
   const [hotkeyExists, setHotkeyExists] = useState<boolean>(false);
-  const { notifySuccess, notifyError } = useNotification();
+  const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const form = useForm<Partial<ValidatorType & EndpointType>>({
     initialValues: {
       name: "",
@@ -98,13 +100,55 @@ export default function ValidatorStepper({
     setKeyModalOpened(true);
     // send validator created email
   };
-
   const onSubmit = async (values: Partial<ValidatorType & EndpointType>) => {
     setLoading(true);
+    const subnetId = values.subnetId as string;
+    const subnet = await getSubnet({ id: subnetId });
+    const { netUid } = subnet;
+    const neuronInfo = await fetchValidatorInfo(
+      netUid,
+      form?.values?.hotkey as string
+    );
+    if (!neuronInfo) {
+      notifyError(
+        `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on mainnet in subnet: ${netUid}. Please check validity of your hotkey in previous step.`
+      );
+      if (process.env.NEXT_PUBLIC_NODE_ENV === "production") {
+        return;
+      }
+      notifyInfo(
+        `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on testnet. Some features may not work correctly.`
+      );
+    }
+    const bittensorUid = neuronInfo?.uid || 0;
+    const bittensorNetUid = neuronInfo?.netuid || 0;
 
-    const { name, description, userId, hotkey, baseApiUrl, walletAddress, ...endpoint } =
-      values;
-    const validator = { name, description, userId, hotkey, baseApiUrl, walletAddress };
+    const {
+      name,
+      description,
+      userId,
+      hotkey,
+      baseApiUrl,
+      walletAddress,
+      ...endpoint
+    } = values;
+    const validator = {
+      name,
+      description,
+      userId,
+      hotkey,
+      baseApiUrl,
+      walletAddress,
+    };
+
+    if (bittensorUid) {
+      Object.assign(validator, { bittensorUid });
+    }
+
+    if (bittensorNetUid) {
+      Object.assign(validator, { bittensorNetUid });
+    }
+
     try {
       const res = await createValidatorEndpoint(validator, endpoint);
 
@@ -210,7 +254,7 @@ export default function ValidatorStepper({
               loading={loading}
               disabled={hotkeyExists || walletExists}
             >
-              Create
+              Register
             </Button>
           )}
         </Group>

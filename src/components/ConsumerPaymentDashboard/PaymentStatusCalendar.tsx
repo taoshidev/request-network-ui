@@ -54,9 +54,8 @@ export default function PaymentStatusCalendar({
     const dayOfWeek = daysOfWeek[getDay(date)];
 
     days.push(
-      <Box>
+      <Box key={i}>
         <Box
-          key={i}
           className={clsx(
             "flex flex-col items-center justify-center m-2 p-[0.95rem]",
             {
