@@ -14,6 +14,7 @@ export const getSubscriptions = async (query: object = {}) => {
     const res = await db.query.subscriptions.findMany(query);
     return filterData(res, ["apiKey", "apiSecret"]);
   } catch (error) {
+    console.log(error);
     if (error instanceof Error) return parseError(error);
   }
 };
