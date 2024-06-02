@@ -81,7 +81,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     if (content && type && eventType) {
-      await sendNotification({
+      sendNotification({
         type,
         subject: "Request Network Subscription Payment Update",
         content: `${content}\r\n\r\n${subscriptionData}`,

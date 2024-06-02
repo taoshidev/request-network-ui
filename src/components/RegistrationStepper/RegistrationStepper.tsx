@@ -25,7 +25,7 @@ import {
   updateSubscription,
 } from "@/actions/subscriptions";
 import { getAuthUser } from "@/actions/auth";
-import { useNotification } from "@/hooks/use-notification";
+import { NOTIFICATION_TYPE, useNotification } from "@/hooks/use-notification";
 import { Logo } from "@/components/Logo";
 import { KeyModal, keyType } from "@components/KeyModal";
 import Loading from "@/app/(auth)/loading";
@@ -33,8 +33,8 @@ import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
 import { z, ZodIssue } from "zod";
 import { isValidEthereumAddress } from "@/utils/address";
-import { sendEmail } from "@/actions/email";
 import { isCrypto } from "@/utils/is-crypto";
+import { sendNotification } from "@/actions/notifications";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -331,11 +331,12 @@ export function RegistrationStepper({
         currentUser?.email &&
         currentUser.user_metadata?.role === "consumer"
       ) {
-        sendEmail({
-          to: currentUser.email,
-          template: "subscription-created",
+        sendNotification({
+          type: NOTIFICATION_TYPE.SUCCESS,
           subject: `Subscribed to Validator ${appName}`,
-          templateVariables: { appName },
+          content: `You have successfully created the validator subscription "${appName}".`,
+          fromUserId: currentUser?.id,
+          userNotifications: [currentUser],
         });
       }
     } catch (error: Error | unknown) {

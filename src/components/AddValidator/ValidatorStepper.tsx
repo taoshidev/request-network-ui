@@ -10,7 +10,7 @@ import { ValidatorSchema, ValidatorType } from "@/db/types/validator";
 import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
 import { createValidatorEndpoint } from "@/actions/validators";
 import { DatabaseResponseType } from "@/db/error";
-import { useNotification } from "@/hooks/use-notification";
+import { NOTIFICATION_TYPE, useNotification } from "@/hooks/use-notification";
 import EndpointForm from "./steps/EndpointForm";
 import { pick as _pick } from "lodash";
 import React from "react";
@@ -18,6 +18,7 @@ import ReviewValidatorEndpoint from "./steps/ReviewValidatorEndpoint";
 import { Logo } from "../Logo";
 import { fetchValidatorInfo } from "@/actions/bittensor/bittensor";
 import { getSubnet } from "@/actions/subnets";
+import { sendNotification } from "@/actions/notifications";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -106,7 +107,7 @@ export default function ValidatorStepper({
     const subnet = await getSubnet({ id: subnetId });
     const { netUid } = subnet;
     const neuronInfo = await fetchValidatorInfo(
-      netUid,
+      netUid as number,
       form?.values?.hotkey as string
     );
     if (!neuronInfo) {
@@ -166,6 +167,14 @@ export default function ValidatorStepper({
       notifySuccess("Validator registered successfully");
       setActive((current) => 3);
       form.reset();
+
+      sendNotification({
+        type: NOTIFICATION_TYPE.SUCCESS,
+        subject: `Validator "${validator.name}" Registered Successfully!`,
+        content: `You have successfully created validator "${validator.name}".`,
+        fromUserId: user?.id,
+        userNotifications: [user],
+      });
     } catch (error: Error | unknown) {
       notifyError((error as Error).message);
     } finally {
