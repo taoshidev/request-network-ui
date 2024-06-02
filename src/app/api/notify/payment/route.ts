@@ -2,6 +2,10 @@ import { sendNotification } from "@/actions/notifications";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { subscriptions } from "@/db/schema";
 import { NOTIFICATION_TYPE } from "@/hooks/use-notification";
+import {
+  jsonResponse,
+  verifyApiServerRequest,
+} from "@/utils/verify-api-server-request";
 import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -20,7 +24,10 @@ export enum BILLING_EVENT_TYPE {
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
   try {
-    const body = await req.json();
+    const { status, message, body } = await verifyApiServerRequest(req);
+    if (status !== 200) {
+      return jsonResponse(status, message);
+    }
     const { subscriptionId: id, serviceStatusType, eventType } = body;
     let content: string = "",
       type: NOTIFICATION_TYPE | null = null;
@@ -64,17 +71,13 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     switch (serviceStatusType) {
-      case SERVICE_STATUS_TYPE.NEW:
-        type = NOTIFICATION_TYPE.SUCCESS;
-        content += " Endpoint payment complete.";
-        break;
       case SERVICE_STATUS_TYPE.IN_GRACE_PERIOD:
         content += " Currently in grace period.";
         type = NOTIFICATION_TYPE.INFO;
         break;
       case SERVICE_STATUS_TYPE.ON_TIME:
-        content += " Currently in grace period.";
-        type = NOTIFICATION_TYPE.INFO;
+        content += " Payment made on time.";
+        type = NOTIFICATION_TYPE.SUCCESS;
         break;
       case SERVICE_STATUS_TYPE.DELINQUENT:
         content += " Payment is currently due.";
@@ -82,7 +85,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
         break;
       case SERVICE_STATUS_TYPE.CANCELLED:
         content += " Endpoint subscription has expired.";
-        type = NOTIFICATION_TYPE.WARNING;
+        type = NOTIFICATION_TYPE.DANGER;
         break;
       default:
         break;
