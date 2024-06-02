@@ -12,23 +12,28 @@ enum SERVICE_STATUS_TYPE {
   DELINQUENT = "delinquent",
   CANCELLED = "cancelled",
 }
+export enum BILLING_EVENT_TYPE {
+  BALANCE_CHECKED = "balance-checked",
+  TRANSACTION_CHECKED = "transaction-checked",
+  TRANSACTION_CONFIRMED = "transaction-confirmed",
+}
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
   try {
     const body = await req.json();
-    const { subscriptionId: id, serviceStatusType } = body;
-    let content: string | null = null,
+    const { subscriptionId: id, serviceStatusType, eventType } = body;
+    let content: string = "",
       type: NOTIFICATION_TYPE | null = null;
     const subRes = await getSubscriptions({
       columns: {
         id: true,
         appName: true,
-        consumerApiUrl: true
+        consumerApiUrl: true,
       },
       where: and(eq(subscriptions.id, id)),
       with: {
         user: { columns: { id: true, email: true } },
-        endpoint: { columns: { id: true, url: true }},
+        endpoint: { columns: { id: true, url: true } },
         validator: {
           columns: { id: true, name: true },
           with: {
@@ -39,46 +44,55 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     });
     const subscription = subRes?.[0];
 
-    const subscriptionData = `App Name: ${
-      subscription.appName
-    }\r\n API URL: ${
-      subscription.consumerApiUrl
-    }\r\nValidator Name: ${
-      subscription.validator.name
-    }\r\n${
-      subscription.endpoint.url
-    }`;
+    const subscriptionData = `**App Name:** ${subscription.appName}\r\n\r\n**API URL:** ${subscription.consumerApiUrl}\r\n\r\n**Validator Name:** ${subscription.validator.name}\r\n\r\n**Endpoint:** ${subscription.endpoint.url}`;
 
-    switch (serviceStatusType) {
-      case SERVICE_STATUS_TYPE.NEW:
+    switch (eventType) {
+      case BILLING_EVENT_TYPE.TRANSACTION_CONFIRMED:
         type = NOTIFICATION_TYPE.SUCCESS;
-        content = `Endpoint subscription has been paid.`;
+        content = `Endpoint subscription payment made.`;
         break;
-      case SERVICE_STATUS_TYPE.IN_GRACE_PERIOD:
+      case BILLING_EVENT_TYPE.BALANCE_CHECKED:
         type = NOTIFICATION_TYPE.INFO;
-        content = `Endpoint subscription is now in grace period.`;
+        content = `Endpoint balance has been checked.`;
         break;
-      case SERVICE_STATUS_TYPE.ON_TIME:
+      case BILLING_EVENT_TYPE.TRANSACTION_CHECKED:
         type = NOTIFICATION_TYPE.INFO;
-        content = `Endpoint subscription payment on time.`;
-        break;
-      case SERVICE_STATUS_TYPE.DELINQUENT:
-        type = NOTIFICATION_TYPE.WARNING;
-        content = `Endpoint subscription is late.`;
-        break;
-      case SERVICE_STATUS_TYPE.CANCELLED:
-        type = NOTIFICATION_TYPE.WARNING;
-        content = `Endpoint subscription cancelled.`;
+        content = `Endpoint transaction has been checked.`;
         break;
       default:
         break;
     }
 
-    if (content && type) {
+    switch (serviceStatusType) {
+      case SERVICE_STATUS_TYPE.NEW:
+        type = NOTIFICATION_TYPE.SUCCESS;
+        content += " Endpoint payment complete.";
+        break;
+      case SERVICE_STATUS_TYPE.IN_GRACE_PERIOD:
+        content += " Currently in grace period.";
+        type = NOTIFICATION_TYPE.INFO;
+        break;
+      case SERVICE_STATUS_TYPE.ON_TIME:
+        content += " Currently in grace period.";
+        type = NOTIFICATION_TYPE.INFO;
+        break;
+      case SERVICE_STATUS_TYPE.DELINQUENT:
+        content += " Payment is currently due.";
+        type = NOTIFICATION_TYPE.WARNING;
+        break;
+      case SERVICE_STATUS_TYPE.CANCELLED:
+        content += " Endpoint subscription has expired.";
+        type = NOTIFICATION_TYPE.WARNING;
+        break;
+      default:
+        break;
+    }
+
+    if (content && type && eventType) {
       await sendNotification({
         type,
         subject: "Request Network Subscription Payment Update",
-        content: `${content}\r\n${subscriptionData}`,
+        content: `${content}\r\n\r\n${subscriptionData}`,
         fromUserId: subscription.validator?.user?.id,
         userNotifications: [subscription.validator.user, subscription.user],
       });
