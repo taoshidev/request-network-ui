@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { Box, Button } from "@mantine/core";
 import { createEndpoint } from "@/actions/endpoints";
-import { useNotification } from "@/hooks/use-notification";
+import { NOTIFICATION_TYPE, useNotification } from "@/hooks/use-notification";
 import EndpointForm from "./AddValidator/steps/EndpointForm";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
-import { sendEmail } from "@/actions/email";
 import { getAuthUser } from "@/actions/auth";
 import { ContractType } from "@/db/types/contract";
+import { sendNotification } from "@/actions/notifications";
 
 export function Limits({
   form,
@@ -38,17 +38,12 @@ export function Limits({
       notifySuccess(res?.message);
       form.reset();
 
-      sendEmail({
-        to: user?.email as string,
-        template: "created-endpoint",
-        subject: "New Endpoint Created",
-        templateVariables: {
-          endPointPath: values.url,
-          expires: new Date(values.expires),
-          limit: values.limit,
-          refillRate: values.refillRate,
-          refillInterval: values.refillInterval,
-        },
+      sendNotification({
+        type: NOTIFICATION_TYPE.SUCCESS,
+        subject: "New Endpoint Created!",
+        content: `Your new endpoint has been created.\r\n\r\<div style="text-align: left">**Endpoint Path:** ${values.url}<div>`,
+        fromUserId: user?.id,
+        userNotifications: [user],
       });
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);

@@ -3,10 +3,10 @@ import { getAuthUser } from "@/actions/auth";
 import { getValidators } from "@/actions/validators";
 import { getSubnets } from "@/actions/subnets";
 import { Consumer } from "@/components/Consumer";
-import { ValidatorDashboard } from "@/components/ValidatorDashbord";
+import { ValidatorDashboard } from "@/components/ValidatorDashboard";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { and, eq } from "drizzle-orm";
-import { subscriptions, validators, contracts, endpoints } from "@/db/schema";
+import { subscriptions, validators, contracts } from "@/db/schema";
 import { getUserAPIKeys } from "@/actions/keys";
 import { ValidatorType } from "@/db/types/validator";
 import { getContracts } from "@/actions/contracts";
@@ -17,7 +17,7 @@ export default async function Page() {
   if (!user) {
     redirect("/login");
   }
-
+  
   if (!user.user_metadata.onboarded) {
     redirect("/onboarding");
   }
@@ -55,7 +55,7 @@ export default async function Page() {
 
     if (subs?.error) subs = [];
 
-    return <Consumer subscriptions={subs} validators={validatorArr} />;
+    return <Consumer user={user} subscriptions={subs} validators={validatorArr} />;
     // if user is a validator, render validator dashboard
   } else if (user.user_metadata.role === "validator") {
     const validatorEndpoints = validatorArr?.map((v) => v.endpoints);
@@ -70,7 +70,7 @@ export default async function Page() {
 
     const userContracts = await getContracts({
       where: and(eq(contracts.userId, user.id)),
-      with: { services: true }
+      with: { services: true },
     });
 
     return (

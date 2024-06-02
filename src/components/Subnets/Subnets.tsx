@@ -46,20 +46,21 @@ export function Subnets({
   );
 
   return (
-    <Box>
-      <Title className="my-7 text-center" order={2}>
-        Choose a Subnet
-      </Title>
+    <Box className="my-8">
       <Grid>
         {(subnets || [])?.map((subnet) => (
           <Grid.Col key={subnet.id} span={4}>
             <Card
+              withBorder
+              shadow="sm"
+              padding="lg"
               component="button"
+              radius={3}
               onClick={() => handleItemClick(subnet)}
               className={clsx(
                 "cursor-pointer w-full h-full items-center flex",
                 selected(subnet) && "bg-primary-500  text-white",
-                disabled(subnet) && "pointer-events-none bg-gray-200"
+                disabled(subnet) && "pointer-events-none bg-[#f1f1f1]"
               )}
             >
               <Text className="font-bold">{subnet.label}</Text>

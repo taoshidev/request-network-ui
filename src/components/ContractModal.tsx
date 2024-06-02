@@ -19,7 +19,8 @@ import { UserType } from "@/db/types/user";
 import { ServiceForm } from "@/components/Services/ServiceForm";
 import { useModals } from "@mantine/modals";
 import { ServiceType } from "@/db/types/service";
-import { createService } from "@/actions/services";
+import { createService, updateService } from "@/actions/services";
+import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 
 export function ContractModal({
@@ -35,8 +36,11 @@ export function ContractModal({
   close: () => void;
   onSuccess?: (contract: ContractType) => void;
 }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [services, setServices] = useState<ServiceType[]>([]);
+  const [services, setServices] = useState<ServiceType[]>(
+    contract?.services || []
+  );
   const serviceModalRef = useRef<string | null>(null);
   const editServiceIndexRef = useRef<number | null>(null);
   const { notifySuccess, notifyError } = useNotification();
@@ -63,7 +67,8 @@ export function ContractModal({
 
   useEffect(() => {
     form.setValues(getDefaultValues(contract as ContractType));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setServices(contract?.services || []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract]);
 
   const onSubmit = async (values: Partial<ContractType>) => {
@@ -78,33 +83,43 @@ export function ContractModal({
         `Contract ${contract ? "updated" : "created"} successfully`
       );
 
-      if(res?.data) {
+      if (res?.data) {
         const { id: contractId } = res?.data?.[0];
 
         const reqs = services.map((s) => {
-          if("id" in s) delete s.id;
+          if ("id" in s && s?.id!?.length > 0) {
+            return updateService(s);
+          }
+          delete s.id;
           const obj = {
             ...s,
             contractId,
-          }
-          return createService(obj)
+          };
+          return createService(obj);
         });
 
         const serviceRes = await Promise.all(reqs);
 
-        serviceRes.forEach((r, i) => { 
+        serviceRes.forEach((r, i) => {
           if (r?.error) {
             notifyError(`Failed to create service ${services[i]?.name}`);
           } else {
-            notifySuccess(`Service ${services[i]?.name} created successfully for contract ${res.data?.title}`);
+            notifySuccess(
+              `Service ${services[i]?.name} ${
+                services[i]?.id!?.length > 0 ? "updated" : "created"
+              } successfully for contract ${res.data?.[0].title}`
+            );
           }
         });
       }
       onSuccess?.(res?.data as ContractType);
       form.reset();
+      router.refresh();
       close();
     } catch (error: any) {
-      notifyError(error.message || `Failed to ${contract ? "update" : "create"} contract`);
+      notifyError(
+        error.message || `Failed to ${contract ? "update" : "create"} contract`
+      );
     } finally {
       setLoading(false);
     }
@@ -126,6 +141,7 @@ export function ContractModal({
   };
 
   const openServiceModal = (service?: ServiceType, index?: number) => {
+
     editServiceIndexRef.current = index !== undefined ? index : null;
     serviceModalRef.current = modals.openModal({
       centered: true,
@@ -168,7 +184,7 @@ export function ContractModal({
           form.reset();
           close();
         }}
-        title={`${contract ? "Edit" : "Add"} Terms of Service`}
+        title={`${contract ? "Edit" : "Add"} Contract`}
       >
         <Box
           component="form"

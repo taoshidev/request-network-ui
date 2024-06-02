@@ -73,6 +73,7 @@ export function ContractDisplayModal({
 
   return (
     <Modal size="xl" opened={opened} onClose={close} title="Service Contract">
+      <Box className="scroll-smooth">
       <Text className="font-bold mb-4 text-center w-full" truncate>
         Select a Service
       </Text>
@@ -87,6 +88,9 @@ export function ContractDisplayModal({
       >
         {services?.map((service) => (
           <Card
+            withBorder
+            shadow="sm"
+            padding="lg"
             key={service?.id}
             className={clsx(
               "p-1 m-0 cursor-pointer",
@@ -188,6 +192,7 @@ export function ContractDisplayModal({
             </Button>
           </Box>
         )}
+      </Box>
       </Box>
     </Modal>
   );

@@ -14,17 +14,5 @@ block mainContent
           p 
             b Endpoint Path: 
             | #{endPointPath || ''}
-          p
-            b Expires: 
-            | #{formatDateTime(expires) || ''}
-          p
-            b Limit: 
-            |  #{limit || ''}
-          p
-            b Refill Rate: 
-            | #{refillRate || ''},
-          p 
-            b Refill Interval: 
-            | #{refillInterval || ''}
         p
         p(style="font-style: italic;") This email was sent from an address that cannot accept incoming email. Please do not reply to this message.

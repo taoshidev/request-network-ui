@@ -25,7 +25,7 @@ import {
   updateSubscription,
 } from "@/actions/subscriptions";
 import { getAuthUser } from "@/actions/auth";
-import { useNotification } from "@/hooks/use-notification";
+import { NOTIFICATION_TYPE, useNotification } from "@/hooks/use-notification";
 import { Logo } from "@/components/Logo";
 import { KeyModal, keyType } from "@components/KeyModal";
 import Loading from "@/app/(auth)/loading";
@@ -33,8 +33,8 @@ import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
 import { z, ZodIssue } from "zod";
 import { isValidEthereumAddress } from "@/utils/address";
-import { sendEmail } from "@/actions/email";
 import { isCrypto } from "@/utils/is-crypto";
+import { sendNotification } from "@/actions/notifications";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -178,13 +178,10 @@ export function RegistrationStepper({
 
     const currentUser = await getAuthUser();
     const { subnet, validator, endpoint } = registrationData!;
-    // const subnet = registrationData?.subnet;
-    // const validator = registrationData?.validator;
-    // const endpoint = registrationData?.endpoint;
     const userId = currentUser?.id;
     const apiId = validator?.apiId!;
     const validatorId = validator?.id!;
-
+    const subnetId = subnet?.id!;
     const endpointId = endpoint?.id;
     const shortId = generateShortId(
       currentUser?.id as string,
@@ -204,6 +201,7 @@ export function RegistrationStepper({
         limit: selectedService?.limit || 10,
         refillRate: selectedService?.refillRate || 1,
         refillInterval: selectedService?.refillInterval || 60,
+        duration: selectedService?.duration || 1000,
       };
 
       const meta = {
@@ -214,11 +212,12 @@ export function RegistrationStepper({
         consumerServiceId: selectedService?.id,
         consumerWalletAddress,
         currencyType: selectedService?.currencyType,
-        validatorWalletAddress: endpoint?.walletAddress,
+        validatorWalletAddress: validator?.walletAddress,
         hotkey: registrationData?.validator?.hotkey,
         endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
         validatorId,
         subscription: {} as SubscriptionType,
+        proxyServiceId: "",
       };
 
       const keyPayload: { [key: string]: any; expires?: string | number } = {
@@ -246,14 +245,16 @@ export function RegistrationStepper({
 
       const res = await createSubscription({
         userId,
+        validatorId,
         endpointId,
-        key,
+        subnetId,
+        reqKey: key,
         keyId,
         appName,
         consumerApiUrl,
         consumerWalletAddress,
         serviceId: selectedService?.id,
-        contractId: registrationData?.endpoint?.contract?.id
+        contractId: registrationData?.endpoint?.contract?.id,
       } as SubscriptionType);
 
       if (res?.error)
@@ -265,13 +266,6 @@ export function RegistrationStepper({
       meta.subscription = subscription;
 
       const { id: subscriptionId, apiSecret } = subscription;
-
-      await updateKey({
-        keyId,
-        params: {
-          meta,
-        },
-      });
 
       const proxyRes = await sendToProxy({
         endpoint: {
@@ -292,7 +286,7 @@ export function RegistrationStepper({
           currencyType: selectedService?.currencyType,
           consumerWalletAddress: subscription?.consumerWalletAddress,
           hotkey: registrationData?.validator?.hotkey,
-          validatorWalletAddress: endpoint?.walletAddress,
+          validatorWalletAddress: validator?.walletAddress,
           price: selectedService?.price,
           meta,
         },
@@ -312,11 +306,21 @@ export function RegistrationStepper({
           updateRes?.message || "Something went wrong updating subscription"
         );
 
+      meta.proxyServiceId = proxyRes.serviceId;
+      meta.subscription.proxyServiceId = proxyRes.serviceId;
+
+      await updateKey({
+        keyId,
+        params: {
+          meta,
+        },
+      });
+
       notifySuccess(res?.message as string);
       setKeys({
         apiKey: key,
         apiSecret: apiSecret!,
-        walletAddress: endpoint?.walletAddress,
+        walletAddress: validator?.walletAddress!,
         endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
       });
       open();
@@ -327,11 +331,12 @@ export function RegistrationStepper({
         currentUser?.email &&
         currentUser.user_metadata?.role === "consumer"
       ) {
-        sendEmail({
-          to: currentUser.email,
-          template: "subscription-created",
+        sendNotification({
+          type: NOTIFICATION_TYPE.SUCCESS,
           subject: `Subscribed to Validator ${appName}`,
-          templateVariables: { appName },
+          content: `You have successfully created the validator subscription "${appName}".`,
+          fromUserId: currentUser?.id,
+          userNotifications: [currentUser],
         });
       }
     } catch (error: Error | unknown) {
@@ -395,10 +400,10 @@ export function RegistrationStepper({
         </Stepper.Step>
 
         <Stepper.Completed>
-          <Card className="mt-14 h-auto">
+          <Card withBorder shadow="sm" padding="lg" className="mt-14 h-auto">
             <Center className="mt-8 mb-4">
               <Box className="max-w-xl">
-                <Text className="text-center text-sm mb-4">
+                <Text className="text-center text-xl mb-4">
                   Congratulations!
                 </Text>
                 <Text className="text-center text-sm">

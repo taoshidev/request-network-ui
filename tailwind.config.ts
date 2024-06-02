@@ -1,7 +1,6 @@
 import type { Config } from "tailwindcss";
 import { appConfig } from "./src/theme/colors";
 import plugin from "tailwindcss/plugin";
-// import plugin from "tailwindcss";
 
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
@@ -20,6 +19,7 @@ const config: Config = {
       fontFamily: {
         "space-mono": "var(--font-space-mono)",
         "adlam-display": "var(--font-adlam-display)",
+        'dm-sans': ['DM Sans', 'sans-serif'],
       },
       keyframes: {
         slideDown: {

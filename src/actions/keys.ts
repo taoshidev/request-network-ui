@@ -5,7 +5,7 @@ const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY as string });
 
 export const updateKey = async ({
   keyId,
-  params
+  params,
 }: {
   keyId: string;
   params: object;
@@ -67,3 +67,26 @@ export const getUserAPIKeys = async ({
   }
   return await unkey.apis.listKeys(request);
 };
+
+export const getVerifications = async ({
+  keyId,
+  ownerId,
+  start = null,
+  end = null,
+}: {
+  keyId: string;
+  ownerId?: string;
+  start?: number | null;
+  end?: number | null;
+}) => {
+  const request = {
+    keyId,
+    start,
+    end,
+  };
+  if (ownerId) {
+    Object.assign(request, { ownerId });
+  }
+  return await unkey.keys.getVerifications(request);
+};
+getVerifications;

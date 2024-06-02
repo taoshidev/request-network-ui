@@ -6,9 +6,10 @@ import React from "react";
 import { DateTime } from 'luxon';
 
 export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
+
   return (
     <>
-      <Title order={2} className="text-center">
+      <Title order={2} className="text-center mt-7">
         Review Validator Details
       </Title>
       <Box className="flex justify-center w-full mb-16">
@@ -40,7 +41,7 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
               <Table.Tr>
                 <Table.Th>Base Api Url</Table.Th>
                 <Table.Td>{form.values.baseApiUrl}</Table.Td>
-                <Table.Th>Url</Table.Th>
+                <Table.Th>Path</Table.Th>
                 <Table.Td>{form.values.url}</Table.Td>
               </Table.Tr>
               <Table.Tr>
@@ -91,11 +92,6 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
           </Table>
         </Box>
       </Box>
-      {_isEmpty(errors) && (
-        <Text className="text-center">
-          Completed. Click button to create validator and endpoint.
-        </Text>
-      )}
       {Object.keys(errors).map((key) => (
         <Text className="text-center text-red-600" key={key}>
           <b>{key}</b>: {errors[key]}

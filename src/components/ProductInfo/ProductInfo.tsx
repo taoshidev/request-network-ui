@@ -13,7 +13,7 @@ export function ProductInfo() {
 
       <Grid>
         <Grid.Col span={4}>
-          <Card className="h-full">
+          <Card shadow="sm" padding="lg" withBorder className="h-full">
             <Group justify="space-between" h="100%" gap="xs">
               <Text className="text-sm font-bold mb-4">Taoshi Quickstarts</Text>
 
@@ -30,7 +30,7 @@ export function ProductInfo() {
         </Grid.Col>
 
         <Grid.Col span={4}>
-          <Card className="h-full">
+          <Card shadow="sm" padding="lg" className="h-full" withBorder>
             <Group justify="space-between" h="100%" gap="xs">
               <Text size="sm" fw={700} mb="sm">
                 Integrate Taoshi to your application
@@ -48,7 +48,7 @@ export function ProductInfo() {
         </Grid.Col>
 
         <Grid.Col span={4}>
-          <Card className="h-full">
+          <Card shadow="sm" padding="lg" className="h-full" withBorder>
             <Group justify="space-between" h="100%" gap="xs">
               <Text size="sm" fw={700} mb="sm">
                 Taoshi Developer Center

@@ -129,20 +129,23 @@ export function Contracts({
             </Table.Tbody>
           </Table>
         )}
-        {contracts.length === 0 && ( <Alert color="orange" icon={<IconAlertCircle />}>
-          <Text className="mb-7">
-            You don&apos;t have any service contracts yet. Add your Terms of Service
-            and attach them to your endpoints.
-          </Text>
-          {/* <Box className="flex justify-end">
-            <ContractModal opened={opened} close={close} user={user} />
-          </Box> */}
-          <Box>
-            <Group className="justify-between">
-              <Button onClick={open}>Add Service Contract</Button>
-            </Group>
-          </Box>
-        </Alert>)}
+        {contracts.length === 0 && (
+          <Alert
+            className="shadow-sm"
+            color="orange"
+            icon={<IconAlertCircle />}
+          >
+            <Text className="mb-7">
+              You don&apos;t have any service contracts yet. Add your Terms of
+              Service and attach them to your endpoints.
+            </Text>
+            <Box>
+              <Group className="justify-between">
+                <Button onClick={open}>Add Service Contract</Button>
+              </Group>
+            </Box>
+          </Alert>
+        )}
       </Box>
     </Box>
   );

@@ -48,7 +48,7 @@ export function Validators({
       />
 
       <Box>
-        <Group className="justify-between my-8">
+        <Group className="justify-between">
           <Title order={2}>Validators</Title>
           <Button onClick={addValidator}>Add Your Validator</Button>
         </Group>
@@ -91,7 +91,16 @@ export function Validators({
                       variant="subtle"
                       onClick={() => handleEdit(validator)}
                     >
-                      Edit
+                      {validator.verified ? "Edit" : "Verify"}
+                    </Button>
+                  </Table.Td>
+                  <Table.Td>
+                    <Button
+                      size="sm"
+                      variant="light"
+                      onClick={() => router.push(`/validators/${validator?.id}/payment-dashboard`)}
+                    >
+                      insights
                     </Button>
                   </Table.Td>
                 </Table.Tr>

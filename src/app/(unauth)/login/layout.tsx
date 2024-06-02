@@ -17,18 +17,15 @@ interface PageProps {
 export default function Page({ children }: PageProps) {
   return (
     <Flex className="h-full">
-      <Box p="md" className="w-6/12" display={{ base: "none", sm: "block" }}>
-        <Box
-          className="bg-primary-500 h-full overflow-hidden border border-dashed border-black"
-          p="xl"
-        >
+      <Box className="w-6/12" display={{ base: "none", sm: "block" }}>
+        <Box className="bg-primary-500 h-full overflow-hidden" p="xl">
           <Box>
             <Group className="items-center text-white">
-              <Text className="font-bold font-adlam-display" size="xl">
+              <Text className="font-bold font-adlam-display text-3xl">
                 taoshi
               </Text>
-              <Divider variant="dashed" orientation="vertical" />
-              <Text size="sm">request network</Text>
+              <Divider orientation="vertical" />
+              <Text size="xl">request network</Text>
             </Group>
           </Box>
           <Box className="mt-36 text-white">
@@ -43,7 +40,7 @@ export default function Page({ children }: PageProps) {
         </Box>
       </Box>
 
-      <Container flex="1" fluid>
+      <Container flex="1" fluid className="bg-stone-100">
         {children}
       </Container>
     </Flex>

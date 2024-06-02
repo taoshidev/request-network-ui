@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import {
   Alert,
   NavLink,
@@ -70,9 +70,7 @@ export function ValidatorEdit({
     validate: zodResolver(ValidatorEditSchema),
   });
 
-  const onSubmit = async (
-    values: Pick<ValidatorType, "name" | "description">
-  ) => {
+  const onSubmit = async (values) => {
     setLoading(true);
     try {
       const res = await updateValidator({ id: validator.id, ...values });
@@ -142,6 +140,7 @@ export function ValidatorEdit({
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
   };
+
   return (
     <Group align="flex-start">
       <Modal
@@ -172,7 +171,7 @@ export function ValidatorEdit({
           </List>
         </Box>
       </Modal>
-      <Box className="w-64">
+      <Box>
         <NavLink
           active={activeSection === "edit"}
           label="Edit"
@@ -195,6 +194,7 @@ export function ValidatorEdit({
       <Box flex="1">
         {!validator.verified && (
           <Alert
+            className="shadow-sm"
             mb="xl"
             color="orange"
             radius="0"
@@ -205,7 +205,7 @@ export function ValidatorEdit({
               Your validator has not been verified yet. Please verify your
               validator so that customers can connect to your service.
             </Text>
-            <Button onClick={handleVerify} variant="white">
+            <Button onClick={handleVerify} variant="light">
               Verify
             </Button>
           </Alert>

@@ -3,7 +3,6 @@ import {
   pgTable,
   uuid,
   varchar,
-  numeric,
   pgSchema,
   timestamp,
   integer,
@@ -35,12 +34,14 @@ export const users = authSchema.table("users", {
   phone: varchar("phone", { length: 256 }),
   onboarded: boolean("onboarded").notNull().default(false),
   onboardingStep: integer("onboardingStep").notNull().default(0),
+  stripeEnabled: boolean("stripe_enabled").default(false),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
   validators: many(validators),
   contracts: many(contracts),
   services: many(services),
+  userNotifications: many(userNotifications),
 }));
 
 export const contracts = pgTable("contracts", {
@@ -83,6 +84,7 @@ export const subnets = pgTable("subnets", {
 export const subnetsRelations = relations(subnets, ({ many }) => ({
   endpoints: many(endpoints),
   validators: many(validators),
+  subscriptions: many(subscriptions),
 }));
 
 export const validators = pgTable("validators", {
@@ -90,6 +92,8 @@ export const validators = pgTable("validators", {
     .default(sql`gen_random_uuid()`)
     .primaryKey()
     .notNull(),
+  bittensorUid: integer("bittensor_uid"),
+  bittensorNetUid: integer("bittensor_net_uid"),
   name: varchar("name").unique().notNull(),
   description: text("description"),
   baseApiUrl: varchar("base_api_url").unique().notNull(),
@@ -97,6 +101,7 @@ export const validators = pgTable("validators", {
   apiId: varchar("api_id"),
   apiKey: varchar("api_key"),
   apiSecret: varchar("api_secret"),
+  walletAddress: varchar("wallet_address").unique(),
   hotkey: varchar("hotkey", { length: 48 }).unique().notNull(),
   userId: uuid("user_id")
     .notNull()
@@ -112,6 +117,7 @@ export const validators = pgTable("validators", {
 
 export const validatorsRelations = relations(validators, ({ many, one }) => ({
   endpoints: many(endpoints),
+  subscriptions: many(subscriptions),
   user: one(users, {
     fields: [validators.userId],
     references: [users.id],
@@ -131,11 +137,10 @@ export const endpoints = pgTable(
     validatorId: uuid("validator_id")
       .notNull()
       .references(() => validators.id, { onDelete: "cascade" }),
-    contractId: uuid("contract_id")
-      .notNull()
-      .references(() => contracts.id, { onDelete: "set null" }),
-    walletAddress: varchar("wallet_address").unique(),
-    url: varchar("url").unique().notNull(),
+    contractId: uuid("contract_id").references(() => contracts.id, {
+      onDelete: "set null",
+    }),
+    url: varchar("url").notNull(),
     enabled: boolean("enabled").default(true).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),
@@ -157,7 +162,7 @@ export const services = pgTable("services", {
     .references(() => users.id, { onDelete: "cascade" }),
   contractId: uuid("contract_id")
     .notNull()
-    .references(() => contracts.id, { onDelete: "cascade" }),
+    .references(() => contracts.id, { onDelete: "set null" }),
   name: varchar("name"),
   price: varchar("price"),
   currencyType: currencyTypeEnum("currency_type").notNull().default("USDC"),
@@ -212,6 +217,12 @@ export const subscriptions = pgTable(
     userId: uuid("user_id").references(() => users.id, {
       onDelete: "set null",
     }),
+    subnetId: uuid("subnet_id").references(() => subnets.id, {
+      onDelete: "set null",
+    }),
+    validatorId: uuid("validator_id").references(() => validators.id, {
+      onDelete: "set null",
+    }),
     proxyServiceId: varchar("proxy_service_id"),
     serviceId: uuid("service_id").references(() => services.id, {
       onDelete: "set null",
@@ -220,13 +231,14 @@ export const subscriptions = pgTable(
       onDelete: "set null",
     }),
     keyId: varchar("key_id"),
+    reqKey: varchar("req_key"),
     apiKey: varchar("api_key"),
     apiSecret: varchar("api_secret"),
     appName: varchar("app_name"),
     consumerApiUrl: varchar("consumer_api_url").notNull(),
     consumerWalletAddress: varchar("consumer_wallet_address"),
     termsAccepted: boolean("terms_accepted").default(true).notNull(),
-    active: boolean("active").default(true).notNull(),
+    active: boolean("active").default(false).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
     deletedAt: timestamp("deleted_at"),
@@ -236,14 +248,106 @@ export const subscriptions = pgTable(
   })
 );
 
+export const notificationTypeEnum = pgEnum("type", [
+  "success",
+  "info",
+  "warning",
+  "danger",
+  "bug",
+]);
+
+export const notifications = pgTable("notifications", {
+  id: uuid("id")
+    .default(sql`gen_random_uuid()`)
+    .primaryKey()
+    .notNull(),
+  fromUserId: uuid("from_user_id")
+    .references(() => users.id, {
+      onDelete: "set null",
+    })
+    .notNull(),
+  subject: varchar("subject"),
+  content: varchar("content"),
+  type: notificationTypeEnum("type").notNull().default("info"),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").default(sql`now()`),
+  updatedAt: timestamp("updated_at").default(sql`now()`),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const userNotifications = pgTable(
+  "user_notifications",
+  {
+    id: uuid("id")
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
+    userId: uuid("user_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    notificationId: uuid("notification_id")
+      .references(() => notifications.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    viewed: boolean("viewed").default(false).notNull(),
+    active: boolean("active").default(true).notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+    deletedAt: timestamp("deleted_at"),
+  },
+  (table) => ({
+    unique: unique().on(table.userId, table.notificationId),
+  })
+);
+
+export const userNotificationsRelations = relations(
+  userNotifications,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [userNotifications.userId],
+      references: [users.id],
+    }),
+    notification: one(notifications, {
+      fields: [userNotifications.notificationId],
+      references: [notifications.id],
+    }),
+  })
+);
+
+export const notificationsRelations = relations(
+  notifications,
+  ({ one, many }) => ({
+    fromUser: one(users, {
+      fields: [notifications.fromUserId],
+      references: [users.id],
+    }),
+    userNotifications: many(userNotifications),
+  })
+);
+
 export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
+  validator: one(validators, {
+    fields: [subscriptions.validatorId],
+    references: [validators.id],
+  }),
   endpoint: one(endpoints, {
     fields: [subscriptions.endpointId],
     references: [endpoints.id],
   }),
+  subnet: one(subnets, {
+    fields: [subscriptions.subnetId],
+    references: [subnets.id],
+  }),
   user: one(users, {
     fields: [subscriptions.userId],
     references: [users.id],
+  }),
+  service: one(services, {
+    fields: [subscriptions.serviceId],
+    references: [services.id],
   }),
 }));
 
@@ -251,9 +355,9 @@ export const userSubscriptionRelations = relations(users, ({ many }) => ({
   subscriptions: many(subscriptions),
 }));
 
-export const userSubscriptionEndpointRelations = relations(
-  endpoints,
-  ({ many }) => ({
-    endpoints: many(endpoints),
-  })
-);
+// export const userSubscriptionEndpointRelations = relations(
+//   endpoints,
+//   ({ many }) => ({
+//     endpoints: many(endpoints),
+//   })
+// );

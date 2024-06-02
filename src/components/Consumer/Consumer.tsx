@@ -22,6 +22,8 @@ import { getKey } from "@/actions/keys";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import Loading from "@/app/(auth)/loading";
+import { useRouter } from "next/navigation";
+import { UserType } from "@/db/types/user";
 
 type SubscriptionEndpointValidatorType = SubscriptionType & {
   keyId: string;
@@ -31,7 +33,9 @@ type SubscriptionEndpointValidatorType = SubscriptionType & {
 export function Consumer({
   subscriptions,
   validators,
+  user,
 }: {
+  user: UserType;
   subscriptions: SubscriptionType &
     {
       keyId: string;
@@ -43,6 +47,7 @@ export function Consumer({
     SubscriptionEndpointValidatorType[] | undefined
   >(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchKeys = async () => {
@@ -72,10 +77,11 @@ export function Consumer({
     fetchKeys();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptions]);
+
   return isLoading ? (
     <Loading />
   ) : (
-    <Container className="my-8">
+    <Container className="mx-0 px-0 max-w-6xl">
       {!validators && (
         <Notification title="No Validators Found">
           To obtain a key, their needs to be at least one validator available.
@@ -83,20 +89,38 @@ export function Consumer({
       )}
 
       {!isLoading && (
-        <Group className="justify-between my-5">
-          <Title className="text-2xl">API Keys</Title>
+        <Group className="justify-between mb-10">
+          <Title className="text-2xl">Api Keys</Title>
           <Box>
             <Button component="a" href="/registration">
               {!subscriptionData ? "Register" : "Browse Subnets"}
             </Button>
+            {subscriptionData?.length! > 0 && (
+              <Button
+                variant="outline"
+                className="ml-2"
+                component="a"
+                href={`/dashboard/${user?.id}/consumer-payment-dashboard`}
+              >
+                Insights
+              </Button>
+            )}
           </Box>
         </Group>
       )}
 
       {!isLoading && isEmpty(subscriptionData) && (
-        <Alert className="mb-8" color="orange" icon={<IconAlertCircle />}>
-          <Text className="mb-2">You don&apos;t have any API Keys yet</Text>
-          <Text>Create your first API key and start receiving requests.</Text>
+        <Alert
+          className="mb-8 shadow-sm"
+          color="orange"
+          icon={<IconAlertCircle />}
+        >
+          <Text className="mb-2 text-base">
+            You don&apos;t have any subscriptions yet. Browse available subnets,
+          </Text>
+          <Text className="mb-2 text-base">
+            subscribe to your favorite validators and start receiving data.
+          </Text>
         </Alert>
       )}
 
@@ -146,7 +170,7 @@ export function Consumer({
                         component={Link}
                         href={`/keys/${subscription?.keyData?.id}`}
                       >
-                        View Stats
+                        View Key
                       </Anchor>
                     </Table.Td>
                   </Table.Tr>

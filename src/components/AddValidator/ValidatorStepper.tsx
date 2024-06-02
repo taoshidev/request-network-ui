@@ -10,12 +10,15 @@ import { ValidatorSchema, ValidatorType } from "@/db/types/validator";
 import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
 import { createValidatorEndpoint } from "@/actions/validators";
 import { DatabaseResponseType } from "@/db/error";
-import { useNotification } from "@/hooks/use-notification";
+import { NOTIFICATION_TYPE, useNotification } from "@/hooks/use-notification";
 import EndpointForm from "./steps/EndpointForm";
 import { pick as _pick } from "lodash";
 import React from "react";
 import ReviewValidatorEndpoint from "./steps/ReviewValidatorEndpoint";
 import { Logo } from "../Logo";
+import { fetchValidatorInfo } from "@/actions/bittensor/bittensor";
+import { getSubnet } from "@/actions/subnets";
+import { sendNotification } from "@/actions/notifications";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -36,7 +39,7 @@ export default function ValidatorStepper({
   const [keyModalOpened, setKeyModalOpened] = useState(false);
   const ValidatorEndpointSchema = ValidatorSchema.merge(EndpointSchema);
   const [hotkeyExists, setHotkeyExists] = useState<boolean>(false);
-  const { notifySuccess, notifyError } = useNotification();
+  const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const form = useForm<Partial<ValidatorType & EndpointType>>({
     initialValues: {
       name: "",
@@ -98,13 +101,55 @@ export default function ValidatorStepper({
     setKeyModalOpened(true);
     // send validator created email
   };
-
   const onSubmit = async (values: Partial<ValidatorType & EndpointType>) => {
     setLoading(true);
+    const subnetId = values.subnetId as string;
+    const subnet = await getSubnet({ id: subnetId });
+    const { netUid } = subnet;
+    const neuronInfo = await fetchValidatorInfo(
+      netUid as number,
+      form?.values?.hotkey as string
+    );
+    if (!neuronInfo) {
+      notifyError(
+        `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on mainnet in subnet: ${netUid}. Please check validity of your hotkey in previous step.`
+      );
+      if (process.env.NEXT_PUBLIC_NODE_ENV === "production") {
+        return;
+      }
+      notifyInfo(
+        `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on testnet. Some features may not work correctly.`
+      );
+    }
+    const bittensorUid = neuronInfo?.uid || 0;
+    const bittensorNetUid = neuronInfo?.netuid || 0;
 
-    const { name, description, userId, hotkey, baseApiUrl, ...endpoint } =
-      values;
-    const validator = { name, description, userId, hotkey, baseApiUrl };
+    const {
+      name,
+      description,
+      userId,
+      hotkey,
+      baseApiUrl,
+      walletAddress,
+      ...endpoint
+    } = values;
+    const validator = {
+      name,
+      description,
+      userId,
+      hotkey,
+      baseApiUrl,
+      walletAddress,
+    };
+
+    if (bittensorUid) {
+      Object.assign(validator, { bittensorUid });
+    }
+
+    if (bittensorNetUid) {
+      Object.assign(validator, { bittensorNetUid });
+    }
+
     try {
       const res = await createValidatorEndpoint(validator, endpoint);
 
@@ -122,6 +167,14 @@ export default function ValidatorStepper({
       notifySuccess("Validator registered successfully");
       setActive((current) => 3);
       form.reset();
+
+      sendNotification({
+        type: NOTIFICATION_TYPE.SUCCESS,
+        subject: `Validator "${validator.name}" Registered Successfully!`,
+        content: `You have successfully created validator "${validator.name}".`,
+        fromUserId: user?.id,
+        userNotifications: [user],
+      });
     } catch (error: Error | unknown) {
       notifyError((error as Error).message);
     } finally {
@@ -210,7 +263,7 @@ export default function ValidatorStepper({
               loading={loading}
               disabled={hotkeyExists || walletExists}
             >
-              Create
+              Register
             </Button>
           )}
         </Group>

@@ -7,6 +7,7 @@ import { parseError, parseResult } from "@/db/error";
 import { filterData } from "@/utils/sanitize";
 import { services } from "@/db/schema";
 import { ServiceType } from "@/db/types/service";
+import { getAuthUser } from "./auth";
 
 export const getServices = async (query: object = {}) => {
   try {
@@ -34,14 +35,20 @@ export const updateService = async ({
   ...values
 }: Partial<ServiceType>) => {
   try {
-    const res = await db
-      .update(services)
-      .set({ ...values } as any)
-      .where(eq(services.id, id as string))
-      .returning();
+    const user = await getAuthUser();
+    if (!!user?.user_metadata?.stripe_enabled || values.currencyType !== 'FIAT') {
+      const res = await db
+        .update(services)
+        .set({ ...values } as any)
+        .where(eq(services.id, id as string))
+        .returning();
 
-    // revalidatePath(`/service/${id}`);
-    return parseResult(res);
+      // revalidatePath(`/service/${id}`);
+      return parseResult(res);
+    } else {
+      throw new Error('Stripe payments not enabled.');
+    }
+
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }
@@ -49,6 +56,9 @@ export const updateService = async ({
 
 export const createService = async (service: ServiceType) => {
   try {
+    const user = await getAuthUser();
+    if (!!user?.user_metadata?.stripe_enabled || service.currencyType !== 'FIAT') {
+
     const res = await db
       .insert(services)
       .values(service as any)
@@ -56,6 +66,9 @@ export const createService = async (service: ServiceType) => {
 
     revalidatePath("/dashboard");
     return parseResult(res);
+    } else {
+      throw new Error('Stripe payments not enabled.');
+    }
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }

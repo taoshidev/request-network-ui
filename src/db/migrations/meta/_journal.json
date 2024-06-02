@@ -344,6 +344,69 @@
       "when": 1715840659686,
       "tag": "0048_sticky_amphibian",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "5",
+      "when": 1716185567695,
+      "tag": "0049_narrow_shooting_star",
+      "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "5",
+      "when": 1716224096771,
+      "tag": "0050_high_captain_midlands",
+      "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "5",
+      "when": 1716578943816,
+      "tag": "0051_calm_doorman",
+      "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "5",
+      "when": 1717198699262,
+      "tag": "0052_peaceful_ultron",
+      "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "5",
+      "when": 1717274219264,
+      "tag": "0053_nice_tempest",
+      "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "5",
+      "when": 1717278205877,
+      "tag": "0054_previous_azazel",
+      "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "5",
+      "when": 1717285223069,
+      "tag": "0055_crazy_rafael_vega",
+      "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "5",
+      "when": 1717293619165,
+      "tag": "0056_stale_blindfold",
+      "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "5",
+      "when": 1717294760643,
+      "tag": "0057_fearless_blue_blade",
+      "breakpoints": true
     }
   ]
 }

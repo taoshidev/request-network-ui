@@ -7,24 +7,29 @@ import { useForm } from "@mantine/form";
 import { IconHome2, IconGauge, IconCircleOff } from "@tabler/icons-react";
 import { updateEndpoint } from "@/actions/endpoints";
 import { PostSchema } from "./PostSchema";
-import { useNotification } from "@/hooks/use-notification";
+import { NOTIFICATION_TYPE, useNotification } from "@/hooks/use-notification";
 import { useRouter } from "next/navigation";
 import { EndpointSchema } from "@/db/types/endpoint";
 import { sendToProxy } from "@/actions/apis";
 import { EndpointType } from "@/db/types/endpoint";
 import { ContractType } from "@/db/types/contract";
 import EndpointForm from "./AddValidator/steps/EndpointForm";
+import { omit as _omit, isEmpty as _isEmpty } from "lodash";
+import { sendNotification } from "@/actions/notifications";
+import { UserType } from "@/db/types/user";
 
 const EndpointFormSchema = EndpointSchema.omit({
   validator: true,
-  subscription: true,
+  subscriptions: true,
 });
 
 export function UpdateEndpoint({
+  user,
   endpoint,
   contracts,
   subscriptionCount,
 }: {
+  user: UserType;
   endpoint: EndpointType;
   contracts: ContractType[];
   subscriptionCount: number;
@@ -43,15 +48,16 @@ export function UpdateEndpoint({
 
   const onSubmit = async (values: any) => {
     setLoading(true);
-    // NOTE: must remove the keys otherwise it will fail silently
-    delete values.validator;
-    delete values.subscription;
-
     const { id } = endpoint;
     const { id: validatorId, baseApiUrl: url, apiPrefix } = endpoint?.validator;
 
     try {
-      const res = await updateEndpoint({ id, ...values });
+      // NOTE: must remove 'validator' and 'subscriptions' keys otherwise it will fail silently
+      const res = await updateEndpoint({
+        id,
+        ..._omit(values, ["validator", "subscriptions"]),
+      });
+
       if (res?.data) {
         await updateProxy(
           url,
@@ -64,6 +70,26 @@ export function UpdateEndpoint({
       }
 
       if (res?.error) return notifyError(res?.message);
+
+      const users = endpoint?.subscriptions.reduce(
+        (prev: any, subscription: any) => {
+          prev[subscription.user.email] = subscription.user;
+          return prev;
+        },
+        {}
+      );
+
+      if (endpoint?.url !== values.url && !_isEmpty(users)) {
+        sendNotification({
+          type: NOTIFICATION_TYPE.WARNING,
+          subject: "Endpoint Updated",
+          content: `Endpoint has been updated. Endpoint "**${endpoint.url}**" has been changed to "**${values.url}**".`,
+          fromUser: user.email,
+          fromUserId: user.id,
+          userNotifications: Object.keys(users).map((key) => users[key]),
+        });
+      }
+
       notifySuccess(res.message);
       router.refresh();
       setTimeout(() => router.back(), 1000);
@@ -97,7 +123,6 @@ export function UpdateEndpoint({
           }
         );
       }
-
       notifySuccess(res.message);
       router.refresh();
     } catch (error: Error | unknown) {

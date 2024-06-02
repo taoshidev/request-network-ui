@@ -80,10 +80,7 @@ export function ValidatorEndpoint({
   };
 
   return (
-    <Box>
-      <Title className="text-2xl text-center my-8">
-        Choose an Endpoint for {registrationData?.validator?.name} Subnet
-      </Title>
+    <Box className="my-8">
       <Grid>
         <ContractDisplayModal
           services={
@@ -108,7 +105,7 @@ export function ValidatorEndpoint({
         {registrationData?.validator?.endpoints?.map(
           (endpoint: EndpointType) => (
             <Grid.Col key={endpoint.id} span={3}>
-              <Card>
+              <Card shadow="sm" padding="lg" withBorder>
                 <Text className="font-bold mb-4" truncate>
                   {endpoint?.url || "-"}
                 </Text>
@@ -127,7 +124,7 @@ export function ValidatorEndpoint({
                 <Group className="justify-between items-center mb-2">
                   <Text className="text-sm">Status:</Text>
                   <Badge size="sm" variant="light">
-                    {endpoint?.enabled? "Enabled" : "Disabled"}
+                    {endpoint?.enabled ? "Enabled" : "Disabled"}
                   </Badge>
                 </Group>
                 <Group className="justify-between items-center mb-2">

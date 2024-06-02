@@ -10,7 +10,7 @@ export const sendEmail = async (mailerConfig: IEmailOptions) => {
   const attachments = [
     {
       filename: "request-network.png",
-      path: `${process.cwd()}/src/assets/request-network.png`,
+      path: `${process.cwd()}/public/images/request-network.png`,
       cid: `${randomBytes(10).toString("hex")}-request-network.png`, //same cid value as in the html img src
     },
   ];

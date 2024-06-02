@@ -52,7 +52,7 @@ export function Endpoints({
       url: "",
       subnetId: "",
       validatorId: "",
-      walletAddress: "",
+      // walletAddress: "",
       contractId: ""
     },
     validate: zodResolver(EndpointSchema),

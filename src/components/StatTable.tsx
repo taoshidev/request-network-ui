@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 import dayjs from "dayjs";
-import { Title, Box, Table, Text } from "@mantine/core";
+import { Title, Box, Table } from "@mantine/core";
 import { KeyType } from "@/db/types/key";
 import { ValidatorType } from "@/db/types/validator";
 
@@ -28,6 +28,7 @@ export function StatTable({
             className="mt-3 mb-6"
             highlightOnHover
             striped={Array.isArray(data)}
+            verticalSpacing="md"
           >
             <Table.Thead>
               <Table.Tr>
@@ -64,7 +65,7 @@ export function StatTable({
                     <Table.Td>{key?.ratelimit?.refillInterval || "-"}</Table.Td>
                     {!caption && (
                       <Table.Td>
-                        {key.enabled ? "Enabled" : "Disabled"}
+                        {key?.enabled ? "Enabled" : "Disabled"}
                       </Table.Td>
                     )}
                   </Table.Tr>

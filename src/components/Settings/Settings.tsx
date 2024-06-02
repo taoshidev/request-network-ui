@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Title,
   Text,
@@ -11,10 +11,15 @@ import {
   Modal,
   Alert,
   CopyButton,
+  Grid,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
-import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
+import {
+  IconAlertCircle,
+  IconClockDollar,
+  IconCopy,
+} from "@tabler/icons-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -23,6 +28,8 @@ import { TAOSHI_REQUEST_KEY } from "@/constants";
 import styles from "./settings.module.css";
 import { useNotification } from "@/hooks/use-notification";
 import { StatTable } from "../StatTable";
+import { cancelSubscription, requestPayment } from "@/actions/payments";
+import { ConfirmModal } from "../ConfirmModal";
 
 const updateSchema = z.object({
   name: z
@@ -33,14 +40,42 @@ const updateSchema = z.object({
 
 type User = z.infer<typeof updateSchema>;
 
-export function Settings({ apiKey }: { apiKey: any }) {
+export function Settings({
+  apiKey,
+  subscription,
+}: {
+  apiKey: any;
+  subscription: any;
+}) {
   const [opened, { open, close }] = useDisclosure(false);
+  const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
+    useDisclosure(false);
   const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState(false);
+  const [active, setActive] = useState(false);
   const router = useRouter();
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
   });
+  
+  // refresh page when it comes back into view
+  useEffect(() => {
+    const onFocus = async (event) => {
+      if (!active && document.visibilityState == "visible") {
+        setActive(true);
+
+        router.refresh();
+      } else {
+        setActive(false);
+      }
+    };
+
+    const cleanup = () => window.removeEventListener("visibilitychange", onFocus);
+
+    window.addEventListener("visibilitychange", onFocus);
+    return cleanup;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     register,
@@ -50,10 +85,9 @@ export function Settings({ apiKey }: { apiKey: any }) {
     mode: "onChange",
     resolver: zodResolver(updateSchema),
   });
-
   const handleDeleteKey = async () => {
     setLoading(true);
-    const res = await deleteKey({ keyId: apiKey.id });
+    const res = await deleteKey({ keyId: apiKey?.id });
     if (res?.status !== 204) return notifyError(res?.message as string);
     notifySuccess(res?.message as string);
     setLoading(false);
@@ -64,7 +98,7 @@ export function Settings({ apiKey }: { apiKey: any }) {
   const onUpdateKey: SubmitHandler<User> = async (values) => {
     setLoading(true);
     const res = await updateKey({
-      keyId: apiKey.id,
+      keyId: apiKey?.id,
       params: { name: values.name },
     });
 
@@ -78,6 +112,33 @@ export function Settings({ apiKey }: { apiKey: any }) {
   const handleCopy = (copy: () => void) => {
     localStorage.removeItem(TAOSHI_REQUEST_KEY);
     copy();
+  };
+
+  const sendPaymentRequest = async () => {
+    const requestPaymentRes = await requestPayment(
+      subscription.proxyServiceId,
+      window.location.pathname
+    );
+
+    if (
+      requestPaymentRes?.subscription?.endpoint?.validator?.baseApiUrl &&
+      requestPaymentRes.token
+    ) {
+      window.open(
+        `${requestPaymentRes.subscription.endpoint.validator.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`,
+        "_blank"
+      );
+    }
+  };
+
+  const unsubscribe = async () => {
+    const unSubRes = await cancelSubscription(subscription.proxyServiceId);
+    notifySuccess(`Subscription cancelled successfully`);
+    unSubClose();
+  };
+
+  const stripePayment = () => {
+    subscription?.active ? unSubOpen() : sendPaymentRequest();
   };
 
   return (
@@ -99,6 +160,15 @@ export function Settings({ apiKey }: { apiKey: any }) {
         </Box>
       </Modal>
 
+      <ConfirmModal
+        opened={unSubOpened}
+        title="Confirm Unsubscribe"
+        message="Are you sure you want to unsubscribe. Any applications using this project's keys will no longer be
+        able to access this Taoshi API."
+        onConfirm={unsubscribe}
+        onCancel={unSubClose}
+      />
+
       {key && key.id && (
         <Box my="xl" py="md" className={styles["one-time"]}>
           <Box mb="lg">
@@ -107,6 +177,7 @@ export function Settings({ apiKey }: { apiKey: any }) {
             </Title>
 
             <Alert
+              className="shadow-sm"
               color="orange"
               radius="0"
               title=""
@@ -137,6 +208,48 @@ export function Settings({ apiKey }: { apiKey: any }) {
         </Box>
       )}
 
+      {apiKey?.meta?.currencyType === "FIAT" && (
+        <Box my="xl">
+          <Alert
+            className="shadow-sm"
+            variant="light"
+            color={subscription?.active ? "#33ad47" : "orange"}
+            title={
+              subscription?.active ? "Billing Information" : "Pay For Endpoint"
+            }
+            icon={
+              subscription?.active ? <IconClockDollar /> : <IconAlertCircle />
+            }
+          >
+            <Box>
+              {subscription?.active ? (
+                <Box>
+                  Endpoint subscription active.
+                  <Grid>
+                    <Grid.Col span={6}>
+                      <Text>Price: ${subscription?.service?.price}</Text>
+                      <Text>
+                        Validator: {subscription?.endpoint?.validator?.name}
+                      </Text>
+                    </Grid.Col>
+                    <Grid.Col span={6}></Grid.Col>
+                  </Grid>
+                </Box>
+              ) : (
+                <Box>Pay for endpoint use using Stripe.</Box>
+              )}
+              <Group justify="flex-end" mt="lg">
+                <Button onClick={stripePayment} type="button" variant="default">
+                  {subscription?.active
+                    ? "Unsubscribe From Endpoint"
+                    : "Pay For Endpoint"}
+                </Button>
+              </Group>
+            </Box>
+          </Alert>
+        </Box>
+      )}
+
       <Box my="xl">
         <Title order={2} mb="sm">
           General Settings
@@ -145,8 +258,8 @@ export function Settings({ apiKey }: { apiKey: any }) {
         <Box component="form" onSubmit={handleUpdateKey(onUpdateKey)} w="100%">
           <TextInput
             label="Edit Key Name"
-            defaultValue={apiKey.name}
-            placeholder={apiKey.name}
+            defaultValue={apiKey?.name}
+            placeholder={apiKey?.name}
             error={errors.name?.message}
             {...register("name", { required: true })}
           />
@@ -166,6 +279,7 @@ export function Settings({ apiKey }: { apiKey: any }) {
 
       <Box my="xl">
         <Alert
+          className="shadow-sm"
           variant="light"
           color="orange"
           title="Delete Key"

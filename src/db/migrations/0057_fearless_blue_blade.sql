@@ -1,0 +1,1 @@
+ALTER TABLE "subscriptions" ADD COLUMN "req_key" varchar;

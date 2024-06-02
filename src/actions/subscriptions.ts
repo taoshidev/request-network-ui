@@ -14,11 +14,12 @@ export const getSubscriptions = async (query: object = {}) => {
     const res = await db.query.subscriptions.findMany(query);
     return filterData(res, ["apiKey", "apiSecret"]);
   } catch (error) {
+    console.log(error);
     if (error instanceof Error) return parseError(error);
   }
 };
 
-export const getSubscription = async ({ id }: SubscriptionType) => {
+export const getSubscription = async ({id}: {id: string}) => {
   const res = await db.query.subscriptions.findFirst({
     where: (subscriptions, { eq }) => eq(subscriptions.id, id as string),
   });
