@@ -75,8 +75,18 @@ export function ConsumerPaymentDashboard({
     "/user-latest-notification",
     async () => {
       const notifications = await getUserNotifications({ limit: 1 });
-      setZoomIn(true);
-      return notifications?.[0];
+      const notification = notifications?.[0];
+
+      if (userNotification?.id && notification?.id !== userNotification?.id) {
+        setZoomIn(false);
+        setTimeout(() => {
+          setZoomIn(true);
+        }, 500);
+      } else {
+        setZoomIn(true);
+      }
+
+      return notification;
     },
     { refreshInterval: 10000 }
   );
@@ -207,7 +217,7 @@ export function ConsumerPaymentDashboard({
   };
 
   function deleteNotification(id: string) {
-    setZoomIn(false)
+    setZoomIn(false);
     setTimeout(() => {
       deleteUserNotification(id);
       refreshNotification();
@@ -234,7 +244,9 @@ export function ConsumerPaymentDashboard({
 
       {userNotification && (
         <Alert
-          className={"shadow-sm border-gray-200 zoom " + (zoomIn ? "in" : "out")}
+          className={
+            "shadow-sm border-gray-200 zoom " + (zoomIn ? "in" : "out")
+          }
           color="orange"
           icon={
             NOTIFICATION_ICON[

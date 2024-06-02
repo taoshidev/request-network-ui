@@ -24,7 +24,10 @@ import {
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import clsx from "clsx";
-import { deleteUserNotification, getUserNotifications } from "@/actions/notifications";
+import {
+  deleteUserNotification,
+  getUserNotifications,
+} from "@/actions/notifications";
 import useSWR from "swr";
 import { NOTIFICATION_ICON, NotificationTypes } from "@/hooks/use-notification";
 import removeMd from "remove-markdown";
@@ -74,12 +77,26 @@ export function ValidatorPaymentDashboard({
     string | null
   >(null);
   const [zoomIn, setZoomIn] = useState(true);
-  const { data: userNotification, isLoading: notificationIsLoading, mutate: refreshNotification } = useSWR(
+  const {
+    data: userNotification,
+    isLoading: notificationIsLoading,
+    mutate: refreshNotification,
+  } = useSWR(
     "/user-latest-notification",
     async () => {
       const notifications = await getUserNotifications({ limit: 1 });
-      setZoomIn(true);
-      return notifications?.[0];
+      const notification = notifications?.[0];
+
+      if (userNotification?.id && notification?.id !== userNotification?.id) {
+        setZoomIn(false);
+        setTimeout(() => {
+          setZoomIn(true);
+        }, 500);
+      } else {
+        setZoomIn(true);
+      }
+
+      return notification;
     },
     { refreshInterval: 10000 }
   );
@@ -258,7 +275,7 @@ export function ValidatorPaymentDashboard({
   };
 
   function deleteNotification(id: string) {
-    setZoomIn(false)
+    setZoomIn(false);
     setTimeout(() => {
       deleteUserNotification(id);
       refreshNotification();
@@ -303,7 +320,9 @@ export function ValidatorPaymentDashboard({
 
       {userNotification && (
         <Alert
-          className={"shadow-sm border-gray-200 zoom " + (zoomIn ? "in" : "out")}
+          className={
+            "shadow-sm border-gray-200 zoom " + (zoomIn ? "in" : "out")
+          }
           color="orange"
           icon={
             NOTIFICATION_ICON[
@@ -327,7 +346,7 @@ export function ValidatorPaymentDashboard({
           </Button>
         </Alert>
       )}
-      
+
       <Box className="flex justify-between bg-gray-100 mt-[40px] mb-2">
         <StatCard
           title="Total Income"
