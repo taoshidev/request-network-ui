@@ -8,53 +8,58 @@ import { compileFile } from "pug";
 import { DateTime } from "luxon";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
+import { readFileSync } from "fs";
 const { convert: toText } = require("html-to-text");
 
 const templates = {
-  layout: path.resolve(process.cwd(), "static", "templates", "layout.pug"),
-  "layout-text": path.resolve(
+  layout: path.join(process.cwd(), "static", "templates", "layout.pug"),
+  "layout-text": path.join(
     process.cwd(),
     "static",
     "templates",
     "layout-text.pug"
   ),
-  "created-endpoint": path.resolve(
+  "created-endpoint": path.join(
     process.cwd(),
     "static",
     "templates",
     "created-endpoint.pug"
   ),
-  "created-endpoint.text": path.resolve(
+  "created-endpoint.text": path.join(
     process.cwd(),
     "static",
     "templates",
     "created-endpoint.text.pug"
   ),
-  notification: path.resolve(
+  notification: path.join(
     process.cwd(),
     "static",
     "templates",
     "notification.pug"
   ),
-  "notification.text": path.resolve(
+  "notification.text": path.join(
     process.cwd(),
     "static",
     "templates",
     "notification.text.pug"
   ),
-  "subscription-created": path.resolve(
+  "subscription-created": path.join(
     process.cwd(),
     "static",
     "templates",
     "subscription-created.pug"
   ),
-  "subscription-created.text": path.resolve(
+  "subscription-created.text": path.join(
     process.cwd(),
     "static",
     "templates",
     "subscription-created.text.pug"
   ),
 };
+
+Object.keys(templates).forEach((key) => {
+  readFileSync(templates[key]);
+});
 
 /**
  * EmailService class provides for sending emails using node-mailer.
