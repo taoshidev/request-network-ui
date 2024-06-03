@@ -11,31 +11,46 @@ import sanitizeHtml from "sanitize-html";
 const { convert: toText } = require("html-to-text");
 
 const templates = {
-  layout: path.resolve("./static", "templates", "layout.pug"),
-  "layout-text": path.resolve("./static", "templates", "layout-text.pug"),
+  layout: path.resolve(process.cwd(), "static", "templates", "layout.pug"),
+  "layout-text": path.resolve(
+    process.cwd(),
+    "static",
+    "templates",
+    "layout-text.pug"
+  ),
   "created-endpoint": path.resolve(
-    "./static",
+    process.cwd(),
+    "static",
     "templates",
     "created-endpoint.pug"
   ),
   "created-endpoint.text": path.resolve(
-    "./static",
+    process.cwd(),
+    "static",
     "templates",
     "created-endpoint.text.pug"
   ),
-  notification: path.resolve("./static", "templates", "notification.pug"),
+  notification: path.resolve(
+    process.cwd(),
+    "static",
+    "templates",
+    "notification.pug"
+  ),
   "notification.text": path.resolve(
-    "./static",
+    process.cwd(),
+    "static",
     "templates",
     "notification.text.pug"
   ),
   "subscription-created": path.resolve(
-    "./static",
+    process.cwd(),
+    "static",
     "templates",
     "subscription-created.pug"
   ),
   "subscription-created.text": path.resolve(
-    "./static",
+    process.cwd(),
+    "static",
     "templates",
     "subscription-created.text.pug"
   ),
@@ -80,12 +95,12 @@ export default class EmailService {
   }
 
   protected getTextPath(mailerConfig: IEmailOptions) {
-    console.log('text path: ', templates[`${mailerConfig.template}.text`]);
+    console.log("text path: ", templates[`${mailerConfig.template}.text`]);
     return templates[`${mailerConfig.template}.text`];
   }
 
   protected getHtmlPath(mailerConfig: IEmailOptions) {
-    console.log('html path: ', templates[`${mailerConfig.template}.text`]);
+    console.log("html path: ", templates[`${mailerConfig.template}.text`]);
     return templates[mailerConfig.template];
   }
 
