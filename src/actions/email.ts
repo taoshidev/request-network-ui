@@ -3,6 +3,7 @@
 import { IEmailOptions } from "@/interfaces/email";
 import EmailService from "@/services/email.service";
 import { randomBytes } from "crypto";
+import path from "path";
 
 const emailService = new EmailService();
 
@@ -10,7 +11,7 @@ export const sendEmail = async (mailerConfig: IEmailOptions) => {
   const attachments = [
     {
       filename: "request-network.png",
-      path: `${process.cwd()}/public/images/request-network.png`,
+      path: path.resolve('./public', 'images', 'request-network.png'),
       cid: `${randomBytes(10).toString("hex")}-request-network.png`, //same cid value as in the html img src
     },
   ];
