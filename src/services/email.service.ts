@@ -15,7 +15,7 @@ const { convert: toText } = require("html-to-text");
  */
 export default class EmailService {
   mailTransport: any;
-  templateDir = path.resolve('./src', 'templates');
+  templateDir = path.resolve('./static', 'templates');
   defaults = {
     from: process.env.EMAIL_FROM || "",
     replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || "",
