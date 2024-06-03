@@ -8,6 +8,7 @@ import path from "path";
 const emailService = new EmailService();
 
 export const sendEmail = async (mailerConfig: IEmailOptions) => {
+  console.log('image path: ', path.resolve('./public', 'images', 'request-network.png'));
   const attachments = [
     {
       filename: "request-network.png",

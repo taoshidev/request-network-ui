@@ -9,6 +9,7 @@ import { getAuthUser } from "@/actions/auth";
 
 export default async function DocumentationPage() {
   const filePath = path.resolve('./public', 'validator-instructions.md');
+  console.log('docs path:', filePath);
   const markdown = readFileSync(filePath, "utf8");
   const user = await getAuthUser();
   const startLink = user ? "/dashboard" : "/login";
