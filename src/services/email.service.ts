@@ -10,6 +10,15 @@ import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 const { convert: toText } = require("html-to-text");
 
+path.resolve('./static', 'templates', 'layout.pug');
+path.resolve('./static', 'templates', 'layout-text.pug');
+path.resolve('./static', 'templates', 'created-endpoint.pug');
+path.resolve('./static', 'templates', 'created-endpoint.text.pug');
+path.resolve('./static', 'templates', 'notification.pug');
+path.resolve('./static', 'templates', 'notification.text.pug');
+path.resolve('./static', 'templates', 'subscription-created.pug');
+path.resolve('./static', 'templates', 'subscription-created.text.pug');
+
 /**
  * EmailService class provides for sending emails using node-mailer.
  */
