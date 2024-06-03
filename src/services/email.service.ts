@@ -10,21 +10,42 @@ import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 const { convert: toText } = require("html-to-text");
 
-path.resolve('./static', 'templates', 'layout.pug');
-path.resolve('./static', 'templates', 'layout-text.pug');
-path.resolve('./static', 'templates', 'created-endpoint.pug');
-path.resolve('./static', 'templates', 'created-endpoint.text.pug');
-path.resolve('./static', 'templates', 'notification.pug');
-path.resolve('./static', 'templates', 'notification.text.pug');
-path.resolve('./static', 'templates', 'subscription-created.pug');
-path.resolve('./static', 'templates', 'subscription-created.text.pug');
+const templates = {
+  layout: path.join("./static", "templates", "layout.pug"),
+  "layout-text": path.join("./static", "templates", "layout-text.pug"),
+  "created-endpoint": path.join(
+    "./static",
+    "templates",
+    "created-endpoint.pug"
+  ),
+  "created-endpoint.text": path.join(
+    "./static",
+    "templates",
+    "created-endpoint.text.pug"
+  ),
+  notification: path.join("./static", "templates", "notification.pug"),
+  "notification.text": path.join(
+    "./static",
+    "templates",
+    "notification.text.pug"
+  ),
+  "subscription-created": path.join(
+    "./static",
+    "templates",
+    "subscription-created.pug"
+  ),
+  "subscription-created.text": path.join(
+    "./static",
+    "templates",
+    "subscription-created.text.pug"
+  ),
+};
 
 /**
  * EmailService class provides for sending emails using node-mailer.
  */
 export default class EmailService {
   mailTransport: any;
-  templateDir = path.resolve('./static', 'templates');
   defaults = {
     from: process.env.EMAIL_FROM || "",
     replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || "",
@@ -36,7 +57,6 @@ export default class EmailService {
     const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
     const user = process.env.EMAIL_FROM;
     const pass = process.env.EMAIL_PASS;
-    console.log('templates path: ', this.templateDir);
 
     if (region && accessKeyId && secretAccessKey) {
       const ses = new aws.SES({
@@ -60,11 +80,13 @@ export default class EmailService {
   }
 
   protected getTextPath(mailerConfig: IEmailOptions) {
-    return `${this.templateDir}/${mailerConfig.template}.text.pug`;
+    console.log('text path: ', templates[`${mailerConfig.template}.text`]);
+    return templates[`${mailerConfig.template}.text`];
   }
 
   protected getHtmlPath(mailerConfig: IEmailOptions) {
-    return `${this.templateDir}/${mailerConfig.template}.pug`;
+    console.log('html path: ', templates[`${mailerConfig.template}.text`]);
+    return templates[mailerConfig.template];
   }
 
   async compileText(mailerConfig: IEmailOptions) {
