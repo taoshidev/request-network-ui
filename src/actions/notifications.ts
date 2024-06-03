@@ -122,7 +122,7 @@ export const getUserNotifications = async (params?: any) => {
       };
 
       if (params?.limit) query.limit = params.limit;
-      if (params.where) query.where = params.where;
+      if (params?.where) query.where = params.where;
 
       const res = await db.query.userNotifications.findMany(query);
       return filterData(res, [""]);
