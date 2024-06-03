@@ -85,7 +85,7 @@ export default class EmailService {
   }
 
   protected getHtmlPath(mailerConfig: IEmailOptions) {
-    console.log("html path: ", templates[`${mailerConfig.template}.text`]);
+    console.log("html path: ", templates[`${mailerConfig.template}`]);
     return templates[mailerConfig.template];
   }
 
