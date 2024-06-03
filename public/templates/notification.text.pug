@@ -1,6 +1,11 @@
-extends layout-text
+-function formatDate(dateString){
+    -return DateTime.fromJSDate(dateString).toFormat('MM/dd/yyyy');
+-}
 
-block mainContent
+-function formatDateTime(dateTimeString){
+    -return DateTime.fromJSDate(dateTimeString).toFormat('f');
+-}
+
   | #{title}
   | #{toText(content, { wordWrap: 130})}
   |
