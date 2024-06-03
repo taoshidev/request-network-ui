@@ -11,30 +11,30 @@ import sanitizeHtml from "sanitize-html";
 const { convert: toText } = require("html-to-text");
 
 const templates = {
-  layout: path.join("./static", "templates", "layout.pug"),
-  "layout-text": path.join("./static", "templates", "layout-text.pug"),
-  "created-endpoint": path.join(
+  layout: path.resolve("./static", "templates", "layout.pug"),
+  "layout-text": path.resolve("./static", "templates", "layout-text.pug"),
+  "created-endpoint": path.resolve(
     "./static",
     "templates",
     "created-endpoint.pug"
   ),
-  "created-endpoint.text": path.join(
+  "created-endpoint.text": path.resolve(
     "./static",
     "templates",
     "created-endpoint.text.pug"
   ),
-  notification: path.join("./static", "templates", "notification.pug"),
-  "notification.text": path.join(
+  notification: path.resolve("./static", "templates", "notification.pug"),
+  "notification.text": path.resolve(
     "./static",
     "templates",
     "notification.text.pug"
   ),
-  "subscription-created": path.join(
+  "subscription-created": path.resolve(
     "./static",
     "templates",
     "subscription-created.pug"
   ),
-  "subscription-created.text": path.join(
+  "subscription-created.text": path.resolve(
     "./static",
     "templates",
     "subscription-created.text.pug"
