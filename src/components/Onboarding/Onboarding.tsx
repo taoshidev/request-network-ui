@@ -74,7 +74,7 @@ export function Onboarding() {
 
             <UnstyledButton
               className={clsx(
-                "w-full border border-dashed bg-white p-4 pl-14 transition-colors duration-100 ease-in-out",
+                "w-full shadow-sm border border-gray-200 bg-white p-4 pl-14 transition-colors duration-100 ease-in-out",
                 styles.control,
               )}
               data-checked={role === "validator" || undefined}
@@ -100,7 +100,7 @@ export function Onboarding() {
 
             <UnstyledButton
               className={clsx(
-                "w-full border border-dashed bg-white p-4 pl-14",
+                "w-full shadow-sm border border-gray-200 bg-white p-4 pl-14",
                 styles.control,
               )}
               data-checked={role === "consumer" || undefined}
