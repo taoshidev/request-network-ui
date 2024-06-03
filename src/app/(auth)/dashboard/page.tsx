@@ -15,11 +15,9 @@ export default async function Page() {
   const user = await getAuthUser();
 
   if (!user) {
-    redirect("/login");
-  }
-  
-  if (!user.user_metadata?.onboarded) {
-    redirect("/onboarding");
+    return redirect("/login");
+  } else if (!user.user_metadata?.onboarded) {
+    return redirect("/onboarding");
   }
 
   let validatorArr = await getValidators({
@@ -55,7 +53,9 @@ export default async function Page() {
 
     if (subs?.error) subs = [];
 
-    return <Consumer user={user} subscriptions={subs} validators={validatorArr} />;
+    return (
+      <Consumer user={user} subscriptions={subs} validators={validatorArr} />
+    );
     // if user is a validator, render validator dashboard
   } else if (user.user_metadata.role === "validator") {
     const validatorEndpoints = validatorArr?.map((v) => v.endpoints);
