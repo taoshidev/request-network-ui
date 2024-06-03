@@ -44,7 +44,7 @@ export function Onboarding() {
       sendNotification({
         type: NOTIFICATION_TYPE.SUCCESS,
         subject: "Welcome to Request Network!",
-        content: `Your account has been created.\r\n\r\n${
+        content: `${
           role === "consumer"
             ? "Your consumer account has been created."
             : "Your validator account has been created."
