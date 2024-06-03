@@ -1,11 +1,4 @@
-import {
-  getUserNotifications,
-  sendNotification,
-} from "@/actions/notifications";
-import { userNotifications } from "@/db/schema";
-import { NOTIFICATION_TYPE } from "@/hooks/use-notification";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -40,20 +33,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${origin}${next}`);
       }
       // send welcome to request network email
-      if (data.user?.email && !data.user?.user_metadata?.onboarded) {
-        const notifications = await getUserNotifications({
-          where: eq(userNotifications.userId, data.user.id),
-          limit: 1,
-        });
-        if (notifications?.length < 1) {
-          sendNotification({
-            type: NOTIFICATION_TYPE.SUCCESS,
-            subject: "Welcome to Request Network!",
-            content: `Your account has been created.`,
-            fromUserId: data.user?.id,
-            userNotifications: [data.user],
-          });
-        }
+      if (!data.user?.user_metadata?.onboarded) {
         return NextResponse.redirect(new URL("/onboarding", request.url));
       } else {
         return NextResponse.redirect(new URL("/dashboard", request.url));

@@ -1,6 +1,5 @@
 "use client";
 
-import { Card } from "@mantine/core";
 import { Auth } from "@supabase/auth-ui-react";
 import { createClient } from "@/lib/supabase/client";
 

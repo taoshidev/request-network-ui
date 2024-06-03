@@ -18,6 +18,8 @@ import { clsx } from "clsx";
 import { getAuthUser, updateUser } from "@/actions/auth";
 
 import styles from "./onboarding.module.css";
+import { NOTIFICATION_TYPE } from "@/hooks/use-notification";
+import { sendNotification } from "@/actions/notifications";
 
 export function Onboarding() {
   const router = useRouter();
@@ -38,6 +40,18 @@ export function Onboarding() {
       });
 
       if (UpdateUserError) return;
+
+      sendNotification({
+        type: NOTIFICATION_TYPE.SUCCESS,
+        subject: "Welcome to Request Network!",
+        content: `Your account has been created.\r\n\r\n${
+          role === "consumer"
+            ? "Your consumer account has been created."
+            : "Your validator account has been created."
+        }`,
+        fromUserId: user?.id,
+        userNotifications: [user],
+      });
 
       // if user is a validator, redirect to dashboard, else redirect to registration
       if (role === "consumer") {
@@ -75,7 +89,7 @@ export function Onboarding() {
             <UnstyledButton
               className={clsx(
                 "w-full shadow-sm border border-gray-200 bg-white p-4 pl-14 transition-colors duration-100 ease-in-out",
-                styles.control,
+                styles.control
               )}
               data-checked={role === "validator" || undefined}
               onClick={() => handleClick("validator")}
@@ -101,7 +115,7 @@ export function Onboarding() {
             <UnstyledButton
               className={clsx(
                 "w-full shadow-sm border border-gray-200 bg-white p-4 pl-14",
-                styles.control,
+                styles.control
               )}
               data-checked={role === "consumer" || undefined}
               onClick={() => handleClick("consumer")}
