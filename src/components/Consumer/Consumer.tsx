@@ -143,7 +143,7 @@ export function Consumer({
               </Table.Thead>
               <Table.Tbody>
                 {validator?.subscriptions?.map?.((subscription) => (
-                  <Table.Tr key={subscription?.keyData?.id}>
+                  <Table.Tr key={subscription?.id}>
                     <Table.Td>
                       <Anchor
                         className="font-semibold text-black"

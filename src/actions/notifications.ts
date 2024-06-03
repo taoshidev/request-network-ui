@@ -121,9 +121,8 @@ export const getUserNotifications = async (params?: any) => {
         orderBy: (notifications, { desc }) => [desc(notifications?.createdAt)],
       };
 
-      if (params?.limit) {
-        query.limit = params.limit;
-      }
+      if (params?.limit) query.limit = params.limit;
+      if (params.where) query.where = params.where;
 
       const res = await db.query.userNotifications.findMany(query);
       return filterData(res, [""]);
