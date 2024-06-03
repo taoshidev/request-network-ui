@@ -98,8 +98,8 @@ export function ValidatorEdit({
 
       await updateValidator({
         id: validator.id,
-        signature,
-        account,
+        // signature,
+        // account,
         verified: true,
       });
       notifySuccess("Validator verification successful");

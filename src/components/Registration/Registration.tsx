@@ -23,11 +23,25 @@ export function Registration({
   subnets: SubnetType[];
   validators: ValidatorWithInfo[];
 }) {
-
   return (
     <RegistrationProvider>
       <RegistrationStepper
-        StepOne={<Subnets subnets={subnets} mode="registration" />}
+        StepOne={
+          validators?.length! > 0 ? (
+            <Subnets subnets={subnets} mode="registration" />
+          ) : (
+            <Alert
+              className="mt-8 shadow-sm"
+              color="orange"
+              icon={<IconAlertCircle />}
+            >
+              <Text className="mb-2 text-base">
+                There are no validators available at the moment. Please check
+                back soon!
+              </Text>
+            </Alert>
+          )
+        }
         StepTwo={
           validators?.length! > 0 ? (
             <SubnetValidator
@@ -43,7 +57,8 @@ export function Registration({
               icon={<IconAlertCircle />}
             >
               <Text className="mb-2 text-base">
-                There are no validators available at the moment. Please check back soon!
+                There are no validators available at the moment. Please check
+                back soon!
               </Text>
             </Alert>
           )
