@@ -8,58 +8,38 @@ import { compileFile } from "pug";
 import { DateTime } from "luxon";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
-import { readFileSync } from "fs";
 const { convert: toText } = require("html-to-text");
 
 const templates = {
-  layout: path.join(process.cwd(), "static", "templates", "layout.pug"),
-  "layout-text": path.join(
-    process.cwd(),
-    "static",
-    "templates",
-    "layout-text.pug"
-  ),
-  "created-endpoint": path.join(
-    process.cwd(),
-    "static",
+  layout: path.resolve("./public", "templates", "layout.pug"),
+  "layout-text": path.resolve("./public", "templates", "layout-text.pug"),
+  "created-endpoint": path.resolve(
+    "./public",
     "templates",
     "created-endpoint.pug"
   ),
-  "created-endpoint.text": path.join(
-    process.cwd(),
-    "static",
+  "created-endpoint.text": path.resolve(
+    "./public",
     "templates",
     "created-endpoint.text.pug"
   ),
-  notification: path.join(
-    process.cwd(),
-    "static",
-    "templates",
-    "notification.pug"
-  ),
-  "notification.text": path.join(
-    process.cwd(),
-    "static",
+  notification: path.resolve("./public", "templates", "notification.pug"),
+  "notification.text": path.resolve(
+    "./public",
     "templates",
     "notification.text.pug"
   ),
-  "subscription-created": path.join(
-    process.cwd(),
-    "static",
+  "subscription-created": path.resolve(
+    "./public",
     "templates",
     "subscription-created.pug"
   ),
-  "subscription-created.text": path.join(
-    process.cwd(),
-    "static",
+  "subscription-created.text": path.resolve(
+    "./public",
     "templates",
     "subscription-created.text.pug"
   ),
 };
-
-Object.keys(templates).forEach((key) => {
-  readFileSync(templates[key]);
-});
 
 /**
  * EmailService class provides for sending emails using node-mailer.
