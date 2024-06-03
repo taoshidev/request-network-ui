@@ -15,7 +15,7 @@ const { convert: toText } = require("html-to-text");
  */
 export default class EmailService {
   mailTransport: any;
-  templateDir = path.resolve('./public', 'templates');
+  templateDir = path.resolve('./src', 'templates');
   defaults = {
     from: process.env.EMAIL_FROM || "",
     replyTo: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || "",
@@ -27,6 +27,7 @@ export default class EmailService {
     const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
     const user = process.env.EMAIL_FROM;
     const pass = process.env.EMAIL_PASS;
+    console.log('templates path: ', this.templateDir);
 
     if (region && accessKeyId && secretAccessKey) {
       const ses = new aws.SES({
