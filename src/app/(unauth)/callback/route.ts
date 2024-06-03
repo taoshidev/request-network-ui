@@ -1,4 +1,7 @@
-import { sendNotification } from "@/actions/notifications";
+import {
+  getUserNotifications,
+  sendNotification,
+} from "@/actions/notifications";
 import { NOTIFICATION_TYPE } from "@/hooks/use-notification";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
@@ -35,17 +38,21 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${origin}${next}`);
       }
       // send welcome to request network email
-      if (data.user?.email && !data.user.user_metadata?.onboarded) {
-        sendNotification({
-          type: NOTIFICATION_TYPE.SUCCESS,
-          subject: "Welcome to Request Network!",
-          content: `Your account has been created.`,
-          fromUserId: data.user?.id,
-          userNotifications: [data.user],
-        });
+      if (data.user?.email && !data.user?.user_metadata?.onboarded) {
+        const notifications = await getUserNotifications({ limit: 1 });
+        if (notifications?.length < 1) {
+          sendNotification({
+            type: NOTIFICATION_TYPE.SUCCESS,
+            subject: "Welcome to Request Network!",
+            content: `Your account has been created.`,
+            fromUserId: data.user?.id,
+            userNotifications: [data.user],
+          });
+        }
+        return NextResponse.redirect(new URL("/onboarding", request.url));
+      } else {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
       }
-
-      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
 
