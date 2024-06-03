@@ -1,14 +1,14 @@
 import { HeaderHome } from "@/components/HeaderHome";
 import ReactMarkdown from "react-markdown";
 import { readFileSync } from "fs";
-import { join } from "path";
+import path, { join } from "path";
 import * as classes from "./page.module.css";
 import React from "react";
 import { generateSlug } from "@/utils/generate-slug";
 import { getAuthUser } from "@/actions/auth";
 
 export default async function DocumentationPage() {
-  const filePath = join(process.cwd(), "public", "validator-instructions.md");
+  const filePath = path.resolve('./public', 'validator-instructions.md');
   const markdown = readFileSync(filePath, "utf8");
   const user = await getAuthUser();
   const startLink = user ? "/dashboard" : "/login";
