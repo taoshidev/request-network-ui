@@ -7,7 +7,6 @@ import { zodResolver } from "mantine-form-zod-resolver";
 import { useNotification } from "@/hooks/use-notification";
 import { ServiceSchema, ServiceType } from "@/db/types/service";
 import { ServiceFormInput } from "@/components/Services/ServiceFormInput";
-import { sendEmail } from "@/actions/email";
 import { getAuthUser } from "@/actions/auth";
 import { UserType } from "@/db/types/user";
 import { createService } from "@/actions/services";
@@ -78,20 +77,6 @@ export function ServiceForm({
       if (res?.error) return notifyError(res?.message);
       onComplete?.();
       notifySuccess(res?.message as string);
-
-      // needs to be updated to send on service created
-      // sendEmail({
-      //   to: user?.email as string,
-      //   template: "created-endpoint",
-      //   subject: "New Endpoint Created",
-      //   templateVariables: {
-      //     request: values.remaining,
-      //     expires: new Date(values?.expires!),
-      //     limit: values.limit,
-      //     refillRate: values.refillRate,
-      //     refillInterval: values.refillInterval,
-      //   },
-      // });
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
     } finally {
