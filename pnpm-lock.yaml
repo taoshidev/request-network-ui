@@ -277,9 +277,6 @@ importers:
       '@types/pg':
         specifier: ^8.11.0
         version: 8.11.2
-      '@types/pug':
-        specifier: ^2.0.10
-        version: 2.0.10
       '@types/react':
         specifier: ^18
         version: 18.2.67
@@ -2331,9 +2328,6 @@ packages:
 
   '@types/prop-types@15.7.11':
     resolution: {integrity: sha512-ga8y9v9uyeiLdpKddhxYQkxNDrfvuPrlFb0N1qnZZByvcElJaXthF1UhvCh9TLWJBEHeNtdnbysW7Y6Uq8CVng==}
-
-  '@types/pug@2.0.10':
-    resolution: {integrity: sha512-Sk/uYFOBAB7mb74XcpizmH0KOR2Pv3D2Hmrh1Dmy5BmK3MpdSa5kqZcg6EKBdklU0bFXX9gCfzvpnyUehrPIuA==}
 
   '@types/qs@6.9.15':
     resolution: {integrity: sha512-uXHQKES6DQKKCLh441Xv/dwxOq1TVS3JPUMlEqoEglvlhR6Mxnlew/Xq/LRVHpLyk7iK3zODe1qYHIMltO7XGg==}
@@ -8412,8 +8406,6 @@ snapshots:
   '@types/phoenix@1.6.4': {}
 
   '@types/prop-types@15.7.11': {}
-
-  '@types/pug@2.0.10': {}
 
   '@types/qs@6.9.15': {}
 
