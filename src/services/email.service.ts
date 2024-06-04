@@ -3,12 +3,6 @@ import { IEmailHeaders, IEmailOptions } from "@/interfaces/email";
 import * as aws from "@aws-sdk/client-ses";
 import { defaultProvider } from "@aws-sdk/credential-provider-node";
 import * as nodemailer from "nodemailer";
-import { compileFile } from "pug";
-import { DateTime } from "luxon";
-import { marked } from "marked";
-import sanitizeHtml from "sanitize-html";
-import { templates } from "@/templates";
-const { convert: toText } = require("html-to-text");
 
 /**
  * EmailService class provides for sending emails using node-mailer.
@@ -48,28 +42,6 @@ export default class EmailService {
     }
   }
 
-  protected getTextPath(mailerConfig: IEmailOptions) {
-    console.log("text path: ", templates[`${mailerConfig.template}.text`]);
-    return templates[`${mailerConfig.template}.text`];
-  }
-
-  protected getHtmlPath(mailerConfig: IEmailOptions) {
-    console.log("html path: ", templates[`${mailerConfig.template}`]);
-    return templates[mailerConfig.template];
-  }
-
-  async compileText(mailerConfig: IEmailOptions) {
-    return compileFile(this.getTextPath(mailerConfig))(
-      mailerConfig.templateVariables
-    );
-  }
-
-  protected async compileHtml(mailerConfig: IEmailOptions) {
-    return compileFile(this.getHtmlPath(mailerConfig))(
-      mailerConfig.templateVariables
-    );
-  }
-
   protected getHeaders(mailerConfig: IEmailOptions) {
     const envName = process.env.NEXT_PUBLIC_ENV_NAME
       ? `${process.env.NEXT_PUBLIC_ENV_NAME}: `
@@ -89,15 +61,12 @@ export default class EmailService {
 
   async send(mailerConfig: IEmailOptions) {
     const headers = this.getHeaders(mailerConfig);
-    mailerConfig.templateVariables.DateTime = DateTime;
-    mailerConfig.templateVariables.marked = marked;
-    mailerConfig.templateVariables.sanitizeHtml = sanitizeHtml;
-    mailerConfig.templateVariables.toText = toText;
+
     try {
       if (this.mailTransport) {
         await this.mailTransport.sendMail({
-          html: await this.compileHtml(mailerConfig),
-          text: await this.compileText(mailerConfig),
+          html: mailerConfig.html,
+          text: mailerConfig.text,
           from: headers.from,
           replyTo: headers.replyTo,
           subject: headers.subject,
@@ -111,9 +80,8 @@ export default class EmailService {
       }
       return true;
     } catch (error) {
-      const { template } = mailerConfig;
       console.error(
-        `Error: Email delivery failure. To: ${headers.to}, Subject: ${headers.subject}, Template: ${template}`,
+        `Error: Email delivery failure. To: ${headers.to}, Subject: ${headers.subject}`,
         error
       );
       return false;
