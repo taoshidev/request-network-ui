@@ -14,6 +14,7 @@ import { UserNotificationType } from "@/db/types/user-notifications";
 import { notifyHTML, notifyText } from "@/templates/notification";
 import path from "path";
 import { randomBytes } from "crypto";
+import { emailImg } from "@/templates/email-image";
 
 export const sendNotification = async (
   notification: NotificationType,
@@ -54,7 +55,7 @@ export const sendNotification = async (
         const attachments = [
           {
             filename: "request-network.png",
-            path: path.resolve("./public", "request-network.png"),
+            path: emailImg(),
             cid: `${randomBytes(10).toString("hex")}-request-network.png`, //same cid value as in the html img src
           },
         ];
