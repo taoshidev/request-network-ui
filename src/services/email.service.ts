@@ -64,7 +64,8 @@ export default class EmailService {
 
     try {
       if (this.mailTransport) {
-        await this.mailTransport.sendMail({
+        console.log(mailerConfig);
+        const sentMail = await this.mailTransport.sendMail({
           html: mailerConfig.html,
           text: mailerConfig.text,
           from: headers.from,
@@ -75,6 +76,7 @@ export default class EmailService {
           bcc: headers.bcc,
           attachments: mailerConfig.attachments,
         });
+        console.log(sentMail);
       } else {
         throw Error("Transport credentials not set.");
       }
