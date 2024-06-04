@@ -12,8 +12,8 @@ export interface IEmailOptions {
   cc?: string;
   bcc?: string;
   subject: string;
-  template: string;
-  templateVariables: any;
+  html?: string;
+  text?: string;
   attachments?: IAttachment[] | undefined;
 }
 

@@ -11,6 +11,10 @@ import { and, eq, isNull } from "drizzle-orm";
 import { omit as _omit } from "lodash";
 import { getAuthUser } from "./auth";
 import { UserNotificationType } from "@/db/types/user-notifications";
+import { notifyHTML, notifyText } from "@/templates/notification";
+import path from "path";
+import { randomBytes } from "crypto";
+import { emailImg } from "@/templates/email-image";
 
 export const sendNotification = async (
   notification: NotificationType,
@@ -48,16 +52,29 @@ export const sendNotification = async (
             ? toEmails
             : undefined;
 
+        const attachments = [
+          {
+            filename: "request-network.png",
+            path: emailImg(),
+            cid: `${randomBytes(10).toString("hex")}-request-network.png`, //same cid value as in the html img src
+          },
+        ];
+
         sendEmail({
           reply: notification.fromUser,
           to,
           bcc,
-          template: "notification",
-          subject: notification.subject as string,
-          templateVariables: {
+          html: notifyHTML({
             title: notification.subject,
             content: notification.content,
-          },
+            attachments,
+          }),
+          text: notifyText({
+            title: notification.subject,
+            content: notification.content,
+          }),
+          attachments,
+          subject: notification.subject as string,
         });
       }
 
@@ -122,7 +139,7 @@ export const getUserNotifications = async (params?: any) => {
       };
 
       if (params?.limit) query.limit = params.limit;
-      if (params.where) query.where = params.where;
+      if (params?.where) query.where = params.where;
 
       const res = await db.query.userNotifications.findMany(query);
       return filterData(res, [""]);
