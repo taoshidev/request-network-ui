@@ -54,7 +54,7 @@ export const sendNotification = async (
         const attachments = [
           {
             filename: "request-network.png",
-            path: path.resolve("./public", "images", "request-network.png"),
+            path: path.resolve("./public", "request-network.png"),
             cid: `${randomBytes(10).toString("hex")}-request-network.png`, //same cid value as in the html img src
           },
         ];
