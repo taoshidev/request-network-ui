@@ -76,9 +76,9 @@ export function Endpoints({
       </Modal>
 
       {endpoints && !isEmpty(endpoints) && (
-        <Box className="mb-16">
-          <Group justify="space-between" my="xl">
-            <Title order={2}>Endpoints</Title>
+        <Box>
+          <Group justify="space-between">
+            <Title order={2} className="mb-5">Endpoints</Title>
             <Button onClick={open} disabled={!enabled}>
               Add New Endpoint
             </Button>
