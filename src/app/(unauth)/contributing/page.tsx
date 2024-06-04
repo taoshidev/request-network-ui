@@ -8,7 +8,6 @@ import { getAuthUser } from "@/actions/auth";
 
 export default async function ContributingPage() {
   const filePath = path.resolve('./public', 'contributing.md');
-  console.log('contributing path:', filePath);
   const markdown = readFileSync(filePath, "utf8");
   const user = await getAuthUser();
   const startLink = user ? '/dashboard' : '/login';
