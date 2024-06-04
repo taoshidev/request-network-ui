@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useRef } from "react";
 import {
   Alert,
   NavLink,
@@ -24,7 +24,12 @@ import {
   IconCircleOff,
   IconCircleCheck,
 } from "@tabler/icons-react";
-import { sign, isValidSignature, SignedDataType } from "@/lib/polkadot";
+import {
+  sign,
+  isValidSignature,
+  SignedDataType,
+  getWeb3Accounts,
+} from "@/lib/polkadot";
 import { updateValidator } from "@/actions/validators";
 import { ValidatorType } from "@/db/types/validator";
 import { useDisclosure } from "@mantine/hooks";
@@ -36,6 +41,8 @@ import { UserType } from "@/db/types/user";
 import { ContractType } from "@/db/types/contract";
 import Services from "./Services";
 import { ServiceType } from "@/db/types/service";
+import { useModals } from "@mantine/modals";
+import AccountSelector from "@components/AccountSelector";
 
 export const ValidatorEditSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -56,11 +63,12 @@ export function ValidatorEdit({
   user: UserType;
 }) {
   const [loading, setLoading] = useState(false);
-  const [verified, setVerified] = useState(false);
   const [activeSection, setActiveSection] = useState("edit");
   const [opened, { open, close }] = useDisclosure(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
+  const accountModalRef = useRef<string | null>(null);
   const router = useRouter();
+  const modals = useModals();
 
   const form = useForm<Partial<ValidatorType>>({
     initialValues: {
@@ -90,55 +98,79 @@ export function ValidatorEdit({
       userId: validator.userId,
     });
 
-    const signedData: Partial<SignedDataType> = await sign(message);
-    if (signedData?.error) {
+    const web3Accounts = await getWeb3Accounts();
+    if (web3Accounts?.error) {
+      // no extensions installed
       open();
-    } else if (signedData && "signature" in signedData) {
-      const { signature, account } = signedData;
+      return;
+    }
+    const accounts = web3Accounts?.data;
 
-      await updateValidator({
-        id: validator.id,
-        signature,
-        account,
-        verified: true,
+    if (accounts?.length === 1) {
+      await signAndVerify(accounts[0], message);
+    } else if (accounts && Array.isArray(accounts) && accounts.length > 1) {
+      accountModalRef.current = modals.openModal({
+        centered: true,
+        title: "Select an Account",
+        children: (
+          <AccountSelector
+            accounts={accounts}
+            onSelect={(selectedAccount) => {
+              handleVerifyAccount(selectedAccount, message);
+              modals.closeModal(accountModalRef?.current as string);
+            }}
+            onClose={() =>
+              modals.closeModal(accountModalRef?.current as string)
+            }
+          />
+        ),
       });
-      notifySuccess("Validator verification successful");
-      setTimeout(() => router.back(), 1000);
-    } else {
-      notifyError("Validator verification failed");
     }
   };
 
-  useEffect(() => {
-    const getSignature = async () => {
-      const { id, userId, signature } = validator;
-      const account = validator?.account;
+  const handleVerifyAccount = async (selectedAccount, message) => {
+    await signAndVerify(selectedAccount, message);
+  };
 
-      if (!account) return;
-
-      const message = JSON.stringify({
-        id,
-        userId,
-      });
-
-      const isValid = await isValidSignature(
-        message,
-        signature as `0x${string}`,
-        account?.address
-      );
-
-      setVerified(isValid);
-    };
-
-    getSignature();
-
-    if (!validator?.verified) {
-      getSignature();
+  const signAndVerify = async (selectedAccount, message) => {
+    const signedData: Partial<SignedDataType> = await sign(
+      message,
+      selectedAccount
+    );
+    if (signedData?.error) {
+      notifyError(signedData?.error);
+      return;
     }
-  }, [validator]);
+    if (signedData && "signature" in signedData) {
+      const { signature, account } = signedData;
 
-  const handleSectionChange = (section: string) => {
-    setActiveSection(section);
+      if (!validator?.verified) {
+        const isValid = await isValidSignature(
+          message,
+          signature as `0x${string}`,
+          account?.address! as string,
+          validator
+        );
+
+        if (typeof isValid === "object" && "error" in isValid) {
+          notifyError(isValid.error as string);
+          return;
+        }
+
+        if (isValid) {
+          await updateValidator({
+            id: validator.id,
+            // signature,
+            account,
+            verified: true,
+          });
+          notifySuccess("Validator verification successful");
+          setTimeout(() => router.back(), 1000);
+        }
+      }
+    } else {
+      notifyError("Validator verification failed");
+    }
   };
 
   return (
@@ -155,7 +187,7 @@ export function ValidatorEdit({
             browser wallet that works with Bittensor is required.
           </Text>
           <Space h="sm" />
-          <Text size="sm">Some browser wallets that work with Bittesnor:</Text>
+          <Text size="sm">Some browser wallets that work with Bittensor:</Text>
           <Space h="sm" />
           <List>
             <List.Item>
@@ -176,19 +208,19 @@ export function ValidatorEdit({
           active={activeSection === "edit"}
           label="Edit"
           leftSection={<IconCircleCheck size="1rem" stroke={1.5} />}
-          onClick={() => handleSectionChange("edit")}
+          onClick={() => setActiveSection("edit")}
         />
         <NavLink
           active={activeSection === "contracts"}
           label="Contracts"
           leftSection={<IconGauge size="1rem" stroke={1.5} />}
-          onClick={() => handleSectionChange("contracts")}
+          onClick={() => setActiveSection("contracts")}
         />
         <NavLink
           active={activeSection === "services"}
           label="Services"
           leftSection={<IconCircleOff size="1rem" stroke={1.5} />}
-          onClick={() => handleSectionChange("services")}
+          onClick={() => setActiveSection("services")}
         />
       </Box>
       <Box flex="1">
@@ -201,11 +233,50 @@ export function ValidatorEdit({
             title="Verify your Validator"
             icon={<IconAlertCircle />}
           >
-            <Text mb="md" size="sm">
-              Your validator has not been verified yet. Please verify your
-              validator so that customers can connect to your service.
+            <Text mb="md" size="md">
+              Your validator has not been verified yet. Verification is
+              essential to ensure that you own the Bittensor hotkey specified
+              during onboarding. This process helps us confirm your ownership
+              without transferring any crypto funds.
             </Text>
-            <Button onClick={handleVerify} variant="light">
+            <Text mb="md" size="md">
+              During onboarding, we captured your validator&apos;s Bittensor
+              hotkey. To verify ownership, we use the Polkadot Chrome extension.
+              This extension operates separately from our app and allows you to
+              add your hotkey using your mnemonic phrase (which only you, as the
+              owner, should know and keep private).
+            </Text>
+            <Text mb="md" size="md">
+              The Polkadot Chrome extension will return the hotkey, and we will
+              match it with the one specified during onboarding. If they match,
+              your validator will be considered verified, confirming that you
+              indeed own the hotkey.
+            </Text>
+            <Text mb="md" size="md">
+              This verification process is purely for ownership validation and
+              does not involve transferring any crypto funds.
+            </Text>
+            <Text mb="md" size="md">
+              <strong>Security Tips:</strong>
+            </Text>
+            <List withPadding>
+              <List.Item>
+                Always ensure the browser address is from a trusted URL, such as{" "}
+                <Anchor href="https://request.taoshi.io" target="_blank">
+                  https://request.taoshi.io
+                </Anchor>
+                .
+              </List.Item>
+              <List.Item>
+                Verify that the connection is secure by checking for HTTPS in
+                the browser address bar.
+              </List.Item>
+              <List.Item>
+                Be cautious of phishing attempts and do not enter your mnemonic
+                phrase or other sensitive information on untrusted sites.
+              </List.Item>
+            </List>
+            <Button onClick={handleVerify} variant="light" mt="md">
               Verify
             </Button>
           </Alert>
