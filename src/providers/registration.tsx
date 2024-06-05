@@ -8,7 +8,7 @@ export interface RegistrationData {
   appName: string;
   consumerApiUrl: string;
   consumerWalletAddress: string;
-  agreedToTos: boolean;
+  agreedToTOS: boolean;
   subnet: SubnetType | null;
   validator: (ValidatorType & { neuronInfo?: any }) | null;
   endpoint: EndpointType | null;
@@ -25,7 +25,7 @@ export const defaultContextValue: ProviderValue = {
     appName: "",
     consumerApiUrl: "",
     consumerWalletAddress: "",
-    agreedToTos: false,
+    agreedToTOS: false,
     subnet: null,
     validator: null,
     endpoint: null,

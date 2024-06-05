@@ -53,7 +53,7 @@ export const ValidatorSchema = z.object({
   subscriptions: z.lazy(() => z.array(SubscriptionSchema)).optional(),
   stats: StatsSchema.optional(),
   stripeEnabled: z.boolean().optional(),
-  // agreedToTos: z.boolean(),
+  agreedToTOS: z.boolean(),
   active: z.boolean().optional(),
   createdAt: z
     .date()

@@ -123,6 +123,7 @@ export const validators = pgTable("validators", {
   signature: varchar("signature"),
   verified: boolean("verified").notNull().default(false),
   stripeEnabled: boolean("stripe_enabled").default(false),
+  agreedToTOS: boolean("agreed_to_tos").default(false),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {
     precision: 6,
@@ -273,6 +274,7 @@ export const subscriptions = pgTable(
     consumerApiUrl: varchar("consumer_api_url").notNull(),
     consumerWalletAddress: varchar("consumer_wallet_address"),
     termsAccepted: boolean("terms_accepted").default(true).notNull(),
+    agreedToTOS: boolean("agreed_to_tos").default(false),
     active: boolean("active").default(false).notNull(),
     createdAt: timestamp("created_at", {
       precision: 6,

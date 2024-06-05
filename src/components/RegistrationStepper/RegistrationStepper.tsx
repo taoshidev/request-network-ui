@@ -115,7 +115,7 @@ export function RegistrationStepper({
 
     if (active === 0) {
       updateData({
-        agreedToTos: true,
+        agreedToTOS: true,
       });
     }
 
@@ -263,7 +263,7 @@ export function RegistrationStepper({
         appName,
         consumerApiUrl,
         consumerWalletAddress,
-        agreedToTos: registrationData.agreedToTos,
+        agreedToTOS: registrationData.agreedToTOS,
         serviceId: selectedService?.id,
         contractId: registrationData?.endpoint?.contract?.id,
       } as SubscriptionType);

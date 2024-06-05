@@ -35,7 +35,7 @@ export default function ValidatorStepper({
   contracts: ContractType[];
 }) {
   const stepInputs = [
-    ["agreedToTos"],
+    ["agreedToTOS"],
     ["name", "description", "hotkey", "baseApiUrl"],
     ["url", "contractId", "walletAddress"],
   ];
@@ -49,7 +49,7 @@ export default function ValidatorStepper({
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const form = useForm<Partial<ValidatorType & EndpointType>>({
     initialValues: {
-      agreedToTos: false,
+      agreedToTOS: false,
       name: "",
       description: "",
       userId: user?.id || "",
@@ -96,7 +96,7 @@ export default function ValidatorStepper({
 
   const nextStep = () => {
     if (active === 0) {
-      form.setValues({ agreedToTos: true });
+      form.setValues({ agreedToTOS: true });
     }
     if (valid()[active] && !hotkeyExists)
       setActive((current) => (current < 3 ? current + 1 : current));
@@ -146,6 +146,7 @@ export default function ValidatorStepper({
       userId,
       hotkey,
       baseApiUrl,
+      agreedToTOS,
       walletAddress,
       ...endpoint
     } = values;
@@ -155,6 +156,7 @@ export default function ValidatorStepper({
       userId,
       hotkey,
       baseApiUrl,
+      agreedToTOS: agreedToTOS as boolean
     };
 
     if (isCrypto) validator.walletAddress = walletAddress;
