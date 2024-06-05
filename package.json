@@ -47,7 +47,7 @@
     "@nivo/core": "^0.87.0",
     "@nivo/line": "^0.87.0",
     "@nivo/pie": "^0.87.0",
-    "@polkadot/api": "^10.12.2",
+    "@polkadot/api": "^12.6.2",
     "@polkadot/extension-dapp": "^0.46.6",
     "@polkadot/extension-inject": "^0.47.3",
     "@polkadot/keyring": "^12.6.2",

@@ -7,11 +7,14 @@ import { getContracts } from "@/actions/contracts";
 import { and, eq } from "drizzle-orm";
 import { contracts, services } from "@/db/schema";
 import { getServices } from "@/actions/services";
+import { checkForStripe } from "@/actions/payments";
 
 export default async function Page({ params }: any) {
   const { id } = params;
   const validator: ValidatorType = await getValidator({ id });
   const user = await getAuthUser();
+  const hasStripe = await checkForStripe(validator.id as string);
+
   if (!user) {
     redirect("/login");
   }
