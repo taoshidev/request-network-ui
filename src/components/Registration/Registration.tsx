@@ -27,6 +27,13 @@ export function Registration({
     <RegistrationProvider>
       <RegistrationStepper
         StepOne={
+          <iframe
+            className="w-full"
+            style={{ height: "100%", marginBottom: "100px" }}
+            src="/request-network-tos.pdf#view=FitH&navpanes=0"
+          />
+        }
+        StepTwo={
           validators?.length! > 0 ? (
             <Subnets subnets={subnets} mode="registration" />
           ) : (
@@ -42,7 +49,7 @@ export function Registration({
             </Alert>
           )
         }
-        StepTwo={
+        StepThree={
           validators?.length! > 0 ? (
             <SubnetValidator
               currentSubscriptions={currentSubscriptions}
@@ -63,10 +70,10 @@ export function Registration({
             </Alert>
           )
         }
-        StepThree={
+        StepFour={
           <ValidatorEndpoint currentSubscriptions={currentSubscriptions} />
         }
-        StepFour={<SubnetValidatorReview />}
+        StepFive={<SubnetValidatorReview />}
       />
     </RegistrationProvider>
   );

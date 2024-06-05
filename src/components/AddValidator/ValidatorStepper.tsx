@@ -270,12 +270,12 @@ export default function ValidatorStepper({
         </Stepper>
 
         <Group justify="center" mt="xl">
-          {active < 4 && (
+          {active < 5 && (
             <Button variant="default" onClick={prevStep} disabled={active < 1}>
               Back
             </Button>
           )}
-          {active < 3 && (
+          {active < 4 && (
             <Button
               disabled={hotkeyExists || (active === 1 && walletExists)}
               onClick={nextStep}
@@ -283,7 +283,7 @@ export default function ValidatorStepper({
               {active === 0 ? "Agree To Terms of Service" : "Next step"}
             </Button>
           )}
-          {active === 3 && (
+          {active === 4 && (
             <Button
               type="submit"
               loading={loading}
