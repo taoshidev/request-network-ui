@@ -34,7 +34,6 @@ export function ServiceFormInput({
     // eslint-disable-next-line
   }, [form.getInputProps("currencyType").value]);
 
-  // TODO: Filter out FIAT if not stripe
   const currencyTypes = [
     {
       value: "FIAT",
@@ -44,10 +43,12 @@ export function ServiceFormInput({
     {
       value: "USDC",
       label: "USDC",
+      disabled: !user?.user_metadata?.crypto_enabled,
     },
     {
       value: "USDT",
       label: "USDT",
+      disabled: !user?.user_metadata?.crypto_enabled,
     },
   ];
 

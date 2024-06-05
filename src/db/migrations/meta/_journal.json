@@ -421,6 +421,13 @@
       "when": 1717551056902,
       "tag": "0059_tranquil_menace",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "5",
+      "when": 1717561567401,
+      "tag": "0060_ambiguous_smasher",
+      "breakpoints": true
     }
   ]
 }
