@@ -414,6 +414,13 @@
       "when": 1717544939464,
       "tag": "0058_easy_golden_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "5",
+      "when": 1717551056902,
+      "tag": "0059_tranquil_menace",
+      "breakpoints": true
     }
   ]
 }

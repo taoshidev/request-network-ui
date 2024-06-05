@@ -35,6 +35,7 @@ export const users = authSchema.table("users", {
   onboarded: boolean("onboarded").notNull().default(false),
   onboardingStep: integer("onboardingStep").notNull().default(0),
   stripeEnabled: boolean("stripe_enabled").default(true),
+  cryptoEnabled: boolean("crypto_enabled").default(false),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -109,7 +110,7 @@ export const validators = pgTable("validators", {
   account: jsonb("account"),
   signature: varchar("signature"),
   verified: boolean("verified").notNull().default(false),
-  stripeEnabled: boolean("stripe_enabled").default(false),
+  stripeEnabled: boolean("stripe_enabled").default(true),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at").default(sql`now()`),
   updatedAt: timestamp("updated_at").default(sql`now()`),
