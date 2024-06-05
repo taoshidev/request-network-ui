@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import NextImage from "next/image";
 import {
@@ -11,29 +12,19 @@ import {
   Center,
   Box,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import {useDisclosure} from "@mantine/hooks";
 
-import { HeaderHome } from "./HeaderHome";
+import {HeaderHome} from "./HeaderHome";
+
+import zap from '@/assets/home/zap.png';
+import bgWhite from '@/assets/home/bg-white.png';
+import bgBlack from '@/assets/home/bg-black.png';
+import subnets from '@/assets/home/subnets2.png';
+
 
 import bg from "@/assets/hero-bg.svg";
 import logo from "@/assets/bittensor/logo.svg";
 import logoBlack from "@/assets/bittensor/logo-black.png";
-
-import homeImage from "@/assets/home-image.png";
-
-import subnet25 from "@/assets/bittensor/subnet-25.png";
-import subnet18 from "@/assets/bittensor/subnet-18.png";
-import subnet16 from "@/assets/bittensor/subnet-16.png";
-import subnet15 from "@/assets/bittensor/subnet-15.png";
-import subnet20 from "@/assets/bittensor/subnet-20.png";
-import subnet27 from "@/assets/bittensor/subnet-27.png";
-import subnet23 from "@/assets/bittensor/subnet-23.png";
-import subnet08 from "@/assets/bittensor/subnet-08.png";
-import subnet21 from "@/assets/bittensor/subnet-21.png";
-import subnet22 from "@/assets/bittensor/subnet-22.png";
-import subnet14 from "@/assets/bittensor/subnet-14.png";
-import subnet13 from "@/assets/bittensor/subnet-13.png";
-import React from "react";
 
 const questions = [
   {
@@ -215,8 +206,8 @@ const questions = [
   },
 ];
 
-export default function Home({ startLink }: { startLink: string }) {
-  const [opened, { toggle }] = useDisclosure(false);
+export default function Home({startLink}: { startLink: string }) {
+  const [opened, {toggle}] = useDisclosure(false);
 
   return (
     <div>
@@ -227,7 +218,7 @@ export default function Home({ startLink }: { startLink: string }) {
       )}
       <div className="bg-primary-500 mb-8">
         <div className="container max-w-5xl mx-auto mb-10">
-          <HeaderHome startLink={startLink} />
+          <HeaderHome startLink={startLink}/>
         </div>
         <div className="container mx-auto py-10 mb-10">
           <div className="flex justify-center items-center h-96">
@@ -247,9 +238,9 @@ export default function Home({ startLink }: { startLink: string }) {
                 request network
               </h1>
               <p className="max-w-3xl mx-auto mb-8">
-                Enter a new service and data exchange era with the Request
-                Network, a versatile platform built for the Bittensor ecosystem
-                and architected by Taoshi.
+                The Request Network, architected by Taoshi, is a digital marketplace for decentralized data and services
+                from the Bittensor network. Get started and become empowered with the tools to propel innovation,
+                research, and development across various domains - all through the power of Bittensor.
               </p>
               <div className="flex gap-4 justify-center items-center">
                 <Button
@@ -271,201 +262,155 @@ export default function Home({ startLink }: { startLink: string }) {
             </div>
           </div>
         </div>
-        <Image alt="Taoshi" component={NextImage} src={bg} />
+        <Image alt="Taoshi" component={NextImage} src={bg}/>
       </div>
-      <div className="container max-w-5xl mx-auto py-10 mb-32">
-        <div className="max-w-xl mx-auto text-center mb-16">
-          <h2 className="text-2xl font-bold mb-4">
-            Introducing the Request Network on Bittensor
-          </h2>
-          <p>All for one, one for all</p>
+
+      <div className='container max-w-5xl mx-auto py-10'>
+        <div className='text-center'>
+          <h3 className='text-2xl font-bold mb-4'>The Request Network Your Gateway to Decentralized Innovation</h3>
+          <p className="text-sm">
+            Enter a new era of decentralized innovation with the Request Network, a versatile platform designed for the
+            Bittensor ecosystem and crafted by Taoshi. This network serves as a hub for a dynamic marketplace,
+            seamlessly connecting users to the vast array of specialized services offered by each Bittensor subnet. From
+            intricate financial modeling to AI-driven solutions, the Request Network facilitates access to data,
+            computational tasks, complex analyses, and more. It equips users with the necessary tools to drive
+            innovation, research, and development across diverse domains, all while ensuring trust and efficiency
+            through stablecoin transactions. As a portal to decentralized services, the Request Network stands at the
+            forefront of a new paradigm, capable of integration with every subnet on the Bittensor network to harness
+            their collective capabilities and propel the ecosystem forward.
+          </p>
         </div>
-        <div className="flex gap-20 items-center">
-          <div className="flex-1 flex flex-col gap-10">
+      </div>
+
+      <div className='container max-w-5xl mx-auto py-10 my-10'>
+        <div>
+          <div className="flex gap-10 justify-start items-center">
             <div>
-              <p className="text-lg font-bold mb-2">
-                A Hub for Decentralized Services and Data
-              </p>
-              <p>
-                The Request Network heralds a new paradigm in decentralized
-                services, offering a dynamic marketplace that can be integrated
-                with every subnet built on Bittensor.
-              </p>
+              <div className="w-[300px] h-[300px] justify-center items-center">
+                <Image
+                  component={NextImage}
+                  w="auto"
+                  h={300}
+                  fit="contain"
+                  src={zap}
+                  alt="Hero Image"
+                />
+              </div>
             </div>
-            <div>
-              <p className="text-lg font-bold mb-2">
-                Harnessing the Collective Capabilities of Subnets
+
+            <div className='flex-1'>
+              <h3 className='text-2xl font-bold mb-4'>How it Works</h3>
+              <p className="text-sm mb-8">
+                The Request Network operates as a user-friendly marketplace where consumers can effortlessly purchase
+                data, services, and more directly from validators.
               </p>
-              <p>
-                The Request Network is your portal to the vast array of services
-                offered by Bittensor&apos;s subnets.
-              </p>
+              <p className='text-sm mb-8 font-bold'> To get started, follow the below steps:</p>
+
+              <ul className='mb-8 space-y-2 list-inside list-disc text-sm'>
+                <li>
+                  <span className='font-bold'>Registration: </span>
+                  <span>
+                    Begin by visiting the Request Network marketplace and completing the registration process to create your user account.
+                  </span>
+                </li>
+                <li>
+                  <span className='font-bold'>Subnet Selection: </span>
+                  <span>
+                    Browse the marketplace to choose from a diverse range of subnets, each offering specialized services and capabilities to meet your specific needs.
+                  </span>
+                </li>
+                <li>
+                  <span className='font-bold'>Validator Selection: </span>
+                  <span>
+                    Select a validator within your chosen subnet. Validators are the service providers who will fulfill your data or service requests.
+                  </span>
+                </li>
+                <li>
+                  <span className='font-bold text-sm'>Service Agreement: </span>
+                  <span>
+                    Review and agree to the terms of service with your chosen validator, which will detail the scope and specifications of the services or data provided.
+                  </span>
+                </li>
+                <li>
+                  <span className='font-bold'>Payment: </span>
+                  <span>
+                    Complete the transaction by making a payment in stablecoins, ensuring a secure and trustworthy exchange.
+                  </span>
+                </li>
+                <li>
+                  <span className='font-bold'>API Key Access: </span>
+                  <span>
+                    Once the payment is confirmed, you will receive an API key, granting you direct peer-to-peer access to the validator&apos;s services or data for your project or research needs.
+                  </span>
+                </li>
+              </ul>
+
+              <Button component='a' href='https://request.taoshi.io/login' target='_blank'>Request Network
+                Marketplace</Button>
+
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container max-w-5xl mx-auto py-10 my-10">
+        <div className="flex gap-10 items-center">
+          <div className="flex-1 flex flex-col">
             <div>
-              <p className="text-lg font-bold mb-2">
+              <p className="text-2xl font-bold mb-4">
                 Fostering a Synergistic Ecosystem
               </p>
-              <p>
-                At the heart of the Bittensor network is a thriving community
-                where every participant&apos;s contribution is valued. The
-                Request Network catalyzes a virtuous cycle within each subnet.
+              <p className='text-sm'>
+                At the heart of the Bittensor network is a thriving community where every participant&apos;s
+                contribution is
+                valued. The Request Network catalyzes a virtuous cycle within each subnet&apos;s ecosystem; miners are
+                incentivized to offer not only data but also their computational services, while consumers access a
+                comprehensive suite of resources to elevate their endeavors. Validators, a backbone of the Bittensor
+                ecosystem, are remunerated with 100% of the Request Network&apos;s transactional revenue, acknowledging
+                their
+                critical role in maintaining network integrity and facilitating its operations.
               </p>
             </div>
           </div>
-          <div className="flex-1 md:grid grid-cols-3 gap-10 hidden">
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet25}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet18}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet16}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet15}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet20}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet27}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet23}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet08}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet21}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet22}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet14}
-                w={48}
-                h="auto"
-              />
-            </div>
-            <div className="w-[100px] h-[100px] bg-gray-200 flex justify-center items-center">
-              <Image
-                className="mix-blend-darken"
-                alt="Taoshi"
-                component={NextImage}
-                src={subnet13}
-                w={48}
-                h="auto"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="container max-w-5xl mx-auto mb-32 md:bg-transparent bg-primary-500 text-white md:text-black p-4">
-        <div className="flex items-center gap-20">
-          <div className="flex-1 hidden md:block">
+          <div className="w-[300px] justify-center items-center">
             <Image
-              className="mix-blend-darken"
               alt="Taoshi"
               component={NextImage}
-              src={homeImage}
-              w={462}
+              src={subnets}
+              w={300}
               h="auto"
+              fit='contain'
             />
-          </div>
-          <div className="flex-1">
-            <p className="text-lg mb-2 font-bold">
-              Ready to Integrate your Subnet with the Request Network?
-            </p>
-            <p>
-              Any subnet within the Bittensor ecosystem can democratize their
-              highly valuable intelligence through the Request Network. If you’d
-              like to integrate your subnet with the Request Network, please
-              reach out to our team via email at{" "}
-              <a href="mailto:support@taoshi.io">support@taoshi.io</a> - we’ll
-              work with you to complete the integration as soon as possible!
-            </p>
           </div>
         </div>
       </div>
-      <div className="container max-w-5xl mx-auto mb-32">
+
+      <div className="bg-[#282828]">
+        <div
+          className='bg-cover bg-no-repeat bg-top'
+          style={{backgroundImage: `url('${bgBlack.src}')`}}
+        >
+          <div className="container max-w-5xl mx-auto sm:py-24 py-20">
+            <div className="flex justify-center items-center">
+              <div className="text-center text-white">
+                <h3 className="font-bold text-2xl mb-4">Ready to Integrate your Subnet with the Request Network?</h3>
+                <p className='text-sm'>
+                  Any subnet within the Bittensor ecosystem can democratize their
+                  highly valuable intelligence through the Request Network. If you’d
+                  like to integrate your subnet with the Request Network, please
+                  reach out to our team via email at{" "}
+                  <a className='text-[#E56F38]' href="mailto:support@taoshi.io">support@taoshi.io</a> - we’ll
+                  work with you to complete the integration as soon as possible!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container max-w-5xl mx-auto sm:py-24 py-20">
         <div className="max-w-2xl mx-auto text-center mb-16">
-          <h2 className="text-2xl font-bold mb-4">Do You Have Questions?</h2>
+          <h2 className="text-2xl font-bold">Do You Have Questions?</h2>
           <p>We Have The Answers</p>
         </div>
         <Accordion
@@ -481,7 +426,7 @@ export default function Home({ startLink }: { startLink: string }) {
               value={item.value}
             >
               <Accordion.Control>
-                <Text className="text-sm font-bold">{item.value}</Text>
+                <Text className="text-sm">{item.value}</Text>
               </Accordion.Control>
               <Accordion.Panel className="text-sm">
                 {item.description}
@@ -498,7 +443,7 @@ export default function Home({ startLink }: { startLink: string }) {
                 value={item.value}
               >
                 <Accordion.Control>
-                  <Text className="text-sm font-bold">{item.value}</Text>
+                  <Text className="text-sm">{item.value}</Text>
                 </Accordion.Control>
                 <Accordion.Panel className="text-sm">
                   {item.description}
@@ -513,38 +458,57 @@ export default function Home({ startLink }: { startLink: string }) {
           </Button>
         </Center>
       </div>
-      <div className="container mx-auto mb-10">
-        <div className="flex justify-center items-center h-96">
-          <div className="text-center text-black">
-            <Image
-              className="mx-auto mb-4 mix-blend-darken"
-              alt="Taoshi"
-              component={NextImage}
-              src={logoBlack}
-              w={32}
-              h="auto"
-            />
-            <h1 className="text-5xl font-bold mb-8">experience seamless</h1>
-            <div className="flex gap-4 justify-center">
-              <Button
-                component={Link}
-                href={startLink}
-                data-cy="btn-dashboard-2"
-              >
-                <Text size="sm">Get Started</Text>
-              </Button>
-              <Button
-                variant="transparent"
-                component={Link}
-                href="/documentation"
-                data-cy="btn-documentation-2"
-              >
-                <Text size="sm">Documentation</Text>
-              </Button>
+
+
+      <div>
+        <div
+          className='bg-cover bg-no-repeat bg-top'
+          style={{backgroundImage: `url('${bgWhite.src}')`}}
+        >
+          <div className="container max-w-5xl mx-auto sm:py-24 py-20">
+            <div className="flex justify-center items-center">
+              <div className="text-center text-black">
+                <Image
+                  className="mx-auto mb-4"
+                  alt="Taoshi"
+                  component={NextImage}
+                  src={logoBlack}
+                  w={32}
+                  h="auto"
+                />
+                <h3 className="font-bold text-2xl mb-4">How is Taoshi Using the Request Network?</h3>
+                <p className='text-sm mb-10'>
+                  Taoshi is using the Request Network to help fulfill our vision
+                  to empower traders and institutions by democratizing access to
+                  trading signals from our Proprietary Trading Network (PTN). It
+                  will act as a digital marketplace where you can select and
+                  purchase the most relevant, world-class trading signals for your
+                  strategies, tailored to your preferred asset classes and
+                  currency pairs.
+                </p>
+                <div className="flex gap-4 justify-center">
+                  <Button
+                    component={Link}
+                    href={startLink}
+                    data-cy="btn-dashboard-2"
+                  >
+                    <Text size="sm">Get Started</Text>
+                  </Button>
+                  <Button
+                    variant="transparent"
+                    component={Link}
+                    href="/documentation"
+                    data-cy="btn-documentation-2"
+                  >
+                    <Text size="sm">Documentation</Text>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
       <div className="bg-primary-500">
         <div className="container max-w-5xl mx-auto py-8 text-white">
           <p className="mb-12 font-adlam-display font-bold text-3xl">taoshi</p>
