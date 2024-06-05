@@ -40,4 +40,5 @@ jobs:
           NEXT_PUBLIC_NODE_ENV: testing
       - run: npm install -g pnpm
       - run: pnpm install
-      - run: pnpm db:push
+      - run: pnpm db:migrate
+      - run: pnpm db:seed

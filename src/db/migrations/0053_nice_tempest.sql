@@ -1,1 +1,0 @@
-ALTER TABLE "validators" ADD COLUMN "bittensor_uid" integer;

@@ -1,1 +1,0 @@
-ALTER TABLE "endpoints" ALTER COLUMN "price" SET DATA TYPE varchar;
