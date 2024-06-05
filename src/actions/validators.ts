@@ -30,7 +30,7 @@ export const getValidator = async ({ id }: { id: string }) => {
     where: (validators, { eq }) => eq(validators.id, id as string),
   });
   if (!res) throw new Error(`Validator with ID ${id} not found.`);
-  return filterData(res, ["hotkey"]);
+  return res;
 };
 
 export const updateValidator = async ({

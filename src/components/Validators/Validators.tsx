@@ -37,7 +37,7 @@ export function Validators({
   }
 
   return (
-    <Box className="mb-16">
+    <Box>
       <KeyModal
         apiKey={keys.apiKey}
         apiSecret={keys?.apiSecret}
@@ -49,8 +49,8 @@ export function Validators({
 
       <Box>
         <Group className="justify-between">
-          <Title order={2}>Validators</Title>
-          <Button onClick={addValidator}>Add Your Validator</Button>
+          <Title order={2} className="mb-5">Validators</Title>
+          <Button onClick={addValidator}>Add New Validator</Button>
         </Group>
         {validators && !isEmpty(validators) && (
           <Table highlightOnHover striped>
