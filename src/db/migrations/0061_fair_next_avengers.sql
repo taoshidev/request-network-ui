@@ -1,0 +1,1 @@
+ALTER TABLE "services" ALTER COLUMN "expires" SET DATA TYPE timestamp (6) with time zone;

@@ -428,6 +428,13 @@
       "when": 1717561567401,
       "tag": "0060_ambiguous_smasher",
       "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "5",
+      "when": 1717562058409,
+      "tag": "0061_fair_next_avengers",
+      "breakpoints": true
     }
   ]
 }

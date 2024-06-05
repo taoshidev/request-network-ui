@@ -193,7 +193,10 @@ export const services = pgTable("services", {
   price: varchar("price"),
   currencyType: currencyTypeEnum("currency_type").notNull().default("USDC"),
   limit: integer("limit").default(10),
-  expires: timestamp("expires"),
+  expires: timestamp("expires", {
+    precision: 6,
+    withTimezone: true,
+  }),
   refillRate: integer("refill_rate").default(1),
   refillInterval: integer("refill_interval").default(1000),
   remaining: integer("remaining").default(1000),
