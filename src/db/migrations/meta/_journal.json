@@ -407,6 +407,13 @@
       "when": 1717294760643,
       "tag": "0057_fearless_blue_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "5",
+      "when": 1717544939464,
+      "tag": "0058_easy_golden_guardian",
+      "breakpoints": true
     }
   ]
 }

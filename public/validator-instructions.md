@@ -12,6 +12,7 @@
 8. [Bittensor Validator Registration](#bittensor-validator-registration)
 9. [Cron Server and Event Listener](#cron-server)
 10. [Sentry Error Tracking](#sentry-error-tracking)
+11: [Stripe Payments](#stripe-payments)
 11. [Example License](#example-license)
 
 ## Introduction
@@ -28,7 +29,7 @@ The technology stack for ReqNet involves several modern and robust technologies 
 - **Containerization**: Docker for creating, deploying, and running applications in isolated environments.
 - **Cloud Infrastructure**: AWS services including ECS (Elastic Container Service) and Elastic Beanstalk for deployment and scaling.
 - **Version Management Tools**: NVM to manage Node.js versions and PNPM for efficient package management.
-- **Blockchain Integration**: Infura API for interfacing with the Ethereum network and Uphold API for managing crypto transactions.
+- **Blockchain Integration**: Infura API for interfacing with the Ethereum network for managing crypto transactions.
 
 ## Setup Process
 
@@ -134,8 +135,6 @@ ReqNet acts as a proxy between the consumer API and the Validator Output Server 
    - **ReqNet Processing**: Receives and authenticates the consumer request, verifies ownership.
    - **ReqNet to OPS Request**: Sends a request to the OPS with a header key `x-taoshi-validator-request-key`.
    - **Communication Keys**: Uses `x-taoshi-request-key` for communication between ReqNet UI and Validator Node.
-
-This configuration ensures that your Validator Node can securely and efficiently handle requests, performing necessary conversions and transactions via the Uphold API, and managing data flow through designated endpoints.
 
 ### Endpoint Creation
 
@@ -250,7 +249,7 @@ Which should deploy your application to AWS EB under the account that's tied the
 
 ## Payment Integration
 
-Ensure consumer deposits are recorded and manage account activations based on payment status. Handle monthly fund checks and conversions through Uphold API.
+Ensure consumer deposits are recorded and manage account activations based on payment status.
 
 ## Bittensor Validator Registration
 
@@ -278,6 +277,24 @@ For detailed instructions, refer to the [Bittensor Documentation](https://docs.b
 ## Cron Server
 
 ReqNet uses Infura Provider to listen to crypto transfer event and initiates cron services to track payment activities to enable / disable services. For a single instance of ReqNet, there's nothing to do other than to deploy ReqNet to your preferred infrastructure. However, if deployed using a multi instance / autoscaling infrastructure like AWS EB or AWS ECS, an additional cron_handler server is needed. To spin up the cron server (Cron Handler), set the environment variable ROLE to "cron_handler" and deploy ReqNet as a separate instance.
+
+## Stripe Payments
+
+To enable Stripe payments you will need to create a Stripe account and store the credentials in your .env file.
+
+1. Go to [stripe.com](https://stripe.com) to register and create credentials.
+2. Complete registration to enable use account out of test mode and accept live payments.
+3. Store the credentials in your env file.
+
+```
+    STRIPE_HOST=https://stripe.com <-- Needed to whitelist stripe website for webhooks.
+    ENROLLMENT_SECRET=<random string to be used for jwt token verification>
+    STRIPE_PUBLIC_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    STRIPE_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    STRIPE_WEBHOOKS_KEY=<Webhooks key required for payment status updates>
+```
+
+4. For Stipe subscriptions to be updated properly webhooks need to be set up. A webhook configuration will need to be set up on the Stripe website that points at "https://\<location of your api server\>/webhooks.
 
 ## Sentry Error Tracking
 
