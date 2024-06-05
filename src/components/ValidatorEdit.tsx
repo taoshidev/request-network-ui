@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Alert,
   NavLink,
@@ -43,6 +43,7 @@ import Services from "./Services";
 import { ServiceType } from "@/db/types/service";
 import { useModals } from "@mantine/modals";
 import AccountSelector from "@components/AccountSelector";
+import { isCrypto } from "@/utils/is-crypto";
 
 export const ValidatorEditSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -63,6 +64,7 @@ export function ValidatorEdit({
   user: UserType;
 }) {
   const [loading, setLoading] = useState(false);
+  const [isCryptoService, setIsCryptoService] = useState(false);
   const [activeSection, setActiveSection] = useState("edit");
   const [opened, { open, close }] = useDisclosure(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
@@ -77,6 +79,11 @@ export function ValidatorEdit({
     },
     validate: zodResolver(ValidatorEditSchema),
   });
+
+  useEffect(() => {
+    const crypto = isCrypto(services);
+    setIsCryptoService(crypto);
+  }, [services, validator]);
 
   const onSubmit = async (values) => {
     setLoading(true);
@@ -173,6 +180,32 @@ export function ValidatorEdit({
     }
   };
 
+  const handleFiatVerify = async () => {
+    // TODO: we might want to add stripe_setup_completed in database
+    if (!user?.user_metadata?.stripe_enabled) {
+      notifyError(
+        "Validator verification failed! Stripe is not enabled for your account."
+      );
+      return;
+    }
+    if (!validator?.stripeEnabled) {
+      notifyError(
+        "Validator verification failed! Stripe is not enabled for this validator."
+      );
+      return;
+    }
+    if (!validator?.verified) {
+      await updateValidator({
+        id: validator.id,
+        verified: true,
+      });
+      notifySuccess("Validator verification successful.");
+      setTimeout(() => router.back(), 1000);
+    } else {
+      notifyError("Validator verification failed.");
+    }
+  };
+
   return (
     <Group align="flex-start">
       <Modal
@@ -224,63 +257,83 @@ export function ValidatorEdit({
         />
       </Box>
       <Box flex="1">
-        {!validator.verified && (
-          <Alert
-            className="shadow-sm"
-            mb="xl"
-            color="orange"
-            radius="0"
-            title="Verify your Validator"
-            icon={<IconAlertCircle />}
-          >
-            <Text mb="md" size="md">
-              Your validator has not been verified yet. Verification is
-              essential to ensure that you own the Bittensor hotkey specified
-              during onboarding. This process helps us confirm your ownership
-              without transferring any crypto funds.
-            </Text>
-            <Text mb="md" size="md">
-              During onboarding, we captured your validator&apos;s Bittensor
-              hotkey. To verify ownership, we use the Polkadot Chrome extension.
-              This extension operates separately from our app and allows you to
-              add your hotkey using your mnemonic phrase (which only you, as the
-              owner, should know and keep private).
-            </Text>
-            <Text mb="md" size="md">
-              The Polkadot Chrome extension will return the hotkey, and we will
-              match it with the one specified during onboarding. If they match,
-              your validator will be considered verified, confirming that you
-              indeed own the hotkey.
-            </Text>
-            <Text mb="md" size="md">
-              This verification process is purely for ownership validation and
-              does not involve transferring any crypto funds.
-            </Text>
-            <Text mb="md" size="md">
-              <strong>Security Tips:</strong>
-            </Text>
-            <List withPadding>
-              <List.Item>
-                Always ensure the browser address is from a trusted URL, such as{" "}
-                <Anchor href="https://request.taoshi.io" target="_blank">
-                  https://request.taoshi.io
-                </Anchor>
-                .
-              </List.Item>
-              <List.Item>
-                Verify that the connection is secure by checking for HTTPS in
-                the browser address bar.
-              </List.Item>
-              <List.Item>
-                Be cautious of phishing attempts and do not enter your mnemonic
-                phrase or other sensitive information on untrusted sites.
-              </List.Item>
-            </List>
-            <Button onClick={handleVerify} variant="light" mt="md">
-              Verify
-            </Button>
-          </Alert>
-        )}
+        {!validator.verified &&
+          (isCryptoService ? (
+            <Alert
+              className="shadow-sm"
+              mb="xl"
+              color="orange"
+              radius="0"
+              title="Verify your Validator"
+              icon={<IconAlertCircle />}
+            >
+              <Text mb="md" size="md">
+                Your validator has not been verified yet. Verification is
+                essential to ensure that you own the Bittensor hotkey specified
+                during onboarding. This process helps us confirm your ownership
+                without transferring any crypto funds.
+              </Text>
+              <Text mb="md" size="md">
+                During onboarding, we captured your validator&apos;s Bittensor
+                hotkey. To verify ownership, we use the Polkadot Chrome
+                extension. This extension operates separately from our app and
+                allows you to add your hotkey using your mnemonic phrase (which
+                only you, as the owner, should know and keep private).
+              </Text>
+              <Text mb="md" size="md">
+                The Polkadot Chrome extension will return the hotkey, and we
+                will match it with the one specified during onboarding. If they
+                match, your validator will be considered verified, confirming
+                that you indeed own the hotkey.
+              </Text>
+              <Text mb="md" size="md">
+                This verification process is purely for ownership validation and
+                does not involve transferring any crypto funds.
+              </Text>
+              <Text mb="md" size="md">
+                <strong>Security Tips:</strong>
+              </Text>
+              <List withPadding>
+                <List.Item>
+                  Always ensure the browser address is from a trusted URL, such
+                  as{" "}
+                  <Anchor href="https://request.taoshi.io" target="_blank">
+                    https://request.taoshi.io
+                  </Anchor>
+                </List.Item>
+                <List.Item>
+                  Verify that the connection is secure by checking for HTTPS in
+                  the browser address bar.
+                </List.Item>
+                <List.Item>
+                  Be cautious of phishing attempts and do not enter your
+                  mnemonic phrase or other sensitive information on untrusted
+                  sites.
+                </List.Item>
+              </List>
+              <Button onClick={handleVerify} variant="light" mt="md">
+                Verify Hotkey Ownership
+              </Button>
+            </Alert>
+          ) : (
+            <Alert
+              className="shadow-sm"
+              mb="xl"
+              color="orange"
+              radius="0"
+              title="Verify your Validator"
+              icon={<IconAlertCircle />}
+            >
+              <Text mb="md" size="md">
+                Your validator has not been verified yet. Verification is
+                essential to ensure that your stripe integration is working
+                properly.
+              </Text>
+              <Button onClick={handleFiatVerify} variant="light" mt="md">
+                Verify Integration
+              </Button>
+            </Alert>
+          ))}
         {activeSection === "edit" && (
           <>
             <Title mb="lg" order={2}>
