@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import { getContracts } from "@/actions/contracts";
 import { contracts } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
+import { SubnetType } from "@/db/types/subnet";
 
 export default async function AddValidatorPage() {
   const user = await getAuthUser();
@@ -27,9 +28,8 @@ export default async function AddValidatorPage() {
   return (
     <ValidatorStepper
       user={user}
-      subnets={subnets}
+      subnets={subnets as SubnetType[]}
       contracts={userContracts}
-      expires={expires}
     />
   );
 }

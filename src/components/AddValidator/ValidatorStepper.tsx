@@ -19,6 +19,9 @@ import { Logo } from "../Logo";
 import { fetchValidatorInfo } from "@/actions/bittensor/bittensor";
 import { getSubnet } from "@/actions/subnets";
 import { sendNotification } from "@/actions/notifications";
+import { UserType } from "@/db/types/user";
+import { SubnetType } from "@/db/types/subnet";
+import { ContractType } from "@/db/types/contract";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -26,7 +29,10 @@ export default function ValidatorStepper({
   user,
   subnets,
   contracts,
-  expires,
+}: {
+  user: UserType;
+  subnets: SubnetType[];
+  contracts: ContractType[];
 }) {
   const stepInputs = [
     ["name", "description", "hotkey", "baseApiUrl"],
@@ -103,26 +109,31 @@ export default function ValidatorStepper({
   };
   const onSubmit = async (values: Partial<ValidatorType & EndpointType>) => {
     setLoading(true);
-    const subnetId = values.subnetId as string;
-    const subnet = await getSubnet({ id: subnetId });
-    const { netUid } = subnet;
-    const neuronInfo = await fetchValidatorInfo(
-      netUid as number,
-      form?.values?.hotkey as string
-    );
-    if (!neuronInfo) {
-      notifyError(
-        `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on mainnet in subnet: ${netUid}. Please check validity of your hotkey in previous step.`
+    let bittensorUid: number = 0,
+      bittensorNetUid: number = 0;
+    const isCrypto = user?.user_metadata?.crypto_enabled && form.values?.hotkey;
+    if (isCrypto) {
+      const subnetId = values.subnetId as string;
+      const subnet = await getSubnet({ id: subnetId });
+      const { netUid } = subnet;
+      const neuronInfo = await fetchValidatorInfo(
+        netUid as number,
+        form?.values?.hotkey as string
       );
-      if (process.env.NEXT_PUBLIC_NODE_ENV === "production") {
-        return;
+      if (!neuronInfo) {
+        notifyError(
+          `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on mainnet in subnet: ${netUid}. Please check validity of your hotkey in previous step.`
+        );
+        if (process.env.NEXT_PUBLIC_NODE_ENV === "production") {
+          return;
+        }
+        notifyInfo(
+          `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on testnet. Some features may not work correctly.`
+        );
       }
-      notifyInfo(
-        `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on testnet. Some features may not work correctly.`
-      );
+      bittensorUid = neuronInfo?.uid || 0;
+      bittensorNetUid = neuronInfo?.netuid || 0;
     }
-    const bittensorUid = neuronInfo?.uid || 0;
-    const bittensorNetUid = neuronInfo?.netuid || 0;
 
     const {
       name,
@@ -133,14 +144,15 @@ export default function ValidatorStepper({
       walletAddress,
       ...endpoint
     } = values;
-    const validator = {
+    const validator: ValidatorType = {
       name,
       description,
       userId,
       hotkey,
       baseApiUrl,
-      walletAddress,
     };
+
+    if (isCrypto) validator.walletAddress = walletAddress;
 
     if (bittensorUid) {
       Object.assign(validator, { bittensorUid });
@@ -205,10 +217,9 @@ export default function ValidatorStepper({
           >
             <CreateValidator
               form={form}
-              subnets={subnets}
-              onComplete={handleRegistrationComplete}
+              user={user}
               hotkeyExists={hotkeyExists}
-              setHotkeyExists={setHotkeyExists}
+              onHotkeyExists={setHotkeyExists}
             />
           </Stepper.Step>
           <Stepper.Step
