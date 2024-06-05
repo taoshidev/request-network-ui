@@ -49,6 +49,16 @@ export async function updateUser(formData: any) {
   return { data, error };
 }
 
+export async function updateUserById(formData: any) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase.auth.admin.updateUserById(
+    formData.id,
+    formData
+  );
+  return { data, error };
+}
+
 export async function signout() {
   const supabase = createClient();
 

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq, asc, exists } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { validators } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
