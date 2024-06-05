@@ -1,1 +1,0 @@
-ALTER TABLE "endpoints" DROP COLUMN IF EXISTS "currency_type";
