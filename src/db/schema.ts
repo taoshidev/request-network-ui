@@ -122,7 +122,7 @@ export const validators = pgTable("validators", {
   account: jsonb("account"),
   signature: varchar("signature"),
   verified: boolean("verified").notNull().default(false),
-  stripeEnabled: boolean("stripe_enabled").default(true),
+  stripeEnabled: boolean("stripe_enabled").default(false),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {
     precision: 6,

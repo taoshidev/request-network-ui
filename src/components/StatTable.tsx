@@ -16,7 +16,7 @@ export function StatTable({
   caption?: string;
 }) {
   return (
-    <Box my="xl">
+    <Box>
       {(caption.length === 0 || (Array.isArray(data) && data?.length > 0)) && (
         <Fragment>
           {data && (
