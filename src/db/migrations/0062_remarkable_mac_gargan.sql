@@ -1,0 +1,1 @@
+ALTER TABLE "validators" ALTER COLUMN "stripe_enabled" SET DEFAULT false;
