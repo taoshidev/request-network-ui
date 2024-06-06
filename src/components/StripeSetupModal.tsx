@@ -70,7 +70,7 @@ export default function StripeSetupModal({
           {stripe?.newEndpointCreated && (
             <Text className="">
               A new Stripe webhook has been created. Go to your Stripe account
-              and find your new webhook. Set the webhook's secret in your
+              and find your new webhook. Set the webhook&apos;s secret in your
               servers .env file.
             </Text>
           )}
@@ -97,9 +97,6 @@ export default function StripeSetupModal({
             </Group>
           </Grid.Col>
         )}
-        {/* <Text className="">
-          Webhook Secret Key: {stripe?.webhookEndpoint?.secret}
-        </Text> */}
       </Grid>
       <Divider />
       <Box className="flex justify-end mt-4">
