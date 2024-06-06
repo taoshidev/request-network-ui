@@ -35,6 +35,7 @@ export default function ValidatorStepper({
   contracts: ContractType[];
 }) {
   const stepInputs = [
+    ["agreedToTOS"],
     ["name", "description", "hotkey", "baseApiUrl"],
     ["url", "contractId", "walletAddress"],
   ];
@@ -48,6 +49,7 @@ export default function ValidatorStepper({
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const form = useForm<Partial<ValidatorType & EndpointType>>({
     initialValues: {
+      agreedToTOS: false,
       name: "",
       description: "",
       userId: user?.id || "",
@@ -93,8 +95,11 @@ export default function ValidatorStepper({
   };
 
   const nextStep = () => {
+    if (active === 0) {
+      form.setValues({ agreedToTOS: true });
+    }
     if (valid()[active] && !hotkeyExists)
-      setActive((current) => (current < 3 ? current + 1 : current));
+      setActive((current) => (current < 4 ? current + 1 : current));
     else form.setErrors(_pick(getErrors(), stepInputs[active]));
   };
   const prevStep = () => {
@@ -141,6 +146,7 @@ export default function ValidatorStepper({
       userId,
       hotkey,
       baseApiUrl,
+      agreedToTOS,
       walletAddress,
       ...endpoint
     } = values;
@@ -150,6 +156,7 @@ export default function ValidatorStepper({
       userId,
       hotkey,
       baseApiUrl,
+      agreedToTOS: agreedToTOS as boolean,
     };
 
     if (isCrypto) validator.walletAddress = walletAddress;
@@ -164,7 +171,7 @@ export default function ValidatorStepper({
 
     try {
       const res = await createValidatorEndpoint(validator, endpoint);
-
+      console.log(res);
       if ((res as DatabaseResponseType)?.error)
         throw new Error((res as DatabaseResponseType)?.message);
       const { validator: newValidator } = res as {
@@ -212,6 +219,16 @@ export default function ValidatorStepper({
       >
         <Stepper active={active} onStepClick={setStep}>
           <Stepper.Step
+            label="Terms of Service"
+            description="Agree to terms of service"
+          >
+            <iframe
+              className="w-full"
+              style={{ height: "100%", marginBottom: "100px" }}
+              src="/request-network-tos.pdf#view=FitH&navpanes=0"
+            />
+          </Stepper.Step>
+          <Stepper.Step
             label="Create Validator"
             description="Validator information"
           >
@@ -255,20 +272,20 @@ export default function ValidatorStepper({
         </Stepper>
 
         <Group justify="center" mt="xl">
-          {active < 3 && (
+          {active < 4 && (
             <Button variant="default" onClick={prevStep} disabled={active < 1}>
               Back
             </Button>
           )}
-          {active < 2 && (
+          {active < 3 && (
             <Button
               disabled={hotkeyExists || (active === 1 && walletExists)}
               onClick={nextStep}
             >
-              Next step
+              {active === 0 ? "Agree To Terms of Service" : "Next step"}
             </Button>
           )}
-          {active === 2 && (
+          {active === 3 && (
             <Button
               type="submit"
               loading={loading}

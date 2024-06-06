@@ -57,16 +57,17 @@ const domainSchema = z.object({
     .optional(),
 });
 
-const REGISTRATION_STEPS = 4;
+const REGISTRATION_STEPS = 5;
 interface StepText {
   [key: string | number]: string;
 }
 
 const stepText: StepText = {
-  "0": "Validator Selection",
-  "1": "Endpoint Selection",
-  "2": "Review Selection",
-  "3": "Continue",
+  "0": "Agree to Terms of Service",
+  "1": "Validator Selection",
+  "2": "Endpoint Selection",
+  "3": "Review Selection",
+  "4": "Continue",
 };
 
 export function RegistrationStepper({
@@ -74,11 +75,13 @@ export function RegistrationStepper({
   StepTwo,
   StepThree,
   StepFour,
+  StepFive,
 }: {
   StepOne: React.ReactElement;
   StepTwo: React.ReactElement;
   StepThree: React.ReactElement;
   StepFour: React.ReactElement;
+  StepFive: React.ReactElement;
 }) {
   const [keys, setKeys] = useState<{
     apiKey: string;
@@ -109,6 +112,13 @@ export function RegistrationStepper({
     setActive((current) =>
       current < REGISTRATION_STEPS ? current + 1 : current
     );
+
+    if (active === 0) {
+      updateData({
+        agreedToTOS: true,
+      });
+    }
+
     updateData({
       currentStep: active < REGISTRATION_STEPS ? active + 1 : active,
     });
@@ -139,12 +149,12 @@ export function RegistrationStepper({
 
   useEffect(() => {
     const disabled =
-      active >= 3
+      active === 0 || active >= 4
         ? false
         : active >= REGISTRATION_STEPS - 1 ||
-          (active === 0 && !registrationData?.subnet) ||
-          (active === 1 && !registrationData?.validator) ||
-          (active === 2 && !registrationData?.endpoint);
+          (active === 1 && !registrationData?.subnet) ||
+          (active === 2 && !registrationData?.validator) ||
+          (active === 3 && !registrationData?.endpoint);
     setDisabled(disabled);
   }, [registrationData, active]);
 
@@ -253,6 +263,7 @@ export function RegistrationStepper({
         appName,
         consumerApiUrl,
         consumerWalletAddress,
+        agreedToTOS: registrationData.agreedToTOS,
         serviceId: selectedService?.id,
         contractId: registrationData?.endpoint?.contract?.id,
       } as SubscriptionType);
@@ -383,20 +394,27 @@ export function RegistrationStepper({
         onStepClick={() => handleStepChange(active)}
         allowNextStepsSelect={false}
       >
-        <Stepper.Step label="Subnet" description="Browse a Subnet">
+        <Stepper.Step
+          label="Terms of Service"
+          description="Agree to terms of service"
+        >
           <StepOne.type {...StepOne.props} />
         </Stepper.Step>
 
-        <Stepper.Step label="Validator" description="Select a Validator">
+        <Stepper.Step label="Subnet" description="Browse a Subnet">
           <StepTwo.type {...StepTwo.props} />
         </Stepper.Step>
 
-        <Stepper.Step label="Endpoint" description="Select an Endpoint">
+        <Stepper.Step label="Validator" description="Select a Validator">
           <StepThree.type {...StepThree.props} />
         </Stepper.Step>
 
-        <Stepper.Step label="Review" description="Review Selection">
+        <Stepper.Step label="Endpoint" description="Select an Endpoint">
           <StepFour.type {...StepFour.props} />
+        </Stepper.Step>
+
+        <Stepper.Step label="Review" description="Review Selection">
+          <StepFive.type {...StepFive.props} />
         </Stepper.Step>
 
         <Stepper.Completed>

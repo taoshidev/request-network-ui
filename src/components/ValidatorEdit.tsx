@@ -44,6 +44,8 @@ import { ServiceType } from "@/db/types/service";
 import { useModals } from "@mantine/modals";
 import AccountSelector from "@components/AccountSelector";
 import { isCrypto } from "@/utils/is-crypto";
+import { checkForStripe } from "@/actions/payments";
+import StripeSetupModal from "./StripeSetupModal";
 
 export const ValidatorEditSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -67,10 +69,13 @@ export function ValidatorEdit({
   const [isCryptoService, setIsCryptoService] = useState(false);
   const [activeSection, setActiveSection] = useState("edit");
   const [opened, { open, close }] = useDisclosure(false);
+  const [stripeOpened, { open: stripeOpen, close: stripeClose }] =
+    useDisclosure(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const accountModalRef = useRef<string | null>(null);
   const router = useRouter();
   const modals = useModals();
+  const [stripe, setStripe] = useState(null);
 
   const form = useForm<Partial<ValidatorType>>({
     initialValues: {
@@ -180,7 +185,7 @@ export function ValidatorEdit({
     }
   };
 
-  const handleFiatVerify = async () => {
+  const handleCheckStripe = async () => {
     // TODO: we might want to add stripe_setup_completed in database
     if (!user?.user_metadata?.stripe_enabled) {
       notifyError(
@@ -188,16 +193,19 @@ export function ValidatorEdit({
       );
       return;
     }
-    if (!validator?.stripeEnabled) {
-      notifyError(
-        "Validator verification failed! Stripe is not enabled for this validator."
-      );
-      return;
-    }
+
+    const stripe = await checkForStripe(validator.id as string);
+    setStripe(stripe);
+    stripeOpen();
+    console.log(stripe);
+  };
+
+  const handleFiatVerify = async () => {
     if (!validator?.verified) {
       await updateValidator({
         id: validator.id,
         verified: true,
+        stripeEnabled: true
       });
       notifySuccess("Validator verification successful.");
       setTimeout(() => router.back(), 1000);
@@ -236,6 +244,14 @@ export function ValidatorEdit({
           </List>
         </Box>
       </Modal>
+
+      <StripeSetupModal
+        opened={stripeOpened}
+        stripe={stripe}
+        onCancel={stripeClose}
+        onConfirm={handleFiatVerify}
+      />
+
       <Box>
         <NavLink
           active={activeSection === "edit"}
@@ -329,7 +345,7 @@ export function ValidatorEdit({
                 essential to ensure that your stripe integration is working
                 properly.
               </Text>
-              <Button onClick={handleFiatVerify} variant="light" mt="md">
+              <Button onClick={handleCheckStripe} variant="light" mt="md">
                 Verify Integration
               </Button>
             </Alert>

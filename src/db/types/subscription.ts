@@ -34,6 +34,7 @@ export const SubscriptionSchema = z.object({
   }),
   active: z.boolean().optional(),
   termsAccepted: z.boolean(),
+  agreedToTOS: z.boolean(),
   createdAt: z
     .date()
     .transform((arg) => new Date(arg))
