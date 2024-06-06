@@ -20,7 +20,7 @@ export default function StripeSetupModal({
       !stripe?.stripeKey ||
       !stripe?.stripePublicKey ||
       !stripe?.stripeWebhooksKey;
-    const liveDisabled = !stripe?.webhook || !stripe.webhookEvents;
+    const liveDisabled = !stripe?.webhooks || !stripe.webhookEvents;
     setDisabled(stripe?.isHttps ? liveDisabled : localDisabled);
   }, [stripe]);
 
@@ -76,10 +76,7 @@ export default function StripeSetupModal({
         <Button variant="outline" onClick={onCancel} className="mr-2">
           Cancel
         </Button>
-        <Button
-          onClick={onConfirm}
-          disabled={disabled}
-        >
+        <Button onClick={onConfirm} disabled={disabled}>
           Verify Integration
         </Button>
       </Box>

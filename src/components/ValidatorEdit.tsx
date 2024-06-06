@@ -197,7 +197,6 @@ export function ValidatorEdit({
     const stripe = await checkForStripe(validator.id as string);
     setStripe(stripe);
     stripeOpen();
-    console.log(stripe);
   };
 
   const handleFiatVerify = async () => {
