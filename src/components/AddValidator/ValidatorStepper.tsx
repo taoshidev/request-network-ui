@@ -99,7 +99,7 @@ export default function ValidatorStepper({
       form.setValues({ agreedToTOS: true });
     }
     if (valid()[active] && !hotkeyExists)
-      setActive((current) => (current < 3 ? current + 1 : current));
+      setActive((current) => (current < 4 ? current + 1 : current));
     else form.setErrors(_pick(getErrors(), stepInputs[active]));
   };
   const prevStep = () => {
@@ -156,7 +156,7 @@ export default function ValidatorStepper({
       userId,
       hotkey,
       baseApiUrl,
-      agreedToTOS: agreedToTOS as boolean
+      agreedToTOS: agreedToTOS as boolean,
     };
 
     if (isCrypto) validator.walletAddress = walletAddress;
@@ -171,7 +171,7 @@ export default function ValidatorStepper({
 
     try {
       const res = await createValidatorEndpoint(validator, endpoint);
-
+      console.log(res);
       if ((res as DatabaseResponseType)?.error)
         throw new Error((res as DatabaseResponseType)?.message);
       const { validator: newValidator } = res as {
@@ -272,12 +272,12 @@ export default function ValidatorStepper({
         </Stepper>
 
         <Group justify="center" mt="xl">
-          {active < 5 && (
+          {active < 4 && (
             <Button variant="default" onClick={prevStep} disabled={active < 1}>
               Back
             </Button>
           )}
-          {active < 4 && (
+          {active < 3 && (
             <Button
               disabled={hotkeyExists || (active === 1 && walletExists)}
               onClick={nextStep}
@@ -285,7 +285,7 @@ export default function ValidatorStepper({
               {active === 0 ? "Agree To Terms of Service" : "Next step"}
             </Button>
           )}
-          {active === 4 && (
+          {active === 3 && (
             <Button
               type="submit"
               loading={loading}
