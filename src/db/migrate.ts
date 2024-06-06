@@ -17,7 +17,6 @@ export const runMigration = async (): Promise<void> => {
     console.log("Migrations completed successfully.");
   } catch (error) {
     console.log(`Failed to execute migrations: ${error}`);
-    process.exit(1);
   }
 };
 
