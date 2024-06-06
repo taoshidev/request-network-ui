@@ -6,10 +6,7 @@ import {
   Box,
   Title,
   Grid,
-  CopyButton,
-  Group,
 } from "@mantine/core";
-import { IconCopy } from "@tabler/icons-react";
 
 export default function StripeSetupModal({
   opened,
@@ -75,28 +72,6 @@ export default function StripeSetupModal({
             </Text>
           )}
         </Grid.Col>
-        {stripe?.webhookEndpoint?.secret && (
-          <Grid.Col span={12}>
-            <Group gap="xs">
-              <Text className="font-bold text-center">
-                Stripe Webhook Secret Key
-              </Text>
-              <CopyButton value={stripe?.webhookEndpoint?.secret}>
-                {({ copied, copy }) => (
-                  <Button
-                    leftSection={<IconCopy size={14} />}
-                    variant="subtle"
-                    onClick={copy}
-                  >
-                    <Text size="sm" fw="bold">
-                      {copied ? "Copied Key" : stripe?.webhookEndpoint?.secret}
-                    </Text>
-                  </Button>
-                )}
-              </CopyButton>
-            </Group>
-          </Grid.Col>
-        )}
       </Grid>
       <Divider />
       <Box className="flex justify-end mt-4">
