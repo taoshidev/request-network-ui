@@ -1,12 +1,5 @@
-import {
-  Modal,
-  Button,
-  Text,
-  Divider,
-  Box,
-  Title,
-  Grid,
-} from "@mantine/core";
+import { Modal, Button, Text, Divider, Box, Title, Grid } from "@mantine/core";
+import { useEffect, useState } from "react";
 
 export default function StripeSetupModal({
   opened,
@@ -19,12 +12,17 @@ export default function StripeSetupModal({
   onConfirm?: () => void;
   onCancel: () => void;
 }) {
-  const localDisabled =
-    !stripe?.enrollmentSecret ||
-    !stripe?.stripeKey ||
-    !stripe?.stripePublicKey ||
-    !stripe?.stripeWebhooksKey;
-  const liveDisabled = !stripe?.webhook || !stripe.webhookEvents;
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    const localDisabled =
+      !stripe?.enrollmentSecret ||
+      !stripe?.stripeKey ||
+      !stripe?.stripePublicKey ||
+      !stripe?.stripeWebhooksKey;
+    const liveDisabled = !stripe?.webhook || !stripe.webhookEvents;
+    setDisabled(stripe?.isHttps ? liveDisabled : localDisabled);
+  }, [stripe]);
 
   return (
     <Modal
@@ -80,7 +78,7 @@ export default function StripeSetupModal({
         </Button>
         <Button
           onClick={onConfirm}
-          disabled={stripe?.isHttps ? liveDisabled : localDisabled}
+          disabled={disabled}
         >
           Verify Integration
         </Button>
