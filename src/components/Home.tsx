@@ -83,23 +83,9 @@ const questions = [
     value: "What types of data can be accessed through the Request Network?",
     description: (
       <Text className="text-sm">
-        The Request Network enables access to a wide range of data types from
-        various Bittensor subnets, such as financial data, healthcare data,
-        consumer insights, supply chain data, environmental data, and more. It
-        also supports specialized data from subnets focused on large language
-        models and decentralized storage.
-      </Text>
-    ),
-  },
-  {
-    value:
-      "How does the Request Network ensure secure and efficient data transfer between validators and consumers?",
-    description: (
-      <Text className="text-sm">
-        The Request Network provides the necessary infrastructure and protocols
-        to facilitate secure and reliable data transfer. It ensures the
-        integrity and confidentiality of the data exchanged, maintaining trust
-        between validators and consumers.
+        The Request Network enables access to a wide range of data types from various Bittensor subnets. These include
+        financial data, healthcare data, consumer insights, supply chain data, environmental data, and more. It also
+        supports specialized data from subnets focused on large language models and decentralized storage.
       </Text>
     ),
   },
@@ -108,9 +94,7 @@ const questions = [
       "What payment methods are supported by the Request Network for data exchange transactions?",
     description: (
       <Text className="text-sm">
-        The Request Network primarily uses stablecoins as the means of payment
-        for data exchange transactions. Stablecoins provide stability and
-        mitigate the risks associated with cryptocurrency volatility.
+        The Request Network uses Stripe to securely facilitate payments between consumers and validators.
       </Text>
     ),
   },
@@ -119,10 +103,8 @@ const questions = [
       "How can validators customize their offerings and pricing models on the Request Network?",
     description: (
       <Text className="text-sm">
-        Validators have the flexibility to customize their offerings and pricing
-        models based on factors such as data quality, uniqueness, and demand.
-        They can specialize in certain types of data or cater to specific
-        industries or use cases.
+        Validators enjoy the flexibility to tailor their offerings and pricing models according to factors like data
+        quality, uniqueness, and demand.
       </Text>
     ),
   },
@@ -131,10 +113,8 @@ const questions = [
       "What incentives do validators have to participate in the Request Network?",
     description: (
       <Text className="text-sm">
-        Validators are incentivized to participate in the Request Network as
-        they can earn stablecoins as payment for their services. They gain
-        access to a broader consumer base and have the opportunity to monetize
-        their data assets.
+        Validators are incentivized to participate in the Request Network as it grants them access to a wider consumer
+        base and the opportunity to monetize their data assets and other services.
       </Text>
     ),
   },
@@ -143,11 +123,9 @@ const questions = [
       "Can the Request Network be customized or modified by validators or subnet owners?",
     description: (
       <Text className="text-sm">
-        Yes, the Request Network is designed to be an open-source platform,
-        allowing for flexibility and customization. Validators and subnet owners
-        have the freedom to tailor the platform to their specific needs, such as
-        spinning up or down services, setting pricing models, and integrating
-        additional features or functionalities.
+        Yes, the Request Network is designed as an open-source platform, allowing for flexibility and customization.
+        Validators and subnet owners can tailor the platform to their specific needs by adjusting services, setting
+        pricing models, and integrating additional features or functionalities.
       </Text>
     ),
   },
@@ -156,12 +134,10 @@ const questions = [
       "What are some potential use cases for the data accessed through the Request Network?",
     description: (
       <Text className="text-sm">
-        Potential use cases for data accessed through the Request Network
-        include financial services, large language models, decentralized
-        storage, healthcare and life sciences, marketing and advertising, supply
-        chain and logistics, environmental monitoring, and more. The Request
-        Network enables data-driven innovation and value creation across diverse
-        industries and domains.
+        The Request Network enables data-driven innovation and value creation across diverse industries and domains.
+        Potential use cases for data accessed through the Request Network include financial services, large language
+        models, decentralized storage, healthcare and life sciences, marketing and advertising, supply chain and
+        logistics, environmental monitoring, and more.
       </Text>
     ),
   },
@@ -187,19 +163,6 @@ const questions = [
         include validator enhancements, such as improved UI/UX and performance
         tracking, subnet inheritance, consumer enhancements, and the
         incorporation of a reputation and feedback system.
-      </Text>
-    ),
-  },
-  {
-    value:
-      "How can the Bittensor community contribute to the success and growth of the Request Network?",
-    description: (
-      <Text className="text-sm">
-        The Bittensor community can contribute to the success and growth of the
-        Request Network by actively participating in the platform, providing
-        valuable data, and continuously improving the network. They can also
-        spread awareness about the Request Network, provide feedback, and
-        collaborate on future developments.
       </Text>
     ),
   },
@@ -238,8 +201,8 @@ export default function Home({startLink}: { startLink: string }) {
               </h1>
               <p className="max-w-3xl mx-auto mb-8">
                 The Request Network, architected by Taoshi, is a digital marketplace for decentralized data and services
-                from the Bittensor network. Get started and become empowered with the tools to propel innovation,
-                research, and development across various domains - all through the power of Bittensor.
+                from the Bittensor network. Get started and become empowered with tools to propel innovation, research,
+                and development across various domains—all through the power of Bittensor.
               </p>
               <div className="flex gap-4 justify-center items-center">
                 <Button
@@ -260,18 +223,20 @@ export default function Home({startLink}: { startLink: string }) {
       <div className='container max-w-5xl mx-auto py-10'>
 
         <div className='text-center'>
-          <h3 className='text-2xl font-adlam-display mb-4'>The Request Network: Your Gateway to Decentralized
+          <h3 className='text-2xl font-adlam-display mb-4'>The Request Network: Your Marketplace for Decentralized
             Innovation</h3>
-          <p className="text-sm">
-            Enter a new era of decentralized innovation with the Request Network, a versatile platform designed for the
-            Bittensor ecosystem and crafted by Taoshi. This network serves as a hub for a dynamic marketplace,
-            seamlessly connecting users to the vast array of specialized services offered by each Bittensor subnet. From
-            intricate financial modeling to AI-driven solutions, the Request Network facilitates access to data,
-            computational tasks, complex analyses, and more. It equips users with the necessary tools to drive
-            innovation, research, and development across diverse domains, all while ensuring trust and efficiency
-            through stablecoin transactions. As a portal to decentralized services, the Request Network stands at the
-            forefront of a new paradigm, capable of integration with every subnet on the Bittensor network to harness
-            their collective capabilities and propel the ecosystem forward.
+          <p className="text-sm mb-4">
+            Step into a new era of decentralized innovation with the Request Network. Crafted by Taoshi for the
+            Bittensor ecosystem, this versatile platform serves as a dynamic marketplace hub. Seamlessly connecting
+            users to specialized services within each Bittensor subnet, it enables access to a wide array of offerings,
+            including data, computational tasks, complex analyses, and more. The Request Network empowers users with
+            tools for innovation, research, and development across diverse domains, all while ensuring trust and
+            efficiency through Stripe payments.
+          </p>
+          <p className='text-sm'>
+            As a portal to decentralized services, the Request Network stands at the forefront of a new paradigm,
+            capable of integrating with every subnet on the Bittensor network to harness collective capabilities and
+            drive the ecosystem forward.
           </p>
         </div>
       </div>
@@ -280,7 +245,7 @@ export default function Home({startLink}: { startLink: string }) {
         <div className='text-center mb-12'>
           <h3 className='text-2xl font-adlam-display mb-4'>How it Works</h3>
           <p className="text-sm mb-8">
-            The Request Network operates as a user-friendly marketplace where consumers can <br/> effortlessly purchase
+            The Request Network functions as a user-friendly marketplace, <br/>enabling consumers to easily purchase
             data, services, and more directly from validators.
           </p>
           <p className='text-sm font-bold'> To get started, follow the below steps:</p>
@@ -304,37 +269,37 @@ export default function Home({startLink}: { startLink: string }) {
                 <li>
                   <span className='font-bold'>Registration: </span>
                   <span>
-                    Begin by visiting the Request Network marketplace and completing the registration process to create your user account.
+                    Visit the Request Network marketplace and register to create your user account.
                   </span>
                 </li>
                 <li>
                   <span className='font-bold'>Subnet Selection: </span>
                   <span>
-                    Browse the marketplace to choose from a diverse range of subnets, each offering specialized services and capabilities to meet your specific needs.
+                    Explore diverse subnets on the marketplace to find specialized services that meet your needs.
                   </span>
                 </li>
                 <li>
                   <span className='font-bold'>Validator Selection: </span>
                   <span>
-                    Select a validator within your chosen subnet. Validators are the service providers who will fulfill your data or service requests.
+                    Choose a validator within your selected subnet to fulfill your data and service requests.
                   </span>
                 </li>
                 <li>
                   <span className='font-bold text-sm'>Service Agreement: </span>
                   <span>
-                    Review and agree to the terms of service with your chosen validator, which will detail the scope and specifications of the services or data provided.
+                    Review and agree to the terms of service with your chosen validator.
                   </span>
                 </li>
                 <li>
                   <span className='font-bold'>Payment: </span>
                   <span>
-                    Complete the transaction by making a payment in stablecoins, ensuring a secure and trustworthy exchange.
+                    Securely complete the transaction using Stripe for a trustworthy exchange.
                   </span>
                 </li>
                 <li>
                   <span className='font-bold'>API Key Access: </span>
                   <span>
-                    Once the payment is confirmed, you will receive an API key, granting you direct peer-to-peer access to the validator&apos;s services or data for your project or research needs.
+                    Upon payment confirmation, receive an API key for direct access to the validator&apos;s services or data.
                   </span>
                 </li>
               </ul>
@@ -355,15 +320,13 @@ export default function Home({startLink}: { startLink: string }) {
                 Fostering a Synergistic Ecosystem
               </p>
               <p className='text-sm'>
-                At the heart of the Bittensor network is a thriving community where every participant&apos;s
-                contribution is
-                valued. The Request Network catalyzes a virtuous cycle within each subnet&apos;s ecosystem; miners are
-                incentivized to offer not only data but also their computational services, while consumers access a
-                comprehensive suite of resources to elevate their endeavors. Validators, a backbone of the Bittensor
-                ecosystem, are currently remunerated with 100% of the Request Network&apos;s transactional revenue,
-                acknowledging
-                their
-                critical role in maintaining network integrity and facilitating its operations.
+                Central to the Bittensor network is a vibrant community valuing each participant&apos;s contribution.
+                The
+                Request Network sparks a virtuous cycle within subnet ecosystems: miners are incentivized to offer data
+                and computational services, while consumers access a rich suite of resources to elevate their endeavors.
+                Validators, a backbone of the Bittensor ecosystem, currently receive 100% of the Request Network&apos;s
+                transactional revenue, recognizing their crucial role in maintaining network integrity and facilitating
+                its operations.
               </p>
             </div>
           </div>
@@ -392,8 +355,9 @@ export default function Home({startLink}: { startLink: string }) {
                   Network?</h3>
                 <p className='text-sm'>
                   Any subnet within the Bittensor ecosystem can democratize their
-                  highly valuable intelligence through the Request Network. <br/>Please reach out to our team via
-                  Discord - we’ll work with you to complete the integration as soon as possible!
+                  highly valuable intelligence through the Request Network. <br/>Connect with our team via
+                  Discord—we&apos;ll
+                  work with you to swiftly complete the integration process.
                 </p>
               </div>
               <Button component='a' href="https://discord.gg/pXa2Mnqu" target='_blank'>Join Our Discord</Button>
@@ -406,7 +370,7 @@ export default function Home({startLink}: { startLink: string }) {
       <div className="container max-w-5xl mx-auto sm:py-24 py-20">
         <div className="max-w-2xl mx-auto text-center mb-16">
           <h2 className="text-2xl font-adlam-display">Do You Have Questions?</h2>
-          <p>We Have The Answers</p>
+          <p>We Have the Answers</p>
         </div>
         <Accordion
           className="mb-4"
