@@ -15,6 +15,13 @@
       "when": 1717626506324,
       "tag": "0001_daffy_the_liberteens",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1717644271548,
+      "tag": "0002_military_celestials",
+      "breakpoints": true
     }
   ]
 }

@@ -57,14 +57,12 @@ export const contracts = pgTable("contracts", {
   content: text("content").notNull().default(""),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {
-    precision: 6,
     withTimezone: true,
   }).default(sql`now()`),
   updatedAt: timestamp("updated_at", {
-    precision: 6,
     withTimezone: true,
   }).default(sql`now()`),
-  deletedAt: timestamp("deleted_at", { precision: 6, withTimezone: true }),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
 export const contractUserRelations = relations(contracts, ({ many, one }) => ({
@@ -84,14 +82,12 @@ export const subnets = pgTable("subnets", {
   label: varchar("label"),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {
-    precision: 6,
     withTimezone: true,
   }).default(sql`now()`),
   updatedAt: timestamp("updated_at", {
-    precision: 6,
     withTimezone: true,
   }).default(sql`now()`),
-  deletedAt: timestamp("deleted_at", { precision: 6, withTimezone: true }),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
 export const subnetsRelations = relations(subnets, ({ many }) => ({
@@ -126,14 +122,12 @@ export const validators = pgTable("validators", {
   agreedToTOS: boolean("agreed_to_tos").default(false),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {
-    precision: 6,
     withTimezone: true,
   }).default(sql`now()`),
   updatedAt: timestamp("updated_at", {
-    precision: 6,
     withTimezone: true,
   }).default(sql`now()`),
-  deletedAt: timestamp("deleted_at", { precision: 6, withTimezone: true }),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
 export const validatorsRelations = relations(validators, ({ many, one }) => ({
@@ -165,14 +159,12 @@ export const endpoints = pgTable(
     enabled: boolean("enabled").default(true).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at", {
-      precision: 6,
       withTimezone: true,
     }).default(sql`now()`),
     updatedAt: timestamp("updated_at", {
-      precision: 6,
       withTimezone: true,
     }).default(sql`now()`),
-    deletedAt: timestamp("deleted_at", { precision: 6, withTimezone: true }),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => ({
     unique: unique().on(table.validatorId, table.url),
@@ -195,7 +187,6 @@ export const services = pgTable("services", {
   currencyType: currencyTypeEnum("currency_type").notNull().default("USDC"),
   limit: integer("limit").default(10),
   expires: timestamp("expires", {
-    precision: 6,
     withTimezone: true,
   }),
   refillRate: integer("refill_rate").default(1),
@@ -203,14 +194,12 @@ export const services = pgTable("services", {
   remaining: integer("remaining").default(1000),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {
-    precision: 6,
     withTimezone: true,
   }).default(sql`now()`),
   updatedAt: timestamp("updated_at", {
-    precision: 6,
     withTimezone: true,
   }).default(sql`now()`),
-  deletedAt: timestamp("deleted_at", { precision: 6, withTimezone: true }),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
 export const serviceRelations = relations(services, ({ many, one }) => ({
@@ -277,14 +266,12 @@ export const subscriptions = pgTable(
     agreedToTOS: boolean("agreed_to_tos").default(false),
     active: boolean("active").default(false).notNull(),
     createdAt: timestamp("created_at", {
-      precision: 6,
       withTimezone: true,
     }).default(sql`now()`),
     updatedAt: timestamp("updated_at", {
-      precision: 6,
       withTimezone: true,
     }).default(sql`now()`),
-    deletedAt: timestamp("deleted_at", { precision: 6, withTimezone: true }),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => ({
     unique: unique().on(table.endpointId, table.userId),
@@ -314,14 +301,12 @@ export const notifications = pgTable("notifications", {
   type: notificationTypeEnum("type").notNull().default("info"),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {
-    precision: 6,
     withTimezone: true,
   }).default(sql`now()`),
   updatedAt: timestamp("updated_at", {
-    precision: 6,
     withTimezone: true,
   }).default(sql`now()`),
-  deletedAt: timestamp("deleted_at", { precision: 6, withTimezone: true }),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
 export const userNotifications = pgTable(
@@ -344,14 +329,12 @@ export const userNotifications = pgTable(
     viewed: boolean("viewed").default(false).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at", {
-      precision: 6,
       withTimezone: true,
     }).default(sql`now()`),
     updatedAt: timestamp("updated_at", {
-      precision: 6,
       withTimezone: true,
     }).default(sql`now()`),
-    deletedAt: timestamp("deleted_at", { precision: 6, withTimezone: true }),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => ({
     unique: unique().on(table.userId, table.notificationId),
