@@ -396,7 +396,8 @@ export default function Home({startLink}: { startLink: string }) {
                   Discord - we’ll work with you to complete the integration as soon as possible!
                 </p>
               </div>
-              <Button>Join Our Discord</Button>
+              <Button component='a' href="https://discord.gg/pXa2Mnqu" target='_blank'>Join Our Discord</Button>
+
             </div>
           </div>
         </div>
