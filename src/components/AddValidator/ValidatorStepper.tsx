@@ -114,31 +114,27 @@ export default function ValidatorStepper({
   };
   const onSubmit = async (values: Partial<ValidatorType & EndpointType>) => {
     setLoading(true);
-    let bittensorUid: number = 0,
-      bittensorNetUid: number = 0;
-    const isCrypto = user?.user_metadata?.crypto_enabled && form.values?.hotkey;
-    if (isCrypto) {
-      const subnetId = values.subnetId as string;
-      const subnet = await getSubnet({ id: subnetId });
-      const { netUid } = subnet;
-      const neuronInfo = await fetchValidatorInfo(
-        netUid as number,
-        form?.values?.hotkey as string
+    const subnetId = values.subnetId as string;
+    const subnet = await getSubnet({ id: subnetId });
+    const { netUid } = subnet;
+    const neuronInfo = await fetchValidatorInfo(
+      netUid as number,
+      form?.values?.hotkey as string
+    );
+    if (!neuronInfo) {
+      notifyError(
+        `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on mainnet in subnet: ${netUid}. Please check validity of your hotkey in previous step.`
       );
-      if (!neuronInfo) {
-        notifyError(
-          `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on mainnet in subnet: ${netUid}. Please check validity of your hotkey in previous step.`
-        );
-        if (process.env.NEXT_PUBLIC_NODE_ENV === "production") {
-          return;
-        }
-        notifyInfo(
-          `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on testnet. Some features may not work correctly.`
-        );
+      if (process.env.NEXT_PUBLIC_NODE_ENV === "production") {
+        return;
       }
-      bittensorUid = neuronInfo?.uid || 0;
-      bittensorNetUid = neuronInfo?.netuid || 0;
+      notifyInfo(
+        `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on testnet. Some features may not work correctly.`
+      );
     }
+
+    const bittensorUid = neuronInfo?.uid || 0;
+    const bittensorNetUid = neuronInfo?.netuid || 0;
 
     const {
       name,
@@ -156,10 +152,9 @@ export default function ValidatorStepper({
       userId,
       hotkey,
       baseApiUrl,
+      walletAddress,
       agreedToTOS: agreedToTOS as boolean,
     };
-
-    if (isCrypto) validator.walletAddress = walletAddress;
 
     if (bittensorUid) {
       Object.assign(validator, { bittensorUid });

@@ -204,7 +204,7 @@ export function ValidatorEdit({
       await updateValidator({
         id: validator.id,
         verified: true,
-        stripeEnabled: true
+        stripeEnabled: true,
       });
       notifySuccess("Validator verification successful.");
       setTimeout(() => router.back(), 1000);
@@ -272,83 +272,87 @@ export function ValidatorEdit({
         />
       </Box>
       <Box flex="1">
-        {!validator.verified &&
-          (isCryptoService ? (
-            <Alert
-              className="shadow-sm"
-              mb="xl"
-              color="orange"
-              radius="0"
-              title="Verify your Validator"
-              icon={<IconAlertCircle />}
-            >
-              <Text mb="md" size="md">
-                Your validator has not been verified yet. Verification is
-                essential to ensure that you own the Bittensor hotkey specified
-                during onboarding. This process helps us confirm your ownership
-                without transferring any crypto funds.
-              </Text>
-              <Text mb="md" size="md">
-                During onboarding, we captured your validator&apos;s Bittensor
-                hotkey. To verify ownership, we use the Polkadot Chrome
-                extension. This extension operates separately from our app and
-                allows you to add your hotkey using your mnemonic phrase (which
-                only you, as the owner, should know and keep private).
-              </Text>
-              <Text mb="md" size="md">
-                The Polkadot Chrome extension will return the hotkey, and we
-                will match it with the one specified during onboarding. If they
-                match, your validator will be considered verified, confirming
-                that you indeed own the hotkey.
-              </Text>
-              <Text mb="md" size="md">
-                This verification process is purely for ownership validation and
-                does not involve transferring any crypto funds.
-              </Text>
-              <Text mb="md" size="md">
-                <strong>Security Tips:</strong>
-              </Text>
-              <List withPadding>
-                <List.Item>
-                  Always ensure the browser address is from a trusted URL, such
-                  as{" "}
+        {!validator.verified && (
+          <Alert
+            className="shadow-sm"
+            mb="xl"
+            color="orange"
+            radius="0"
+            title="Verify your Validator"
+            icon={<IconAlertCircle />}
+          >
+            <Text mb="md" size="md">
+              Your validator has not been verified yet. Verification is
+              essential to ensure that you own the Bittensor hotkey specified
+              during onboarding. This process helps us confirm your ownership by
+              using your signature on a message.
+            </Text>
+            <Text mb="md" size="md">
+              During onboarding, we captured your validator&apos;s Bittensor
+              hotkey. To verify ownership, we use the Polkadot Chrome extension.
+              This extension operates separately from our app and allows you to
+              add your hotkey.
+            </Text>
+            <Text mb="md" size="md">
+              The Polkadot Chrome extension will return the hotkey, and we will
+              match it with the one specified during onboarding. If they match,
+              your validator will be considered verified, confirming that you
+              indeed own the hotkey.
+            </Text>
+            <Text mb="md" size="md">
+              This verification process is purely for ownership validation and{" "}
+              <b>DOES NOT</b> involve transferring <b>ANY</b> crypto funds.
+            </Text>
+            <Text mb="md" size="md">
+              To understand what you should expect, please read through our
+              documentation which provides a thorough explanation of the
+              interactions using your hotkey.
+            </Text>
+            <Text mb="md" size="md">
+              <strong>Security Tips:</strong>
+            </Text>
+            <List withPadding>
+              <List.Item>
+                <b>
+                  Always ensure the browser address is from{" "}
                   <Anchor href="https://request.taoshi.io" target="_blank">
                     https://request.taoshi.io
                   </Anchor>
-                </List.Item>
-                <List.Item>
-                  Verify that the connection is secure by checking for HTTPS in
-                  the browser address bar.
-                </List.Item>
-                <List.Item>
-                  Be cautious of phishing attempts and do not enter your
-                  mnemonic phrase or other sensitive information on untrusted
-                  sites.
-                </List.Item>
-              </List>
-              <Button onClick={handleVerify} variant="light" mt="md">
-                Verify Hotkey Ownership
-              </Button>
-            </Alert>
-          ) : (
-            <Alert
-              className="shadow-sm"
-              mb="xl"
-              color="orange"
-              radius="0"
-              title="Verify your Validator"
-              icon={<IconAlertCircle />}
-            >
-              <Text mb="md" size="md">
-                Your validator has not been verified yet. Verification is
-                essential to ensure that your stripe integration is working
-                properly.
-              </Text>
-              <Button onClick={handleCheckStripe} variant="light" mt="md">
-                Verify Integration
-              </Button>
-            </Alert>
-          ))}
+                </b>
+              </List.Item>
+              <List.Item>
+                Verify that the connection is secure by checking for HTTPS in
+                the browser address bar.
+              </List.Item>
+              <List.Item>
+                Be cautious of phishing attempts and do not enter your mnemonic
+                phrase or other sensitive information on untrusted sites.
+              </List.Item>
+            </List>
+            <Button onClick={handleVerify} variant="light" mt="md">
+              Verify Hotkey Ownership
+            </Button>
+          </Alert>
+        )}
+        {!validator?.stripeEnabled && (
+          <Alert
+            className="shadow-sm"
+            mb="xl"
+            color="orange"
+            radius="0"
+            title="Verify Stripe Integration"
+            icon={<IconAlertCircle />}
+          >
+            <Text mb="md" size="md">
+              Your validator has not been verified yet. Verification is
+              essential to ensure that your stripe integration is working
+              properly.
+            </Text>
+            <Button onClick={handleCheckStripe} variant="light" mt="md">
+              Verify Integration
+            </Button>
+          </Alert>
+        )}
         {activeSection === "edit" && (
           <>
             <Title mb="lg" order={2}>
