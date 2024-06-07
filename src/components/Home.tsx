@@ -182,7 +182,7 @@ export default function Home({startLink}: { startLink: string }) {
         <div className="container max-w-5xl mx-auto mb-10">
           <HeaderHome startLink={startLink}/>
         </div>
-        <div className="container mx-auto py-10 mb-10">
+        <div className="container px-2 mx-auto py-10 mb-10">
           <div className="flex justify-center items-center h-96">
             <div className="text-center text-white">
               <Image
@@ -220,7 +220,7 @@ export default function Home({startLink}: { startLink: string }) {
         <Image alt="Taoshi" component={NextImage} src={bg}/>
       </div>
 
-      <div className='container max-w-5xl mx-auto py-10'>
+      <div className='container px-2 max-w-5xl mx-auto py-10'>
 
         <div className='text-center'>
           <h3 className='text-2xl font-adlam-display mb-4'>The Request Network: Your Marketplace for Decentralized
@@ -241,7 +241,7 @@ export default function Home({startLink}: { startLink: string }) {
         </div>
       </div>
 
-      <div className='container max-w-5xl mx-auto py-10 my-10'>
+      <div className='container px-2 max-w-5xl mx-auto py-10 my-10'>
         <div className='text-center mb-12'>
           <h3 className='text-2xl font-adlam-display mb-4'>How it Works</h3>
           <p className="text-sm mb-8">
@@ -312,7 +312,7 @@ export default function Home({startLink}: { startLink: string }) {
         </div>
       </div>
 
-      <div className="container max-w-5xl mx-auto py-10 my-10">
+      <div className="container px-2 max-w-5xl mx-auto py-10 my-10">
         <div className="flex gap-10 items-center">
           <div className="flex-1 flex flex-col">
             <div>
@@ -348,7 +348,7 @@ export default function Home({startLink}: { startLink: string }) {
           className='bg-cover bg-no-repeat bg-top'
           style={{backgroundImage: `url('${bgBlack.src}')`}}
         >
-          <div className="container max-w-5xl mx-auto sm:py-24 py-20">
+          <div className="container px-2 max-w-5xl mx-auto sm:py-24 py-20">
             <div className="flex flex-col justify-center items-center">
               <div className="text-center text-white mb-10">
                 <h3 className="font-adlam-display text-2xl mb-4">Ready to Integrate your Subnet with the Request
@@ -367,7 +367,7 @@ export default function Home({startLink}: { startLink: string }) {
         </div>
       </div>
 
-      <div className="container max-w-5xl mx-auto sm:py-24 py-20">
+      <div className="container px-2 max-w-5xl mx-auto sm:py-24 py-20">
         <div className="max-w-2xl mx-auto text-center mb-16">
           <h2 className="text-2xl font-adlam-display">Do You Have Questions?</h2>
           <p>We Have the Answers</p>
@@ -424,7 +424,7 @@ export default function Home({startLink}: { startLink: string }) {
           className='bg-cover bg-no-repeat bg-top'
           style={{backgroundImage: `url('${bgWhite.src}')`}}
         >
-          <div className="container max-w-5xl mx-auto sm:py-24 py-20">
+          <div className="container px-2 max-w-5xl mx-auto sm:py-24 py-20">
             <div className="flex justify-center items-center">
               <div className="text-center text-black">
                 <Image
@@ -461,7 +461,7 @@ export default function Home({startLink}: { startLink: string }) {
       </div>
 
       <div className="bg-primary-500">
-        <div className="container max-w-5xl mx-auto py-8 text-white">
+        <div className="container px-2 max-w-5xl mx-auto py-8 text-white">
           <p className="mb-12 font-adlam-display font-bold text-3xl">taoshi</p>
           <div className="flex">
             <div className="flex-1">
