@@ -253,19 +253,19 @@ export default function Home({startLink}: { startLink: string }) {
 
         <div className='mb-10'>
           <div className="flex gap-10 justify-start">
-            <div className="w-[300px] h-[300px]">
-              <Image
-                component={NextImage}
-                w="auto"
-                h={300}
-                fit="contain"
-                src={zap}
-                alt="Hero Image"
-              />
+            <div className='flex justify-center items-center'>
+              <div className="bg-cover bg-no-repeat bg-top p-4 w-[600px]"
+                   style={{backgroundImage: `url('${bgWhite.src}')`}}>
+                <video autoPlay loop muted className='border inline'>
+                  <source src="/mov/guide.mp4" type="video/mp4"/>
+                  Your browser does not support the video tag.
+                </video>
+              </div>
             </div>
 
+
             <div className='flex-1'>
-              <ul className='mb-8 space-y-3 list-inside list-disc text-sm'>
+              <ul className='mb-8 space-y-4 list-disc text-sm'>
                 <li>
                   <span className='font-bold'>Registration: </span>
                   <span>
