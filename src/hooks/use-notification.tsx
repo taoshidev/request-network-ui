@@ -25,7 +25,7 @@ export const NotificationTypes = Object.keys(NOTIFICATION_TYPE).reduce(
 
 export enum NOTIFICATION_COLOR {
   SUCCESS = "green",
-  WARNING = "yellow",
+  WARNING = "orange",
   DANGER = "red",
   INFO = "blue",
   BUG = "black",
