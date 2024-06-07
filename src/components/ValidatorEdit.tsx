@@ -200,12 +200,12 @@ export function ValidatorEdit({
   };
 
   const handleFiatVerify = async () => {
-    if (!validator?.verified) {
-      await updateValidator({
-        id: validator.id,
-        verified: true,
-        stripeEnabled: true,
-      });
+    const res = await updateValidator({
+      id: validator.id,
+      stripeEnabled: true,
+    });
+
+    if (!res?.error) {
       notifySuccess("Validator verification successful.");
       setTimeout(() => router.back(), 1000);
     } else {
