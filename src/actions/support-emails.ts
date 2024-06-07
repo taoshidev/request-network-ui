@@ -1,7 +1,7 @@
 "use server";
 
 import { sendEmail } from "./email";
-import { parseError, parseResult } from "@/db/error";
+import { parseError } from "@/db/error";
 import { db } from "@/db";
 import { SupportEmailType } from "@/db/types/support-email";
 import { UserType } from "@/db/types/user";
@@ -32,40 +32,42 @@ export const sendSupportEmail = async (
       },
     ];
 
-    sendEmail({
-      reply: from,
-      to,
-      html: notifyHTML({
-        title: supportEmail.subject,
-        content: supportEmail.content,
+    if (to) {
+      sendEmail({
+        reply: from,
+        to,
+        html: notifyHTML({
+          title: supportEmail.subject,
+          content: supportEmail.content,
+          attachments,
+        }),
+        text: notifyText({
+          title: supportEmail.subject,
+          content: supportEmail.content,
+        }),
         attachments,
-      }),
-      text: notifyText({
-        title: supportEmail.subject,
-        content: supportEmail.content,
-      }),
-      attachments,
-      subject: supportEmail.subject as string,
-    });
+        subject: supportEmail.subject as string,
+      });
 
-    sendEmail({
-      reply: to,
-      to: from,
-      html: notifyHTML({
-        title: `Support Email: ${supportEmail.subject}`,
-        content: `The following is your support email.\r\n\r\n${supportEmail.content}`,
+      sendEmail({
+        reply: to,
+        to: from,
+        html: notifyHTML({
+          title: `Support Email: ${supportEmail.subject}`,
+          content: `The following is your support email.\r\n\r\n${supportEmail.content}`,
+          attachments,
+        }),
+        text: notifyText({
+          title: `Support Email: ${supportEmail.subject}`,
+          content: `The following is your support email.\r\n\r\n${supportEmail.content}`,
+        }),
         attachments,
-      }),
-      text: notifyText({
-        title: `Support Email: ${supportEmail.subject}`,
-        content: `The following is your support email.\r\n\r\n${supportEmail.content}`,
-      }),
-      attachments,
-      subject: supportEmail.subject as string,
-    });
-
-    return parseResult({ sent: true });
+        subject: supportEmail.subject as string,
+      });
+      return { sent: true };
+    }
+    return { sent: false };
   } catch (error) {
-    return parseError(error);
+    return error;
   }
 };
