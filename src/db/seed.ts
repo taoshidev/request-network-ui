@@ -44,7 +44,7 @@ const seed = async () => {
     if (newSubnets.length) {
       await db
         .insert(subnets)
-        .values(newSubnets as SubnetType[])
+        .values(newSubnets as Partial<SubnetType>[])
         .onConflictDoNothing({ target: subnets.id });
     }
 
