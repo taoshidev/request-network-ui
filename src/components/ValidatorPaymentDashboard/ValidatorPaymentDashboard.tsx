@@ -303,7 +303,7 @@ export function ValidatorPaymentDashboard({
         <Text className="mb-10 text-sm truncate">
           Subnet:{" "}
           <span className="text-orange-500">
-            {Array.from(new Map(validator?.endpoints?.map((e) => e))).length}
+            {validator?.bittensorNetUid || "-"}
           </span>
         </Text>
         <Text className="mb-10 text-sm truncate">
