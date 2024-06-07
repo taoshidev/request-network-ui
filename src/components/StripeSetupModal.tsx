@@ -15,13 +15,13 @@ export default function StripeSetupModal({
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    const localDisabled =
+    const missingEnv =
       !stripe?.enrollmentSecret ||
       !stripe?.stripeKey ||
       !stripe?.stripePublicKey ||
       !stripe?.stripeWebhooksKey;
-    const liveDisabled = !stripe?.webhooks || !stripe.webhookEvents;
-    setDisabled(stripe?.isHttps ? liveDisabled : localDisabled);
+    const missingLiveWebhook = !stripe?.webhooks || !stripe.webhookEvents;
+    setDisabled(stripe?.isHttps ? missingLiveWebhook || missingEnv : missingEnv);
   }, [stripe]);
 
   return (
