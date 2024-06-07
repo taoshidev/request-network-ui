@@ -16,7 +16,6 @@ import {useDisclosure} from "@mantine/hooks";
 
 import {HeaderHome} from "./HeaderHome";
 
-import zap from '@/assets/home/zap.png';
 import bgWhite from '@/assets/home/bg-white.png';
 import bgBlack from '@/assets/home/bg-black.png';
 import subnets from '@/assets/home/subnets.png';
