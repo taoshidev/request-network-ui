@@ -9,8 +9,11 @@ import { useDisclosure } from "@mantine/hooks";
 import { ConfirmModal } from "./ConfirmModal";
 import { useRouter } from "next/navigation";
 import { sendSupportEmail } from "@/actions/support-emails";
+import { useNotification } from "@/hooks/use-notification";
 
 export default function SupportEmailForm({ user }) {
+  const { notifySuccess, notifyError } = useNotification();
+  const [sentMsg, setSentMsg] = useState("");
   const router = useRouter();
   const getDefaultValues = () => ({
     subject: "",
@@ -46,7 +49,19 @@ export default function SupportEmailForm({ user }) {
   };
 
   async function handleSendSupportEmail() {
-    await sendSupportEmail(form.values, user);
+    const resp: any = await sendSupportEmail(form.values, user);
+
+    const sentMessage = resp?.sent
+      ? "Email successfully sent."
+      : "Email could not be sent.";
+
+    setSentMsg(sentMessage);
+    if (resp?.sent) {
+      notifySuccess(sentMessage);
+    } else {
+      notifyError(sentMessage);
+    }
+
     setDone(true);
     setTimeout(() => show(), 0);
     close();
@@ -126,7 +141,7 @@ export default function SupportEmailForm({ user }) {
             readOnly
           />
           <Box className="pt-5 flex justify-between">
-            <Text className="inline-block">Support email sent.</Text>
+            <Text className="inline-block">{sentMsg}</Text>
             <Button variant="light" type="button" onClick={() => router.back()}>
               Done
             </Button>
