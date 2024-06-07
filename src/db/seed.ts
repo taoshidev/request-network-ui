@@ -36,8 +36,8 @@ const seed = async () => {
         newSubnets: [],
         existingSubnets: [],
       } as {
-        newSubnets: SubnetType[];
-        existingSubnets: SubnetType[];
+        newSubnets: Partial<SubnetType>[];
+        existingSubnets: Partial<SubnetType>[];
       }
     );
 
