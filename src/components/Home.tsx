@@ -254,7 +254,7 @@ export default function Home({startLink}: { startLink: string }) {
         <div className='mb-10'>
           <div className="flex gap-10 justify-start">
             <div className='flex justify-center items-center'>
-              <div className="bg-cover bg-no-repeat bg-top p-4 w-[600px]"
+              <div className="bg-cover bg-no-repeat bg-top p-4 w-[600px] hidden md:block"
                    style={{backgroundImage: `url('${bgWhite.src}')`}}>
                 <video autoPlay loop muted className='border inline'>
                   <source src="/mov/guide.mp4" type="video/mp4"/>
@@ -330,7 +330,7 @@ export default function Home({startLink}: { startLink: string }) {
               </p>
             </div>
           </div>
-          <div className="w-[300px] justify-center items-center">
+          <div className="hidden md:block w-[300px] justify-center items-center">
             <Image
               alt="Taoshi"
               component={NextImage}

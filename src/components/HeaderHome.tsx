@@ -15,7 +15,7 @@ export function HeaderHome({
 }) {
   return (
     <div className="h-full py-4">
-      <div className="flex-1 flex justify-between">
+      <div className="flex-1 flex md:justify-between justify-center">
         <Anchor
           className="mr-1 font-adlam-display font-bold text-2xl text-white"
           component={Link}
