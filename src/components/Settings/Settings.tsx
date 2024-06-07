@@ -239,10 +239,10 @@ export function Settings({
                 <Box>Pay for endpoint use using Stripe.</Box>
               )}
               <Group justify="flex-end" mt="lg">
-                <Button onClick={stripePayment} type="button" variant="default">
+                <Button onClick={stripePayment} type="button" variant={subscription?.active ? "light" : "orange"}>
                   {subscription?.active
-                    ? "Unsubscribe From Endpoint"
-                    : "Pay For Endpoint"}
+                    ? "Cancel Payment Subscription"
+                    : "Set up Payment Subscription"}
                 </Button>
               </Group>
             </Box>
