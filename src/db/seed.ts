@@ -49,11 +49,7 @@ const seed = async () => {
     }
 
     for (let existingSubnet of existingSubnets) {
-      const dbSubnets = await db
-        .select()
-        .from(subnets)
-        .where(eq(subnets.netUid, existingSubnet?.netUid as number));
-      const dbSubnet = dbSubnets?.[0];
+      const dbSubnet = dbSubnets.find(subnet => subnet.netUid === existingSubnet.netUid);
 
       if (dbSubnet && dbSubnet.label !== existingSubnet?.label) {
         await db
