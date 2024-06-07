@@ -351,7 +351,7 @@ export default function Home({startLink}: { startLink: string }) {
           <div className="container px-2 max-w-5xl mx-auto sm:py-24 py-20">
             <div className="flex flex-col justify-center items-center">
               <div className="text-center text-white mb-10">
-                <h3 className="font-adlam-display text-2xl mb-4">Ready to Integrate your Subnet with the Request
+                <h3 className="font-adlam-display text-2xl mb-4">Ready to Integrate Your Subnet with the Request
                   Network?</h3>
                 <p className='text-sm'>
                   Any subnet within the Bittensor ecosystem can democratize their
