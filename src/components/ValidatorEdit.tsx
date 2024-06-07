@@ -246,7 +246,8 @@ export function ValidatorEdit({
 
       <StripeSetupModal
         opened={stripeOpened}
-        stripe={stripe}
+        initialStripe={stripe}
+        validatorId={validator?.id as string}
         onCancel={stripeClose}
         onConfirm={handleFiatVerify}
       />
