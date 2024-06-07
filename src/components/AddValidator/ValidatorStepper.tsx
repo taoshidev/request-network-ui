@@ -217,11 +217,19 @@ export default function ValidatorStepper({
             label="Terms of Service"
             description="Agree to terms of service"
           >
-            <iframe
-              className="w-full"
+            <object
               style={{ height: "100%", marginBottom: "100px" }}
-              src="/request-network-terms-of-service.pdf#view=FitH&navpanes=0"
-            />
+              className="w-full"
+              type="application/pdf"
+              data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
+            >
+              <p>
+                File can not be displayed in browser.{" "}
+                <a href="/request-network-terms-of-service.pdf">
+                  Request Network Terms of Service
+                </a>
+              </p>
+            </object>
           </Stepper.Step>
           <Stepper.Step
             label="Create Validator"

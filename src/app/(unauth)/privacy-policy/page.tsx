@@ -17,11 +17,19 @@ export default async function TermsOfServicePage() {
       </div>
       <div className="container mx-auto px-2 lg:px-20">
         <div className={classes["markdown-container"]}>
-          <iframe
-            className="w-full"
+          <object
             style={{ height: "calc(100vh - 140px)", marginBottom: "25px" }}
-            src="/request-network-privacy-policy.pdf#view=FitH&navpanes=0"
-          />
+            className="w-full"
+            type="application/pdf"
+            data="/request-network-privacy-policy.pdf#view=FitH&scrollbar=0&navpanes=0"
+          >
+            <p>
+              File can not be displayed in browser.{" "}
+              <a href="/request-network-privacy-policy.pdf">
+                Request Network Privacy Policy
+              </a>
+            </p>
+          </object>
         </div>
       </div>
       <div className="bg-white">

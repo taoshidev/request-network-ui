@@ -27,11 +27,19 @@ export function Registration({
     <RegistrationProvider>
       <RegistrationStepper
         StepOne={
-          <iframe
-            className="w-full"
+          <object
             style={{ height: "100%", marginBottom: "100px" }}
-            src="/request-network-terms-of-service.pdf#view=FitH&navpanes=0"
-          />
+            className="w-full"
+            type="application/pdf"
+            data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
+          >
+            <p>
+              File can not be displayed in browser.{" "}
+              <a href="/request-network-terms-of-service.pdf">
+                Request Network Terms of Service
+              </a>
+            </p>
+          </object>
         }
         StepTwo={
           validators?.length! > 0 ? (
