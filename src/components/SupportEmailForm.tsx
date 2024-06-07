@@ -10,13 +10,14 @@ import { ConfirmModal } from "./ConfirmModal";
 import { useRouter } from "next/navigation";
 
 export default function SupportEmailForm() {
-  const router = useRouter()
+  const router = useRouter();
   const getDefaultValues = () => ({
     subject: "",
     content: "",
   });
   const [done, setDone] = useState(false);
-  const [opened, { open, close }] = useDisclosure();
+  const [visible, { open: show, close: hide }] = useDisclosure(false);
+  const [opened, { open, close }] = useDisclosure(false);
   const form = useForm<Partial<SupportEmailType>>({
     initialValues: getDefaultValues(),
     validate: zodResolver(
@@ -45,6 +46,7 @@ export default function SupportEmailForm() {
 
   function handleSendSupportEmail() {
     setDone(true);
+    setTimeout(() => show(), 0);
     close();
   }
 
@@ -59,10 +61,7 @@ export default function SupportEmailForm() {
             Ready to send your support email?
             <br />
             <br />
-            <span className="font-bold">
-              Subject:
-            </span>{" "}
-            {form.values.subject}
+            <span className="font-bold">Subject:</span> {form.values.subject}
             <br />
             <span className="font-bold">Content: </span>
             {form.values.content}`
@@ -96,40 +95,42 @@ export default function SupportEmailForm() {
           <Button type="submit">Send</Button>
         </Box>
       </Box>
-      <Box
-        component="form"
-        className={`w-full bg-stone-100 absolute top-0 pointer-events-none animate-opacity${
-          done ? " show" : ""
-        }`}
-        onSubmit={form.onSubmit(onSubmit)}
-      >
-        <TextInput
-          mb="md"
-          withAsterisk
-          label="Subject"
-          placeholder="Enter a support subject"
-          classNames={{ input: "bg-stone-100 border-transparent" }}
-          {...form.getInputProps("subject")}
-          readOnly
-        />
-        <Textarea
-          mb="md"
-          withAsterisk
-          label="Support Message"
-          placeholder="Enter your support questions here."
-          classNames={{ input: "bg-stone-100 border-transparent" }}
-          minRows={5}
-          {...form.getInputProps("content")}
-          autosize
-          readOnly
-        />
-        <Box className="pt-5 flex justify-between">
-          <Text className="inline-block">Support email sent.</Text>
-          <Button variant="light" type="button" onClick={() => router.back()}>
-            Done
-          </Button>
+      {done && (
+        <Box
+          component="form"
+          className={`w-full bg-stone-100 absolute top-0 pointer-events-none animate-opacity${
+            visible ? " show" : ""
+          }`}
+          onSubmit={form.onSubmit(onSubmit)}
+        >
+          <TextInput
+            mb="md"
+            withAsterisk
+            label="Subject"
+            placeholder="Enter a support subject"
+            classNames={{ input: "bg-stone-100 border-transparent" }}
+            {...form.getInputProps("subject")}
+            readOnly
+          />
+          <Textarea
+            mb="md"
+            withAsterisk
+            label="Support Message"
+            placeholder="Enter your support questions here."
+            classNames={{ input: "bg-stone-100 border-transparent" }}
+            minRows={5}
+            {...form.getInputProps("content")}
+            autosize
+            readOnly
+          />
+          <Box className="pt-5 flex justify-between">
+            <Text className="inline-block">Support email sent.</Text>
+            <Button variant="light" type="button" onClick={() => router.back()}>
+              Done
+            </Button>
+          </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 }

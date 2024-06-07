@@ -4,7 +4,7 @@ import { sendEmail } from "./email";
 import { parseError, parseResult } from "@/db/error";
 import { db } from "@/db";
 import { userNotifications, notifications } from "@/db/schema";
-import { NotificationType } from "@/db/types/notification";
+import { SupportEmailType } from "@/db/types/support-email";
 import { UserType } from "@/db/types/user";
 import { filterData } from "@/utils/sanitize";
 import { and, eq, isNull } from "drizzle-orm";
@@ -15,71 +15,61 @@ import { notifyHTML, notifyText } from "@/templates/notification";
 import { randomBytes } from "crypto";
 import { emailImg } from "@/templates/email-image";
 
-export const sendNotification = async (
-  notification: NotificationType,
-  options: { email: boolean } = { email: true }
+export const sendSupportEmail = async (
+  supportEmail: SupportEmailType,
+  user: UserType
 ) => {
   try {
-    if (notification?.userNotifications?.length) {
-      const res = await db
-        .insert(notifications)
-        .values(_omit(notification, ["fromUser"]) as any)
-        .returning();
+    const res = await db
+      .insert(supportEmails)
+      .returning();
 
-      const newNotification = res?.[0];
-      if (newNotification?.id) {
-        for (let user of (notification.userNotifications as any[]) || []) {
-          await db.insert(userNotifications).values({
-            notificationId: newNotification?.id as string,
-            userId: user.id,
-          });
-        }
-      }
+    const newNotification = res?.[0];
 
-      if (options.email) {
-        const toEmails = (
-          (notification.userNotifications as any)?.map(
-            (u: UserType) => u.email
-          ) || []
-        ).join();
-        const to =
-          (notification.userNotifications || []).length > 1
-            ? notification.fromUser
-            : toEmails;
-        const bcc =
-          (notification.userNotifications || []).length > 1
-            ? toEmails
-            : undefined;
+    const to = 'support@taoshi.io';
+    const from = user.email;
 
-        const attachments = [
-          {
-            filename: "request-network.png",
-            path: emailImg(),
-            cid: `${randomBytes(10).toString("hex")}-request-network.png`, //same cid value as in the html img src
-          },
-        ];
+    const attachments = [
+      {
+        filename: "request-network.png",
+        path: emailImg(),
+        cid: `${randomBytes(10).toString("hex")}-request-network.png`, //same cid value as in the html img src
+      },
+    ];
 
-        sendEmail({
-          reply: notification.fromUser,
-          to,
-          bcc,
-          html: notifyHTML({
-            title: notification.subject,
-            content: notification.content,
-            attachments,
-          }),
-          text: notifyText({
-            title: notification.subject,
-            content: notification.content,
-          }),
-          attachments,
-          subject: notification.subject as string,
-        });
-      }
+    sendEmail({
+      reply: from,
+      to,
+      html: notifyHTML({
+        title: supportEmail.subject,
+        content: supportEmail.content,
+        attachments,
+      }),
+      text: notifyText({
+        title: supportEmail.subject,
+        content: supportEmail.content,
+      }),
+      attachments,
+      subject: supportEmail.subject as string,
+    });
 
-      return parseResult(res);
-    }
-    return null;
+    sendEmail({
+      reply: to,
+      to: from,
+      html: notifyHTML({
+        title: `Support Email: ${supportEmail.subject}`,
+        content: `The following is your support email.\r\n\r\n${supportEmail.content}`,
+        attachments,
+      }),
+      text: notifyText({
+        title: `Support Email: ${supportEmail.subject}`,
+        content: `The following is your support email.\r\n\r\n${supportEmail.content}`,
+      }),
+      attachments,
+      subject: supportEmail.subject as string,
+    });
+
+    return parseResult(res);
   } catch (error) {
     return parseError(error);
   }
