@@ -2,13 +2,14 @@ import { HeaderHome } from "@/components/HeaderHome";
 import * as classes from "../documentation/page.module.css";
 import React from "react";
 import { getAuthUser } from "@/actions/auth";
+import Footer from "@/components/Footer";
 
 export default async function TermsOfServicePage() {
   const user = await getAuthUser();
   const startLink = user ? "/dashboard" : "/login";
 
   return (
-    <div>
+    <div className="bg-stone-100">
       <div className="bg-primary-500 mb-8">
         <div className="container max-w-5xl mx-auto mb-10">
           <HeaderHome startLink={startLink} />
@@ -22,6 +23,9 @@ export default async function TermsOfServicePage() {
             src="/request-network-privacy-policy.pdf#view=FitH&navpanes=0"
           />
         </div>
+      </div>
+      <div className="bg-white">
+        <Footer />
       </div>
     </div>
   );

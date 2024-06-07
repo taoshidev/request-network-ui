@@ -5,6 +5,7 @@ import path, { join } from "path";
 import * as classes from "../documentation/page.module.css";
 import React from "react";
 import { getAuthUser } from "@/actions/auth";
+import Footer from "@/components/Footer";
 
 export default async function ContributingPage() {
   const filePath = path.resolve('./public', 'contributing.md');
@@ -13,7 +14,7 @@ export default async function ContributingPage() {
   const startLink = user ? '/dashboard' : '/login';
 
   return (
-    <div>
+    <div className="bg-stone-100">
       <div className="bg-primary-500 mb-8">
         <div className="container max-w-5xl mx-auto mb-10">
           <HeaderHome startLink={startLink} />
@@ -23,6 +24,9 @@ export default async function ContributingPage() {
         <div className={classes["markdown-container"]}>
           <ReactMarkdown>{markdown}</ReactMarkdown>
         </div>
+      </div>
+      <div className="bg-white">
+        <Footer />
       </div>
     </div>
   );
