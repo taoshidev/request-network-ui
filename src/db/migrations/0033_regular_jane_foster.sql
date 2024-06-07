@@ -1,1 +1,0 @@
-ALTER TABLE "validators" ALTER COLUMN "description" SET DATA TYPE text;

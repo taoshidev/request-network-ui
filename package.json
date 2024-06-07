@@ -1,6 +1,6 @@
 {
   "name": "request-network-ui",
-  "version": "v1.4.5",
+  "version": "v1.4.7",
   "private": true,
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "migrations:generate": "drizzle-kit generate:pg",
     "introspect:pg": "drizzle-kit introspect:pg",
     "db:push": "drizzle-kit push:pg",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "npx esno ./src/db/migrate",
     "db:seed": "npx esno ./src/db/seed",
     "db:teardown": "npx esno ./src/db/teardown",
     "migrations:drop": "drizzle-kit drop --config=drizzle.config.ts"
@@ -47,7 +47,7 @@
     "@nivo/core": "^0.87.0",
     "@nivo/line": "^0.87.0",
     "@nivo/pie": "^0.87.0",
-    "@polkadot/api": "^10.12.2",
+    "@polkadot/api": "^12.6.2",
     "@polkadot/extension-dapp": "^0.46.6",
     "@polkadot/extension-inject": "^0.47.3",
     "@polkadot/keyring": "^12.6.2",
@@ -78,7 +78,7 @@
     "clsx": "^2.1.0",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.10",
-    "drizzle-orm": "^0.29.3",
+    "drizzle-orm": "^0.29.5",
     "drizzle-zod": "^0.5.1",
     "html-to-text": "^9.0.5",
     "i": "^0.3.7",
@@ -119,7 +119,7 @@
     "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.4.19",
     "cypress": "^13.10.0",
-    "drizzle-kit": "^0.20.14",
+    "drizzle-kit": "^0.20.18",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
     "postcss": "^8.4.36",

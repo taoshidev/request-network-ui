@@ -1,1 +1,0 @@
-ALTER TABLE "endpoints" DROP CONSTRAINT "endpoints_validator_id_subnet_id_unique";

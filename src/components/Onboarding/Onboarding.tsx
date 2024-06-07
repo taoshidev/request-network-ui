@@ -35,9 +35,16 @@ export function Onboarding() {
     if (!user) return;
 
     if (role) {
-      const { error: UpdateUserError } = await updateUser({
-        data: { role, onboarded: true },
-      });
+      const saveUser = { data: { role, onboarded: true } };
+
+      if (role === "validator") {
+        Object.assign(saveUser.data, {
+          stripe_enabled: true,
+          crpyto_enabled: false,
+        });
+      }
+
+      const { error: UpdateUserError } = await updateUser(saveUser);
 
       if (UpdateUserError) return;
 

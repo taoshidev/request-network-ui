@@ -1,17 +1,12 @@
 import { HeaderHome } from "@/components/HeaderHome";
-import ReactMarkdown from "react-markdown";
-import { readFileSync } from "fs";
-import path, { join } from "path";
 import * as classes from "../documentation/page.module.css";
 import React from "react";
 import { getAuthUser } from "@/actions/auth";
 import Footer from "@/components/Footer";
 
-export default async function ContributingPage() {
-  const filePath = path.resolve('./public', 'contributing.md');
-  const markdown = readFileSync(filePath, "utf8");
+export default async function TermsOfServicePage() {
   const user = await getAuthUser();
-  const startLink = user ? '/dashboard' : '/login';
+  const startLink = user ? "/dashboard" : "/login";
 
   return (
     <div className="bg-stone-100">
@@ -20,9 +15,13 @@ export default async function ContributingPage() {
           <HeaderHome startLink={startLink} />
         </div>
       </div>
-      <div className="container mx-auto py-1 px-2 lg:px-20 pb-20">
+      <div className="container mx-auto px-2 lg:px-20">
         <div className={classes["markdown-container"]}>
-          <ReactMarkdown>{markdown}</ReactMarkdown>
+          <iframe
+            className="w-full"
+            style={{ height: "calc(100vh - 140px)", marginBottom: "25px" }}
+            src="/request-network-terms-of-service.pdf#view=FitH&navpanes=0"
+          />
         </div>
       </div>
       <div className="bg-white">

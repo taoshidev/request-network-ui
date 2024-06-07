@@ -1,4 +1,5 @@
-import { Modal, Button, Text, Divider, Box } from "@mantine/core";
+import { Modal, Button, Text, Divider, Box, MantineSize } from "@mantine/core";
+import { ReactNode } from "react";
 
 export const ConfirmModal = ({
   opened,
@@ -8,17 +9,25 @@ export const ConfirmModal = ({
   onCancel,
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
+  size,
 }: {
   opened: boolean;
   title: string;
-  message: string;
+  message: string | ReactNode;
   onConfirm: () => void;
   onCancel: () => void;
   confirmLabel?: string;
   cancelLabel?: string;
+  size?: number | MantineSize | (string & {});
 }) => {
   return (
-    <Modal opened={opened} onClose={onCancel} title={title} centered>
+    <Modal
+      opened={opened}
+      size={size}
+      onClose={onCancel}
+      title={title}
+      centered
+    >
       <Text className="mb-7">{message}</Text>
       <Divider />
       <Box className="flex justify-end mt-4">

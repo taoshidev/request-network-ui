@@ -19,6 +19,9 @@ import { Logo } from "../Logo";
 import { fetchValidatorInfo } from "@/actions/bittensor/bittensor";
 import { getSubnet } from "@/actions/subnets";
 import { sendNotification } from "@/actions/notifications";
+import { UserType } from "@/db/types/user";
+import { SubnetType } from "@/db/types/subnet";
+import { ContractType } from "@/db/types/contract";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -26,9 +29,13 @@ export default function ValidatorStepper({
   user,
   subnets,
   contracts,
-  expires,
+}: {
+  user: UserType;
+  subnets: SubnetType[];
+  contracts: ContractType[];
 }) {
   const stepInputs = [
+    ["agreedToTOS"],
     ["name", "description", "hotkey", "baseApiUrl"],
     ["url", "contractId", "walletAddress"],
   ];
@@ -42,6 +49,7 @@ export default function ValidatorStepper({
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const form = useForm<Partial<ValidatorType & EndpointType>>({
     initialValues: {
+      agreedToTOS: false,
       name: "",
       description: "",
       userId: user?.id || "",
@@ -87,8 +95,11 @@ export default function ValidatorStepper({
   };
 
   const nextStep = () => {
+    if (active === 0) {
+      form.setValues({ agreedToTOS: true });
+    }
     if (valid()[active] && !hotkeyExists)
-      setActive((current) => (current < 3 ? current + 1 : current));
+      setActive((current) => (current < 4 ? current + 1 : current));
     else form.setErrors(_pick(getErrors(), stepInputs[active]));
   };
   const prevStep = () => {
@@ -121,6 +132,7 @@ export default function ValidatorStepper({
         `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on testnet. Some features may not work correctly.`
       );
     }
+
     const bittensorUid = neuronInfo?.uid || 0;
     const bittensorNetUid = neuronInfo?.netuid || 0;
 
@@ -130,16 +142,18 @@ export default function ValidatorStepper({
       userId,
       hotkey,
       baseApiUrl,
+      agreedToTOS,
       walletAddress,
       ...endpoint
     } = values;
-    const validator = {
+    const validator: ValidatorType = {
       name,
       description,
       userId,
       hotkey,
       baseApiUrl,
       walletAddress,
+      agreedToTOS: agreedToTOS as boolean,
     };
 
     if (bittensorUid) {
@@ -152,7 +166,7 @@ export default function ValidatorStepper({
 
     try {
       const res = await createValidatorEndpoint(validator, endpoint);
-
+      console.log(res);
       if ((res as DatabaseResponseType)?.error)
         throw new Error((res as DatabaseResponseType)?.message);
       const { validator: newValidator } = res as {
@@ -200,15 +214,24 @@ export default function ValidatorStepper({
       >
         <Stepper active={active} onStepClick={setStep}>
           <Stepper.Step
+            label="Terms of Service"
+            description="Agree to terms of service"
+          >
+            <iframe
+              className="w-full"
+              style={{ height: "100%", marginBottom: "100px" }}
+              src="/request-network-terms-of-service.pdf#view=FitH&navpanes=0"
+            />
+          </Stepper.Step>
+          <Stepper.Step
             label="Create Validator"
             description="Validator information"
           >
             <CreateValidator
               form={form}
-              subnets={subnets}
-              onComplete={handleRegistrationComplete}
+              user={user}
               hotkeyExists={hotkeyExists}
-              setHotkeyExists={setHotkeyExists}
+              onHotkeyExists={setHotkeyExists}
             />
           </Stepper.Step>
           <Stepper.Step
@@ -244,20 +267,20 @@ export default function ValidatorStepper({
         </Stepper>
 
         <Group justify="center" mt="xl">
-          {active < 3 && (
+          {active < 4 && (
             <Button variant="default" onClick={prevStep} disabled={active < 1}>
               Back
             </Button>
           )}
-          {active < 2 && (
+          {active < 3 && (
             <Button
               disabled={hotkeyExists || (active === 1 && walletExists)}
               onClick={nextStep}
             >
-              Next step
+              {active === 0 ? "Agree To Terms of Service" : "Next step"}
             </Button>
           )}
-          {active === 2 && (
+          {active === 3 && (
             <Button
               type="submit"
               loading={loading}

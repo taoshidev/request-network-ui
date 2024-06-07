@@ -16,16 +16,16 @@ export function StatTable({
   caption?: string;
 }) {
   return (
-    <Box my="xl">
+    <Box>
       {(caption.length === 0 || (Array.isArray(data) && data?.length > 0)) && (
         <Fragment>
           {data && (
-            <Title size="sm" order={2}>
+            <Title size="sm" order={2} className="mt-4">
               {caption ? caption : "Usage Statistics"}
             </Title>
           )}
           <Table
-            className="mt-3 mb-6"
+            className="mt-3"
             highlightOnHover
             striped={Array.isArray(data)}
             verticalSpacing="md"

@@ -78,7 +78,7 @@ export default function Services({
       <Box>
         <Group className="justify-between mb-4">
           <Title order={2}>Services</Title>
-          <Button onClick={handleCreate}>Add Services</Button>
+          {/* <Button onClick={handleCreate}>Add Services</Button> */}
         </Group>
         {services.length > 0 && (
           <Table highlightOnHover striped>

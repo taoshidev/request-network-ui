@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq, asc, exists } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { validators } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
@@ -30,7 +30,7 @@ export const getValidator = async ({ id }: { id: string }) => {
     where: (validators, { eq }) => eq(validators.id, id as string),
   });
   if (!res) throw new Error(`Validator with ID ${id} not found.`);
-  return filterData(res, ["hotkey"]);
+  return res;
 };
 
 export const updateValidator = async ({

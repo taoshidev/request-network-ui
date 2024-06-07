@@ -1,1 +1,0 @@
-ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_endpoint_id_user_id_unique" UNIQUE("endpoint_id","user_id");

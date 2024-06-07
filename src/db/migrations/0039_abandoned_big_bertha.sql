@@ -1,1 +1,0 @@
-ALTER TABLE "endpoints" ADD COLUMN "currency_type" "currency_type" DEFAULT 'USDC' NOT NULL;

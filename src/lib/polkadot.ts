@@ -11,6 +11,7 @@ import {
 import type { HexString } from "@polkadot/util/types";
 import { stringToHex, u8aToHex } from "@polkadot/util";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
+import { ValidatorType } from "@/db/types/validator";
 
 export type SignedDataType =
   | {
@@ -22,21 +23,38 @@ export type SignedDataType =
   | null
   | undefined;
 
+export type AccountType =
+  | {
+      error: string;
+      data?: undefined;
+    }
+  | {
+      data: any[];
+      error?: undefined;
+    }
+  | undefined;
+
 export const isValidSignature = async (
   signedMessage: string,
   signature: HexString,
-  address: string
+  address: string,
+  validator: ValidatorType
 ) => {
   const publicKey = decodeAddress(address);
   const hexPublicKey = u8aToHex(publicKey);
 
+  if (address !== validator?.hotkey) {
+    return {
+      error:
+        "Verification failed! Account address does not match with validator hotkey address.",
+    };
+  }
   //Some interfaces, such as using sr25519 however are only available via WASM
   await cryptoWaitReady();
-
   return signatureVerify(signedMessage, signature, hexPublicKey).isValid;
 };
 
-export async function sign(message: string) {
+export async function getWeb3Accounts(): Promise<AccountType> {
   if (typeof window !== "undefined") {
     const extensions = await web3Enable("Taoshi Request Network");
 
@@ -45,12 +63,12 @@ export async function sign(message: string) {
     }
 
     const accounts = await web3Accounts();
+    return { data: accounts || [] };
+  }
+}
 
-    if (accounts.length === 0) {
-      return { error: "No Polkadot accounts available" };
-    }
-
-    const account = accounts[0];
+export async function sign(message: string, account) {
+  if (typeof window !== "undefined") {
     const injector = await web3FromSource(account.meta.source);
 
     const signRaw = injector?.signer?.signRaw;

@@ -160,3 +160,15 @@ a {
     -webkit-transform: scale(0);
   }
 }
+
+.animate-opacity {
+  opacity: 0;
+  will-change: opacity;
+  transition: opacity .8s ease-in-out;
+  pointer-events: none;
+}
+
+.animate-opacity.show {
+  opacity: 1;
+  pointer-events: all;
+}

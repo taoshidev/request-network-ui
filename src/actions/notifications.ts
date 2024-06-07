@@ -12,7 +12,6 @@ import { omit as _omit } from "lodash";
 import { getAuthUser } from "./auth";
 import { UserNotificationType } from "@/db/types/user-notifications";
 import { notifyHTML, notifyText } from "@/templates/notification";
-import path from "path";
 import { randomBytes } from "crypto";
 import { emailImg } from "@/templates/email-image";
 

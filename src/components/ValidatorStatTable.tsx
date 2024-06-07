@@ -31,7 +31,7 @@ export function ValidatorStatTable({ data }: { data: ValidatorKeyType[] }) {
   return (
     <Fragment>
       {hasDataWithKeys && (
-        <Box my="xl" className="mb-16">
+        <Box>
           {data?.length > 0 && (
             <Fragment key="key">
               <Title order={2}>Usage Statistics</Title>
