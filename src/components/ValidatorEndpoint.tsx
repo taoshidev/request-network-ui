@@ -17,6 +17,7 @@ import { EndpointType } from "@/db/types/endpoint";
 import { SubscriptionType } from "@/db/types/subscription";
 import { useDisclosure } from "@mantine/hooks";
 import { ContractDisplayModal } from "@/components/ContractDisplayModal";
+import clsx from "clsx";
 
 export function ValidatorEndpoint({
   currentSubscriptions,
@@ -105,7 +106,16 @@ export function ValidatorEndpoint({
         {registrationData?.validator?.endpoints?.map(
           (endpoint: EndpointType) => (
             <Grid.Col key={endpoint.id} span={3}>
-              <Card shadow="sm" padding="lg" withBorder>
+              <Card
+                shadow="sm"
+                padding="lg"
+                withBorder
+                className={clsx(
+                  "rn-select",
+                  registrationData?.endpoint?.id === endpoint.id &&
+                    "rn-selected"
+                )}
+              >
                 <Text className="font-bold mb-4" truncate>
                   {endpoint?.url || "-"}
                 </Text>

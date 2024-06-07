@@ -93,10 +93,11 @@ export function ContractDisplayModal({
             padding="lg"
             key={service?.id}
             className={clsx(
-              "p-1 m-0 cursor-pointer",
-              !review && "hover:animate-grow",
+              "p-1 m-0 cursor-pointer rn-select",
+              !review && "border-2 hover:border-orange-400",
+              !review && selectedServiceId === service?.id && "rn-selected",
               selectedServiceId === service?.id &&
-                "!border-2 !border-orange !opacity-100"
+                "border-2 border-orange-400"
             )}
             onClick={() => handleServiceSelect(service?.id as string)}
           >

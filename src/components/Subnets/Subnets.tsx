@@ -58,8 +58,8 @@ export function Subnets({
               radius={3}
               onClick={() => handleItemClick(subnet)}
               className={clsx(
-                "cursor-pointer w-full h-full items-center flex",
-                selected(subnet) && "bg-primary-500  text-white",
+                "cursor-pointer w-full h-full items-center flex rn-select",
+                selected(subnet) && "bg-primary-500 text-white rn-selected",
                 disabled(subnet) && "pointer-events-none bg-[#f1f1f1]"
               )}
             >
