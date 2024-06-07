@@ -220,7 +220,7 @@ export default function ValidatorStepper({
             <iframe
               className="w-full"
               style={{ height: "100%", marginBottom: "100px" }}
-              src="/request-network-tos.pdf#view=FitH&navpanes=0"
+              src="/request-network-terms-of-service.pdf#view=FitH&navpanes=0"
             />
           </Stepper.Step>
           <Stepper.Step

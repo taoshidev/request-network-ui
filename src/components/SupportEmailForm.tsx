@@ -8,8 +8,9 @@ import { isEmpty as _isEmpty } from "lodash";
 import { useDisclosure } from "@mantine/hooks";
 import { ConfirmModal } from "./ConfirmModal";
 import { useRouter } from "next/navigation";
+import { sendSupportEmail } from "@/actions/support-emails";
 
-export default function SupportEmailForm() {
+export default function SupportEmailForm({ user }) {
   const router = useRouter();
   const getDefaultValues = () => ({
     subject: "",
@@ -44,7 +45,8 @@ export default function SupportEmailForm() {
     }
   };
 
-  function handleSendSupportEmail() {
+  async function handleSendSupportEmail() {
+    await sendSupportEmail(form.values, user);
     setDone(true);
     setTimeout(() => show(), 0);
     close();

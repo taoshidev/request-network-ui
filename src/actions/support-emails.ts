@@ -11,7 +11,7 @@ import { randomBytes } from "crypto";
 import { emailImg } from "@/templates/email-image";
 
 export const sendSupportEmail = async (
-  supportEmail: SupportEmailType,
+  supportEmail: Partial<SupportEmailType>,
   user: UserType
 ) => {
   try {
@@ -21,7 +21,7 @@ export const sendSupportEmail = async (
 
     // const newNotification = res?.[0];
 
-    const to = "support@taoshi.io";
+    const to = process.env.SUPPORT_EMAIL_TO;
     const from = user.email;
 
     const attachments = [

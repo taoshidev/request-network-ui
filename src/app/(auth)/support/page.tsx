@@ -17,7 +17,7 @@ export default async function SupportPage() {
             Contact our Support Team
           </Title>
         </Group>
-        <SupportEmailForm />
+        <SupportEmailForm user={user} />
       </Box>
     </Box>
   );
