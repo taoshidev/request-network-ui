@@ -55,7 +55,7 @@ export function CreateValidator({
         placeholder="Enter your validator description."
         label={{ text: "Description (Rich text format)", required: true }}
       />
-      {user?.user_metadata?.crypto_enabled && (
+    
         <Box mb="md" className="pt-3">
           <TextInput
             withAsterisk
@@ -77,7 +77,7 @@ export function CreateValidator({
             </p>
           )}
         </Box>
-      )}
+    
       <Box className="pt-3" mb="md">
         <TextInput
           withAsterisk
