@@ -15,11 +15,11 @@ export default async function TermsOfServicePage() {
           <HeaderHome startLink={startLink} />
         </div>
       </div>
-      <div className="container mx-auto px-2 lg:px-20 pb-20">
+      <div className="container mx-auto px-2 lg:px-20">
         <div className={classes["markdown-container"]}>
           <iframe
             className="w-full"
-            style={{ height: "calc(100vh - 140px)", marginBottom: "15px" }}
+            style={{ height: "calc(100vh - 140px)", marginBottom: "25px" }}
             src="/request-network-privacy-policy.pdf#view=FitH&navpanes=0"
           />
         </div>
