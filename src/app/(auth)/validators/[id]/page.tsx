@@ -13,7 +13,6 @@ export default async function Page({ params }: any) {
   const { id } = params;
   const validator: ValidatorType = await getValidator({ id });
   const user = await getAuthUser();
-  const hasStripe = await checkForStripe(validator.id as string);
 
   if (!user) {
     redirect("/login");
