@@ -62,6 +62,7 @@ export default function StripeSetupModal({
     setDisabled(
       stripe?.isHttps ? missingLiveWebhook || missingEnv : missingEnv
     );
+    // eslint-disable-next-line
   }, [stripe]);
 
   return (
@@ -105,7 +106,7 @@ export default function StripeSetupModal({
               >
                 <Box className="text-slate-700">
                   Your server environment is missing:
-                  <br />"
+                  <br />&quot;
                   {[
                     !stripe?.enrollmentSecret && "STRIPE_ENROLLMENT_SECRET",
                     !stripe?.stripeKey && "STRIPE_SECRET_KEY",
@@ -118,7 +119,7 @@ export default function StripeSetupModal({
                       /,(?=[^,]+$)/,
                       `${requiredEvents.length > 2 ? "," : ""} and`
                     )}
-                  "
+                  &quot;
                 </Box>
               </Notification>
             )}
@@ -137,7 +138,7 @@ export default function StripeSetupModal({
                   The Stripe webhook does not appear to be activated. A webhook
                   will automatically be created if your environment is set up
                   correctly. Make sure you are not missing Stripe credentials in
-                  your .env Everything except the "STRIPE_WEBHOOKS_KEY" are
+                  your .env Everything except the &quot;STRIPE_WEBHOOKS_KEY&quot; are
                   required for automatic configuration.
                 </Box>
               </Notification>
@@ -156,14 +157,14 @@ export default function StripeSetupModal({
                 <Box className="text-slate-700">
                   The Stripe webhook has been configured incorrectly and is
                   missing events. Configured events should include:
-                  <br />"
+                  <br />&quot;
                   {requiredEvents
                     .join('", "')
                     .replace(
                       /,(?=[^,]+$)/,
                       `${requiredEvents.length > 2 ? "," : ""} and`
                     )}
-                  "
+                  &quot;
                 </Box>
               </Notification>
             )}
