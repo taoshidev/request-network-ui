@@ -117,7 +117,7 @@ export default function StripeSetupModal({
                     .join('", "')
                     .replace(
                       /,(?=[^,]+$)/,
-                      `${requiredEvents.length > 2 ? "," : ""} and`
+                      ` and`
                     )}
                   &quot;
                 </Box>
@@ -162,7 +162,7 @@ export default function StripeSetupModal({
                     .join('", "')
                     .replace(
                       /,(?=[^,]+$)/,
-                      `${requiredEvents.length > 2 ? "," : ""} and`
+                      ` and`
                     )}
                   &quot;
                 </Box>

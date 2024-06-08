@@ -22,6 +22,7 @@ import { sendNotification } from "@/actions/notifications";
 import { UserType } from "@/db/types/user";
 import { SubnetType } from "@/db/types/subnet";
 import { ContractType } from "@/db/types/contract";
+import clsx from "clsx";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -39,6 +40,7 @@ export default function ValidatorStepper({
     ["name", "description", "hotkey", "baseApiUrl"],
     ["url", "contractId", "walletAddress"],
   ];
+  const [direction, setDirection] = useState<"left" | "right">("left");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [keys, setKeys] = useState<KeyType>({ apiKey: "", apiSecret: "" });
@@ -91,20 +93,31 @@ export default function ValidatorStepper({
   }
 
   const setStep = (step) => {
-    if (step === 0 || valid()[step - 1]) setActive(step);
+    if (step === 0 || valid()[step - 1]) {
+      setDirection(active > step ? "right" : "left");
+      setTimeout(() => setActive(step), 0);
+    }
   };
 
   const nextStep = () => {
     if (active === 0) {
       form.setValues({ agreedToTOS: true });
     }
-    if (valid()[active] && !hotkeyExists)
-      setActive((current) => (current < 4 ? current + 1 : current));
-    else form.setErrors(_pick(getErrors(), stepInputs[active]));
+    if (valid()[active] && !hotkeyExists) {
+      setDirection("left");
+      setTimeout(
+        () => setActive((current) => (current < 4 ? current + 1 : current)),
+        0
+      );
+    } else form.setErrors(_pick(getErrors(), stepInputs[active]));
   };
   const prevStep = () => {
     getErrors();
-    setActive((current) => (current > 0 ? current - 1 : current));
+    setDirection("right");
+    setTimeout(
+      () => setActive((current) => (current > 0 ? current - 1 : current)),
+      0
+    );
   };
 
   const handleRegistrationComplete = ({ apiKey, apiSecret }: KeyType) => {
@@ -166,7 +179,7 @@ export default function ValidatorStepper({
 
     try {
       const res = await createValidatorEndpoint(validator, endpoint);
-      console.log(res);
+
       if ((res as DatabaseResponseType)?.error)
         throw new Error((res as DatabaseResponseType)?.message);
       const { validator: newValidator } = res as {
@@ -219,7 +232,7 @@ export default function ValidatorStepper({
           >
             <object
               style={{ height: "100%", marginBottom: "100px" }}
-              className="w-full"
+              className={clsx("w-full slide", direction)}
               type="application/pdf"
               data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
             >
@@ -238,6 +251,7 @@ export default function ValidatorStepper({
             <CreateValidator
               form={form}
               user={user}
+              direction={direction}
               hotkeyExists={hotkeyExists}
               onHotkeyExists={setHotkeyExists}
             />
@@ -250,6 +264,7 @@ export default function ValidatorStepper({
               form={form}
               subnets={subnets}
               contracts={contracts}
+              direction={direction}
               onError={(event) => {
                 setWalletExists(event.error);
               }}
@@ -260,10 +275,11 @@ export default function ValidatorStepper({
               form={form}
               contracts={contracts}
               errors={errors}
+              direction={direction}
             />
           </Stepper.Step>
           <Stepper.Completed>
-            <Box className="py-10">
+            <Box className={clsx("py-10 slide", direction)}>
               <Title order={2} className="text-center">
                 Validator and Endpoint Saved Successfully
               </Title>

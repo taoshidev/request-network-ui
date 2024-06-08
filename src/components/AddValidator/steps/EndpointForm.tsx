@@ -28,6 +28,7 @@ export default function EndpointForm({
   mode = "create",
   onError,
   hasSubs,
+  direction,
 }: {
   form: UseFormReturnType<Partial<ValidatorType & EndpointType>>;
   mode?: "create" | "update";
@@ -36,6 +37,7 @@ export default function EndpointForm({
   validators?: Array<ValidatorType>;
   onError?: ({ error, reason }: { error: boolean; reason: string }) => void;
   hasSubs?: boolean;
+  direction: "left" | "right";
 }) {
   const [isCryptoType, setIsCryptoType] = useState(false);
   const [addressExists, setAddressExists] = useState<boolean>(false);
@@ -82,7 +84,7 @@ export default function EndpointForm({
     const walletAddress = values.walletAddress;
     if (walletAddress) {
       try {
-        const exists = await checkPropExists({walletAddress});
+        const exists = await checkPropExists({ walletAddress });
 
         if (exists) {
           notifyError(
@@ -103,7 +105,7 @@ export default function EndpointForm({
   };
 
   return (
-    <Box className={clsx(mode === "create" ? "pt-8" : "")}>
+    <Box className={clsx("slide", mode === "create" ? "pt-8" : "", direction)}>
       <Box mb="md">
         <TextInput
           withAsterisk
