@@ -1,6 +1,9 @@
 "use client";
 
-import { RegistrationProvider } from "@/providers/registration";
+import {
+  RegistrationProvider,
+  useRegistration,
+} from "@/providers/registration";
 import { Subnets } from "@/components/Subnets";
 import { SubnetValidator } from "@/components/SubnetValidator";
 import { SubnetValidatorReview } from "@/components/SubnetValidatorReview";
@@ -11,6 +14,7 @@ import { SubnetType } from "@/db/types/subnet";
 import { ValidatorEndpoint } from "@/components/ValidatorEndpoint";
 import { Alert, Text } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
+import clsx from "clsx";
 
 type ValidatorWithInfo = ValidatorType & { neuronInfo: any };
 
@@ -23,13 +27,15 @@ export function Registration({
   subnets: SubnetType[];
   validators: ValidatorWithInfo[];
 }) {
+  const { registrationData } = useRegistration();
+  
   return (
     <RegistrationProvider>
       <RegistrationStepper
         StepOne={
           <object
             style={{ height: "100%", marginBottom: "100px" }}
-            className="w-full"
+            className={clsx("w-full slide", registrationData.direction)}
             type="application/pdf"
             data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
           >
@@ -46,7 +52,10 @@ export function Registration({
             <Subnets subnets={subnets} mode="registration" />
           ) : (
             <Alert
-              className="mt-8 shadow-sm"
+              className={clsx(
+                "mt-8 shadow-sm slide",
+                registrationData.direction
+              )}
               color="orange"
               icon={<IconAlertCircle />}
             >
@@ -67,7 +76,7 @@ export function Registration({
             />
           ) : (
             <Alert
-              className="mt-8 shadow-sm"
+              className="mt-8 shadow-sm slide-in"
               color="orange"
               icon={<IconAlertCircle />}
             >

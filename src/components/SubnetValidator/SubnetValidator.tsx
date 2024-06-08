@@ -59,7 +59,7 @@ export function SubnetValidator({
   );
 
   return (
-    <Box className="my-8">
+    <Box className={clsx("my-8 slide", registrationData.direction)}>
       <Grid>
         {(validators || [])?.map?.(
           (validator: ValidatorType & { neuronInfo: any }) => (

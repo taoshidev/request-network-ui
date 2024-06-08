@@ -13,6 +13,7 @@ export interface RegistrationData {
   validator: (ValidatorType & { neuronInfo?: any }) | null;
   endpoint: EndpointType | null;
   currentStep: number;
+  direction: 'left' | 'right';
 }
 
 type ProviderValue = {
@@ -30,6 +31,7 @@ export const defaultContextValue: ProviderValue = {
     validator: null,
     endpoint: null,
     currentStep: 0,
+    direction: 'left'
   },
   updateData: () => {},
 };

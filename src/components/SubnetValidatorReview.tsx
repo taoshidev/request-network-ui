@@ -17,13 +17,14 @@ import { ValidatorType } from "@/db/types/validator";
 import { TextEditor } from "@/components/TextEditor";
 import { useDisclosure } from "@mantine/hooks";
 import { ContractDisplayModal } from "@/components/ContractDisplayModal";
+import clsx from "clsx";
 
 export function SubnetValidatorReview() {
   const { registrationData } = useRegistration();
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
-    <Box className="mt-10">
+    <Box className={clsx("mt-10 slide", registrationData.direction)}>
       <Card withBorder shadow="sm" padding="lg" className="my-14 pb-8">
         <Title className="text-xl mb-4">
           {registrationData?.validator?.name}

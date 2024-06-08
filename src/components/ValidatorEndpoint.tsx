@@ -81,7 +81,7 @@ export function ValidatorEndpoint({
   };
 
   return (
-    <Box className="my-8">
+    <Box className={clsx("mt-8 slide", registrationData.direction)}>
       <Grid>
         <ContractDisplayModal
           services={

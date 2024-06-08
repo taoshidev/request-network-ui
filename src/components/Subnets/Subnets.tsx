@@ -46,7 +46,7 @@ export function Subnets({
   );
 
   return (
-    <Box className="my-8">
+    <Box className={clsx("my-8 slide", registrationData.direction)}>
       <Grid>
         {(subnets || [])?.map((subnet) => (
           <Grid.Col key={subnet.id} span={4}>
