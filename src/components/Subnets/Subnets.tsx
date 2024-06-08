@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Title, Text, Box, Grid, Card } from "@mantine/core";
+import { Text, Box, Grid, Card } from "@mantine/core";
 import { clsx } from "clsx";
 import { useRegistration, RegistrationData } from "@/providers/registration";
 import { SubnetType } from "@/db/types/subnet";
@@ -10,9 +10,11 @@ import { SubnetType } from "@/db/types/subnet";
 export function Subnets({
   subnets,
   mode = "navigation",
+  setDirection,
 }: {
   subnets: SubnetType[];
   mode?: "navigation" | "registration";
+  setDirection?: (direction: "left" | "right") => void;
 }) {
   const router = useRouter();
   const { updateData, registrationData } = useRegistration();
@@ -20,6 +22,12 @@ export function Subnets({
   const [selectedSubnet, setSelectedSubnet] = useState<string | null>(
     registrationData?.subnet?.id || null
   );
+
+  useEffect(() => {
+    if (setDirection) {
+      setDirection(registrationData.direction);
+    }
+  }, [registrationData]);
 
   const handleItemClick = (subnet: any) => {
     if (selectedSubnet === subnet.id) {

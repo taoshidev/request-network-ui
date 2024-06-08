@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  RegistrationProvider,
-  useRegistration,
-} from "@/providers/registration";
+import { RegistrationProvider } from "@/providers/registration";
 import { Subnets } from "@/components/Subnets";
 import { SubnetValidator } from "@/components/SubnetValidator";
 import { SubnetValidatorReview } from "@/components/RegistrationStepper/steps/SubnetValidatorReview";
@@ -16,6 +13,7 @@ import { Alert, Text } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
 import clsx from "clsx";
 import RegistrationTOS from "../RegistrationStepper/steps/RegistrationTOS";
+import { useState } from "react";
 
 type ValidatorWithInfo = ValidatorType & { neuronInfo: any };
 
@@ -28,7 +26,7 @@ export function Registration({
   subnets: SubnetType[];
   validators: ValidatorWithInfo[];
 }) {
-  const { registrationData } = useRegistration();
+  const [direction, setDirection] = useState<"left" | "right">("left");
 
   return (
     <RegistrationProvider>
@@ -36,13 +34,14 @@ export function Registration({
         StepOne={<RegistrationTOS />}
         StepTwo={
           validators?.length! > 0 ? (
-            <Subnets subnets={subnets} mode="registration" />
+            <Subnets
+              subnets={subnets}
+              mode="registration"
+              setDirection={setDirection}
+            />
           ) : (
             <Alert
-              className={clsx(
-                "mt-8 shadow-sm slide",
-                registrationData.direction
-              )}
+              className={clsx("mt-8 shadow-sm slide", direction)}
               color="orange"
               icon={<IconAlertCircle />}
             >
@@ -63,10 +62,7 @@ export function Registration({
             />
           ) : (
             <Alert
-              className={clsx(
-                "mt-8 shadow-sm slide",
-                registrationData.direction
-              )}
+              className={clsx("mt-8 shadow-sm slide", direction)}
               color="orange"
               icon={<IconAlertCircle />}
             >
