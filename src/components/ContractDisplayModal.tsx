@@ -16,7 +16,6 @@ import { useRegistration } from "@/providers/registration";
 import { ServiceType } from "@/db/types/service";
 import dayjs from "dayjs";
 import clsx from "clsx";
-import { SubscriptionType } from "@/db/types/subscription";
 
 export function ContractDisplayModal({
   html,
