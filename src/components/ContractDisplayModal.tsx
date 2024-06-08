@@ -16,6 +16,7 @@ import { useRegistration } from "@/providers/registration";
 import { ServiceType } from "@/db/types/service";
 import dayjs from "dayjs";
 import clsx from "clsx";
+import { SubscriptionType } from "@/db/types/subscription";
 
 export function ContractDisplayModal({
   html,
@@ -24,12 +25,14 @@ export function ContractDisplayModal({
   onTermsAccepted,
   review = false,
   services,
+  subscribedServiceId,
 }: {
   html: string;
   opened: boolean;
   review?: boolean;
   close: () => void;
   services: ServiceType[];
+  subscribedServiceId?: string;
   onTermsAccepted?: ({
     termsAccepted,
     selectedService,
@@ -87,7 +90,7 @@ export function ContractDisplayModal({
           }}
         >
           {services
-            ?.filter((service) => !review || selectedServiceId === service?.id)
+            ?.filter((service) => !review || [selectedServiceId, subscribedServiceId].includes(service?.id))
             .map((service) => (
               <Card
                 withBorder
@@ -97,8 +100,8 @@ export function ContractDisplayModal({
                 className={clsx(
                   "p-1 m-0 cursor-pointer rn-select",
                   !review && "border-2 hover:border-orange-400",
-                  !review && selectedServiceId === service?.id && "rn-selected",
-                  selectedServiceId === service?.id &&
+                  !review && [selectedServiceId, subscribedServiceId].includes(service?.id) && "rn-selected",
+                  [selectedServiceId, subscribedServiceId].includes(service?.id) &&
                     "border-2 border-orange-400"
                 )}
                 onClick={() => handleServiceSelect(service?.id as string)}
