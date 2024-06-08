@@ -8,15 +8,15 @@ describe('Home Page', () => {
 
   it('navigates to documentation from header', () => {
     cy.visit('/');
-    cy.get('[data-cy="btn-header-documentation"]').should('be.visible').should('contain.text', 'Docs')
-    .click();
+    cy.get('[data-cy="btn-header-documentation"]').should('be.visible').should('contain.text', 'Validator Documents')
+      .click();
     cy.url().should('include', '/documentation');
   });
 
   it('navigates to contribute from header', () => {
     cy.visit('/');
     cy.get('[data-cy="btn-header-contribute"]').should('be.visible').should('contain.text', 'Contribute')
-    .click();
+      .click();
     cy.url().should('include', '/contributing');
   });
 
@@ -32,19 +32,5 @@ describe('Home Page', () => {
     cy.get('[data-cy="btn-dashboard"]').should('be.visible').click();
     cy.url().should('include', '/login');
     cy.get('*[class^="supabase-auth-ui_ui-button"]').contains('Sign in with Github').should('be.visible').click();
-  });
-
-  it('navigates to documentation', () => {
-    cy.visit('/');
-    cy.get('[data-cy="btn-documentation"]').should('be.visible').should('contain.text', 'Documentation')
-    .click();
-    cy.url().should('include', '/documentation');
-  });
-
-  it('navigates to documentation 2', () => {
-    cy.visit('/');
-    cy.get('[data-cy="btn-documentation-2"]').should('be.visible').should('contain.text', 'Documentation')
-    .click();
-    cy.url().should('include', '/documentation');
   });
 });
