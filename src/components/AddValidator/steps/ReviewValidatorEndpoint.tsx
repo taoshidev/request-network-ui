@@ -10,10 +10,9 @@ export default function ReviewValidatorEndpoint({
   form,
   contracts,
   errors,
-  direction,
 }) {
   return (
-    <div className={clsx("w-full slide", direction)}>
+    <div className="w-full slide">
       <Title order={2} className="text-center mt-7">
         Review Validator Details
       </Title>

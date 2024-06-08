@@ -248,35 +248,38 @@ export default function ValidatorStepper({
             label="Create Validator"
             description="Validator information"
           >
-            <CreateValidator
-              form={form}
-              user={user}
-              direction={direction}
-              hotkeyExists={hotkeyExists}
-              onHotkeyExists={setHotkeyExists}
-            />
+            <Box className={clsx("slide", direction)}>
+              <CreateValidator
+                form={form}
+                user={user}
+                hotkeyExists={hotkeyExists}
+                onHotkeyExists={setHotkeyExists}
+              />
+            </Box>
           </Stepper.Step>
           <Stepper.Step
             label="Create Endpoint"
             description="Endpoint information"
           >
-            <EndpointForm
-              form={form}
-              subnets={subnets}
-              contracts={contracts}
-              direction={direction}
-              onError={(event) => {
-                setWalletExists(event.error);
-              }}
-            />
+            <Box className={clsx("slide", direction)}>
+              <EndpointForm
+                form={form}
+                subnets={subnets}
+                contracts={contracts}
+                onError={(event) => {
+                  setWalletExists(event.error);
+                }}
+              />
+            </Box>
           </Stepper.Step>
           <Stepper.Step label="Review" description="Review Information">
-            <ReviewValidatorEndpoint
-              form={form}
-              contracts={contracts}
-              errors={errors}
-              direction={direction}
-            />
+            <Box className={clsx("slide", direction)}>
+              <ReviewValidatorEndpoint
+                form={form}
+                contracts={contracts}
+                errors={errors}
+              />
+            </Box>
           </Stepper.Step>
           <Stepper.Completed>
             <Box className={clsx("py-10 slide", direction)}>

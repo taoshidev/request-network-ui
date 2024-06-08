@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import {
   Box,
-  Text,
   TextInput,
   Select,
-  CopyButton,
-  Button,
 } from "@mantine/core";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
@@ -16,7 +13,6 @@ import { useNotification } from "@/hooks/use-notification";
 import { ContractType } from "@/db/types/contract";
 
 import clsx from "clsx";
-import { IconCopy } from "@tabler/icons-react";
 import { isCrypto } from "@/utils/is-crypto";
 
 const SN8_ONLY = true;
@@ -28,7 +24,6 @@ export default function EndpointForm({
   mode = "create",
   onError,
   hasSubs,
-  direction,
 }: {
   form: UseFormReturnType<Partial<ValidatorType & EndpointType>>;
   mode?: "create" | "update";
@@ -37,7 +32,6 @@ export default function EndpointForm({
   validators?: Array<ValidatorType>;
   onError?: ({ error, reason }: { error: boolean; reason: string }) => void;
   hasSubs?: boolean;
-  direction: "left" | "right";
 }) {
   const [isCryptoType, setIsCryptoType] = useState(false);
   const [addressExists, setAddressExists] = useState<boolean>(false);
@@ -105,7 +99,7 @@ export default function EndpointForm({
   };
 
   return (
-    <Box className={clsx("slide", mode === "create" ? "pt-8" : "", direction)}>
+    <Box className={clsx(mode === "create" ? "pt-8" : "")}>
       <Box mb="md">
         <TextInput
           withAsterisk

@@ -15,13 +15,11 @@ export function CreateValidator({
   hotkeyExists,
   onHotkeyExists,
   user,
-  direction,
 }: {
   form: any;
   hotkeyExists: boolean;
   onHotkeyExists: (exists: boolean) => void;
   user: UserType;
-  direction: "left" | "right";
 }) {
   const { notifyError } = useNotification();
 
@@ -43,7 +41,7 @@ export function CreateValidator({
   };
 
   return (
-    <Box className={clsx("pt-8 slide", direction)}>
+    <Box className="pt-8 slide">
       <TextInput
         mb="md"
         withAsterisk
