@@ -74,125 +74,128 @@ export function ContractDisplayModal({
   return (
     <Modal size="xl" opened={opened} onClose={close} title="Service Contract">
       <Box className="scroll-smooth">
-      <Text className="font-bold mb-4 text-center w-full" truncate>
-        Select a Service
-      </Text>
+        <Text className="font-bold mb-4 text-center w-full" truncate>
+          Select a Service
+        </Text>
 
-      <Box
-        className="mx-8 mt-8"
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${numColumns}, 1fr)`,
-          gap: "16px",
-        }}
-      >
-        {services?.map((service) => (
-          <Card
-            withBorder
-            shadow="sm"
-            padding="lg"
-            key={service?.id}
-            className={clsx(
-              "p-1 m-0 cursor-pointer",
-              !review && "hover:animate-grow",
-              selectedServiceId === service?.id &&
-                "!border-2 !border-orange !opacity-100"
-            )}
-            onClick={() => handleServiceSelect(service?.id as string)}
-          >
-            <Group className="justify-between items-center m-2">
-              <Text className="font-bold mb-4 text-center w-full" truncate>
-                {service?.name || "-"}
-              </Text>
-            </Group>
+        <Box
+          className="mx-8 mt-8"
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(${review ? 1 : numColumns}, 1fr)`,
+            gap: "16px",
+          }}
+        >
+          {services
+            ?.filter((service) => !review || selectedServiceId === service?.id)
+            .map((service) => (
+              <Card
+                withBorder
+                shadow="sm"
+                padding="lg"
+                key={service?.id}
+                className={clsx(
+                  "p-1 m-0 cursor-pointer rn-select",
+                  !review && "border-2 hover:border-orange-400",
+                  !review && selectedServiceId === service?.id && "rn-selected",
+                  selectedServiceId === service?.id &&
+                    "border-2 border-orange-400"
+                )}
+                onClick={() => handleServiceSelect(service?.id as string)}
+              >
+                <Group className="justify-between items-center m-2">
+                  <Text className="font-bold mb-4 text-center w-full" truncate>
+                    {service?.name || "-"}
+                  </Text>
+                </Group>
 
-            <Group className="justify-between items-center m-2">
-              <Text className="text-xs">Expires:</Text>
-              <Badge size="sm" variant="light">
-                {dayjs(service?.expires).format("MMM DD, YYYY") || "-"}
-              </Badge>
-            </Group>
-            <Divider className="border-dashed" />
+                <Group className="justify-between items-center m-2">
+                  <Text className="text-xs">Expires:</Text>
+                  <Badge size="sm" variant="light">
+                    {dayjs(service?.expires).format("MMM DD, YYYY") || "-"}
+                  </Badge>
+                </Group>
+                <Divider className="border-dashed" />
 
-            <Group className="justify-between items-center m-2">
-              <Text className="text-xs">Payment Method:</Text>
-              <Badge size="sm" variant="light">
-                {service?.currencyType}
-              </Badge>
-            </Group>
-            <Divider className="border-dashed" />
+                <Group className="justify-between items-center m-2">
+                  <Text className="text-xs">Payment Method:</Text>
+                  <Badge size="sm" variant="light">
+                    {service?.currencyType}
+                  </Badge>
+                </Group>
+                <Divider className="border-dashed" />
 
-            <Group className="justify-between items-center m-2">
-              <Text className="text-xs">Price:</Text>
-              <Badge size="sm" variant="light">
-                {service?.price}
-              </Badge>
-            </Group>
-            <Divider className="border-dashed" />
+                <Group className="justify-between items-center m-2">
+                  <Text className="text-xs">Price:</Text>
+                  <Badge size="sm" variant="light">
+                    {service?.price}
+                  </Badge>
+                </Group>
+                <Divider className="border-dashed" />
 
-            <Group className="justify-between items-center m-2">
-              <Text className="text-xs">Refill Interval:</Text>
-              <Badge size="sm" variant="light">
-                {service.refillInterval}
-              </Badge>
-            </Group>
-            <Divider className="border-dashed" />
+                <Group className="justify-between items-center m-2">
+                  <Text className="text-xs">Refill Interval:</Text>
+                  <Badge size="sm" variant="light">
+                    {service.refillInterval}
+                  </Badge>
+                </Group>
+                <Divider className="border-dashed" />
 
-            <Group className="justify-between items-center m-2">
-              <Text className="text-xs">Limit:</Text>
-              <Badge size="sm" variant="light">
-                {service?.limit}
-              </Badge>
-            </Group>
-            <Divider className="border-dashed" />
+                <Group className="justify-between items-center m-2">
+                  <Text className="text-xs">Limit:</Text>
+                  <Badge size="sm" variant="light">
+                    {service?.limit}
+                  </Badge>
+                </Group>
+                <Divider className="border-dashed" />
 
-            <Group className="justify-between items-center m-2">
-              <Text className="text-xs">Refill Rate:</Text>
-              <Badge size="sm" variant="light">
-                {service.refillRate}
-              </Badge>
-            </Group>
-            <Divider className="border-dashed" />
+                <Group className="justify-between items-center m-2">
+                  <Text className="text-xs">Refill Rate:</Text>
+                  <Badge size="sm" variant="light">
+                    {service.refillRate}
+                  </Badge>
+                </Group>
+                <Divider className="border-dashed" />
 
-            <Group className="justify-between items-center m-2">
-              <Text className="text-xs">Request Limit</Text>
-              <Badge size="sm" variant="light">
-                {service?.remaining}
-              </Badge>
-            </Group>
-          </Card>
-        ))}
-      </Box>
-
-      <Box className="!p-0 flex flex-col h-[80vh]">
-        <Box className="flex-1 overflow-y-auto p-4">
-          <TextEditor<ContractType>
-            type="BubbleEditor"
-            editable={false}
-            html={html}
-          />
+                <Group className="justify-between items-center m-2">
+                  <Text className="text-xs">Request Limit</Text>
+                  <Badge size="sm" variant="light">
+                    {service?.remaining}
+                  </Badge>
+                </Group>
+              </Card>
+            ))}
         </Box>
-        {!review && (
-          <Box className="flex justify-between pt-4 bg-white border-t border-gray-200">
-            <Button
-              size="sm"
-              variant={termsAccepted ? "outline" : "filled"}
-              className="flex-1 mr-2"
-              onClick={() => handleAcceptTerms(false)}
-            >
-              {termsAccepted ? "Decline" : "Decline Terms"}
-            </Button>
-            <Button
-              size="sm"
-              variant={termsAccepted ? "filled" : "outline"}
-              className="flex-1 ml-2"
-              onClick={() => handleAcceptTerms(true)}
-            >
-              {termsAccepted ? "Terms Accepted" : "Accept Terms"}
-            </Button>
+
+        <Box className="!p-0 flex flex-col h-[80vh]">
+          <Box className="flex-1 overflow-y-auto p-4">
+            <TextEditor<ContractType>
+              type="BubbleEditor"
+              editable={false}
+              html={html}
+            />
           </Box>
-        )}
-      </Box>
+          {!review && (
+            <Box className="flex justify-between pt-4 bg-white border-t border-gray-200">
+              <Button
+                size="sm"
+                variant={termsAccepted ? "outline" : "filled"}
+                className="flex-1 mr-2"
+                onClick={() => handleAcceptTerms(false)}
+              >
+                {termsAccepted ? "Decline" : "Decline Terms"}
+              </Button>
+              <Button
+                size="sm"
+                variant={termsAccepted ? "filled" : "outline"}
+                className="flex-1 ml-2"
+                onClick={() => handleAcceptTerms(true)}
+              >
+                {termsAccepted ? "Terms Accepted" : "Accept Terms"}
+              </Button>
+            </Box>
+          )}
+        </Box>
       </Box>
     </Modal>
   );

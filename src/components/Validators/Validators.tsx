@@ -80,11 +80,19 @@ export function Validators({
                   </Table.Td>
                   <Table.Td>
                     {validator.verified ? (
-                      <Badge>Verified</Badge>
+                      <Badge>Validator Verified</Badge>
                     ) : (
-                      <Badge color="black">Unverified</Badge>
+                      <Badge color="black">Validator Unverified</Badge>
                     )}
                   </Table.Td>
+                  <Table.Td>
+                    {validator.stripeEnabled ? (
+                      <Badge>Stripe Verified</Badge>
+                    ) : (
+                      <Badge color="black">Stripe Unverified</Badge>
+                    )}
+                  </Table.Td>
+
                   <Table.Td>
                     <Button
                       size="sm"

@@ -3,14 +3,17 @@
 import { RegistrationProvider } from "@/providers/registration";
 import { Subnets } from "@/components/Subnets";
 import { SubnetValidator } from "@/components/SubnetValidator";
-import { SubnetValidatorReview } from "@/components/SubnetValidatorReview";
-import { RegistrationStepper } from "@/components/RegistrationStepper";
+import { SubnetValidatorReview } from "@/components/RegistrationStepper/steps/SubnetValidatorReview";
+import { RegistrationStepper } from "@/components/RegistrationStepper/RegistrationStepper";
 import { SubscriptionType } from "@/db/types/subscription";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
-import { ValidatorEndpoint } from "@/components/ValidatorEndpoint";
+import { ValidatorEndpoint } from "@/components/RegistrationStepper/steps/ValidatorEndpoint";
 import { Alert, Text } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
+import clsx from "clsx";
+import RegistrationTOS from "../RegistrationStepper/steps/RegistrationTOS";
+import { useState } from "react";
 
 type ValidatorWithInfo = ValidatorType & { neuronInfo: any };
 
@@ -23,30 +26,22 @@ export function Registration({
   subnets: SubnetType[];
   validators: ValidatorWithInfo[];
 }) {
+  const [direction, setDirection] = useState<"left" | "right">("left");
+
   return (
     <RegistrationProvider>
       <RegistrationStepper
-        StepOne={
-          <object
-            style={{ height: "100%", marginBottom: "100px" }}
-            className="w-full"
-            type="application/pdf"
-            data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
-          >
-            <p>
-              File can not be displayed in browser.{" "}
-              <a href="/request-network-terms-of-service.pdf">
-                Request Network Terms of Service
-              </a>
-            </p>
-          </object>
-        }
+        StepOne={<RegistrationTOS />}
         StepTwo={
           validators?.length! > 0 ? (
-            <Subnets subnets={subnets} mode="registration" />
+            <Subnets
+              subnets={subnets}
+              mode="registration"
+              setDirection={setDirection}
+            />
           ) : (
             <Alert
-              className="mt-8 shadow-sm"
+              className={clsx("mt-8 shadow-sm slide", direction)}
               color="orange"
               icon={<IconAlertCircle />}
             >
@@ -67,7 +62,7 @@ export function Registration({
             />
           ) : (
             <Alert
-              className="mt-8 shadow-sm"
+              className={clsx("mt-8 shadow-sm slide", direction)}
               color="orange"
               icon={<IconAlertCircle />}
             >

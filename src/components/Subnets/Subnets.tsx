@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Title, Text, Box, Grid, Card } from "@mantine/core";
+import { Text, Box, Grid, Card } from "@mantine/core";
 import { clsx } from "clsx";
 import { useRegistration, RegistrationData } from "@/providers/registration";
 import { SubnetType } from "@/db/types/subnet";
@@ -10,9 +10,11 @@ import { SubnetType } from "@/db/types/subnet";
 export function Subnets({
   subnets,
   mode = "navigation",
+  setDirection,
 }: {
   subnets: SubnetType[];
   mode?: "navigation" | "registration";
+  setDirection?: (direction: "left" | "right") => void;
 }) {
   const router = useRouter();
   const { updateData, registrationData } = useRegistration();
@@ -20,6 +22,12 @@ export function Subnets({
   const [selectedSubnet, setSelectedSubnet] = useState<string | null>(
     registrationData?.subnet?.id || null
   );
+
+  useEffect(() => {
+    if (setDirection) {
+      setDirection(registrationData.direction);
+    }
+  }, [registrationData]);
 
   const handleItemClick = (subnet: any) => {
     if (selectedSubnet === subnet.id) {
@@ -46,7 +54,7 @@ export function Subnets({
   );
 
   return (
-    <Box className="my-8">
+    <Box className={clsx("my-8 slide", registrationData.direction)}>
       <Grid>
         {(subnets || [])?.map((subnet) => (
           <Grid.Col key={subnet.id} span={4}>
@@ -58,8 +66,8 @@ export function Subnets({
               radius={3}
               onClick={() => handleItemClick(subnet)}
               className={clsx(
-                "cursor-pointer w-full h-full items-center flex",
-                selected(subnet) && "bg-primary-500  text-white",
+                "cursor-pointer w-full h-full items-center flex rn-select",
+                selected(subnet) && "bg-primary-500 text-white rn-selected",
                 disabled(subnet) && "pointer-events-none bg-[#f1f1f1]"
               )}
             >

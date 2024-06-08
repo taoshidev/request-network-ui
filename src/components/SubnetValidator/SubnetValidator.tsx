@@ -16,6 +16,7 @@ import { useRegistration } from "@/providers/registration";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { SubscriptionType } from "@/db/types/subscription";
+import clsx from "clsx";
 
 type ValidatorWithInfo = ValidatorType & { neuronInfo: any };
 
@@ -58,12 +59,21 @@ export function SubnetValidator({
   );
 
   return (
-    <Box className="my-8">
+    <Box className={clsx("my-8 slide", registrationData.direction)}>
       <Grid>
         {(validators || [])?.map?.(
           (validator: ValidatorType & { neuronInfo: any }) => (
             <Grid.Col key={validator.id} span={3}>
-              <Card shadow="sm" padding="lg" withBorder>
+              <Card
+                shadow="sm"
+                padding="lg"
+                withBorder
+                className={clsx(
+                  "rn-select",
+                  registrationData?.validator?.id === validator.id &&
+                    "rn-selected"
+                )}
+              >
                 <Text className="font-bold mb-4" truncate>
                   {validator?.name || "Validator"}
                 </Text>
