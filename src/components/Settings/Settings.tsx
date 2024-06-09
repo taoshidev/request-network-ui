@@ -46,18 +46,25 @@ const fetchProxyService = async (validator, proxyServiceId) => {
   const res = await sendToProxy({
     endpoint: {
       url: validator?.baseApiUrl!,
-      method: "GET",
-      path: `${validator?.apiPrefix}/services/${proxyServiceId}`,
+      method: "POST",
+      path: `${validator?.apiPrefix}/services/query`,
     },
     validatorId: validator?.id!,
+    data: {
+      where: [
+        {
+          type: "eq",
+          column: "id",
+          value: proxyServiceId!,
+        },
+      ],
+    },
   });
 
   if (res?.error) {
-    console.log(res?.error);
     return {};
   }
-  console.log(res);
-  return res?.data || {};
+  return res?.data?.[0] || {};
 };
 
 export function Settings({
@@ -90,7 +97,6 @@ export function Settings({
         proxyService?.subscriptionId &&
         proxyService.active !== subscription?.active
       ) {
-        console.log("Updating subscription status...");
         return await updateSubscription({
           id: proxyService.subscriptionId,
           active: proxyService.active,
