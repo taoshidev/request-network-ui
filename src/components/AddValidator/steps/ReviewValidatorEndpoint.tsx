@@ -3,12 +3,16 @@ import { ValidatorType } from "@/db/types/validator";
 import { Title, Box, Table, Text } from "@mantine/core";
 import { isEmpty as _isEmpty } from "lodash";
 import React from "react";
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
+import clsx from "clsx";
 
-export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
-
+export default function ReviewValidatorEndpoint({
+  form,
+  contracts,
+  errors,
+}) {
   return (
-    <>
+    <div className="w-full slide">
       <Title order={2} className="text-center mt-7">
         Review Validator Details
       </Title>
@@ -97,6 +101,6 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
           <b>{key}</b>: {errors[key]}
         </Text>
       ))}
-    </>
+    </div>
   );
 }

@@ -108,7 +108,7 @@ export default function SupportEmailForm({ user }) {
           {...form.getInputProps("content")}
           autosize
         />
-        <Box className="pt-5 text-right">
+        <Box className="text-right">
           <Button type="submit">Send</Button>
         </Box>
       </Box>

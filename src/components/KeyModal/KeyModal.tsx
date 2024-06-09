@@ -113,7 +113,12 @@ export function KeyModal({
         )}
       </Box>
       <Box>
-        <Button className="w-full" component="a" href="/dashboard">
+        <Button
+          className="w-full"
+          component="a"
+          href="/dashboard"
+          onClick={onClose}
+        >
           Go to Dashboard
         </Button>
       </Box>

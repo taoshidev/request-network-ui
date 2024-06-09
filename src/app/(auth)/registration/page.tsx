@@ -4,11 +4,10 @@ import { endpoints, validators, subscriptions } from "@/db/schema";
 import { getAuthUser } from "@/actions/auth";
 import { getSubnets } from "@/actions/subnets";
 import { getValidators } from "@/actions/validators";
-import { Registration } from "@/components/Registration";
+import { Registration } from "@/components/Registration/Registration";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { fetchValidatorInfo } from "@/actions/bittensor/bittensor";
 import { ValidatorType } from "@/db/types/validator";
-import { SubnetType } from "@/db/types/subnet";
 
 export default async function Page() {
   const user = await getAuthUser();
@@ -81,7 +80,7 @@ export default async function Page() {
 
     try {
       const validatorsWithStats = await Promise.all(
-        (validatorArr || [])?.map(async (validator) => {
+        (validatorArr.length ? validatorArr : [])?.map(async (validator) => {
           const stats = await Promise.all(
             validator?.endpoints?.map((endpoint) =>
               fetchEndpointInfo(endpoint, validator)

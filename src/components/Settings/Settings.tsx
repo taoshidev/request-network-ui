@@ -30,6 +30,8 @@ import { useNotification } from "@/hooks/use-notification";
 import { StatTable } from "../StatTable";
 import { cancelSubscription, requestPayment } from "@/actions/payments";
 import { ConfirmModal } from "../ConfirmModal";
+import { sendToProxy } from "@/actions/apis";
+import { updateSubscription } from "@/actions/subscriptions";
 
 const updateSchema = z.object({
   name: z
@@ -40,6 +42,31 @@ const updateSchema = z.object({
 
 type User = z.infer<typeof updateSchema>;
 
+const fetchProxyService = async (validator, proxyServiceId) => {
+  const res = await sendToProxy({
+    endpoint: {
+      url: validator?.baseApiUrl!,
+      method: "POST",
+      path: `${validator?.apiPrefix}/services/query`,
+    },
+    validatorId: validator?.id!,
+    data: {
+      where: [
+        {
+          type: "eq",
+          column: "id",
+          value: proxyServiceId!,
+        },
+      ],
+    },
+  });
+
+  if (res?.error) {
+    return {};
+  }
+  return res?.data?.[0] || {};
+};
+
 export function Settings({
   apiKey,
   subscription,
@@ -47,6 +74,7 @@ export function Settings({
   apiKey: any;
   subscription: any;
 }) {
+  const [disabled, setDisabled] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
     useDisclosure(false);
@@ -57,20 +85,38 @@ export function Settings({
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
   });
-  
+
   // refresh page when it comes back into view
   useEffect(() => {
+    const fetchService = async () => {
+      const proxyService = await fetchProxyService(
+        subscription?.validator,
+        subscription?.proxyServiceId
+      );
+      if (
+        proxyService?.subscriptionId &&
+        proxyService.active !== subscription?.active
+      ) {
+        return await updateSubscription({
+          id: proxyService.subscriptionId,
+          active: proxyService.active,
+        });
+      }
+    };
+
     const onFocus = async (event) => {
       if (!active && document.visibilityState == "visible") {
         setActive(true);
-
+        setDisabled(false);
+        await fetchService();
         router.refresh();
       } else {
         setActive(false);
       }
     };
 
-    const cleanup = () => window.removeEventListener("visibilitychange", onFocus);
+    const cleanup = () =>
+      window.removeEventListener("visibilitychange", onFocus);
 
     window.addEventListener("visibilitychange", onFocus);
     return cleanup;
@@ -135,9 +181,11 @@ export function Settings({
     const unSubRes = await cancelSubscription(subscription.proxyServiceId);
     notifySuccess(`Subscription cancelled successfully`);
     unSubClose();
+    setDisabled(false);
   };
 
   const stripePayment = () => {
+    setDisabled(true);
     subscription?.active ? unSubOpen() : sendPaymentRequest();
   };
 
@@ -239,7 +287,12 @@ export function Settings({
                 <Box>Pay for endpoint use using Stripe.</Box>
               )}
               <Group justify="flex-end" mt="lg">
-                <Button onClick={stripePayment} type="button" variant={subscription?.active ? "light" : "orange"}>
+                <Button
+                  onClick={stripePayment}
+                  disabled={disabled}
+                  type="button"
+                  variant={subscription?.active ? "light" : "orange"}
+                >
                   {subscription?.active
                     ? "Cancel Payment Subscription"
                     : "Set up Payment Subscription"}

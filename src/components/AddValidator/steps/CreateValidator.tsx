@@ -6,6 +6,7 @@ import { useNotification } from "@/hooks/use-notification";
 import { TextEditor } from "@/components/TextEditor";
 import { ValidatorType } from "@/db/types/validator";
 import { UserType } from "@/db/types/user";
+import clsx from "clsx";
 
 // const ValidatorEndpointSchema = ValidatorSchema.merge(EndpointSchema);
 
@@ -40,7 +41,7 @@ export function CreateValidator({
   };
 
   return (
-    <Box className="pt-8">
+    <Box className="pt-8 slide">
       <TextInput
         mb="md"
         withAsterisk
@@ -55,29 +56,29 @@ export function CreateValidator({
         placeholder="Enter your validator description."
         label={{ text: "Description (Rich text format)", required: true }}
       />
-    
-        <Box mb="md" className="pt-3">
-          <TextInput
-            withAsterisk
-            label="Hotkey"
-            placeholder="Hotkey"
-            {...form.getInputProps("hotkey")}
-            onBlur={(event) => {
-              form.getInputProps("hotkey").onBlur(event);
-              handleOnBlurHotkey(event);
-            }}
-            onChange={(event) => {
-              form.getInputProps("hotkey").onChange(event);
-              onHotkeyExists(false);
-            }}
-          />
-          {hotkeyExists && (
-            <p className="pt-1 text-xs text-[#fa5252] mantine-TextInput-error">
-              Hotkey already in use by another validator.
-            </p>
-          )}
-        </Box>
-    
+
+      <Box mb="md" className="pt-3">
+        <TextInput
+          withAsterisk
+          label="Hotkey"
+          placeholder="Hotkey"
+          {...form.getInputProps("hotkey")}
+          onBlur={(event) => {
+            form.getInputProps("hotkey").onBlur(event);
+            handleOnBlurHotkey(event);
+          }}
+          onChange={(event) => {
+            form.getInputProps("hotkey").onChange(event);
+            onHotkeyExists(false);
+          }}
+        />
+        {hotkeyExists && (
+          <p className="pt-1 text-xs text-[#fa5252] mantine-TextInput-error">
+            Hotkey already in use by another validator.
+          </p>
+        )}
+      </Box>
+
       <Box className="pt-3" mb="md">
         <TextInput
           withAsterisk

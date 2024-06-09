@@ -35,6 +35,7 @@ import { z, ZodIssue } from "zod";
 import { isValidEthereumAddress } from "@/utils/address";
 import { isCrypto } from "@/utils/is-crypto";
 import { sendNotification } from "@/actions/notifications";
+import clsx from "clsx";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -119,16 +120,26 @@ export function RegistrationStepper({
       });
     }
 
-    updateData({
-      currentStep: active < REGISTRATION_STEPS ? active + 1 : active,
-    });
-    scrollToTop();
+    updateData({ direction: "left" });
+
+    setTimeout(() => {
+      updateData({
+        currentStep: active < REGISTRATION_STEPS ? active + 1 : active,
+      });
+      scrollToTop();
+    }, 0);
   };
 
   const prevStep = () => {
     setActive((current) => (current > 0 ? current - 1 : current));
-    updateData({ currentStep: active > 0 ? active - 1 : active });
-    scrollToTop();
+    updateData({ direction: "right" });
+
+    setTimeout(() => {
+      updateData({
+        currentStep: active > 0 ? active - 1 : active,
+      });
+      scrollToTop();
+    }, 0);
   };
 
   const handleStepChange = (value: number) => {
@@ -137,14 +148,12 @@ export function RegistrationStepper({
 
   const isLastStep = useMemo(() => active !== REGISTRATION_STEPS, [active]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => () => updateData(defaultContextValue.registrationData), []);
-
   useEffect(() => {
     if (registrationData) {
       setActive(registrationData.currentStep);
     }
     setPageLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [registrationData]);
 
   useEffect(() => {
@@ -418,7 +427,12 @@ export function RegistrationStepper({
         </Stepper.Step>
 
         <Stepper.Completed>
-          <Card withBorder shadow="sm" padding="lg" className="mt-14 h-auto">
+          <Card
+            withBorder
+            shadow="sm"
+            padding="lg"
+            className={clsx("mt-14 h-auto slide", registrationData.direction)}
+          >
             <Center className="mt-8 mb-4">
               <Box className="max-w-xl">
                 <Text className="text-center text-xl mb-4">
