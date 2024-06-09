@@ -51,7 +51,7 @@ export function SubnetValidator({
       );
       return isSubscribed
         ? "Subscribed"
-        : validator.verified
+        : validator?.verified && validator?.stripeEnabled
         ? "Subscribe"
         : "Not Available";
     },
@@ -141,7 +141,7 @@ export function SubnetValidator({
                 </Group>
 
                 <Button
-                  disabled={!validator.verified}
+                  disabled={!validator?.verified || !validator?.stripeEnabled}
                   variant={
                     registrationData &&
                     registrationData?.validator?.id === validator.id
