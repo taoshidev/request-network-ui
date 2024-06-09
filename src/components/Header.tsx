@@ -49,6 +49,7 @@ export function Header() {
     useDisclosure();
 
   const handleSignOut = async () => {
+    localStorage?.removeItem?.("_reg_data");
     await signout();
   };
 

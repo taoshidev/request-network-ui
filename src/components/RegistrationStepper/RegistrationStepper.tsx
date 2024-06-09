@@ -148,14 +148,12 @@ export function RegistrationStepper({
 
   const isLastStep = useMemo(() => active !== REGISTRATION_STEPS, [active]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => () => updateData(defaultContextValue.registrationData), []);
-
   useEffect(() => {
     if (registrationData) {
       setActive(registrationData.currentStep);
     }
     setPageLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [registrationData]);
 
   useEffect(() => {
