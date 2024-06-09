@@ -89,6 +89,9 @@ export function ValidatorEndpoint({
               (e) => e.id === selectedEndpoint?.id
             )?.contract?.services
           }
+          subscribedServiceId={currentSubscriptions?.find(
+            (s) => s.endpointId === selectedEndpoint?.id
+          )?.serviceId}
           html={selectedEndpoint?.contract?.content}
           opened={opened}
           close={close}

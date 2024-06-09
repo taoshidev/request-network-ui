@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import {
   Box,
-  Text,
   TextInput,
   Select,
-  CopyButton,
-  Button,
 } from "@mantine/core";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
@@ -16,7 +13,6 @@ import { useNotification } from "@/hooks/use-notification";
 import { ContractType } from "@/db/types/contract";
 
 import clsx from "clsx";
-import { IconCopy } from "@tabler/icons-react";
 import { isCrypto } from "@/utils/is-crypto";
 
 const SN8_ONLY = true;
@@ -82,7 +78,7 @@ export default function EndpointForm({
     const walletAddress = values.walletAddress;
     if (walletAddress) {
       try {
-        const exists = await checkPropExists({walletAddress});
+        const exists = await checkPropExists({ walletAddress });
 
         if (exists) {
           notifyError(
