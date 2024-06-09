@@ -154,7 +154,7 @@ export default function StripeSetupModal({
                 </Box>
               </Notification>
             )}
-            {!stripe?.isHttp && (
+            {!stripe?.isHttps && (
               <Notification
                 className="zoom in shadow-md border border-gray-200 mb-3"
                 style={{ borderLeft: `4px solid ${NOTIFICATION_COLOR.INFO}` }}
