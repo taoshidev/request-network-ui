@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Group, Stepper, Title } from "@mantine/core";
+import { Box, Button, Group, NavLink, Stepper, Title } from "@mantine/core";
 import { useState } from "react";
 import { CreateValidator } from "./steps/CreateValidator";
 import { useForm } from "@mantine/form";
@@ -230,19 +230,21 @@ export default function ValidatorStepper({
             label="Terms of Service"
             description="Agree to terms of service"
           >
-            <object
-              style={{ height: "100%", marginBottom: "100px" }}
-              className={clsx("w-full slide", direction)}
-              type="application/pdf"
-              data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
-            >
-              <p>
-                File can not be displayed in browser.{" "}
-                <a href="/request-network-terms-of-service.pdf">
-                  Request Network Terms of Service
-                </a>
-              </p>
-            </object>
+            <Box className={clsx("w-full h-full slide", direction)}>
+              <Box component="object"
+                style={{ height: "100%", marginBottom: "100px" }}
+                className={clsx("w-full slide", direction)}
+                type="application/pdf"
+                data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
+              >
+                <Box component="p">
+                  File can not be displayed in browser.{" "}
+                  <NavLink href="/request-network-terms-of-service.pdf">
+                    Request Network Terms of Service
+                  </NavLink>
+                </Box>
+              </Box>
+            </Box>
           </Stepper.Step>
           <Stepper.Step
             label="Create Validator"

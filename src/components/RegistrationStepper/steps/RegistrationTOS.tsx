@@ -1,22 +1,26 @@
 import { useRegistration } from "@/providers/registration";
+import { Box, NavLink } from "@mantine/core";
 import clsx from "clsx";
 
 export default function RegistrationTOS() {
   const { registrationData } = useRegistration();
 
   return (
-    <object
-      style={{ height: "100%", marginBottom: "100px" }}
-      className={clsx("w-full slide", registrationData.direction)}
-      type="application/pdf"
-      data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
-    >
-      <p>
-        File can not be displayed in browser.{" "}
-        <a href="/request-network-terms-of-service.pdf">
-          Request Network Terms of Service
-        </a>
-      </p>
-    </object>
+    <Box className={clsx("w-full h-full slide", registrationData.direction)}>
+      <Box
+        component="object"
+        style={{ marginBottom: "100px" }}
+        className="h-full w-full"
+        type="application/pdf"
+        data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
+      >
+        <Box component="p">
+          File can not be displayed in browser.{" "}
+          <NavLink href="/request-network-terms-of-service.pdf">
+            Request Network Terms of Service
+          </NavLink>
+        </Box>
+      </Box>
+    </Box>
   );
 }

@@ -38,13 +38,13 @@ export const signRequest = ({
 }: {
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
-  body: string | object;
+  body?: string | object;
   apiKey: string;
   apiSecret: string;
   nonce?: string;
 }) => {
   // const nonce = Date.now();
-  const message = `${method}${path}${body}${apiKey}${nonce}`;
+  const message = `${method}${path}${body || ''}${apiKey}${nonce}`;
   const signature = crypto
     .createHmac("sha256", apiSecret)
     .update(message)
@@ -64,7 +64,7 @@ export const generateApiSecret = () => {
 export const sendToProxy = async ({
   validatorId,
   endpoint,
-  data = {},
+  data,
 }: {
   endpoint: {
     url: string;
@@ -76,7 +76,7 @@ export const sendToProxy = async ({
 }) => {
   try {
     const { url, method, path } = endpoint;
-    const body = JSON.stringify(data);
+    const body = data ? JSON.stringify(data) : undefined;
     const validator = await getValidator({ id: validatorId });
     const { apiKey, apiSecret, baseApiUrl } = validator;
     const { signature, nonce } = signRequest({
@@ -89,7 +89,7 @@ export const sendToProxy = async ({
 
     const res = await fetch(`${baseApiUrl}${path}`, {
       method: method,
-      body: data ? JSON.stringify(data) : null,
+      body: JSON.stringify(data || {}),
       headers: {
         "Content-Type": "application/json",
         "x-taoshi-request-key": apiKey as string,

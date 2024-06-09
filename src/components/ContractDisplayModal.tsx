@@ -75,7 +75,7 @@ export function ContractDisplayModal({
 
   return (
     <Modal size="xl" opened={opened} onClose={close} title="Service Contract">
-      <Box className="scroll-smooth">
+      <Box>
         <Text className="font-bold mb-4 text-center w-full" truncate>
           Select a Service
         </Text>
@@ -169,8 +169,8 @@ export function ContractDisplayModal({
             ))}
         </Box>
 
-        <Box className="!p-0 flex flex-col h-[80vh]">
-          <Box className="flex-1 overflow-y-auto p-4">
+        <Box className="!p-0 flex flex-col">
+          <Box className="flex-1 p-4">
             <TextEditor<ContractType>
               type="BubbleEditor"
               editable={false}
@@ -178,7 +178,7 @@ export function ContractDisplayModal({
             />
           </Box>
           {!review && (
-            <Box className="flex justify-between pt-4 bg-white border-t border-gray-200">
+            <Box className="flex justify-between p-4 bg-white border-t border-gray-200 sticky bottom-0 -mb-4 -mx-4">
               <Button
                 size="sm"
                 variant={termsAccepted ? "outline" : "filled"}
