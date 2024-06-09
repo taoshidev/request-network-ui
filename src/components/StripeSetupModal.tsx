@@ -46,10 +46,10 @@ export default function StripeSetupModal({
       !stripe?.stripeKey ||
       !stripe?.stripePublicKey ||
       !stripe?.stripeWebhooksKey;
-    const missingLiveWebhook = !stripe?.webhooks || !stripe.webhookEvents;
+    const missingLiveWebhook = !stripe?.webhooks || !stripe?.webhookEvents;
     setMissingEnv(missingEnv);
     setMissingWebhooks(!stripe?.webhooks);
-    setMissingWebhookEvents(!stripe.webhookEvents);
+    setMissingWebhookEvents(!stripe?.webhookEvents);
     setDisabled(
       stripe?.isHttps ? missingLiveWebhook || missingEnv : missingEnv
     );
