@@ -3,16 +3,7 @@ import {
   NOTIFICATION_COLOR,
   NOTIFICATION_ICON,
 } from "@/hooks/use-notification";
-import {
-  Modal,
-  Button,
-  Text,
-  Divider,
-  Box,
-  Notification,
-  Title,
-  Grid,
-} from "@mantine/core";
+import { Modal, Button, Text, Divider, Box, Notification } from "@mantine/core";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -57,8 +48,8 @@ export default function StripeSetupModal({
       !stripe?.stripeWebhooksKey;
     const missingLiveWebhook = !stripe?.webhooks || !stripe.webhookEvents;
     setMissingEnv(missingEnv);
-    setMissingWebhooks(missingWebhooks);
-    setMissingWebhookEvents(missingWebhookEvents);
+    setMissingWebhooks(!stripe?.webhooks);
+    setMissingWebhookEvents(!stripe.webhookEvents);
     setDisabled(
       stripe?.isHttps ? missingLiveWebhook || missingEnv : missingEnv
     );
@@ -106,7 +97,8 @@ export default function StripeSetupModal({
               >
                 <Box className="text-slate-700">
                   Your server environment is missing:
-                  <br />&quot;
+                  <br />
+                  &quot;
                   {[
                     !stripe?.enrollmentSecret && "STRIPE_ENROLLMENT_SECRET",
                     !stripe?.stripeKey && "STRIPE_SECRET_KEY",
@@ -115,10 +107,7 @@ export default function StripeSetupModal({
                   ]
                     .filter((item) => item)
                     .join('", "')
-                    .replace(
-                      /,(?=[^,]+$)/,
-                      ` and`
-                    )}
+                    .replace(/,(?=[^,]+$)/, ` and`)}
                   &quot;
                 </Box>
               </Notification>
@@ -138,8 +127,9 @@ export default function StripeSetupModal({
                   The Stripe webhook does not appear to be activated. A webhook
                   will automatically be created if your environment is set up
                   correctly. Make sure you are not missing Stripe credentials in
-                  your .env Everything except the &quot;STRIPE_WEBHOOKS_KEY&quot; are
-                  required for automatic configuration.
+                  your .env Everything except the
+                  &quot;STRIPE_WEBHOOKS_KEY&quot; are required for automatic
+                  configuration.
                 </Box>
               </Notification>
             )}
@@ -157,13 +147,9 @@ export default function StripeSetupModal({
                 <Box className="text-slate-700">
                   The Stripe webhook has been configured incorrectly and is
                   missing events. Configured events should include:
-                  <br />&quot;
-                  {requiredEvents
-                    .join('", "')
-                    .replace(
-                      /,(?=[^,]+$)/,
-                      ` and`
-                    )}
+                  <br />
+                  &quot;
+                  {requiredEvents.join('", "').replace(/,(?=[^,]+$)/, ` and`)}
                   &quot;
                 </Box>
               </Notification>
@@ -216,7 +202,8 @@ export default function StripeSetupModal({
                 withCloseButton={false}
               >
                 <Box className="text-slate-700">
-                  Stripe is currently configured correctly.
+                  Stripe is currently configured correctly. Click &quot;Verify
+                  Integration&quot; to complete Stripe configuration.
                 </Box>
               </Notification>
             )}
