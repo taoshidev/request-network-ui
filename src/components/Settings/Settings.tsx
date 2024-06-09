@@ -89,10 +89,6 @@ export function Settings({
   // refresh page when it comes back into view
   useEffect(() => {
     const fetchService = async () => {
-      const proxyService = await fetchProxyService(
-        subscription?.validator,
-        subscription?.proxyServiceId
-      );
       if (
         proxyService?.subscriptionId &&
         proxyService.active !== subscription?.active
