@@ -3,14 +3,7 @@ import {
   NOTIFICATION_COLOR,
   NOTIFICATION_ICON,
 } from "@/hooks/use-notification";
-import {
-  Modal,
-  Button,
-  Text,
-  Divider,
-  Box,
-  Notification,
-} from "@mantine/core";
+import { Modal, Button, Text, Divider, Box, Notification } from "@mantine/core";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -209,7 +202,8 @@ export default function StripeSetupModal({
                 withCloseButton={false}
               >
                 <Box className="text-slate-700">
-                  Stripe is currently configured correctly.
+                  Stripe is currently configured correctly. Click "Verify
+                  Integration" to complete Stripe configuration.
                 </Box>
               </Notification>
             )}
