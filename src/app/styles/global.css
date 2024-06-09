@@ -64,6 +64,11 @@ a {
   animation: shake 4s normal linear infinite;
 }
 
+.mantine-Modal-content {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
 @-webkit-keyframes shake {
   1%  {transform: rotate(15deg)}
   2%  {transform: rotate(0deg)}
