@@ -89,7 +89,7 @@ export const sendToProxy = async ({
 
     const res = await fetch(`${baseApiUrl}${path}`, {
       method: method,
-      body: data ? JSON.stringify(data) : null,
+      body: JSON.stringify(data || {}),
       headers: {
         "Content-Type": "application/json",
         "x-taoshi-request-key": apiKey as string,
