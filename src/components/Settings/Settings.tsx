@@ -175,6 +175,7 @@ export function Settings({
     const unSubRes = await cancelSubscription(subscription.proxyServiceId);
     notifySuccess(`Subscription cancelled successfully`);
     unSubClose();
+    setDisabled(false);
   };
 
   const stripePayment = () => {
