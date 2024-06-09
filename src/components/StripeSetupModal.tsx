@@ -202,8 +202,8 @@ export default function StripeSetupModal({
                 withCloseButton={false}
               >
                 <Box className="text-slate-700">
-                  Stripe is currently configured correctly. Click "Verify
-                  Integration" to complete Stripe configuration.
+                  Stripe is currently configured correctly. Click &quot;Verify
+                  Integration&quot; to complete Stripe configuration.
                 </Box>
               </Notification>
             )}
