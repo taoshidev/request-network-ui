@@ -24,6 +24,13 @@ export default async function Page({ params }: any) {
     where: eq(subscriptions.id, (result?.meta?.subscription as any)?.id),
     with: {
       service: true,
+      validator: {
+        columns: {
+          id: true,
+          baseApiUrl: true,
+          apiPrefix: true
+        }
+      },
       endpoint: {
         with: {
           validator: {

@@ -64,7 +64,7 @@ export const generateApiSecret = () => {
 export const sendToProxy = async ({
   validatorId,
   endpoint,
-  data,
+  data = {},
 }: {
   endpoint: {
     url: string;
@@ -72,7 +72,7 @@ export const sendToProxy = async ({
     path: string;
   };
   validatorId: string;
-  data;
+  data?: any;
 }) => {
   try {
     const { url, method, path } = endpoint;
