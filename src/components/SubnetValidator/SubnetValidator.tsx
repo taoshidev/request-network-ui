@@ -46,11 +46,19 @@ export function SubnetValidator({
     [updateData, registrationData?.validator?.id]
   );
 
+  const checkFreeService = (endpoints?: EndpointType[] | null) => {
+    return (endpoints ? endpoints : [])?.some((endpoint: EndpointType) =>
+      endpoint.contract?.services?.some(
+        (service: ServiceType) => +service?.price! === 0
+      )
+    );
+  };
+
   const hasFreeService = useCallback(
     (endpoints?: EndpointType[] | null) => {
       return (endpoints ? endpoints : [])?.some((endpoint: EndpointType) =>
         endpoint.contract?.services?.some(
-          (service: ServiceType) => +service?.price === 0
+          (service: ServiceType) => +service?.price! === 0
         )
       );
     },
@@ -59,7 +67,7 @@ export function SubnetValidator({
 
   const buttonText = useCallback(
     (validator: ValidatorType) => {
-      const isFree = hasFreeService(validator?.endpoints);
+      const isFree = checkFreeService(validator?.endpoints);
       const isSubscribed = currentSubscriptions?.some(
         (s) => s.endpointId === validator?.endpoints?.[0]?.id
       );

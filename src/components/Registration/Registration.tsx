@@ -74,7 +74,9 @@ export function Registration({
           )
         }
         StepFour={
-          <ValidatorEndpoint currentSubscriptions={currentSubscriptions} />
+          <ValidatorEndpoint
+            currentSubscriptions={currentSubscriptions}
+          />
         }
         StepFive={<SubnetValidatorReview />}
       />
