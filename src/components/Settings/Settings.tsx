@@ -74,7 +74,8 @@ export function Settings({
   apiKey: any;
   subscription: any;
 }) {
-  const [disabled, setDisabled] = useState(false);
+  const stripeEnabled = !!subscription?.validator?.stripeEnabled;
+  const [disabled, setDisabled] = useState(!stripeEnabled);
   const [opened, { open, close }] = useDisclosure(false);
   const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
     useDisclosure(false);
@@ -107,7 +108,7 @@ export function Settings({
     const onFocus = async (event) => {
       if (!active && document.visibilityState == "visible") {
         setActive(true);
-        setDisabled(false);
+        if (stripeEnabled) setDisabled(false);
         await fetchService();
         router.refresh();
       } else {
@@ -201,7 +202,7 @@ export function Settings({
           Deleting will remove access to Taoshi for this project immediately.
           This cannot be undone.
         </Box>
-        <Box>
+        <Box className="sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
           <Button w="100%" loading={loading} onClick={handleDeleteKey}>
             Yes, Delete API Key
           </Button>
@@ -283,20 +284,24 @@ export function Settings({
                     <Grid.Col span={6}></Grid.Col>
                   </Grid>
                 </Box>
-              ) : (
+              ) : stripeEnabled ? (
                 <Box>Pay for endpoint use using Stripe.</Box>
+              ) : (
+                <Box>Subscription is not active.</Box>
               )}
               <Group justify="flex-end" mt="lg">
-                <Button
-                  onClick={stripePayment}
-                  disabled={disabled}
-                  type="button"
-                  variant={subscription?.active ? "light" : "orange"}
-                >
-                  {subscription?.active
-                    ? "Cancel Payment Subscription"
-                    : "Set up Payment Subscription"}
-                </Button>
+                {stripeEnabled && (
+                  <Button
+                    onClick={stripePayment}
+                    disabled={disabled}
+                    type="button"
+                    variant={subscription?.active ? "light" : "orange"}
+                  >
+                    {subscription?.active
+                      ? "Cancel Payment Subscription"
+                      : "Set up Payment Subscription"}
+                  </Button>
+                )}
               </Group>
             </Box>
           </Alert>

@@ -275,6 +275,7 @@ export function RegistrationStepper({
         agreedToTOS: registrationData.agreedToTOS,
         serviceId: selectedService?.id,
         contractId: registrationData?.endpoint?.contract?.id,
+        active: +selectedService?.price === 0
       } as SubscriptionType);
 
       if (res?.error)
@@ -308,6 +309,7 @@ export function RegistrationStepper({
           hotkey: registrationData?.validator?.hotkey,
           validatorWalletAddress: validator?.walletAddress,
           price: selectedService?.price,
+          enabled: +selectedService?.price === 0,
           meta,
         },
       });
