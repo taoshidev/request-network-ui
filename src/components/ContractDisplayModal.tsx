@@ -89,7 +89,11 @@ export function ContractDisplayModal({
           }}
         >
           {services
-            ?.filter((service) => !review || [selectedServiceId, subscribedServiceId].includes(service?.id))
+            ?.filter(
+              (service) =>
+                !review ||
+                [selectedServiceId, subscribedServiceId].includes(service?.id)
+            )
             .map((service) => (
               <Card
                 withBorder
@@ -99,9 +103,14 @@ export function ContractDisplayModal({
                 className={clsx(
                   "p-1 m-0 cursor-pointer rn-select",
                   !review && "border-2 hover:border-orange-400",
-                  !review && [selectedServiceId, subscribedServiceId].includes(service?.id) && "rn-selected",
-                  [selectedServiceId, subscribedServiceId].includes(service?.id) &&
-                    "border-2 border-orange-400"
+                  !review &&
+                    [selectedServiceId, subscribedServiceId].includes(
+                      service?.id
+                    ) &&
+                    "rn-selected",
+                  [selectedServiceId, subscribedServiceId].includes(
+                    service?.id
+                  ) && "border-2 border-orange-400"
                 )}
                 onClick={() => handleServiceSelect(service?.id as string)}
               >
@@ -177,28 +186,28 @@ export function ContractDisplayModal({
               html={html}
             />
           </Box>
-          {!review && (
-            <Box className="flex justify-between p-4 bg-white border-t border-gray-200 sticky bottom-0 -mb-4 -mx-4">
-              <Button
-                size="sm"
-                variant={termsAccepted ? "outline" : "filled"}
-                className="flex-1 mr-2"
-                onClick={() => handleAcceptTerms(false)}
-              >
-                {termsAccepted ? "Decline" : "Decline Terms"}
-              </Button>
-              <Button
-                size="sm"
-                variant={termsAccepted ? "filled" : "outline"}
-                className="flex-1 ml-2"
-                onClick={() => handleAcceptTerms(true)}
-              >
-                {termsAccepted ? "Terms Accepted" : "Accept Terms"}
-              </Button>
-            </Box>
-          )}
         </Box>
       </Box>
+      {!review && (
+        <Box className="flex justify-between p-4 bg-white border-t border-gray-200 sticky bottom-0 -mb-4 -mx-4">
+          <Button
+            size="sm"
+            variant={termsAccepted ? "outline" : "filled"}
+            className="flex-1 mr-2"
+            onClick={() => handleAcceptTerms(false)}
+          >
+            {termsAccepted ? "Decline" : "Decline Terms"}
+          </Button>
+          <Button
+            size="sm"
+            variant={termsAccepted ? "filled" : "outline"}
+            className="flex-1 ml-2"
+            onClick={() => handleAcceptTerms(true)}
+          >
+            {termsAccepted ? "Terms Accepted" : "Accept Terms"}
+          </Button>
+        </Box>
+      )}
     </Modal>
   );
 }

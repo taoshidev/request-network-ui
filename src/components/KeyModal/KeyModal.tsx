@@ -112,7 +112,7 @@ export function KeyModal({
           />
         )}
       </Box>
-      <Box>
+      <Box className="sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
         <Button
           className="w-full"
           component="a"

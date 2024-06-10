@@ -97,13 +97,12 @@ export default function ServiceModal({
           onSubmit={form.onSubmit(onSubmit)}
         >
           <ServiceFormInput form={form} />
-          <Divider my="md" />
-          <Box className="grid grid-cols-1 mt-4 gap-4">
+        </Box>
+          <Box className="grid grid-cols-1 mt-4 gap-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
             <Button size="sm" variant="orange" type="submit" loading={loading}>
               {service ? "Update Service" : "Create Service"}
             </Button>
           </Box>
-        </Box>
       </Modal>
     </>
   );

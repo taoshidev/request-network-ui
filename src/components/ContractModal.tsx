@@ -141,7 +141,6 @@ export function ContractModal({
   };
 
   const openServiceModal = (service?: ServiceType, index?: number) => {
-
     editServiceIndexRef.current = index !== undefined ? index : null;
     serviceModalRef.current = modals.openModal({
       centered: true,
@@ -258,8 +257,7 @@ export function ContractModal({
               </Table>
             )}
           </Box>
-          <Divider my="md" />
-          <Box className="grid grid-cols-2 mt-4 gap-4">
+          <Box className="grid grid-cols-2 mt-4 gap-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
             <Button
               size="sm"
               variant="orange"

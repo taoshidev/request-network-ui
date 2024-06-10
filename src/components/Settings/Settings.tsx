@@ -201,7 +201,7 @@ export function Settings({
           Deleting will remove access to Taoshi for this project immediately.
           This cannot be undone.
         </Box>
-        <Box>
+        <Box className="sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
           <Button w="100%" loading={loading} onClick={handleDeleteKey}>
             Yes, Delete API Key
           </Button>
