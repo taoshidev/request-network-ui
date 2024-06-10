@@ -58,8 +58,8 @@ export function Validators({
           <Table highlightOnHover striped>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ width: "40%" }}>Validator</Table.Th>
-                <Table.Th style={{ width: "40%" }}>Server Url</Table.Th>
+                <Table.Th style={{ width: "15%" }}>Validator</Table.Th>
+                <Table.Th style={{ width: "25%" }}>Server Url</Table.Th>
                 <Table.Th>Subnet</Table.Th>
                 <Table.Th>Verification Status</Table.Th>
                 <Table.Th></Table.Th>
