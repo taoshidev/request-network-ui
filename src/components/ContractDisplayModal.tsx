@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Box,
   Button,
@@ -40,7 +40,7 @@ export function ContractDisplayModal({
     selectedService: ServiceType;
   }) => void;
 }) {
-  const { notifySuccess, notifyInfo } = useNotification();
+  const { notifySuccess, notifyInfo, notifyError } = useNotification();
   const { registrationData } = useRegistration();
   const [termsAccepted, setTermsAccepted] = useState<boolean>(
     registrationData?.endpoint?.termsAccepted || false
@@ -67,6 +67,17 @@ export function ContractDisplayModal({
       ) as ServiceType,
     });
     close();
+  };
+
+  const disabled = useCallback(
+    (service: ServiceType) => {
+      return +service?.price! !== 0;
+    },
+    [services]
+  );
+
+  const handleDisabled = (service: ServiceType) => {
+    notifyError(`Service "${service?.name}" is not currently available.`);
   };
 
   const handleServiceSelect = (serviceId: string) => {
@@ -102,8 +113,12 @@ export function ContractDisplayModal({
                 key={service?.id}
                 className={clsx(
                   "p-1 m-0 cursor-pointer rn-select",
-                  !review && "border-2 hover:border-orange-400",
+                  disabled(service) && "opacity-60 brightness-90",
                   !review &&
+                    !disabled(service) &&
+                    "border-2 hover:border-orange-400",
+                  !review &&
+                    !disabled(service) &&
                     [selectedServiceId, subscribedServiceId].includes(
                       service?.id
                     ) &&
@@ -112,7 +127,11 @@ export function ContractDisplayModal({
                     service?.id
                   ) && "border-2 border-orange-400"
                 )}
-                onClick={() => handleServiceSelect(service?.id as string)}
+                onClick={
+                  disabled(service)
+                    ? () => handleDisabled(service)
+                    : () => handleServiceSelect(service?.id as string)
+                }
               >
                 <Group className="justify-between items-center m-2">
                   <Text className="font-bold mb-4 text-center w-full" truncate>
