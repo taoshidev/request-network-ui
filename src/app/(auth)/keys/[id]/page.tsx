@@ -28,8 +28,9 @@ export default async function Page({ params }: any) {
         columns: {
           id: true,
           baseApiUrl: true,
-          apiPrefix: true
-        }
+          apiPrefix: true,
+          stripeEnabled: true,
+        },
       },
       endpoint: {
         with: {
@@ -38,7 +39,7 @@ export default async function Page({ params }: any) {
               signature: false,
               description: false,
               hotkey: false,
-              account: false
+              account: false,
             },
           },
         },

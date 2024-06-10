@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Title,
   Text,
@@ -74,7 +74,8 @@ export function Settings({
   apiKey: any;
   subscription: any;
 }) {
-  const stripeEnabled = !!subscription?.validator?.stripeEnabled;
+  const isFree = useMemo(() => +subscription?.service?.price === 0, [subscription]);
+  const stripeEnabled = useMemo(() => !!subscription?.validator?.stripeEnabled, [subscription]);
   const [disabled, setDisabled] = useState(!stripeEnabled);
   const [opened, { open, close }] = useDisclosure(false);
   const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
@@ -86,7 +87,6 @@ export function Settings({
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
   });
-
   // refresh page when it comes back into view
   useEffect(() => {
     const fetchService = async () => {
@@ -264,7 +264,11 @@ export function Settings({
             variant="light"
             color={subscription?.active ? "#33ad47" : "orange"}
             title={
-              subscription?.active ? "Billing Information" : "Pay For Endpoint"
+              subscription?.active
+                ? "Billing Information"
+                : isFree
+                ? "Endpoint Inactive"
+                : "Pay For Endpoint"
             }
             icon={
               subscription?.active ? <IconClockDollar /> : <IconAlertCircle />
@@ -284,13 +288,13 @@ export function Settings({
                     <Grid.Col span={6}></Grid.Col>
                   </Grid>
                 </Box>
-              ) : stripeEnabled ? (
+              ) : stripeEnabled && !isFree ? (
                 <Box>Pay for endpoint use using Stripe.</Box>
               ) : (
                 <Box>Subscription is not active.</Box>
               )}
               <Group justify="flex-end" mt="lg">
-                {stripeEnabled && (
+                {stripeEnabled && !isFree && (
                   <Button
                     onClick={stripePayment}
                     disabled={disabled}
