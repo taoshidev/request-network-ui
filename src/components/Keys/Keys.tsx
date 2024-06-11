@@ -50,7 +50,7 @@ export function Keys({
             )}
           </CopyButton>
         </Group>
-        <Box className="bg-gray-50 mb-3 p-3 pl-9 shadow-md -indent-6">
+        <Box className="bg-gray-50 my-3 p-3 pl-9 shadow-md -indent-6">
           <Code className="bg-transparent">
             wget --quiet \ --method GET \<br />
             --header &apos;Accept: */*&apos; \<br />
