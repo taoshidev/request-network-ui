@@ -358,7 +358,7 @@ export default function Home({startLink}: { startLink: string }) {
                   work with you to swiftly complete the integration process.
                 </p>
               </div>
-              <Button component='a' href="https://discord.gg/pXa2Mnqu" target='_blank'>Join Our Discord</Button>
+              <Button component='a' href="https://discord.gg/dtFnRxEe" target='_blank'>Join Our Discord</Button>
 
             </div>
           </div>
@@ -500,7 +500,7 @@ export default function Home({startLink}: { startLink: string }) {
                 >
                   LinkedIn
                 </a>
-                <a href="https://discord.gg/pXa2Mnqu" target="_blank">
+                <a href="https://discord.gg/dtFnRxEe" target="_blank">
                   Discord
                 </a>
               </div>
