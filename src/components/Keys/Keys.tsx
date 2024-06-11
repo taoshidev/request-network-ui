@@ -53,20 +53,20 @@ export function Keys({
         <Box className="bg-gray-50 mb-3 p-3 pl-9 shadow-md -indent-6">
           <Code className="bg-transparent">
             wget --quiet \ --method GET \<br />
-            --header 'Accept: */*' \<br />
-            --header 'Content-Type: application/json' \<br />
-            --header 'x-taoshi-consumer-request-key:
-            req_xxxxxxxxxxxxxxxxxxxxxxxx' \<br />
+            --header &apos;Accept: */*&apos; \<br />
+            --header &apos;Content-Type: application/json&apos; \<br />
+            --header &apos;x-taoshi-consumer-request-key:
+            req_xxxxxxxxxxxxxxxxxxxxxxxx&apos; \<br />
             --output-document \<br />
             - {url}
           </Code>
         </Box>
         <Box className="bg-gray-50 mb-3 p-3 pl-9 shadow-md -indent-6">
           <Code className="bg-transparent">
-            curl -L -X GET "{url}" \
+            curl -L -X GET &quot;{url}&quot; \
             <br />
-            -H "Content-Type: application/json" \<br />
-            -H "x-taoshi-consumer-request-key: req_xxxxxxxxxxxxxxxxxxxxxxxx"
+            -H &quot;Content-Type: application/json&quot; \<br />
+            -H &quot;x-taoshi-consumer-request-key: req_xxxxxxxxxxxxxxxxxxxxxxxx&quot;
           </Code>
         </Box>
       </Box>

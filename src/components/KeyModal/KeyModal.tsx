@@ -1,6 +1,14 @@
 "use client";
 
-import { Button, Text, Box, CopyButton, Alert, Modal, Code } from "@mantine/core";
+import {
+  Button,
+  Text,
+  Box,
+  CopyButton,
+  Alert,
+  Modal,
+  Code,
+} from "@mantine/core";
 import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
 
 export type keyType = "apiKey" | "apiSecret" | "walletAddress" | "endpoint";
@@ -112,22 +120,53 @@ export function KeyModal({
           />
         )}
       </Box>
-      <Box className="bg-gray-50 mb-3 p-3 pl-9 shadow-md -indent-6">
+      <CopyButton
+        value={`wget --quiet \\\r\n--method GET \\\r\n--header 'Accept: */*' \\\r\n--header 'Content-Type: application/json' \\\r\n--header 'x-taoshi-consumer-request-key: ${apiKey}' \\\r\n--output-document \\`}
+      >
+        {({ copied, copy }) => (
+          <Button
+            className="flex w-full"
+            leftSection={<IconCopy size={14} />}
+            variant="subtle"
+            onClick={() => copy()}
+          >
+            <Text fw="bold">{copied ? `Copied wget` : "Copy wget command"}</Text>
+          </Button>
+        )}
+      </CopyButton>
+      <Box className="bg-gray-50 mb-3 p-3 shadow-md">
+        <Text className="text-xs mb-2 font-bold text-center">wget command</Text>
         <Code className="bg-transparent">
-          wget --quiet \ --method GET \<br />
-          --header 'Accept: */*' \<br />
-          --header 'Content-Type: application/json' \<br />
-          --header 'x-taoshi-consumer-request-key: req_xxxxxxxxxxxxxxxxxxxxxxxx'
-          \<br />
+          wget --quiet \<br />
+          --method GET \<br />
+          --header &apos;Accept: */*&apos; \<br />
+          --header &apos;Content-Type: application/json&apos; \<br />
+          --header &apos;x-taoshi-consumer-request-key: {apiKey}&apos; \<br />
           --output-document \<br />- {endpoint}
         </Code>
       </Box>
-      <Box className="bg-gray-50 mb-3 p-3 pl-9 shadow-md -indent-6">
+      <CopyButton
+        value={`curl -L -X GET "${endpoint}" \\\r\n-H "Content-Type: application/json" \\\r\n-H "x-taoshi-consumer-request-key: ${apiKey}"`}
+      >
+        {({ copied, copy }) => (
+          <Button
+            className="flex w-full"
+            leftSection={<IconCopy size={14} />}
+            variant="subtle"
+            onClick={() => copy()}
+          >
+            <Text fw="bold">{copied ? `Copied curl` : "Copy curl command"}</Text>
+          </Button>
+        )}
+      </CopyButton>
+      <Box className="bg-gray-50 mb-3 p-3 shadow-md">
+        <Text className="text-xs mb-2 font-bold text-center">curl command</Text>
         <Code className="bg-transparent">
-          curl -L -X GET "{endpoint}" \
+          curl -L -X GET &quot;{endpoint}&quot; \
           <br />
-          -H "Content-Type: application/json" \<br />
-          -H "x-taoshi-consumer-request-key: req_xxxxxxxxxxxxxxxxxxxxxxxx"
+          -H &quot;Content-Type: application/json&quot; \<br />
+          -H &quot;x-taoshi-consumer-request-key:
+          req_xxxxxxxxxxxxxxxxxxxxxxxx&quot;
         </Code>
       </Box>
       <Box className="sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">

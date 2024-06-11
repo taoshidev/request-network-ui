@@ -390,7 +390,7 @@ export function RegistrationStepper({
         endpoint={keys?.endpoint}
         opened={opened}
         onClose={handleKeyModalClose}
-        onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
+        onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: prev[key] }))}
         title="Api Access Key"
         walletAddressTitle={
           isCrypto(registrationData?.endpoint?.selectedService)

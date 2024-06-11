@@ -76,7 +76,8 @@ export function ContractDisplayModal({
     (service: ServiceType) => {
       return +service?.price! !== 0 && !validator?.stripeEnabled;
     },
-    [services]
+    // eslint-disable-next-line
+    [services, validator]
   );
 
   const handleDisabled = (service: ServiceType) => {
