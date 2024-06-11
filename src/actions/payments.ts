@@ -9,6 +9,7 @@ import { getValidator } from "./validators";
 import { ValidatorType } from "@/db/types/validator";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { StripeCheckType } from "@/db/types/stripe-check";
 
 export async function requestPayment(proxyServiceId: string, returnRedirect: string = '') {
   const currentUser = await getAuthUser();
@@ -77,7 +78,7 @@ export async function cancelSubscription(proxyServiceId) {
   return proxyRes;
 }
 
-export async function checkForStripe(validatorId: string) {
+export async function checkForStripe(validatorId: string): Promise<Partial<StripeCheckType>> {
   const validator: ValidatorType = await getValidator({id: validatorId });
   return await sendToProxy({
     endpoint: {

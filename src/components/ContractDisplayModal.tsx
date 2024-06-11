@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Box,
   Button,
@@ -40,7 +40,7 @@ export function ContractDisplayModal({
     selectedService: ServiceType;
   }) => void;
 }) {
-  const { notifySuccess, notifyInfo } = useNotification();
+  const { notifySuccess, notifyInfo, notifyError } = useNotification();
   const { registrationData } = useRegistration();
   const [termsAccepted, setTermsAccepted] = useState<boolean>(
     registrationData?.endpoint?.termsAccepted || false
@@ -69,6 +69,17 @@ export function ContractDisplayModal({
     close();
   };
 
+  const disabled = useCallback(
+    (service: ServiceType) => {
+      return +service?.price! !== 0;
+    },
+    [services]
+  );
+
+  const handleDisabled = (service: ServiceType) => {
+    notifyError(`Service "${service?.name}" is not currently available.`);
+  };
+
   const handleServiceSelect = (serviceId: string) => {
     if (!review) setSelectedServiceId(serviceId);
   };
@@ -89,7 +100,11 @@ export function ContractDisplayModal({
           }}
         >
           {services
-            ?.filter((service) => !review || [selectedServiceId, subscribedServiceId].includes(service?.id))
+            ?.filter(
+              (service) =>
+                !review ||
+                [selectedServiceId, subscribedServiceId].includes(service?.id)
+            )
             .map((service) => (
               <Card
                 withBorder
@@ -98,12 +113,25 @@ export function ContractDisplayModal({
                 key={service?.id}
                 className={clsx(
                   "p-1 m-0 cursor-pointer rn-select",
-                  !review && "border-2 hover:border-orange-400",
-                  !review && [selectedServiceId, subscribedServiceId].includes(service?.id) && "rn-selected",
-                  [selectedServiceId, subscribedServiceId].includes(service?.id) &&
-                    "border-2 border-orange-400"
+                  disabled(service) && "opacity-60 brightness-90",
+                  !review &&
+                    !disabled(service) &&
+                    "border-2 hover:border-orange-400",
+                  !review &&
+                    !disabled(service) &&
+                    [selectedServiceId, subscribedServiceId].includes(
+                      service?.id
+                    ) &&
+                    "rn-selected",
+                  [selectedServiceId, subscribedServiceId].includes(
+                    service?.id
+                  ) && "border-2 border-orange-400"
                 )}
-                onClick={() => handleServiceSelect(service?.id as string)}
+                onClick={
+                  disabled(service)
+                    ? () => handleDisabled(service)
+                    : () => handleServiceSelect(service?.id as string)
+                }
               >
                 <Group className="justify-between items-center m-2">
                   <Text className="font-bold mb-4 text-center w-full" truncate>
@@ -177,28 +205,28 @@ export function ContractDisplayModal({
               html={html}
             />
           </Box>
-          {!review && (
-            <Box className="flex justify-between p-4 bg-white border-t border-gray-200 sticky bottom-0 -mb-4 -mx-4">
-              <Button
-                size="sm"
-                variant={termsAccepted ? "outline" : "filled"}
-                className="flex-1 mr-2"
-                onClick={() => handleAcceptTerms(false)}
-              >
-                {termsAccepted ? "Decline" : "Decline Terms"}
-              </Button>
-              <Button
-                size="sm"
-                variant={termsAccepted ? "filled" : "outline"}
-                className="flex-1 ml-2"
-                onClick={() => handleAcceptTerms(true)}
-              >
-                {termsAccepted ? "Terms Accepted" : "Accept Terms"}
-              </Button>
-            </Box>
-          )}
         </Box>
       </Box>
+      {!review && (
+        <Box className="flex justify-between p-4 bg-white border-t border-gray-200 sticky bottom-0 -mb-4 -mx-4">
+          <Button
+            size="sm"
+            variant={termsAccepted ? "outline" : "filled"}
+            className="flex-1 mr-2"
+            onClick={() => handleAcceptTerms(false)}
+          >
+            {termsAccepted ? "Decline" : "Decline Terms"}
+          </Button>
+          <Button
+            size="sm"
+            variant={termsAccepted ? "filled" : "outline"}
+            className="flex-1 ml-2"
+            onClick={() => handleAcceptTerms(true)}
+          >
+            {termsAccepted ? "Terms Accepted" : "Accept Terms"}
+          </Button>
+        </Box>
+      )}
     </Modal>
   );
 }

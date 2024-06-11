@@ -18,6 +18,7 @@ import { SubscriptionType } from "@/db/types/subscription";
 import { useDisclosure } from "@mantine/hooks";
 import { ContractDisplayModal } from "@/components/ContractDisplayModal";
 import clsx from "clsx";
+import { ServiceType } from "@/db/types/service";
 
 export function ValidatorEndpoint({
   currentSubscriptions,
@@ -41,12 +42,20 @@ export function ValidatorEndpoint({
     [updateData, registrationData?.endpoint?.id]
   );
 
+  const hasFreeService = (endpoint: EndpointType | null) => {
+    return endpoint?.contract?.services?.some(
+      (service: ServiceType) => +service?.price! === 0
+    );
+  };
+
   const disabled = useCallback(
     (endpoint: EndpointType) => {
+      const stripeEnabled = registrationData?.validator?.stripeEnabled;
       const isAlreadySubscribed = currentSubscriptions?.some(
         (s) => s.endpointId === endpoint?.id
       );
-      const isEnabled = endpoint?.enabled;
+      const isEnabled =
+        endpoint?.enabled && (stripeEnabled || hasFreeService(endpoint));
       const termsAccepted = endpoint?.termsAccepted;
       return !isEnabled || isAlreadySubscribed || !termsAccepted;
     },
@@ -60,7 +69,9 @@ export function ValidatorEndpoint({
       );
       return isSubscribed
         ? "Subscribed"
-        : endpoint?.enabled
+        : endpoint?.enabled &&
+          (registrationData?.validator?.stripeEnabled ||
+            hasFreeService(endpoint))
         ? "Subscribe"
         : "Not Available";
     },
@@ -89,9 +100,11 @@ export function ValidatorEndpoint({
               (e) => e.id === selectedEndpoint?.id
             )?.contract?.services
           }
-          subscribedServiceId={currentSubscriptions?.find(
-            (s) => s.endpointId === selectedEndpoint?.id
-          )?.serviceId}
+          subscribedServiceId={
+            currentSubscriptions?.find(
+              (s) => s.endpointId === selectedEndpoint?.id
+            )?.serviceId!
+          }
           html={selectedEndpoint?.contract?.content}
           opened={opened}
           close={close}

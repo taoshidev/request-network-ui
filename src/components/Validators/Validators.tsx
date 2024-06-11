@@ -49,16 +49,21 @@ export function Validators({
 
       <Box>
         <Group className="justify-between">
-          <Title order={2} className="mb-5">Validators</Title>
+          <Title order={2} className="mb-5">
+            Validators
+          </Title>
           <Button onClick={addValidator}>Add New Validator</Button>
         </Group>
         {validators && !isEmpty(validators) && (
           <Table highlightOnHover striped>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th>Validator</Table.Th>
-                <Table.Th>Endpoint</Table.Th>
+                <Table.Th style={{ width: "15%" }}>Validator</Table.Th>
+                <Table.Th style={{ width: "25%" }}>Server Url</Table.Th>
                 <Table.Th>Subnet</Table.Th>
+                <Table.Th>Verification Status</Table.Th>
+                <Table.Th></Table.Th>
+                <Table.Th></Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -70,27 +75,27 @@ export function Validators({
                       (validator?.apiPrefix ? validator?.apiPrefix : "")}
                   </Table.Td>
                   <Table.Td>
-                    <Group>
+                    <Box className="leading-7">
                       {(validator.endpoints || []).map((endpoint: any) => (
                         <Badge key={endpoint.id} color="grey">
                           {endpoint?.subnet?.label}
                         </Badge>
                       ))}
-                    </Group>
+                    </Box>
                   </Table.Td>
                   <Table.Td>
-                    {validator.verified ? (
-                      <Badge>Validator Verified</Badge>
-                    ) : (
-                      <Badge color="black">Validator Unverified</Badge>
-                    )}
-                  </Table.Td>
-                  <Table.Td>
-                    {validator.stripeEnabled ? (
-                      <Badge>Stripe Verified</Badge>
-                    ) : (
-                      <Badge color="black">Stripe Unverified</Badge>
-                    )}
+                    <Box className="leading-7">
+                      {validator.verified ? (
+                        <Badge>Validator Verified</Badge>
+                      ) : (
+                        <Badge color="black">Validator Unverified</Badge>
+                      )}
+                      {validator.stripeEnabled ? (
+                        <Badge>Stripe Verified</Badge>
+                      ) : (
+                        <Badge color="black">Stripe Unverified</Badge>
+                      )}
+                    </Box>
                   </Table.Td>
 
                   <Table.Td>
@@ -106,7 +111,11 @@ export function Validators({
                     <Button
                       size="sm"
                       variant="light"
-                      onClick={() => router.push(`/validators/${validator?.id}/payment-dashboard`)}
+                      onClick={() =>
+                        router.push(
+                          `/validators/${validator?.id}/payment-dashboard`
+                        )
+                      }
                     >
                       insights
                     </Button>

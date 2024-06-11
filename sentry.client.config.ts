@@ -7,6 +7,13 @@ import * as Sentry from "@sentry/nextjs";
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    beforeSend(event, hint) {
+      // Check if it is an exception, and if so, show the report dialog
+      if (event.exception && event.event_id) {
+        Sentry.showReportDialog({ eventId: event.event_id });
+      }
+      return event;
+    },
     enabled: ['production', 'staging'].includes(process.env.NEXT_PUBLIC_NODE_ENV as string),
   
     // Adjust this value in production, or use tracesSampler for greater control

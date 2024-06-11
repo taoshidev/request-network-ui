@@ -17,6 +17,8 @@ import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { SubscriptionType } from "@/db/types/subscription";
 import clsx from "clsx";
+import { EndpointType } from "@/db/types/endpoint";
+import { ServiceType } from "@/db/types/service";
 
 type ValidatorWithInfo = ValidatorType & { neuronInfo: any };
 
@@ -44,14 +46,34 @@ export function SubnetValidator({
     [updateData, registrationData?.validator?.id]
   );
 
+  const checkFreeService = (endpoints?: EndpointType[] | null) => {
+    return (endpoints ? endpoints : [])?.some((endpoint: EndpointType) =>
+      endpoint.contract?.services?.some(
+        (service: ServiceType) => +service?.price! === 0
+      )
+    );
+  };
+
+  const hasFreeService = useCallback(
+    (endpoints?: EndpointType[] | null) => {
+      return (endpoints ? endpoints : [])?.some((endpoint: EndpointType) =>
+        endpoint.contract?.services?.some(
+          (service: ServiceType) => +service?.price! === 0
+        )
+      );
+    },
+    [currentSubscriptions]
+  );
+
   const buttonText = useCallback(
     (validator: ValidatorType) => {
+      const isFree = checkFreeService(validator?.endpoints);
       const isSubscribed = currentSubscriptions?.some(
         (s) => s.endpointId === validator?.endpoints?.[0]?.id
       );
       return isSubscribed
         ? "Subscribed"
-        : validator?.verified && validator?.stripeEnabled
+        : validator?.verified && (validator?.stripeEnabled || isFree)
         ? "Subscribe"
         : "Not Available";
     },
@@ -141,7 +163,13 @@ export function SubnetValidator({
                 </Group>
 
                 <Button
-                  disabled={!validator?.verified || !validator?.stripeEnabled}
+                  disabled={
+                    !validator?.verified ||
+                    !(
+                      validator?.stripeEnabled ||
+                      hasFreeService(validator?.endpoints)
+                    )
+                  }
                   variant={
                     registrationData &&
                     registrationData?.validator?.id === validator.id

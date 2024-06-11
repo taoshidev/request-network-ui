@@ -14,7 +14,7 @@ export default function RegistrationTOS() {
         type="application/pdf"
         data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
       >
-        <Box component="p">
+        <Box>
           File can not be displayed in browser.{" "}
           <NavLink href="/request-network-terms-of-service.pdf">
             Request Network Terms of Service

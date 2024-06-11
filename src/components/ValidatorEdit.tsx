@@ -46,6 +46,7 @@ import AccountSelector from "@components/AccountSelector";
 import { isCrypto } from "@/utils/is-crypto";
 import { checkForStripe } from "@/actions/payments";
 import StripeSetupModal from "./StripeSetupModal";
+import { StripeCheckType } from "@/db/types/stripe-check";
 
 export const ValidatorEditSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -75,7 +76,7 @@ export function ValidatorEdit({
   const accountModalRef = useRef<string | null>(null);
   const router = useRouter();
   const modals = useModals();
-  const [stripe, setStripe] = useState(null);
+  const [stripe, setStripe] = useState<Partial<StripeCheckType>>({});
 
   const form = useForm<Partial<ValidatorType>>({
     initialValues: {
@@ -195,7 +196,7 @@ export function ValidatorEdit({
     }
 
     const stripe = await checkForStripe(validator.id as string);
-    setStripe(stripe);
+    setStripe(stripe || {});
     stripeOpen();
   };
 

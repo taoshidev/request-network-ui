@@ -1,4 +1,5 @@
 import { checkForStripe } from "@/actions/payments";
+import { StripeCheckType } from "@/db/types/stripe-check";
 import {
   NOTIFICATION_COLOR,
   NOTIFICATION_ICON,
@@ -15,7 +16,7 @@ export default function StripeSetupModal({
   onCancel,
 }: {
   opened: boolean;
-  initialStripe: any;
+  initialStripe: Partial<StripeCheckType>;
   validatorId: string;
   onConfirm?: () => void;
   onCancel: () => void;
@@ -47,11 +48,13 @@ export default function StripeSetupModal({
       !stripe?.stripePublicKey ||
       !stripe?.stripeWebhooksKey;
     const missingLiveWebhook = !stripe?.webhooks || !stripe?.webhookEvents;
+
     setMissingEnv(missingEnv);
     setMissingWebhooks(!stripe?.webhooks);
     setMissingWebhookEvents(!stripe?.webhookEvents);
     setDisabled(
-      stripe?.isHttps ? missingLiveWebhook || missingEnv : missingEnv
+      (stripe?.isHttps ? missingLiveWebhook || missingEnv : missingEnv) ||
+        stripe?.rnUrl !== process.env.NEXT_PUBLIC_DOMAIN
     );
     // eslint-disable-next-line
   }, [stripe]);
@@ -84,6 +87,24 @@ export default function StripeSetupModal({
           </Notification>
         ) : (
           <>
+            {stripe?.rnUrl !== process.env.NEXT_PUBLIC_DOMAIN && (
+              <Notification
+                className="zoom in shadow-md border border-gray-200 mb-3"
+                style={{
+                  borderLeft: `4px solid ${NOTIFICATION_COLOR.WARNING}`,
+                }}
+                icon={NOTIFICATION_ICON.WARNING}
+                color={NOTIFICATION_COLOR.WARNING}
+                title="Server URL Match Error"
+                withCloseButton={false}
+              >
+                <Box className="text-slate-700">
+                  Server &quot;REQUEST_NETWORK_UI_URL&quot; shout be set to
+                  &quot;{process.env.NEXT_PUBLIC_DOMAIN}&quot; but is set to
+                  &quot;{stripe?.rnUrl}&quot;.
+                </Box>
+              </Notification>
+            )}
             {missingEnv && (
               <Notification
                 className="zoom in shadow-md border border-gray-200 mb-3"
@@ -211,7 +232,7 @@ export default function StripeSetupModal({
         )}
       </Box>
       <Divider />
-      <Box className="flex justify-end mt-4">
+      <Box className="flex justify-end mt-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
         <Button variant="outline" onClick={onCancel} className="mr-2">
           Cancel
         </Button>

@@ -29,8 +29,7 @@ export const ConfirmModal = ({
       centered
     >
       <Text className="mb-7">{message}</Text>
-      <Divider />
-      <Box className="flex justify-end mt-4">
+      <Box className="flex justify-end mt-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
         <Button variant="outline" onClick={onCancel} className="mr-2">
           {cancelLabel}
         </Button>
