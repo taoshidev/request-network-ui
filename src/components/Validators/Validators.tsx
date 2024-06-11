@@ -9,6 +9,7 @@ import { UserType } from "@/db/types/user";
 import { SubnetType } from "@/db/types/subnet";
 import { ValidatorType } from "@/db/types/validator";
 import { ContractType } from "@/db/types/contract";
+import { EndpointType } from "@/db/types/endpoint";
 
 export type KeyType = { apiKey: string; apiSecret: string };
 
@@ -77,12 +78,23 @@ export function Validators({
                   <Table.Td>
                     <Box className="leading-7">
                       {(validator.endpoints || [])
-                      .filter((endpoint, index, array) => array.indexOf(endpoint) === index)
-                      .map((endpoint: any) => (
-                        <Badge key={endpoint.id} color="grey">
-                          {endpoint?.subnet?.label}
-                        </Badge>
-                      ))}
+                        .filter(
+                          (
+                            endpoint: EndpointType,
+                            index: number,
+                            array: EndpointType[]
+                          ) =>
+                            array.findIndex(
+                              (firstEndpoint) =>
+                                firstEndpoint?.subnet?.label ===
+                                endpoint?.subnet?.label
+                            ) === index
+                        )
+                        .map((endpoint: any) => (
+                          <Badge key={endpoint.id} color="grey">
+                            {endpoint?.subnet?.label}
+                          </Badge>
+                        ))}
                     </Box>
                   </Table.Td>
                   <Table.Td>
