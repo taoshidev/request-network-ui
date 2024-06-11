@@ -100,6 +100,7 @@ export function ValidatorEndpoint({
               (e) => e.id === selectedEndpoint?.id
             )?.contract?.services
           }
+          validator={registrationData?.validator!}
           subscribedServiceId={
             currentSubscriptions?.find(
               (s) => s.endpointId === selectedEndpoint?.id

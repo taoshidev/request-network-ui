@@ -16,6 +16,7 @@ import { useRegistration } from "@/providers/registration";
 import { ServiceType } from "@/db/types/service";
 import dayjs from "dayjs";
 import clsx from "clsx";
+import { ValidatorType } from "@/db/types/validator";
 
 export function ContractDisplayModal({
   html,
@@ -24,6 +25,7 @@ export function ContractDisplayModal({
   onTermsAccepted,
   review = false,
   services,
+  validator,
   subscribedServiceId,
 }: {
   html: string;
@@ -31,6 +33,7 @@ export function ContractDisplayModal({
   review?: boolean;
   close: () => void;
   services: ServiceType[];
+  validator?: ValidatorType;
   subscribedServiceId?: string;
   onTermsAccepted?: ({
     termsAccepted,
@@ -71,7 +74,7 @@ export function ContractDisplayModal({
 
   const disabled = useCallback(
     (service: ServiceType) => {
-      return +service?.price! !== 0;
+      return +service?.price! !== 0 && !validator?.stripeEnabled;
     },
     [services]
   );
