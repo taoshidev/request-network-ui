@@ -132,7 +132,7 @@ export function KeyModal({
       {isConsumer && (
         <>
           <CopyButton
-            value={`wget --quiet \\\r\n--method GET \\\r\n--header 'Accept: */*' \\\r\n--header 'Content-Type: application/json' \\\r\n--header 'x-taoshi-consumer-request-key: ${apiKey}' \\\r\n--output-document \\`}
+            value={`wget --quiet \\\r\n--method GET \\\r\n--header 'Accept: */*' \\\r\n--header 'Content-Type: application/json' \\\r\n--header 'x-taoshi-consumer-request-key: ${apiKey}' \\\r\n--output-document \\\r\n- ${endpoint}`}
           >
             {({ copied, copy }) => (
               <Button
@@ -186,7 +186,7 @@ export function KeyModal({
               <br />
               -H &quot;Content-Type: application/json&quot; \<br />
               -H &quot;x-taoshi-consumer-request-key:
-              req_xxxxxxxxxxxxxxxxxxxxxxxx&quot;
+              {apiKey}&quot;
             </Code>
           </Box>
         </>

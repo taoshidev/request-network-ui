@@ -10,6 +10,7 @@ import {
   Badge,
   Button,
   Group,
+  Divider,
 } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRegistration } from "@/providers/registration";
@@ -86,7 +87,7 @@ export function SubnetValidator({
       <Grid>
         {(validators || [])?.map?.(
           (validator: ValidatorType & { neuronInfo: any }) => (
-            <Grid.Col key={validator.id} span={3}>
+            <Grid.Col key={validator.id} span={{ base: 12, md: 6, lg: 4 }}>
               <Box className="p-2">
                 <Card
                   shadow="sm"
@@ -101,13 +102,15 @@ export function SubnetValidator({
                   <Text className="font-bold mb-4" truncate>
                     {validator?.name || "Validator"}
                   </Text>
-                  <Group className="justify-between items-center mb-2">
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-1">
                     <Text className="text-sm">Active:</Text>
                     <Badge size="sm" variant="light">
                       {validator?.neuronInfo?.active?.toString() || "FALSE"}
                     </Badge>
                   </Group>
-                  <Group className="justify-between items-center mb-2">
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-1">
                     <Text className="text-sm">Updated:</Text>
                     <Badge size="sm" variant="light">
                       {dayjs(validator?.neuronInfo?.last_updated).format(
@@ -115,56 +118,64 @@ export function SubnetValidator({
                       ) || "-"}
                     </Badge>
                   </Group>
-                  <Group className="justify-between items-center mb-2">
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-1">
                     <Text className="text-sm">V-Trust:</Text>
                     <Badge size="sm" variant="light">
                       {validator?.neuronInfo?.validator_trust?.toString() ||
                         "-"}
                     </Badge>
                   </Group>
-                  <Group className="justify-between items-center mb-2">
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-1">
                     <Text className="text-sm">Trust:</Text>
                     <Badge size="sm" variant="light">
                       {validator?.neuronInfo?.trust?.toString() || "-"}
                     </Badge>
                   </Group>
-                  <Group className="justify-between items-center mb-2">
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-1">
                     <Text className="text-sm">Endpoints:</Text>
                     <Badge size="sm" variant="light">
                       {validator?.endpoints?.length}
                     </Badge>
                   </Group>
-                  <Group className="justify-between items-center mb-2">
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-1">
                     <Text className="text-sm">Consensus:</Text>
                     <Badge size="sm" variant="light">
                       {validator?.neuronInfo?.consensus?.toString() || "-"}
                     </Badge>
                   </Group>
-                  <Group className="justify-between items-center mb-2">
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-1">
                     <Text className="text-sm">Dividends:</Text>
                     <Badge size="sm" variant="light">
                       {validator?.neuronInfo?.dividends?.toString() || "-"}
                     </Badge>
                   </Group>
-                  <Group className="justify-between items-center mb-2">
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-1">
                     <Text className="text-sm">Emission:</Text>
                     <Badge size="sm" variant="light">
                       {validator?.neuronInfo?.emission?.toString() || "-"}
                     </Badge>
                   </Group>
-                  <Group className="justify-between items-center mb-2">
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-1">
                     <Text className="text-sm">Incentive:</Text>
                     <Badge size="sm" variant="light">
                       {validator?.neuronInfo?.incentive?.toString() || "-"}
                     </Badge>
                   </Group>
-                  <Group className="justify-between items-center mb-6">
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-1">
                     <Text className="text-sm">Rank:</Text>
                     <Badge size="sm" variant="light">
                       {validator?.neuronInfo?.rank?.toString() || "-"}
                     </Badge>
                   </Group>
-
+                  <Divider className="border-dashed mb-5" />
                   <Button
                     disabled={
                       !validator?.verified ||
