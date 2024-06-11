@@ -309,7 +309,7 @@ export function RegistrationStepper({
           hotkey: registrationData?.validator?.hotkey,
           validatorWalletAddress: validator?.walletAddress,
           price: selectedService?.price,
-          enabled: +selectedService?.price === 0,
+          active: +selectedService?.price === 0,
           meta,
         },
       });
