@@ -6,11 +6,7 @@ import React from "react";
 import { DateTime } from "luxon";
 import clsx from "clsx";
 
-export default function ReviewValidatorEndpoint({
-  form,
-  contracts,
-  errors,
-}) {
+export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
   return (
     <div className="w-full slide">
       <Title order={2} className="text-center mt-7">
@@ -68,6 +64,27 @@ export default function ReviewValidatorEndpoint({
                         colSpan={4}
                       >
                         {service.name}
+                        {service.price === 0 ? (
+                          <span className="float-right">FREE</span>
+                        ) : (
+                          <>
+                            {service.currencyType === "FIAT" && (
+                              <span className="float-right">
+                                ${service.price}
+                              </span>
+                            )}
+                            {service.currencyType === "USDC" && (
+                              <span className="float-right">
+                                {service.price} USDC
+                              </span>
+                            )}
+                            {service.currencyType === "USDT" && (
+                              <span className="float-right">
+                                {service.price} USDT
+                              </span>
+                            )}
+                          </>
+                        )}
                       </Table.Th>
                     </Table.Tr>
                     <Table.Tr>
