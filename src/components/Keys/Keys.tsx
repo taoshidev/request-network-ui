@@ -8,6 +8,7 @@ import {
   Group,
   Button,
   CopyButton,
+  Code,
 } from "@mantine/core";
 import dayjs from "dayjs";
 
@@ -16,7 +17,13 @@ import { IconCopy } from "@tabler/icons-react";
 
 import styles from "./keys.module.css";
 
-export function Keys({ apiKey, subscription }: { apiKey: any, subscription: any }) {
+export function Keys({
+  apiKey,
+  subscription,
+}: {
+  apiKey: any;
+  subscription: any;
+}) {
   const url = apiKey?.meta?.endpoint;
 
   return (
@@ -43,6 +50,25 @@ export function Keys({ apiKey, subscription }: { apiKey: any, subscription: any 
             )}
           </CopyButton>
         </Group>
+        <Box className="bg-gray-50 my-3 p-3 pl-9 shadow-md -indent-6">
+          <Code className="bg-transparent">
+            wget --quiet \ --method GET \<br />
+            --header &apos;Accept: */*&apos; \<br />
+            --header &apos;Content-Type: application/json&apos; \<br />
+            --header &apos;x-taoshi-consumer-request-key:
+            req_xxxxxxxxxxxxxxxxxxxxxxxx&apos; \<br />
+            --output-document \<br />
+            - {url}
+          </Code>
+        </Box>
+        <Box className="bg-gray-50 mb-3 p-3 pl-9 shadow-md -indent-6">
+          <Code className="bg-transparent">
+            curl -L -X GET &quot;{url}&quot; \
+            <br />
+            -H &quot;Content-Type: application/json&quot; \<br />
+            -H &quot;x-taoshi-consumer-request-key: req_xxxxxxxxxxxxxxxxxxxxxxxx&quot;
+          </Code>
+        </Box>
       </Box>
 
       <Settings apiKey={apiKey} subscription={subscription} />

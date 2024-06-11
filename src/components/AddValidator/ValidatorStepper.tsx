@@ -193,7 +193,6 @@ export default function ValidatorStepper({
 
       notifySuccess("Validator registered successfully");
       setActive((current) => 3);
-      form.reset();
 
       sendNotification({
         type: NOTIFICATION_TYPE.SUCCESS,
@@ -216,7 +215,7 @@ export default function ValidatorStepper({
         apiSecret={keys?.apiSecret}
         opened={keyModalOpened}
         onClose={() => setKeyModalOpened(false)}
-        onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
+        onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: prev[key] }))}
         title="API Access Key"
       />
 
@@ -237,7 +236,7 @@ export default function ValidatorStepper({
                 type="application/pdf"
                 data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
               >
-                <Box component="p">
+                <Box>
                   File can not be displayed in browser.{" "}
                   <NavLink href="/request-network-terms-of-service.pdf">
                     Request Network Terms of Service

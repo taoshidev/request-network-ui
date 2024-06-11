@@ -7,9 +7,10 @@ import * as Sentry from "@sentry/nextjs";
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    environment:process.env.NEXT_PUBLIC_NODE_ENV as string,
     beforeSend(event, hint) {
       // Check if it is an exception, and if so, show the report dialog
-      if (event.exception && event.event_id) {
+      if (event.exception && event.event_id && process.env.NEXT_PUBLIC_NODE_ENV !== 'development') {
         Sentry.showReportDialog({ eventId: event.event_id });
       }
       return event;
@@ -30,6 +31,10 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   
     // You can remove this option if you're not planning to use the Sentry Session Replay feature:
     integrations: [
+      Sentry.feedbackIntegration({
+        // Additional SDK configuration goes in here, for example:
+        colorScheme: "system",
+      }),
       Sentry.replayIntegration({
         // Additional Replay configuration goes in here, for example:
         maskAllText: true,

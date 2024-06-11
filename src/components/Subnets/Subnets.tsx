@@ -27,7 +27,7 @@ export function Subnets({
     if (setDirection) {
       setDirection(registrationData.direction);
     }
-  }, [registrationData]);
+  }, [registrationData, setDirection]);
 
   const handleItemClick = (subnet: any) => {
     if (selectedSubnet === subnet.id) {
