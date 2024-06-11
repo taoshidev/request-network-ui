@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/nextjs";
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    environment:process.env.NEXT_PUBLIC_NODE_ENV as string,
     enabled: ['production', 'staging'].includes(process.env.NEXT_PUBLIC_NODE_ENV as string),
   
     // Adjust this value in production, or use tracesSampler for greater control

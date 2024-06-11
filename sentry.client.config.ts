@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/nextjs";
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    environment:process.env.NEXT_PUBLIC_NODE_ENV as string,
     beforeSend(event, hint) {
       // Check if it is an exception, and if so, show the report dialog
       if (event.exception && event.event_id) {

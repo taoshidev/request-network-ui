@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Text, Box, CopyButton, Alert, Modal } from "@mantine/core";
+import { Button, Text, Box, CopyButton, Alert, Modal, Code } from "@mantine/core";
 import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
 
 export type keyType = "apiKey" | "apiSecret" | "walletAddress" | "endpoint";
@@ -111,6 +111,24 @@ export function KeyModal({
             onCopy={onCopy}
           />
         )}
+      </Box>
+      <Box className="bg-gray-50 mb-3 p-3 pl-9 shadow-md -indent-6">
+        <Code className="bg-transparent">
+          wget --quiet \ --method GET \<br />
+          --header 'Accept: */*' \<br />
+          --header 'Content-Type: application/json' \<br />
+          --header 'x-taoshi-consumer-request-key: req_xxxxxxxxxxxxxxxxxxxxxxxx'
+          \<br />
+          --output-document \<br />- {endpoint}
+        </Code>
+      </Box>
+      <Box className="bg-gray-50 mb-3 p-3 pl-9 shadow-md -indent-6">
+        <Code className="bg-transparent">
+          curl -L -X GET "{endpoint}" \
+          <br />
+          -H "Content-Type: application/json" \<br />
+          -H "x-taoshi-consumer-request-key: req_xxxxxxxxxxxxxxxxxxxxxxxx"
+        </Code>
       </Box>
       <Box className="sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
         <Button

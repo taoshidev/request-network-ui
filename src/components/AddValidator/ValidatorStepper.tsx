@@ -193,7 +193,6 @@ export default function ValidatorStepper({
 
       notifySuccess("Validator registered successfully");
       setActive((current) => 3);
-      form.reset();
 
       sendNotification({
         type: NOTIFICATION_TYPE.SUCCESS,
@@ -216,7 +215,7 @@ export default function ValidatorStepper({
         apiSecret={keys?.apiSecret}
         opened={keyModalOpened}
         onClose={() => setKeyModalOpened(false)}
-        onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
+        onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: prev[key] }))}
         title="API Access Key"
       />
 

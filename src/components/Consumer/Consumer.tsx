@@ -170,7 +170,7 @@ export function Consumer({
                         component={Link}
                         href={`/keys/${subscription?.keyData?.id}`}
                       >
-                        View Key
+                        View Subscription
                       </Anchor>
                     </Table.Td>
                   </Table.Tr>

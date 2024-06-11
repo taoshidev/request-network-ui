@@ -76,7 +76,9 @@ export function Validators({
                   </Table.Td>
                   <Table.Td>
                     <Box className="leading-7">
-                      {(validator.endpoints || []).map((endpoint: any) => (
+                      {(validator.endpoints || [])
+                      .filter((endpoint, index, array) => array.indexOf(endpoint) === index)
+                      .map((endpoint: any) => (
                         <Badge key={endpoint.id} color="grey">
                           {endpoint?.subnet?.label}
                         </Badge>
