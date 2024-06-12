@@ -27,6 +27,7 @@ export function HeaderHome({
   const iconSizeLg = 20;
   const iconSizeSm = 14;
 
+<<<<<<< HEAD
   const navLinks = useCallback(
     (iconSize: number) => {
       return [

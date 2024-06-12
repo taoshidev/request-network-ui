@@ -41,32 +41,37 @@ const navLinks = [
     target: "_blank",
     indicator: true,
     icon: <IconChartBar size={20} />,
-    dataCy: "btn-header-status"
+    dataCy: "btn-header-status",
   },
   {
     href: "/documentation",
     name: "Docs",
     icon: <IconFileStack size={iconSize} />,
-    dataCy: "btn-header-documentation"
+    dataCy: "btn-header-documentation",
   },
   {
     href: "/contributing",
     name: "Contribute",
     icon: <IconCode size={iconSize} />,
-    dataCy: "btn-header-contribute"
+    dataCy: "btn-header-contribute",
   },
-  { href: "/faq", name: "Help", icon: <IconHelpSquare size={iconSize} /> , dataCy: 'btn-header-faq'},
+  {
+    href: "/faq",
+    name: "Help",
+    icon: <IconHelpSquare size={iconSize} />,
+    dataCy: "btn-header-faq",
+  },
   {
     href: "/support",
     name: "Support",
     icon: <IconHelpSquare size={iconSize} />,
-    dataCy: 'btn-header-support'
+    dataCy: "btn-header-support",
   },
   {
     href: "/dashboard",
     name: "Dashboard",
     icon: <IconDashboard size={iconSize} />,
-    dataCy: 'btn-header-dashboard'
+    dataCy: "btn-header-dashboard",
   },
 ];
 
@@ -109,7 +114,7 @@ export function Header() {
           {process.env.NEXT_PUBLIC_ENV_NAME}
         </Box>
       )}
-            <Group component="nav" className="h-full px-4 py-5 max-w-6xl m-auto">
+      <Group component="nav" className="h-full px-4 py-5 max-w-6xl m-auto">
         <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
         <Group className="flex-1 justify-between h-12">
           <Box className="items-center justify-center">
