@@ -64,7 +64,7 @@ export function HeaderHome({
             className="text-sm font-normal"
             component={Link}
             leftSection={<IconHelpSquare size={14} />}
-            href="mailto: lphan@taoshi.io"
+            href="mailto: support-request@taoshi.io"
             target="_blank"
           >
             Support
