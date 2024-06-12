@@ -5,8 +5,8 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <Box className="bg-white px-4 pt-5 pb-8 max-w-6xl m-auto">
-      <Box className="container mx-auto flex justify-between">
-        <Text className="text-orange-500 text-3xl font-bold font-adlam-display">
+      <Box className="container mx-auto flex justify-between flex-wrap">
+        <Text className="text-orange-500 text-3xl font-bold font-adlam-display pr-3 pb-3">
           taoshi
         </Text>
         <Group className="space-x-16" justify="start" align="start">
