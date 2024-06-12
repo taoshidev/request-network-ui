@@ -52,7 +52,11 @@ const navLinks = [
     icon: <IconCode size={iconSize} />,
   },
   { href: "/faq", name: "Help", icon: <IconHelpSquare size={iconSize} /> },
-  { href: "/support", name: "Support", icon: <IconLifebuoy size={iconSize} /> },
+  {
+    href: "/support",
+    name: "Support",
+    icon: <IconHelpSquare size={iconSize} />,
+  },
   {
     href: "/dashboard",
     name: "Dashboard",
@@ -86,6 +90,7 @@ export function Header() {
 
   const handleSignOut = async () => {
     localStorage?.removeItem?.("_reg_data");
+    close();
     await signout();
   };
 
@@ -109,20 +114,20 @@ export function Header() {
             </Anchor>
           </Box>
           <Group className="ml-1" visibleFrom="sm">
-            {navLinks.map((link) => (
+            {navLinks.map((navLink) => (
               <Anchor
-                key={link.href}
+                key={navLink.href}
                 className="text-sm text-black"
                 component={Link}
-                href={link.href}
-                target={link.target}
+                href={navLink.href}
+                target={navLink.target}
               >
-                {link.indicator ? (
+                {navLink.indicator ? (
                   <Indicator position="top-start" size={6}>
-                    {link.name}
+                    {navLink.name}
                   </Indicator>
                 ) : (
-                  link.name
+                  navLink.name
                 )}
               </Anchor>
             ))}
@@ -213,22 +218,23 @@ export function Header() {
         size="xs"
       >
         <Box component="nav" className="-mx-4">
-          {navLinks.map((link) => (
-            <Box key={link.href}>
+          {navLinks.map((navLink) => (
+            <Box key={navLink.href}>
               <Anchor
                 className="text-black flex justify-left px-1"
                 component={Link}
-                href={link.href}
-                target={link.target}
+                href={navLink.href}
+                target={navLink.target}
+                onClick={close}
               >
-                <Box className="p-3">{link.icon}</Box>
+                <Box className="p-3">{navLink.icon}</Box>
                 <Box className=" p-3 grow">
-                  {link.indicator ? (
+                  {navLink.indicator ? (
                     <Indicator position="top-start" size={6}>
-                      {link.name}
+                      {navLink.name}
                     </Indicator>
                   ) : (
-                    link.name
+                    navLink.name
                   )}
                 </Box>
               </Anchor>
@@ -239,6 +245,7 @@ export function Header() {
             className="text-black flex justify-left px-1"
             component={Link}
             href="/profile"
+            onClick={close}
           >
             <Box className="p-3">
               <IconUser size={iconSize} />
