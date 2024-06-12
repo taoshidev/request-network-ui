@@ -19,7 +19,7 @@ export const getSubscriptions = async (query: object = {}) => {
   }
 };
 
-export const getSubscription = async ({id}: {id: string}) => {
+export const getSubscription = async ({ id }: { id: string }) => {
   const res = await db.query.subscriptions.findFirst({
     where: (subscriptions, { eq }) => eq(subscriptions.id, id as string),
   });
@@ -59,6 +59,19 @@ export const createSubscription = async (
 
     revalidatePath("/dashboard");
     return parseResult(res, { filter: ["key", "keyId"] });
+  } catch (error) {
+    if (error instanceof Error) return parseError(error);
+  }
+};
+
+export const deleteSubscription = async (id: string) => {
+  try {
+    const res = await db
+      .delete(subscriptions)
+      .where(eq(subscriptions.id, id as string))
+      .returning();
+
+    return parseResult(res);
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }

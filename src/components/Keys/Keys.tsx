@@ -12,10 +12,8 @@ import {
 } from "@mantine/core";
 import dayjs from "dayjs";
 
-import { Settings } from "../Settings";
+import { Settings } from "./Settings";
 import { IconCopy } from "@tabler/icons-react";
-
-import styles from "./keys.module.css";
 
 export function Keys({
   apiKey,
@@ -28,7 +26,7 @@ export function Keys({
 
   return (
     <Container>
-      <Box my="xl" className={styles.intro} pb="lg">
+      <Box my="xl" pb="lg">
         <Title className="mb-5">{subscription?.appName}</Title>
         <Text size="xs" mb="sm">
           Created: {dayjs(apiKey?.createdAt).format("MMM DD, YYYY")}

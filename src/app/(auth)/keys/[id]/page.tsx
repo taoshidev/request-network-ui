@@ -3,7 +3,7 @@ import { getKey } from "@/actions/keys";
 import { getSubscriptions } from "@/actions/subscriptions";
 import ClientRedirect from "@/components/ClientRedirect";
 
-import { Keys } from "@/components/Keys";
+import { Keys } from "@/components/Keys/Keys";
 import { subscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 

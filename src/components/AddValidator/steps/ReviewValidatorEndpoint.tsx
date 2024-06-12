@@ -64,7 +64,7 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                         colSpan={4}
                       >
                         {service.name}
-                        {service.price === 0 ? (
+                        {+service.price === 0 ? (
                           <span className="float-right">FREE</span>
                         ) : (
                           <>
