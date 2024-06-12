@@ -10,6 +10,9 @@ import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function AddValidatorPage() {
   const user = await getAuthUser();
+
+  if (!user) return;
+
   const subnets = await getSubnets();
   const userContracts = await getContracts({
     where: and(eq(contracts.userId, user?.id as string)),

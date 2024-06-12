@@ -6,6 +6,8 @@ import Footer from "@/components/Footer";
 
 export default async function TermsOfServicePage() {
   const user = await getAuthUser();
+
+
   const startLink = user ? "/dashboard" : "/login";
 
   return (

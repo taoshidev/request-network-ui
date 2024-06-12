@@ -9,6 +9,9 @@ import { getContracts } from "@/actions/contracts";
 
 export default async function Page() {
   const user = await getAuthUser();
+
+  if (!user) return;
+
   const endpoints = await getEndpoints();
   const validators = await getValidators();
   const subnets = await getSubnets();

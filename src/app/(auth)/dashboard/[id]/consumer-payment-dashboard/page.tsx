@@ -14,6 +14,9 @@ export const revalidate = 0;
 
 export default async function Page({ params }: any) {
   const user = await getAuthUser();
+
+  if (!user) return;
+  
   const { start, end, prevStart, prevEnd } = getStartAndEndTimestamps();
 
   const fetchSubscriptions = async (start: string, end: string) => {

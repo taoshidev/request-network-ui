@@ -14,6 +14,8 @@ import ClientRedirect from "@/components/ClientRedirect";
 export default async function Page() {
   const user = await getAuthUser();
 
+  if (!user) return;
+
   if (!user?.user_metadata?.onboarded) {
     return <ClientRedirect href="/onboarding" />;
   }

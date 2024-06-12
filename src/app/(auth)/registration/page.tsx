@@ -10,6 +10,9 @@ import { ValidatorType } from "@/db/types/validator";
 
 export default async function Page() {
   const user = await getAuthUser();
+
+  if (!user) return;
+
   const subnets = await getSubnets({
     with: {
       endpoints: {

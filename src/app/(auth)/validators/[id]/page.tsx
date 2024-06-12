@@ -11,6 +11,9 @@ export default async function Page({ params }: any) {
   const { id } = params;
   const validator: ValidatorType = await getValidator({ id });
   const user = await getAuthUser();
+
+  if (!user) return;
+
   const userContracts = await getContracts({
     where: and(eq(contracts.userId, user?.id!)),
     with: { services: true }

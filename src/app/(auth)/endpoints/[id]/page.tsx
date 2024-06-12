@@ -14,6 +14,9 @@ interface PageProps {
 export default async function Page({ params }: PageProps) {
   const { id } = params;
   const user = await getAuthUser();
+
+  if (!user) return;
+
   const result: EndpointType = await getEndpointWithSubscription({ id });
 
   const userContracts = await getContracts({

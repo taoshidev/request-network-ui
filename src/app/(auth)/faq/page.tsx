@@ -5,6 +5,8 @@ import { questionsForRole } from "./faq-questions";
 export default async function HelpPage() {
   const user = await getAuthUser();
 
+  if (!user) return;
+
   return (
     <div className="container max-w-5xl mx-auto mb-32">
       <div className="max-w-2xl mx-auto text-center mb-16">

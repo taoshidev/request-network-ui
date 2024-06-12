@@ -5,6 +5,8 @@ import SupportEmailForm from "@/components/SupportEmailForm";
 export default async function SupportPage() {
   const user = await getAuthUser();
 
+  if (!user) return;
+
   return (
     <Box className="container max-w-5xl mx-auto mb-32">
       <Box className="max-w-3xl mx-auto mb-16">
