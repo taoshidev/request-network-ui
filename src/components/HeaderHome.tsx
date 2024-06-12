@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Group,
   Anchor,
@@ -5,16 +7,13 @@ import {
   Burger,
   Box,
   Drawer,
-  Indicator,
 } from "@mantine/core";
 import Link from "next/link";
 import {
   IconHelpSquare,
-  IconScript,
   IconChartBar,
   IconFileStack,
   IconCode,
-  IconLifebuoy,
   IconDashboard,
 } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
@@ -86,7 +85,7 @@ export function HeaderHome({
           <Anchor
             className="mr-1 font-adlam-display font-bold text-2xl text-white"
             component={Link}
-            href="/dashboard"
+            href="/"
           >
             taoshi
           </Anchor>
@@ -114,7 +113,7 @@ export function HeaderHome({
             <Anchor
               className="mr-1 font-adlam-display text-zinc-800 text-3xl font-bold no-underline"
               component={Link}
-              href="/dashboard"
+              href="/"
             >
               taoshi
             </Anchor>
@@ -128,7 +127,7 @@ export function HeaderHome({
           {navLinks(iconSizeLg).map((link) => (
             <Box key={link.href}>
               <Anchor
-                className="text-black flex justify-left px-1"
+                className="text-black flex justify-left px-1 hover:text-white hover:bg-primary-500"
                 component={Link}
                 href={link.href}
                 target={link.target}

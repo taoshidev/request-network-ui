@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Burger,
   Group,
@@ -17,12 +19,10 @@ import {
   IconUser,
   IconChevronDown,
   IconBell,
-  IconFileInfo,
   IconChartBar,
   IconFileStack,
   IconCode,
   IconHelpSquare,
-  IconLifebuoy,
   IconDashboard,
 } from "@tabler/icons-react";
 import useSWR from "swr";
@@ -221,7 +221,7 @@ export function Header() {
           {navLinks.map((navLink) => (
             <Box key={navLink.href}>
               <Anchor
-                className="text-black flex justify-left px-1"
+                className="text-black flex justify-left px-1 hover:text-white hover:bg-primary-500"
                 component={Link}
                 href={navLink.href}
                 target={navLink.target}
@@ -242,7 +242,7 @@ export function Header() {
           ))}
           <Divider color="#eee" orientation="horizontal" />
           <Anchor
-            className="text-black flex justify-left px-1"
+            className="text-black flex justify-left px-1 hover:text-white hover:bg-primary-500"
             component={Link}
             href="/profile"
             onClick={close}
@@ -254,7 +254,7 @@ export function Header() {
           </Anchor>
           <button
             type="button"
-            className="text-black text-left flex justify-left px-1"
+            className="text-black w-full text-left flex justify-left px-1 hover:text-white hover:bg-primary-500"
             onClick={handleSignOut}
           >
             <Box className="p-3">
