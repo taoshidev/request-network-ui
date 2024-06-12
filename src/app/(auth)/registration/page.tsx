@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { eq, and } from "drizzle-orm";
 import { endpoints, validators, subscriptions } from "@/db/schema";
 import { getAuthUser } from "@/actions/auth";
@@ -11,9 +10,6 @@ import { ValidatorType } from "@/db/types/validator";
 
 export default async function Page() {
   const user = await getAuthUser();
-  if (!user) {
-    redirect("/login");
-  }
   const subnets = await getSubnets({
     with: {
       endpoints: {
@@ -45,7 +41,7 @@ export default async function Page() {
   });
 
   const userSubscriptions = await getSubscriptions({
-    where: and(eq(subscriptions.userId, user.id)),
+    where: and(eq(subscriptions.userId, user?.id!)),
     with: {
       endpoint: {
         with: {

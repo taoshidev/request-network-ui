@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { getAuthUser } from "@/actions/auth";
 import { getValidators } from "@/actions/validators";
 import { getSubnets } from "@/actions/subnets";
@@ -10,14 +9,13 @@ import { subscriptions, validators, contracts } from "@/db/schema";
 import { getUserAPIKeys } from "@/actions/keys";
 import { ValidatorType } from "@/db/types/validator";
 import { getContracts } from "@/actions/contracts";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function Page() {
   const user = await getAuthUser();
 
-  if (!user) {
-    return redirect("/login");
-  } else if (!user.user_metadata?.onboarded) {
-    return redirect("/onboarding");
+  if (!user?.user_metadata?.onboarded) {
+    return <ClientRedirect href="/onboarding" />;
   }
 
   let validatorArr = await getValidators({

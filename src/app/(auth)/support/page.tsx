@@ -1,13 +1,9 @@
 import { getAuthUser } from "@/actions/auth";
 import { Box, Group, Title } from "@mantine/core";
-import { redirect } from "next/navigation";
 import SupportEmailForm from "@/components/SupportEmailForm";
 
 export default async function SupportPage() {
   const user = await getAuthUser();
-  if (!user) {
-    redirect("/login");
-  }
 
   return (
     <Box className="container max-w-5xl mx-auto mb-32">

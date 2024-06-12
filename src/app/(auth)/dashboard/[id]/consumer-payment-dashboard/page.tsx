@@ -3,7 +3,6 @@ import { getKey } from "@/actions/keys";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { subscriptions } from "@/db/schema";
 import { and, eq, gte, lte } from "drizzle-orm";
-import { redirect } from "next/navigation";
 import { ConsumerPaymentDashboard } from "@/components/ConsumerPaymentDashboard/ConsumerPaymentDashboard";
 import { getVerifications } from "@/actions/keys";
 import { getStartAndEndTimestamps } from "@/utils/date";
@@ -15,13 +14,6 @@ export const revalidate = 0;
 
 export default async function Page({ params }: any) {
   const user = await getAuthUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  const { id } = params;
-
   const { start, end, prevStart, prevEnd } = getStartAndEndTimestamps();
 
   const fetchSubscriptions = async (start: string, end: string) => {
@@ -30,7 +22,7 @@ export default async function Page({ params }: any) {
 
     let subs = await getSubscriptions({
       where: and(
-        eq(subscriptions.userId, user.id),
+        eq(subscriptions.userId, user?.id!),
         gte(subscriptions.createdAt, startDate),
         lte(subscriptions.createdAt, endDate)
       ),

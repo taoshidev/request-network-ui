@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import { contracts } from "@/db/schema";
 import { getEndpoints } from "@/actions/endpoints";
@@ -14,12 +13,8 @@ export default async function Page() {
   const validators = await getValidators();
   const subnets = await getSubnets();
 
-  if (!user) {
-    redirect("/login");
-  }
-
   const userContracts = await getContracts({
-    where: and(eq(contracts.userId, user.id))
+    where: and(eq(contracts.userId, user?.id!))
   });
 
   return (
