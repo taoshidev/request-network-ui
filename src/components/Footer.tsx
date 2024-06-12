@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <Box className="bg-white px-2 pt-5 pb-8 max-w-6xl m-auto">
+    <Box className="bg-white px-4 pt-5 pb-8 max-w-6xl m-auto">
       <Box className="container mx-auto flex justify-between">
         <Text className="text-orange-500 text-3xl font-bold font-adlam-display">
           taoshi

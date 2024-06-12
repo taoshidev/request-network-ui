@@ -30,13 +30,6 @@ export function HeaderHome({
   const navLinks = useCallback((iconSize: number) => {
     return [
       {
-        href: "https://docs.taoshi.io",
-        name: "Status",
-        target: "_blank",
-        indicator: true,
-        icon: <IconChartBar size={iconSize} />,
-      },
-      {
         href: "https://ipfs.filebase.io/ipfs/QmWuD5B77xBf6TE3mMUdAMaXeqVf6JkUYzhpW85W8jiAZY",
         name: "Whitepaper",
         target: "_blank",
@@ -45,7 +38,7 @@ export function HeaderHome({
       },
       {
         href: "/documentation",
-        name: "Validator Documents",
+        name: "Validator Docs",
         icon: <IconFileStack size={iconSize} />,
       },
       {
@@ -54,7 +47,7 @@ export function HeaderHome({
         icon: <IconCode size={iconSize} />,
       },
       {
-        href: "/support",
+        href: "mailto: support-request@taoshi.io",
         name: "Support",
         icon: <IconHelpSquare size={iconSize} />,
       },
@@ -72,7 +65,7 @@ export function HeaderHome({
 
   return (
     <>
-      <div className="h-full py-4">
+      <div className="h-full p-4">
         <div className="flex-1 flex md:justify-between justify-center">
           <Burger
             opened={opened}
