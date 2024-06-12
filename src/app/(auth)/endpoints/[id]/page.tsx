@@ -5,6 +5,7 @@ import { contracts } from "@/db/schema";
 import { getAuthUser } from "@/actions/auth";
 import { UpdateEndpoint } from "@/components/UpdateEndpoint";
 import { EndpointType } from "@/db/types/endpoint";
+import ClientRedirect from "@/components/ClientRedirect";
 interface PageProps {
   params: {
     id: string;
@@ -15,7 +16,7 @@ export default async function Page({ params }: PageProps) {
   const { id } = params;
   const user = await getAuthUser();
 
-  if (!user) return;
+  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
 
   const result: EndpointType = await getEndpointWithSubscription({ id });
 

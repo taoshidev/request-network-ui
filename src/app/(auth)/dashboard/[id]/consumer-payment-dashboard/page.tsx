@@ -8,6 +8,7 @@ import { getVerifications } from "@/actions/keys";
 import { getStartAndEndTimestamps } from "@/utils/date";
 import { fetchServiceTransactions, fetchPaymentStatusTransactions } from "@/utils/validators";
 import { addDays, getDaysInMonth, startOfMonth } from "date-fns";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,8 +16,8 @@ export const revalidate = 0;
 export default async function Page({ params }: any) {
   const user = await getAuthUser();
 
-  if (!user) return;
-  
+  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
+
   const { start, end, prevStart, prevEnd } = getStartAndEndTimestamps();
 
   const fetchSubscriptions = async (start: string, end: string) => {

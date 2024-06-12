@@ -1,11 +1,12 @@
 import { getAuthUser } from "@/actions/auth";
 import AccordionList from "@/components/accordion-list";
 import { questionsForRole } from "./faq-questions";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function HelpPage() {
   const user = await getAuthUser();
 
-  if (!user) return;
+  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
 
   return (
     <div className="container max-w-5xl mx-auto mb-32">

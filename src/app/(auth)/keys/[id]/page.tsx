@@ -1,5 +1,7 @@
+import { getAuthUser } from "@/actions/auth";
 import { getKey } from "@/actions/keys";
 import { getSubscriptions } from "@/actions/subscriptions";
+import ClientRedirect from "@/components/ClientRedirect";
 
 import { Keys } from "@/components/Keys";
 import { subscriptions } from "@/db/schema";
@@ -11,6 +13,9 @@ export const revalidate = 0;
 export default async function Page({ params }: any) {
   const { id } = params;
   const { result } = await getKey({ keyId: id });
+  const user = await getAuthUser();
+
+  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
 
   const data = await getSubscriptions({
     where: eq(subscriptions.id, (result?.meta?.subscription as any)?.id),

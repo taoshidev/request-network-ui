@@ -8,6 +8,7 @@ import { getValidators } from "@/actions/validators";
 import { getUserAPIKeys, getVerifications } from "@/actions/keys";
 import { getStartAndEndTimestamps } from "@/utils/date";
 import { fetchSubscriptions, fetchTransactions } from "@/utils/validators";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -17,7 +18,7 @@ export default async function Page({ params }: any) {
   const validator: ValidatorType = await getValidator({ id });
   const user = await getAuthUser();
 
-  if (!user) return;
+  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
 
   let validatorArr = await getValidators({
     where: and(eq(validators.userId, user?.id!), eq(validators.id, id)),

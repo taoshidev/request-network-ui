@@ -6,13 +6,14 @@ import { getContracts } from "@/actions/contracts";
 import { and, eq } from "drizzle-orm";
 import { contracts, services } from "@/db/schema";
 import { getServices } from "@/actions/services";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function Page({ params }: any) {
   const { id } = params;
   const validator: ValidatorType = await getValidator({ id });
   const user = await getAuthUser();
 
-  if (!user) return;
+  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
 
   const userContracts = await getContracts({
     where: and(eq(contracts.userId, user?.id!)),

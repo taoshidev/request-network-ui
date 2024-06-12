@@ -4,7 +4,7 @@ import { AppShell, Container } from "@mantine/core";
 import { Header } from "@/components/Header";
 import Footer from "@/components/Footer";
 
-export default function Layout({ children }: any) {
+export default function ClientLayout({ children }: any) {
   return (
     <AppShell className="flex flex-col min-h-screen">
       <AppShell.Header className="sticky h-[90px] flex-none">
