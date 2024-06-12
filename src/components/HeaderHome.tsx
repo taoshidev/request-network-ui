@@ -59,7 +59,7 @@ export function HeaderHome({
         variant: "white",
       },
     ];
-  }, []);
+  }, [startLink]);
 
   const [opened, { toggle, close }] = useDisclosure();
 
