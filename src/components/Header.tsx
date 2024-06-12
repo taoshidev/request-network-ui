@@ -109,7 +109,7 @@ export function Header() {
           {process.env.NEXT_PUBLIC_ENV_NAME}
         </Box>
       )}
-      <Group component="nav" className="h-full px-4 py-5 max-w-6xl m-auto">
+            <Group component="nav" className="h-full px-4 py-5 max-w-6xl m-auto">
         <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
         <Group className="flex-1 justify-between h-12">
           <Box className="items-center justify-center">
