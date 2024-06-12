@@ -1,13 +1,12 @@
 import { getAuthUser } from "@/actions/auth";
 import { Box, Group, Title } from "@mantine/core";
-import { redirect } from "next/navigation";
 import SupportEmailForm from "@/components/SupportEmailForm";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function SupportPage() {
   const user = await getAuthUser();
-  if (!user) {
-    redirect("/login");
-  }
+
+  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
 
   return (
     <Box className="container max-w-5xl mx-auto mb-32">

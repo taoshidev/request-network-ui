@@ -19,9 +19,10 @@ import {
   RegistrationData,
   defaultContextValue,
 } from "@/providers/registration";
-import { createKey, updateKey } from "@/actions/keys";
+import { createKey, deleteKey, updateKey } from "@/actions/keys";
 import {
   createSubscription,
+  deleteSubscription,
   updateSubscription,
 } from "@/actions/subscriptions";
 import { getAuthUser } from "@/actions/auth";
@@ -275,7 +276,7 @@ export function RegistrationStepper({
         agreedToTOS: registrationData.agreedToTOS,
         serviceId: selectedService?.id,
         contractId: registrationData?.endpoint?.contract?.id,
-        active: +selectedService?.price === 0
+        active: +selectedService?.price === 0,
       } as SubscriptionType);
 
       if (res?.error)
@@ -315,7 +316,12 @@ export function RegistrationStepper({
       });
 
       if (proxyRes?.error) {
-        return notifyError(proxyRes?.error);
+        await deleteSubscription(subscriptionId);
+        await deleteKey({ keyId });
+
+        return notifyError(
+          `Error: Unable to connect to Validator "${validator?.name}". Server not responding.`
+        );
       }
 
       const updateRes = await updateSubscription({
@@ -389,8 +395,11 @@ export function RegistrationStepper({
         walletAddress={keys?.walletAddress}
         endpoint={keys?.endpoint}
         opened={opened}
+        isConsumer={true}
         onClose={handleKeyModalClose}
-        onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: "" }))}
+        onCopy={(key: keyType) =>
+          setKeys((prev) => ({ ...prev, [key]: prev[key] }))
+        }
         title="Api Access Key"
         walletAddressTitle={
           isCrypto(registrationData?.endpoint?.selectedService)

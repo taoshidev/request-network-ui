@@ -72,7 +72,6 @@ export function ServiceForm({
     }
 
     try {
-      const user = await getAuthUser();
       const res = await createService(values as ServiceType);
       if (res?.error) return notifyError(res?.message);
       onComplete?.();

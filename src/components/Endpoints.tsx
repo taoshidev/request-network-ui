@@ -91,7 +91,7 @@ export function Endpoints({
                 <Table.Th>Currency</Table.Th>
                 <Table.Th>Validator</Table.Th>
                 <Table.Th>Subnet</Table.Th>
-                <Table.Th>Expiry</Table.Th>
+                <Table.Th>Created</Table.Th>
                 <Table.Th>Enabled</Table.Th>
               </Table.Tr>
             </Table.Thead>
@@ -113,10 +113,7 @@ export function Endpoints({
                   </Table.Td>
                   <Table.Td>{endpoint.subnet?.label}</Table.Td>
                   <Table.Td>
-                    {dayjs(endpoint?.expires).format("MMM DD, YYYY")}
-                  </Table.Td>
-                  <Table.Td>
-                    {dayjs(endpoint?.expires).format("MMM DD, YYYY")}
+                    {dayjs(endpoint?.created).format("MMM DD, YYYY")}
                   </Table.Td>
                   <Table.Td>
                     {endpoint.enabled ? (

@@ -32,8 +32,6 @@ export function Onboarding() {
     setLoading(true);
     const user = await getAuthUser();
 
-    if (!user) return;
-
     if (role) {
       const saveUser = { data: { role, onboarded: true } };
 
@@ -127,7 +125,7 @@ export function Onboarding() {
               data-checked={role === "consumer" || undefined}
               onClick={() => handleClick("consumer")}
             >
-              <Text className="font-bold leading-none">as a Client</Text>
+              <Text className="font-bold leading-none">as a Consumer</Text>
               <Text className="mt-1 text-xs">Looking to use Bittensor.</Text>
             </UnstyledButton>
           </Box>

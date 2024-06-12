@@ -10,6 +10,7 @@ import {
   Badge,
   Button,
   Group,
+  Divider,
 } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRegistration } from "@/providers/registration";
@@ -59,7 +60,7 @@ export function ValidatorEndpoint({
       const termsAccepted = endpoint?.termsAccepted;
       return !isEnabled || isAlreadySubscribed || !termsAccepted;
     },
-    [currentSubscriptions]
+    [currentSubscriptions, registrationData?.validator?.stripeEnabled]
   );
 
   const buttonText = useCallback(
@@ -75,7 +76,7 @@ export function ValidatorEndpoint({
         ? "Subscribe"
         : "Not Available";
     },
-    [currentSubscriptions]
+    [currentSubscriptions, registrationData?.validator?.stripeEnabled]
   );
 
   const handleAcceptTerms = useCallback(
@@ -100,6 +101,7 @@ export function ValidatorEndpoint({
               (e) => e.id === selectedEndpoint?.id
             )?.contract?.services
           }
+          validator={registrationData?.validator!}
           subscribedServiceId={
             currentSubscriptions?.find(
               (s) => s.endpointId === selectedEndpoint?.id
@@ -121,65 +123,72 @@ export function ValidatorEndpoint({
 
         {registrationData?.validator?.endpoints?.map(
           (endpoint: EndpointType) => (
-            <Grid.Col key={endpoint.id} span={3}>
-              <Card
-                shadow="sm"
-                padding="lg"
-                withBorder
-                className={clsx(
-                  "rn-select",
-                  registrationData?.endpoint?.id === endpoint.id &&
-                    "rn-selected"
-                )}
-              >
-                <Text className="font-bold mb-4" truncate>
-                  {endpoint?.url || "-"}
-                </Text>
-                <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Date Created</Text>
-                  <Badge size="sm" variant="light">
-                    {dayjs(endpoint?.createdAt).format("MMM DD, YYYY") || "-"}
-                  </Badge>
-                </Group>
-                <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Last Updated</Text>
-                  <Badge size="sm" variant="light">
-                    {dayjs(endpoint?.updatedAt).format("MMM DD, YYYY") || "-"}
-                  </Badge>
-                </Group>
-                <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Status:</Text>
-                  <Badge size="sm" variant="light">
-                    {endpoint?.enabled ? "Enabled" : "Disabled"}
-                  </Badge>
-                </Group>
-                <Group className="justify-between items-center mb-2">
-                  <Text className="text-sm">Active:</Text>
-                  <Badge size="sm" variant="light">
-                    {endpoint?.active ? "Yes" : "No"}
-                  </Badge>
-                </Group>
-                <Box className="mt-4 flex flex-row justify-between items-center">
-                  <Button
-                    variant="outline"
-                    onClick={() => openContractModal(endpoint)}
-                  >
-                    Agreement
-                  </Button>
-                  <Button
-                    disabled={disabled(endpoint)}
-                    variant={
-                      registrationData &&
-                      registrationData?.endpoint?.id === endpoint.id
-                        ? ""
-                        : "outline"
-                    }
-                    onClick={() => handleSubscribeClick(endpoint)}
-                  >
-                    {buttonText(endpoint)}
-                  </Button>
-                </Box>
-              </Card>
+            <Grid.Col key={endpoint.id} span={{ base: 12, md: 6, lg: 4 }}>
+              <Box className="p-2">
+                <Card
+                  shadow="sm"
+                  padding="lg"
+                  withBorder
+                  className={clsx(
+                    "rn-select",
+                    registrationData?.endpoint?.id === endpoint.id &&
+                      "rn-selected"
+                  )}
+                >
+                  <Text className="font-bold mb-4" truncate>
+                    {endpoint?.url || "-"}
+                  </Text>
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-2">
+                    <Text className="text-sm">Date Created</Text>
+                    <Badge size="sm" variant="light">
+                      {dayjs(endpoint?.createdAt).format("MMM DD, YYYY") || "-"}
+                    </Badge>
+                  </Group>
+                    <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-2">
+                    <Text className="text-sm">Last Updated</Text>
+                    <Badge size="sm" variant="light">
+                      {dayjs(endpoint?.updatedAt).format("MMM DD, YYYY") || "-"}
+                    </Badge>
+                  </Group>
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-2">
+                    <Text className="text-sm">Status:</Text>
+                    <Badge size="sm" variant="light">
+                      {endpoint?.enabled ? "Enabled" : "Disabled"}
+                    </Badge>
+                  </Group>
+                  <Divider className="border-dashed" />
+                  <Group className="justify-between items-center my-2">
+                    <Text className="text-sm">Active:</Text>
+                    <Badge size="sm" variant="light">
+                      {endpoint?.active ? "Yes" : "No"}
+                    </Badge>
+                  </Group>
+                  <Divider className="border-dashed" />
+                  <Box className="mt-6 grid grid-cols-2 gap-4 justify-items-stretch">
+                    <Button
+                      variant="outline"
+                      onClick={() => openContractModal(endpoint)}
+                    >
+                      Agreement
+                    </Button>
+                    <Button
+                      disabled={disabled(endpoint)}
+                      variant={
+                        registrationData &&
+                        registrationData?.endpoint?.id === endpoint.id
+                          ? ""
+                          : "outline"
+                      }
+                      onClick={() => handleSubscribeClick(endpoint)}
+                    >
+                      {buttonText(endpoint)}
+                    </Button>
+                  </Box>
+                </Card>
+              </Box>
             </Grid.Col>
           )
         )}

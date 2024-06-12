@@ -1,4 +1,4 @@
-import {Group, Anchor, Button} from "@mantine/core";
+import { Group, Anchor, Button } from "@mantine/core";
 import Link from "next/link";
 import {
   IconHelpSquare,
@@ -9,8 +9,8 @@ import {
 } from "@tabler/icons-react";
 
 export function HeaderHome({
-                             startLink = "/dashboard",
-                           }: {
+  startLink = "/dashboard",
+}: {
   startLink?: string;
 }) {
   return (
@@ -27,7 +27,7 @@ export function HeaderHome({
           <Button
             className="text-sm font-normal"
             component={Link}
-            leftSection={<IconChartBar size={14}/>}
+            leftSection={<IconChartBar size={14} />}
             href="https://docs.taoshi.io"
             target="_blank"
           >
@@ -36,7 +36,7 @@ export function HeaderHome({
           <Button
             className="text-sm font-normal"
             component={Link}
-            leftSection={<IconScript size={14}/>}
+            leftSection={<IconScript size={14} />}
             href="https://ipfs.filebase.io/ipfs/QmWuD5B77xBf6TE3mMUdAMaXeqVf6JkUYzhpW85W8jiAZY"
             target="_blank"
           >
@@ -45,7 +45,7 @@ export function HeaderHome({
           <Button
             className="text-sm font-normal"
             component={Link}
-            leftSection={<IconFileStack size={14}/>}
+            leftSection={<IconFileStack size={14} />}
             href="/documentation"
             data-cy="btn-header-documentation"
           >
@@ -54,7 +54,7 @@ export function HeaderHome({
           <Button
             className="text-sm font-normal"
             component={Link}
-            leftSection={<IconCode size={14}/>}
+            leftSection={<IconCode size={14} />}
             href="/contributing"
             data-cy="btn-header-contribute"
           >
@@ -63,8 +63,8 @@ export function HeaderHome({
           <Button
             className="text-sm font-normal"
             component={Link}
-            leftSection={<IconHelpSquare size={14}/>}
-            href="mailto: lphan@taoshi.io"
+            leftSection={<IconHelpSquare size={14} />}
+            href="mailto: support-request@taoshi.io"
             target="_blank"
           >
             Support

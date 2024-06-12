@@ -358,7 +358,7 @@ export default function Home({startLink}: { startLink: string }) {
                   work with you to swiftly complete the integration process.
                 </p>
               </div>
-              <Button component='a' href="https://discord.gg/pXa2Mnqu" target='_blank'>Join Our Discord</Button>
+              <Button component='a' href="https://discord.gg/dtFnRxEe" target='_blank'>Join Our Discord</Button>
 
             </div>
           </div>
@@ -485,7 +485,7 @@ export default function Home({startLink}: { startLink: string }) {
                 <a href="https://www.taoshi.io/#team" target="_blank">
                   Our Team
                 </a>
-                <a href="mailto:support@taoshi.io">Contact Us</a>
+                <a href="mailto:support-request@taoshi.io">Contact Us</a>
               </div>
             </div>
             <div className="flex-1">
@@ -500,7 +500,7 @@ export default function Home({startLink}: { startLink: string }) {
                 >
                   LinkedIn
                 </a>
-                <a href="https://discord.gg/pXa2Mnqu" target="_blank">
+                <a href="https://discord.gg/dtFnRxEe" target="_blank">
                   Discord
                 </a>
               </div>

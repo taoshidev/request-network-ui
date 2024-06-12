@@ -104,7 +104,7 @@ export default function EndpointForm({
         <TextInput
           withAsterisk
           label="Endpoint Path"
-          placeholder="/api/v1/data-endpoint-path"
+          placeholder="/validator-checkpoint"
           {...form.getInputProps("url")}
         />
       </Box>

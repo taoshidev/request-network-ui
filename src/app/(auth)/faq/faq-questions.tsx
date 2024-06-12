@@ -25,9 +25,8 @@ export const consumerQuestions = [
       "How do I access data from a validator once I have successfully registered with the Request Network?",
     content: (
       <>
-        Once you&apos;ve successfully registered and make your first payment to
-        the validator&apos;s erc-20 wallet received during registration, and the
-        validator&apos;s endpoint is active you can start accessing your data.
+        Once you&apos;ve successfully registered and make your first payment,
+        you can start accessing your data.
         <br /> To test your endpoint use these shell commands: <br />
         <br />
         <div className="code">
@@ -37,17 +36,17 @@ export const consumerQuestions = [
           &emsp;--header &apos;Content-Type: application/json&apos; \<br />
           &emsp;--header &apos;x-taoshi-consumer-request-key:
           req_xxxxxxxxxxxxxxxxxxxxxxxx&apos; \<br />
-          &emsp;--header &apos;Authorization: Bearer xxxx&apos; \<br />
           &emsp;--output-document \<br />
           &emsp;- https://testnet.taoshi.io/validator-checkpoint
         </div>
         <div className="code">
-          curl -L -X GET &quot;https://testnet.taoshi.io/validator-checkpoint&quot; \
+          curl -L -X GET
+          &quot;https://testnet.taoshi.io/validator-checkpoint&quot; \
           <br />
           &emsp;-H &quot;Content-Type: application/json&quot; \<br />
-          &emsp;-H &quot;x-taoshi-consumer-request-key: req_xxxxxxxxxxxxxxxxxxxxxxxx&quot;
-          \<br />
-          &emsp;-H &quot;Authorization: Bearer xxxx&quot;
+          &emsp;-H &quot;x-taoshi-consumer-request-key:
+          req_xxxxxxxxxxxxxxxxxxxxxxxx&quot;
+          <br />
         </div>
       </>
     ),
