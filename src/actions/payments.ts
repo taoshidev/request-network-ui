@@ -7,17 +7,11 @@ import { subscriptions } from "@/db/schema";
 import { getAuthUser } from "./auth";
 import { getValidator } from "./validators";
 import { ValidatorType } from "@/db/types/validator";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { StripeCheckType } from "@/db/types/stripe-check";
 
 export async function requestPayment(proxyServiceId: string, returnRedirect: string = '') {
   const currentUser = await getAuthUser();
-
-  if (!currentUser) {
-    redirect("/login");
-    return null;
-  }
 
   const subRes = await getSubscriptions({
     where: and(eq(subscriptions.proxyServiceId, proxyServiceId)),

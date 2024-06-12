@@ -32,8 +32,6 @@ export function Onboarding() {
     setLoading(true);
     const user = await getAuthUser();
 
-    if (!user) return;
-
     if (role) {
       const saveUser = { data: { role, onboarded: true } };
 

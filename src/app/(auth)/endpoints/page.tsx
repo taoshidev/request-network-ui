@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import { contracts } from "@/db/schema";
 import { getEndpoints } from "@/actions/endpoints";
@@ -7,19 +6,20 @@ import { getValidators } from "@/actions/validators";
 import { getSubnets } from "@/actions/subnets";
 import { Endpoints } from "@/components/Endpoints";
 import { getContracts } from "@/actions/contracts";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function Page() {
   const user = await getAuthUser();
+
+  if (!user)
+    return <ClientRedirect href="/login" message="Session expired..." />;
+
   const endpoints = await getEndpoints();
   const validators = await getValidators();
   const subnets = await getSubnets();
 
-  if (!user) {
-    redirect("/login");
-  }
-
   const userContracts = await getContracts({
-    where: and(eq(contracts.userId, user.id))
+    where: and(eq(contracts.userId, user?.id!)),
   });
 
   return (

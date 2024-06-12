@@ -41,6 +41,7 @@ export function SubnetValidatorReview() {
             <Button onClick={open}>View Accepted Terms</Button>
             <ContractDisplayModal
               services={registrationData?.endpoint?.contract?.services}
+              validator={registrationData?.validator!}
               review={true}
               html={registrationData?.endpoint?.contract?.content}
               opened={opened}

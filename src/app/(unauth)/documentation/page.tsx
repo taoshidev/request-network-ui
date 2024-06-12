@@ -12,6 +12,7 @@ export default async function DocumentationPage() {
   const filePath = path.resolve("./public", "validator-instructions.md");
   const markdown = readFileSync(filePath, "utf8");
   const user = await getAuthUser();
+
   const startLink = user ? "/dashboard" : "/login";
 
   const MarkdownComponents: object = {

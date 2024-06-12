@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { eq, and } from "drizzle-orm";
 import { endpoints, validators, subscriptions } from "@/db/schema";
 import { getAuthUser } from "@/actions/auth";
@@ -8,12 +7,13 @@ import { Registration } from "@/components/Registration/Registration";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { fetchValidatorInfo } from "@/actions/bittensor/bittensor";
 import { ValidatorType } from "@/db/types/validator";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function Page() {
   const user = await getAuthUser();
-  if (!user) {
-    redirect("/login");
-  }
+
+  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
+
   const subnets = await getSubnets({
     with: {
       endpoints: {
@@ -45,7 +45,7 @@ export default async function Page() {
   });
 
   const userSubscriptions = await getSubscriptions({
-    where: and(eq(subscriptions.userId, user.id)),
+    where: and(eq(subscriptions.userId, user?.id!)),
     with: {
       endpoint: {
         with: {

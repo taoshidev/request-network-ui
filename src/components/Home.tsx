@@ -485,7 +485,7 @@ export default function Home({startLink}: { startLink: string }) {
                 <a href="https://www.taoshi.io/#team" target="_blank">
                   Our Team
                 </a>
-                <a href="mailto:support@taoshi.io">Contact Us</a>
+                <a href="mailto:support-request@taoshi.io">Contact Us</a>
               </div>
             </div>
             <div className="flex-1">

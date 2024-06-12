@@ -25,7 +25,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { deleteKey, updateKey } from "@/actions/keys";
 import { TAOSHI_REQUEST_KEY } from "@/constants";
-import styles from "./settings.module.css";
 import { useNotification } from "@/hooks/use-notification";
 import { StatTable } from "../StatTable";
 import { cancelSubscription, requestPayment } from "@/actions/payments";
@@ -219,7 +218,7 @@ export function Settings({
       />
 
       {key && key.id && (
-        <Box my="xl" py="md" className={styles["one-time"]}>
+        <Box my="xl" py="md">
           <Box mb="lg">
             <Title mb="md" order={2}>
               Authentication Key
