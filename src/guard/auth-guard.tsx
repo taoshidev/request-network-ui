@@ -6,7 +6,7 @@ import { useAuth } from "@/providers/auth-provider";
 import ClientRedirect from "@/components/ClientRedirect";
 
 const withAuthGuard = (WrappedComponent) => {
-  const WithAuthGuard = (props: JSX.IntrinsicAttributes) => {
+  const WithAuthGuard = (props) => {
     const { user, loading } = useAuth();
     const [redirect, setRedirect] = useState<string | null>(null);
 
