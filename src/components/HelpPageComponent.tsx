@@ -5,10 +5,6 @@ import { redirect } from "next/navigation";
 import withAuthGuard from "@/guard/auth-guard";
 
 const HelpPageComponent = ({questionsForRole, user}) => {
-//   const user = await getAuthUser();
-//   if (!user) {
-//     redirect("/login");
-//   }
 
   return (
     <div className="container max-w-5xl mx-auto mb-32">
