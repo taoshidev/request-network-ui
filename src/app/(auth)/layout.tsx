@@ -1,4 +1,4 @@
-import ClientLayout from "./page";
+import ClientLayout from "./client-layout";
 import { getAuthUser } from "@/actions/auth";
 import { redirect } from "next/navigation";
 import NextTopLoader from "nextjs-toploader";
