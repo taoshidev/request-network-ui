@@ -8,14 +8,15 @@ import { Alert, Text, Box, Group, Button, Card } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { ContractModal } from "@/components/ContractModal";
 import { useDisclosure } from "@mantine/hooks";
+import withAuthGuard from "@/guard/auth-guard";
 
-export function ValidatorDashboard({
+const ValidatorDashboard = ({
   user,
   validators,
   subnets,
   stats,
   contracts,
-}: any) {
+}: any) => {
   const endpoints = validators?.map((v) => v.endpoints)?.flat();
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -100,3 +101,5 @@ export function ValidatorDashboard({
     </Fragment>
   );
 }
+
+export default withAuthGuard(ValidatorDashboard);

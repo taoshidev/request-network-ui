@@ -2,7 +2,7 @@ import { getAuthUser } from "@/actions/auth";
 import { getValidators } from "@/actions/validators";
 import { getSubnets } from "@/actions/subnets";
 import { Consumer } from "@/components/Consumer";
-import { ValidatorDashboard } from "@/components/ValidatorDashboard";
+import ValidatorDashboard from "@/components/ValidatorDashboard/ValidatorDashboard";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { and, eq } from "drizzle-orm";
 import { subscriptions, validators, contracts } from "@/db/schema";
@@ -21,7 +21,7 @@ export default async function Page() {
   }
 
   let validatorArr = await getValidators({
-    where: and(eq(validators.userId, user.id)),
+    where: and(eq(validators.userId, user?.id)),
     with: {
       endpoints: {
         with: {
