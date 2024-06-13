@@ -3,15 +3,7 @@
 import { useMemo } from "react";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import {
-  Title,
-  Box,
-  Table,
-  Badge,
-  Button,
-  Group,
-  Modal,
-} from "@mantine/core";
+import { Title, Box, Table, Badge, Button, Group, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { some } from "lodash";
 import { isEmpty } from "lodash";
@@ -21,7 +13,7 @@ import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { ContractType } from "@/db/types/contract";
 import { useForm, zodResolver } from "@mantine/form";
-import { uniq as _uniq } from 'lodash';
+import { uniq as _uniq } from "lodash";
 
 export function Endpoints({
   endpoints,
@@ -53,7 +45,7 @@ export function Endpoints({
       subnetId: "",
       validatorId: "",
       // walletAddress: "",
-      contractId: ""
+      contractId: "",
     },
     validate: zodResolver(EndpointSchema),
   });
@@ -78,63 +70,71 @@ export function Endpoints({
       {endpoints && !isEmpty(endpoints) && (
         <Box>
           <Group justify="space-between">
-            <Title order={2} className="mb-5">Endpoints</Title>
+            <Title order={2} className="mb-5">
+              Endpoints
+            </Title>
             <Button onClick={open} disabled={!enabled}>
               Add New Endpoint
             </Button>
           </Group>
 
-          <Table highlightOnHover striped>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Path</Table.Th>
-                <Table.Th>Currency</Table.Th>
-                <Table.Th>Validator</Table.Th>
-                <Table.Th>Subnet</Table.Th>
-                <Table.Th>Created</Table.Th>
-                <Table.Th>Enabled</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {(endpoints || []).map((endpoint: any) => (
-                <Table.Tr key={endpoint?.id}>
-                  <Table.Td>{endpoint.url}</Table.Td>
-                  <Table.Td>
-                    {[
-                      ..._uniq(endpoint?.contract?.services?.map((service) => service.currencyType) || [])
-                    ].join(", ")}
-                  </Table.Td>
-                  <Table.Td>
-                    {
-                      validators.find(
-                        (v: any) => v?.id === endpoint?.validatorId
-                      )?.name
-                    }
-                  </Table.Td>
-                  <Table.Td>{endpoint.subnet?.label}</Table.Td>
-                  <Table.Td>
-                    {dayjs(endpoint?.created).format("MMM DD, YYYY")}
-                  </Table.Td>
-                  <Table.Td>
-                    {endpoint.enabled ? (
-                      <Badge>Enabled</Badge>
-                    ) : (
-                      <Badge color="black">Disabled</Badge>
-                    )}
-                  </Table.Td>
-                  <Table.Td>
-                    <Button
-                      size="sm"
-                      variant="subtle"
-                      onClick={() => handleEdit(endpoint)}
-                    >
-                      Edit
-                    </Button>
-                  </Table.Td>
+          <Table.ScrollContainer minWidth={700}>
+            <Table highlightOnHover striped>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Path</Table.Th>
+                  <Table.Th>Currency</Table.Th>
+                  <Table.Th>Validator</Table.Th>
+                  <Table.Th>Subnet</Table.Th>
+                  <Table.Th>Created</Table.Th>
+                  <Table.Th>Enabled</Table.Th>
                 </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
+              </Table.Thead>
+              <Table.Tbody>
+                {(endpoints || []).map((endpoint: any) => (
+                  <Table.Tr key={endpoint?.id}>
+                    <Table.Td>{endpoint.url}</Table.Td>
+                    <Table.Td>
+                      {[
+                        ..._uniq(
+                          endpoint?.contract?.services?.map(
+                            (service) => service.currencyType
+                          ) || []
+                        ),
+                      ].join(", ")}
+                    </Table.Td>
+                    <Table.Td>
+                      {
+                        validators.find(
+                          (v: any) => v?.id === endpoint?.validatorId
+                        )?.name
+                      }
+                    </Table.Td>
+                    <Table.Td>{endpoint.subnet?.label}</Table.Td>
+                    <Table.Td>
+                      {dayjs(endpoint?.created).format("MMM DD, YYYY")}
+                    </Table.Td>
+                    <Table.Td>
+                      {endpoint.enabled ? (
+                        <Badge>Enabled</Badge>
+                      ) : (
+                        <Badge color="black">Disabled</Badge>
+                      )}
+                    </Table.Td>
+                    <Table.Td>
+                      <Button
+                        size="sm"
+                        variant="subtle"
+                        onClick={() => handleEdit(endpoint)}
+                      >
+                        Edit
+                      </Button>
+                    </Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </Table.ScrollContainer>
         </Box>
       )}
     </>

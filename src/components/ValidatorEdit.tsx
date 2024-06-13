@@ -206,6 +206,7 @@ export function ValidatorEdit({
 
     if (!res?.error) {
       notifySuccess("Stripe integration successful.");
+      stripeClose();
     } else {
       notifyError("Stripe integration failed.");
     }

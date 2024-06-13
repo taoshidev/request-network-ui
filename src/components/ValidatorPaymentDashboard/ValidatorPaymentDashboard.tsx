@@ -346,39 +346,46 @@ export function ValidatorPaymentDashboard({
           </Button>
         </Alert>
       )}
-
-      <Box className="flex justify-between bg-gray-100 mt-[40px] mb-2">
-        <StatCard
-          title="Total Income"
-          value={formatter.format(totalIncome)}
-          percentage={`${incomePercentageChange}%`}
-          comparison="Compared to last month"
-          isPositive
-        />
-        <StatCard
-          title="Total Requests"
-          value={monthlyRequests}
-          percentage={`${requestPercentageChange}%`}
-          comparison="Compared to last month"
-          isPositive
-        />
-        <StatCard
-          title="Customers"
-          value={currentConsumers.toString()}
-          percentage={`${consumerPercentageChange}%`}
-          comparison="Compared to last month"
-          isPositive={false}
-        />
-        <StatCard
-          title="Health"
-          value="0%"
-          percentage="-"
-          comparison="Compared to last month"
-          isPositive={false}
-          bgColor="bg-orange-500 text-white"
-        />
+      <Box className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 justify-stretch bg-gray-100 -m-3 mt-[20px]">
+        <Box className="p-3">
+          <StatCard
+            title="Total Income"
+            value={formatter.format(totalIncome)}
+            percentage={`${incomePercentageChange}%`}
+            comparison="Compared to last month"
+            isPositive
+          />
+        </Box>
+        <Box className="p-3">
+          <StatCard
+            title="Total Requests"
+            value={monthlyRequests}
+            percentage={`${requestPercentageChange}%`}
+            comparison="Compared to last month"
+            isPositive
+          />
+        </Box>
+        <Box className="p-3">
+          <StatCard
+            title="Customers"
+            value={currentConsumers.toString()}
+            percentage={`${consumerPercentageChange}%`}
+            comparison="Compared to last month"
+            isPositive={false}
+          />
+        </Box>
+        <Box className="p-3">
+          <StatCard
+            title="Health"
+            value="0%"
+            percentage="-"
+            comparison="Compared to last month"
+            isPositive={false}
+            bgColor="bg-orange-500 text-white"
+          />
+        </Box>
       </Box>
-      <Box className="grid grid-cols-[3fr_1fr] gap-5 gap-y-7 mt-7">
+      <Box className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[3fr_1fr] gap-5 gap-y-7 mt-7">
         {revenueData.length > 0 ? (
           <Box className="">
             <RevenueOverTime data={revenueData} />

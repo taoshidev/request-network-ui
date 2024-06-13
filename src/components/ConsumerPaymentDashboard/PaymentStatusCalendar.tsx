@@ -89,11 +89,13 @@ export default function PaymentStatusCalendar({
           {`(Last ${columns} Days)`}
         </span>
       </Text>
-      <Box
-        className="grid"
-        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
-      >
-        {days}
+      <Box className="overflow-x-auto">
+        <Box
+          className="grid min-w-[991px] "
+          style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+        >
+          {days}
+        </Box>
       </Box>
     </Card>
   );

@@ -66,6 +66,9 @@ export default function ValidatorStepper({
   });
 
   const [active, setActive] = useState(0);
+  const [orientation, setOrientation] = useState<"horizontal" | "vertical">(
+    "horizontal"
+  );
 
   function getErrors() {
     const nextErrors =
@@ -215,7 +218,9 @@ export default function ValidatorStepper({
         apiSecret={keys?.apiSecret}
         opened={keyModalOpened}
         onClose={() => setKeyModalOpened(false)}
-        onCopy={(key: keyType) => setKeys((prev) => ({ ...prev, [key]: prev[key] }))}
+        onCopy={(key: keyType) =>
+          setKeys((prev) => ({ ...prev, [key]: prev[key] }))
+        }
         title="API Access Key"
       />
 
@@ -224,14 +229,15 @@ export default function ValidatorStepper({
         className="w-full"
         onSubmit={form.onSubmit(onSubmit)}
       >
-        <Stepper active={active} onStepClick={setStep}>
+        <Stepper active={active} onStepClick={setStep} orientation={orientation}>
           <Stepper.Step
             label="Terms of Service"
             description="Agree to terms of service"
           >
             <Box className={clsx("w-full h-full slide", direction)}>
-              <Box component="object"
-                style={{ height: "100%", marginBottom: "100px" }}
+              <Box
+                component="object"
+                style={{ height: "calc(100vh - 320px)", marginBottom: "100px" }}
                 className={clsx("w-full slide", direction)}
                 type="application/pdf"
                 data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"

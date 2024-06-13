@@ -105,6 +105,9 @@ export function RegistrationStepper({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<ZodIssue[]>([]);
   const [disabled, setDisabled] = useState(true);
+  const [orientation, setOrientation] = useState<"horizontal" | "vertical">(
+    "horizontal"
+  );
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -413,6 +416,7 @@ export function RegistrationStepper({
         active={active}
         onStepClick={() => handleStepChange(active)}
         allowNextStepsSelect={false}
+        orientation={orientation}
       >
         <Stepper.Step
           label="Terms of Service"

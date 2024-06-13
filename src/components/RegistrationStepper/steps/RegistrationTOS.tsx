@@ -9,7 +9,7 @@ export default function RegistrationTOS() {
     <Box className={clsx("w-full h-full slide", registrationData.direction)}>
       <Box
         component="object"
-        style={{ marginBottom: "100px" }}
+        style={{ height: "calc(100vh - 320px)", marginBottom: "100px" }}
         className="h-full w-full"
         type="application/pdf"
         data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
