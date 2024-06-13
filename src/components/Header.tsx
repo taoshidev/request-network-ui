@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Burger,
   Group,
@@ -8,6 +10,7 @@ import {
   Text,
   Divider,
   Box,
+  Drawer,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
@@ -16,6 +19,11 @@ import {
   IconUser,
   IconChevronDown,
   IconBell,
+  IconChartBar,
+  IconFileStack,
+  IconCode,
+  IconHelpSquare,
+  IconDashboard,
 } from "@tabler/icons-react";
 import useSWR from "swr";
 import { signout } from "@/actions/auth";
@@ -23,6 +31,43 @@ import { getUserNotifications } from "@/actions/notifications";
 import { UserNotificationType } from "@/db/types/user-notifications";
 import { isArray as _isArray } from "lodash";
 import Notifications from "./Notifications";
+
+const iconSize = 20;
+const navLinks = [
+  {
+    href: "https://docs.taoshi.io",
+    name: "Status",
+    target: "_blank",
+    indicator: true,
+    icon: <IconChartBar size={20} />,
+    dataCy: "btn-header-status"
+  },
+  {
+    href: "/documentation",
+    name: "Docs",
+    icon: <IconFileStack size={iconSize} />,
+    dataCy: "btn-header-documentation"
+  },
+  {
+    href: "/contributing",
+    name: "Contribute",
+    icon: <IconCode size={iconSize} />,
+    dataCy: "btn-header-contribute"
+  },
+  { href: "/faq", name: "Help", icon: <IconHelpSquare size={iconSize} /> , dataCy: 'btn-header-faq'},
+  {
+    href: "/support",
+    name: "Support",
+    icon: <IconHelpSquare size={iconSize} />,
+    dataCy: 'btn-header-support'
+  },
+  {
+    href: "/dashboard",
+    name: "Dashboard",
+    icon: <IconDashboard size={iconSize} />,
+    dataCy: 'btn-header-dashboard'
+  },
+];
 
 export function Header() {
   let {
@@ -44,12 +89,13 @@ export function Header() {
   );
   if (!_isArray(userNotifications)) userNotifications = [];
 
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
   const [notificationsOpened, { toggle: toggleNotifications }] =
     useDisclosure();
 
   const handleSignOut = async () => {
     localStorage?.removeItem?.("_reg_data");
+    close();
     await signout();
   };
 
@@ -60,10 +106,10 @@ export function Header() {
           {process.env.NEXT_PUBLIC_ENV_NAME}
         </Box>
       )}
-      <Group className="h-full px-2 py-5 max-w-6xl m-auto">
+      <Group component="nav" className="h-full px-4 py-5 max-w-6xl m-auto">
         <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
         <Group className="flex-1 justify-between h-12">
-          <Group className="items-center justify-center">
+          <Box className="items-center justify-center">
             <Anchor
               className="mr-1 font-adlam-display text-zinc-800 text-3xl font-bold no-underline"
               component={Link}
@@ -71,52 +117,26 @@ export function Header() {
             >
               taoshi
             </Anchor>
-          </Group>
+          </Box>
           <Group className="ml-1" visibleFrom="sm">
-            <Anchor
-              className="text-sm text-black"
-              component={Link}
-              href="https://docs.taoshi.io"
-              target="_blank"
-            >
-              <Indicator position="top-start" size={6}>
-                Status
-              </Indicator>
-            </Anchor>
-            <Anchor
-              className="text-sm text-black"
-              component={Link}
-              href="/documentation"
-            >
-              Docs
-            </Anchor>
-            <Anchor
-              className="text-sm text-black"
-              component={Link}
-              href="/contributing"
-              data-cy="btn-header-contribute"
-            >
-              Contribute
-            </Anchor>
-            <Anchor className="text-sm text-black" component={Link} href="/faq">
-              Help
-            </Anchor>
-            <Anchor
-              className="text-sm text-black"
-              component={Link}
-              href="/support"
-            >
-              Support
-            </Anchor>
-            <Anchor
-              className="text-sm text-black"
-              component={Link}
-              href="/dashboard"
-              data-cy="btn-header-dashboard"
-            >
-              Dashboard
-            </Anchor>
-
+            {navLinks.map((navLink) => (
+              <Anchor
+                key={navLink.href}
+                className="text-sm text-black"
+                component={Link}
+                href={navLink.href}
+                target={navLink.target}
+                data-cy={navLink.dataCy}
+              >
+                {navLink.indicator ? (
+                  <Indicator position="top-start" size={6}>
+                    {navLink.name}
+                  </Indicator>
+                ) : (
+                  navLink.name
+                )}
+              </Anchor>
+            ))}
             <>
               <Divider color="black" orientation="vertical" />
               <Menu position="bottom-end" offset={5} width={200}>
@@ -165,8 +185,92 @@ export function Header() {
               <IconBell />
             </Button>
           </Group>
+          <Button
+            hiddenFrom="sm"
+            variant={
+              userNotifications?.length &&
+              userNotifications.some((un: UserNotificationType) => !un.viewed)
+                ? "filled"
+                : "outline"
+            }
+            className={
+              "rounded-full aspect-square px-0 notify-bell" +
+              (userNotifications?.length &&
+              userNotifications.some((un: UserNotificationType) => !un.viewed)
+                ? " active"
+                : "")
+            }
+            onClick={toggleNotifications}
+          >
+            <IconBell />
+          </Button>
         </Group>
       </Group>
+
+      <Drawer
+        title={
+          <Box className="items-center justify-center">
+            <Anchor
+              className="mr-1 font-adlam-display text-zinc-800 text-3xl font-bold no-underline"
+              component={Link}
+              href="/dashboard"
+            >
+              taoshi
+            </Anchor>
+          </Box>
+        }
+        opened={opened}
+        onClose={close}
+        size="xs"
+      >
+        <Box component="nav" className="-mx-4">
+          {navLinks.map((navLink) => (
+            <Box key={navLink.href}>
+              <Anchor
+                className="text-black flex justify-left px-1 hover:text-white hover:bg-primary-500"
+                component={Link}
+                href={navLink.href}
+                target={navLink.target}
+                onClick={close}
+                data-cy={navLink.dataCy}
+              >
+                <Box className="p-3">{navLink.icon}</Box>
+                <Box className=" p-3 grow">
+                  {navLink.indicator ? (
+                    <Indicator position="top-start" size={6}>
+                      {navLink.name}
+                    </Indicator>
+                  ) : (
+                    navLink.name
+                  )}
+                </Box>
+              </Anchor>
+            </Box>
+          ))}
+          <Divider color="#eee" orientation="horizontal" />
+          <Anchor
+            className="text-black flex justify-left px-1 hover:text-white hover:bg-primary-500"
+            component={Link}
+            href="/profile"
+            onClick={close}
+          >
+            <Box className="p-3">
+              <IconUser size={iconSize} />
+            </Box>
+            <Box className=" p-3 grow">Profile</Box>
+          </Anchor>
+          <button
+            type="button"
+            className="text-black w-full text-left flex justify-left px-1 hover:text-white hover:bg-primary-500"
+            onClick={handleSignOut}
+          >
+            <Box className="p-3">
+              <IconLogout size={iconSize} />
+            </Box>
+            <Box className="grow p-3">Log Out</Box>
+          </button>
+        </Box>
+      </Drawer>
 
       <Notifications
         opened={notificationsOpened}
