@@ -1,7 +1,5 @@
 "use client"
-import { getAuthUser } from "@/actions/auth";
 import AccordionList from "@/components/accordion-list";
-import { redirect } from "next/navigation";
 import withAuthGuard from "@/guard/auth-guard";
 
 const HelpPageComponent = ({questionsForRole, user}) => {
