@@ -44,7 +44,6 @@ export default function RootLayout({
           content="black-translucent"
         />
         <meta name="apple-mobile-web-app-title" content="RN Marketplace" />
-        <link rel="icon" type="image/x-icon" href="favicon.ico" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="theme-color" content="#000000" />
       </head>
