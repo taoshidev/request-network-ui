@@ -40,27 +40,32 @@ const navLinks = [
     target: "_blank",
     indicator: true,
     icon: <IconChartBar size={20} />,
+    dataCy: "btn-header-status"
   },
   {
     href: "/documentation",
     name: "Docs",
     icon: <IconFileStack size={iconSize} />,
+    dataCy: "btn-header-documentation"
   },
   {
     href: "/contributing",
     name: "Contribute",
     icon: <IconCode size={iconSize} />,
+    dataCy: "btn-header-contribute"
   },
-  { href: "/faq", name: "Help", icon: <IconHelpSquare size={iconSize} /> },
+  { href: "/faq", name: "Help", icon: <IconHelpSquare size={iconSize} /> , dataCy: 'btn-header-faq'},
   {
     href: "/support",
     name: "Support",
     icon: <IconHelpSquare size={iconSize} />,
+    dataCy: 'btn-header-support'
   },
   {
     href: "/dashboard",
     name: "Dashboard",
     icon: <IconDashboard size={iconSize} />,
+    dataCy: 'btn-header-dashboard'
   },
 ];
 
@@ -121,6 +126,7 @@ export function Header() {
                 component={Link}
                 href={navLink.href}
                 target={navLink.target}
+                data-cy={navLink.dataCy}
               >
                 {navLink.indicator ? (
                   <Indicator position="top-start" size={6}>
@@ -226,6 +232,7 @@ export function Header() {
                 href={navLink.href}
                 target={navLink.target}
                 onClick={close}
+                data-cy={navLink.dataCy}
               >
                 <Box className="p-3">{navLink.icon}</Box>
                 <Box className=" p-3 grow">

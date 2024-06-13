@@ -8,7 +8,7 @@ describe('Home Page', () => {
 
   it('navigates to documentation from header', () => {
     cy.visit('/');
-    cy.get('[data-cy="btn-header-documentation"]').should('be.visible').should('contain.text', 'Validator Documents')
+    cy.get('[data-cy="btn-header-documentation"]').should('be.visible').should('contain.text', 'Validator Docs')
       .click();
     cy.url().should('include', '/documentation');
   });

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Group,
-  Anchor,
-  Button,
-  Burger,
-  Box,
-  Drawer,
-} from "@mantine/core";
+import { Group, Anchor, Button, Burger, Box, Drawer } from "@mantine/core";
 import Link from "next/link";
 import {
   IconHelpSquare,
@@ -27,39 +20,47 @@ export function HeaderHome({
   const iconSizeLg = 20;
   const iconSizeSm = 14;
 
-  const navLinks = useCallback((iconSize: number) => {
-    return [
-      {
-        href: "https://ipfs.filebase.io/ipfs/QmWuD5B77xBf6TE3mMUdAMaXeqVf6JkUYzhpW85W8jiAZY",
-        name: "Whitepaper",
-        target: "_blank",
-        indicator: true,
-        icon: <IconChartBar size={iconSize} />,
-      },
-      {
-        href: "/documentation",
-        name: "Validator Docs",
-        icon: <IconFileStack size={iconSize} />,
-      },
-      {
-        href: "/contributing",
-        name: "Contribute",
-        icon: <IconCode size={iconSize} />,
-      },
-      {
-        href: "mailto: support-request@taoshi.io",
-        name: "Support",
-        icon: <IconHelpSquare size={iconSize} />,
-      },
-      {
-        href: startLink,
-        name: "Dashboard",
-        icon: <IconDashboard size={iconSize} />,
-        iconOnlyMobile: true,
-        variant: "white",
-      },
-    ];
-  }, [startLink]);
+  const navLinks = useCallback(
+    (iconSize: number) => {
+      return [
+        {
+          href: "https://ipfs.filebase.io/ipfs/QmWuD5B77xBf6TE3mMUdAMaXeqVf6JkUYzhpW85W8jiAZY",
+          name: "Whitepaper",
+          target: "_blank",
+          indicator: true,
+          icon: <IconChartBar size={iconSize} />,
+          dataCy: "btn-header-whitepaper",
+        },
+        {
+          href: "/documentation",
+          name: "Validator Docs",
+          icon: <IconFileStack size={iconSize} />,
+          dataCy: "btn-header-documentation",
+        },
+        {
+          href: "/contributing",
+          name: "Contribute",
+          icon: <IconCode size={iconSize} />,
+          dataCy: "btn-header-contribute",
+        },
+        {
+          href: "mailto: support-request@taoshi.io",
+          name: "Support",
+          icon: <IconHelpSquare size={iconSize} />,
+          dataCy: "btn-header-support",
+        },
+        {
+          href: startLink,
+          name: "Dashboard",
+          icon: <IconDashboard size={iconSize} />,
+          iconOnlyMobile: true,
+          variant: "white",
+          dataCy: "btn-header-dashboard",
+        },
+      ];
+    },
+    [startLink]
+  );
 
   const [opened, { toggle, close }] = useDisclosure();
 
@@ -92,6 +93,7 @@ export function HeaderHome({
                 href={navLink.href}
                 target={navLink.target}
                 variant={navLink.variant}
+                data-cy={navLink.dataCy}
               >
                 {navLink.name}
               </Button>
@@ -117,17 +119,18 @@ export function HeaderHome({
         size="xs"
       >
         <Box component="nav" className="-mx-4">
-          {navLinks(iconSizeLg).map((link) => (
-            <Box key={link.href}>
+          {navLinks(iconSizeLg).map((navLink) => (
+            <Box key={navLink.href}>
               <Anchor
                 className="text-black flex justify-left px-1 hover:text-white hover:bg-primary-500"
                 component={Link}
-                href={link.href}
-                target={link.target}
+                href={navLink.href}
+                target={navLink.target}
                 onClick={close}
+                data-cy={navLink.dataCy}
               >
-                <Box className="p-3">{link.icon}</Box>
-                <Box className=" p-3 grow">{link.name}</Box>
+                <Box className="p-3">{navLink.icon}</Box>
+                <Box className=" p-3 grow">{navLink.name}</Box>
               </Anchor>
             </Box>
           ))}
