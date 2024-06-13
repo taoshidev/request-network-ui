@@ -100,6 +100,6 @@ const ValidatorDashboard = ({
       )}
     </Fragment>
   );
-}
+};
 
 export default withAuthGuard(ValidatorDashboard);

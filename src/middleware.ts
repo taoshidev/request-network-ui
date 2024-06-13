@@ -60,16 +60,6 @@ export async function middleware(request: NextRequest) {
         },
       }
     );
-
-    const { data, error } = await supabase.auth.getUser();
-    if (!data?.user && !request.nextUrl.pathname.startsWith("/login")) {
-      if (
-        request.nextUrl.pathname !== "/login" &&
-        request.nextUrl.pathname !== "/callback"
-      ) {
-        return NextResponse.redirect(new URL("/login", request.url));
-      }
-    }
   } catch (error) {
     if (!["/login", "/callback"].includes(request.nextUrl.pathname)) {
       return NextResponse.redirect(new URL("/login", request.url));

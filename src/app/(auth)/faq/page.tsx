@@ -6,7 +6,7 @@ import ClientRedirect from "@/components/ClientRedirect";
 export default async function HelpPage() {
   const user = await getAuthUser();
 
-  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
+  if (!user) return;
 
   return (
     <div className="container max-w-5xl mx-auto mb-32">

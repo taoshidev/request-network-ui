@@ -12,7 +12,7 @@ import ClientRedirect from "@/components/ClientRedirect";
 export default async function Page() {
   const user = await getAuthUser();
 
-  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
+  if (!user) return;
 
   const subnets = await getSubnets({
     with: {

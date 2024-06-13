@@ -1,27 +1,34 @@
 "use client";
 
-import { JSX, useEffect } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/auth-provider";
-import Loading from "@/app/(auth)/loading";
+import ClientRedirect from "@/components/ClientRedirect";
 
 const withAuthGuard = (WrappedComponent) => {
   const WithAuthGuard = (props: JSX.IntrinsicAttributes) => {
     const { user, loading } = useAuth();
+    const [redirect, setRedirect] = useState<string | null>(null);
 
     const router = useRouter();
 
     useEffect(() => {
-      console.log("from withAuthGuard", user, "loading:::", loading);
       if (!loading && !user) {
-        console.log("from withAuthGuard redirecting to login...");
-        router.push("/login");
+        setRedirect("/login");
+        return;
       }
     }, [user, loading, router]);
 
-    if (loading) {
-      console.log("from auth guard loading...");
-      return <Loading />;
+    if (redirect) {
+      const delay = redirect ? 5000 : 0;
+
+      return (
+        <ClientRedirect
+          href={redirect}
+          message={"Session expired..."}
+          delay={delay}
+        />
+      );
     }
 
     return <WrappedComponent {...props} />;

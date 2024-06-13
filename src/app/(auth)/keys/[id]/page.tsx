@@ -15,7 +15,7 @@ export default async function Page({ params }: any) {
   const { result } = await getKey({ keyId: id });
   const user = await getAuthUser();
 
-  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
+  if (!user) return;
 
   const data = await getSubscriptions({
     where: eq(subscriptions.id, (result?.meta?.subscription as any)?.id),

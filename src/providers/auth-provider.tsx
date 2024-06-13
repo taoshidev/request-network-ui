@@ -1,9 +1,9 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { signout, getAuthUser } from "@/actions/auth";
 import { UserType } from "@/db/types/user";
+import ClientRedirect from "@/components/ClientRedirect";
 
 type AuthContextValue = {
   user: UserType | null;
@@ -19,16 +19,22 @@ const AuthContext = createContext<AuthContextValue>({
   loading: true,
 });
 
+type RedirectParamType = {
+  path: string;
+  message: string;
+  delay?: number;
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const [redirect, setRedirect] = useState<RedirectParamType | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       const authenticatedUser = await getAuthUser();
       if (!authenticatedUser) {
-        router.push("/login");
+        setRedirect({ path: "/login", message: "Auth Session expired..." });
       } else {
         setUser(authenticatedUser as UserType);
       }
@@ -40,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     const interval = setInterval(async () => {
       const authenticatedUser = await getAuthUser();
       if (!authenticatedUser) {
-        router.push("/login");
+        setRedirect({ path: "/login", message: "Auth Session expired..." });
       }
     }, 5000);
 
@@ -51,12 +57,22 @@ export const AuthProvider = ({ children }) => {
     setUser(user);
   };
 
+  if (loading || redirect) {
+    return (
+      <ClientRedirect
+        href={redirect?.path!}
+        message={redirect?.message}
+        delay={redirect?.delay || 3500}
+      />
+    );
+  }
+
   const logout = async () => {
     setLoading(true);
     await signout();
+    setRedirect({ path: "/login", message: "Logging out...", delay: 3000 });
     setUser(null);
     setLoading(false);
-    router.push("/login");
   };
 
   return (
