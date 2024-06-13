@@ -19,7 +19,7 @@ export const StatCard = ({
   return (
     <Card
       className={clsx(
-        "flex flex-col justify-between p-4 shadow-sm border border-gray-200 min-w-[265px] h-[170px]",
+        "flex flex-col justify-between p-4 shadow-sm border border-gray-200 w-[100%] h-[170px]",
         bgColor && bgColor
       )}
     >

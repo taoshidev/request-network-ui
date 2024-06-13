@@ -237,7 +237,7 @@ export default function ValidatorStepper({
             <Box className={clsx("w-full h-full slide", direction)}>
               <Box
                 component="object"
-                style={{ height: "100%", marginBottom: "100px" }}
+                style={{ height: "calc(100vh - 320px)", marginBottom: "100px" }}
                 className={clsx("w-full slide", direction)}
                 type="application/pdf"
                 data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"

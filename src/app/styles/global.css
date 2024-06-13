@@ -247,6 +247,5 @@ a {
   .mantine-Stepper-content {
     overflow-y: hidden;
     height: auto;
-    min-height: calc(100vh - 320px);
   }    
 }
