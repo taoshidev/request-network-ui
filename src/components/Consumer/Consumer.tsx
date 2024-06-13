@@ -130,53 +130,55 @@ export function Consumer({
         subscriptionData.map((validator: any) => (
           <Fragment key={validator?.id}>
             <Title order={2}>{validator?.name}</Title>
-            <Table className="mt-3 mb-6">
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Name</Table.Th>
-                  <Table.Th>Domain</Table.Th>
-                  <Table.Th>Validator</Table.Th>
-                  <Table.Th>Created</Table.Th>
-                  <Table.Th>Role</Table.Th>
-                  <Table.Th>Request</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {validator?.subscriptions?.map?.((subscription) => (
-                  <Table.Tr key={subscription?.id}>
-                    <Table.Td>
-                      <Anchor
-                        className="font-semibold text-black"
-                        component={Link}
-                        href={`/keys/${subscription?.keyData?.id}`}
-                      >
-                        {subscription?.keyData?.name}
-                      </Anchor>
-                    </Table.Td>
-                    <Table.Td>{subscription?.consumerApiUrl}</Table.Td>
-                    <Table.Td>
-                      {subscription?.endpoint?.validator?.name}
-                    </Table.Td>
-                    <Table.Td>
-                      {dayjs(subscription?.keyData?.createdAt).format(
-                        "MMM DD, YYYY"
-                      )}
-                    </Table.Td>
-                    <Table.Td>{subscription?.keyData?.meta?.type}</Table.Td>
-                    <Table.Td>{subscription?.keyData?.remaining}</Table.Td>
-                    <Table.Td className="text-right">
-                      <Anchor
-                        className="text-sm"
-                        component={Link}
-                        href={`/keys/${subscription?.keyData?.id}`}
-                      >
-                        View Subscription
-                      </Anchor>
-                    </Table.Td>
+            <Table.ScrollContainer minWidth={700}>
+              <Table className="mt-3 mb-6">
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Name</Table.Th>
+                    <Table.Th>Domain</Table.Th>
+                    <Table.Th>Validator</Table.Th>
+                    <Table.Th>Created</Table.Th>
+                    <Table.Th>Role</Table.Th>
+                    <Table.Th>Request</Table.Th>
                   </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
+                </Table.Thead>
+                <Table.Tbody>
+                  {validator?.subscriptions?.map?.((subscription) => (
+                    <Table.Tr key={subscription?.id}>
+                      <Table.Td>
+                        <Anchor
+                          className="font-semibold text-black"
+                          component={Link}
+                          href={`/keys/${subscription?.keyData?.id}`}
+                        >
+                          {subscription?.keyData?.name}
+                        </Anchor>
+                      </Table.Td>
+                      <Table.Td>{subscription?.consumerApiUrl}</Table.Td>
+                      <Table.Td>
+                        {subscription?.endpoint?.validator?.name}
+                      </Table.Td>
+                      <Table.Td>
+                        {dayjs(subscription?.keyData?.createdAt).format(
+                          "MMM DD, YYYY"
+                        )}
+                      </Table.Td>
+                      <Table.Td>{subscription?.keyData?.meta?.type}</Table.Td>
+                      <Table.Td>{subscription?.keyData?.remaining}</Table.Td>
+                      <Table.Td className="text-right">
+                        <Anchor
+                          className="text-sm"
+                          component={Link}
+                          href={`/keys/${subscription?.keyData?.id}`}
+                        >
+                          View Subscription
+                        </Anchor>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </Table.ScrollContainer>
           </Fragment>
         ))}
     </Container>

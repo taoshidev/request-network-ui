@@ -240,4 +240,13 @@ a {
   transform: scale(1.04);
   -webkit-transform: scale(1.04);
   -moz-transform: scale(1.04);
-  box-shadow: 1px 3px 4px 2px #00000024;}
+  box-shadow: 1px 3px 4px 2px #00000024;
+}
+
+@media screen and (max-width: 767px ) {
+  .mantine-Stepper-content {
+    overflow-y: hidden;
+    height: auto;
+    min-height: calc(100vh - 320px);
+  }    
+}

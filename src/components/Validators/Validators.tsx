@@ -56,88 +56,92 @@ export function Validators({
           <Button onClick={addValidator}>Add New Validator</Button>
         </Group>
         {validators && !isEmpty(validators) && (
-          <Table highlightOnHover striped>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Validator</Table.Th>
-                <Table.Th>Server Url</Table.Th>
-                <Table.Th>Subnet</Table.Th>
-                <Table.Th>Verification Status</Table.Th>
-                <Table.Th></Table.Th>
-                <Table.Th></Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {(validators || []).map((validator: any) => (
-                <Table.Tr key={validator?.id}>
-                  <Table.Td>{validator?.name}</Table.Td>
-                  <Table.Td>
-                    {validator?.baseApiUrl +
-                      (validator?.apiPrefix ? validator?.apiPrefix : "")}
-                  </Table.Td>
-                  <Table.Td>
-                    <Box className="leading-7">
-                      {(validator.endpoints || [])
-                        .filter(
-                          (
-                            endpoint: EndpointType,
-                            index: number,
-                            array: EndpointType[]
-                          ) =>
-                            array.findIndex(
-                              (firstEndpoint) =>
-                                firstEndpoint?.subnet?.label ===
-                                endpoint?.subnet?.label
-                            ) === index
-                        )
-                        .map((endpoint: any) => (
-                          <Badge key={endpoint.id} color="grey">
-                            {endpoint?.subnet?.label}
-                          </Badge>
-                        ))}
-                    </Box>
-                  </Table.Td>
-                  <Table.Td>
-                    <Box className="leading-7">
-                      {validator.verified ? (
-                        <Badge className="mr-2">Hotkey Verified</Badge>
-                      ) : (
-                        <Badge className="mr-2" color="black">Hotkey Unverified</Badge>
-                      )}
-                      {validator.stripeEnabled ? (
-                        <Badge>Stripe Verified</Badge>
-                      ) : (
-                        <Badge color="black">Stripe Unverified</Badge>
-                      )}
-                    </Box>
-                  </Table.Td>
-
-                  <Table.Td>
-                    <Button
-                      size="sm"
-                      variant="subtle"
-                      onClick={() => handleEdit(validator)}
-                    >
-                      {validator.verified ? "Edit" : "Verify"}
-                    </Button>
-                  </Table.Td>
-                  <Table.Td>
-                    <Button
-                      size="sm"
-                      variant="light"
-                      onClick={() =>
-                        router.push(
-                          `/validators/${validator?.id}/payment-dashboard`
-                        )
-                      }
-                    >
-                      insights
-                    </Button>
-                  </Table.Td>
+          <Table.ScrollContainer minWidth={700}>
+            <Table highlightOnHover striped>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Validator</Table.Th>
+                  <Table.Th>Server Url</Table.Th>
+                  <Table.Th>Subnet</Table.Th>
+                  <Table.Th>Verification Status</Table.Th>
+                  <Table.Th></Table.Th>
+                  <Table.Th></Table.Th>
                 </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
+              </Table.Thead>
+              <Table.Tbody>
+                {(validators || []).map((validator: any) => (
+                  <Table.Tr key={validator?.id}>
+                    <Table.Td>{validator?.name}</Table.Td>
+                    <Table.Td>
+                      {validator?.baseApiUrl +
+                        (validator?.apiPrefix ? validator?.apiPrefix : "")}
+                    </Table.Td>
+                    <Table.Td>
+                      <Box className="leading-7">
+                        {(validator.endpoints || [])
+                          .filter(
+                            (
+                              endpoint: EndpointType,
+                              index: number,
+                              array: EndpointType[]
+                            ) =>
+                              array.findIndex(
+                                (firstEndpoint) =>
+                                  firstEndpoint?.subnet?.label ===
+                                  endpoint?.subnet?.label
+                              ) === index
+                          )
+                          .map((endpoint: any) => (
+                            <Badge key={endpoint.id} color="grey">
+                              {endpoint?.subnet?.label}
+                            </Badge>
+                          ))}
+                      </Box>
+                    </Table.Td>
+                    <Table.Td>
+                      <Box className="leading-7">
+                        {validator.verified ? (
+                          <Badge className="mr-2">Hotkey Verified</Badge>
+                        ) : (
+                          <Badge className="mr-2" color="black">
+                            Hotkey Unverified
+                          </Badge>
+                        )}
+                        {validator.stripeEnabled ? (
+                          <Badge>Stripe Verified</Badge>
+                        ) : (
+                          <Badge color="black">Stripe Unverified</Badge>
+                        )}
+                      </Box>
+                    </Table.Td>
+
+                    <Table.Td>
+                      <Button
+                        size="sm"
+                        variant="subtle"
+                        onClick={() => handleEdit(validator)}
+                      >
+                        {validator.verified ? "Edit" : "Verify"}
+                      </Button>
+                    </Table.Td>
+                    <Table.Td>
+                      <Button
+                        size="sm"
+                        variant="light"
+                        onClick={() =>
+                          router.push(
+                            `/validators/${validator?.id}/payment-dashboard`
+                          )
+                        }
+                      >
+                        insights
+                      </Button>
+                    </Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </Table.ScrollContainer>
         )}
       </Box>
     </Box>
