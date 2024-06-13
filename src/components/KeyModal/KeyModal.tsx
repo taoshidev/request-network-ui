@@ -10,6 +10,7 @@ import {
   Code,
 } from "@mantine/core";
 import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
+import { useRouter } from "next/router";
 
 export type keyType = "apiKey" | "apiSecret" | "walletAddress" | "endpoint";
 
@@ -71,9 +72,10 @@ export function KeyModal({
   endpoint?: string;
   isConsumer?: boolean;
 }) {
-  const handleCopy = (copy: () => void, key: keyType) => {
-    copy();
-    return onCopy?.(key);
+  const router = useRouter();
+  const onCloseCancel = () => {
+    router.push("/dashboard");
+    onClose();
   };
 
   return (
@@ -81,7 +83,7 @@ export function KeyModal({
       size="xl"
       centered
       opened={opened}
-      onClose={onClose}
+      onClose={onCloseCancel}
       title={title}
       closeOnClickOutside={false}
     >
