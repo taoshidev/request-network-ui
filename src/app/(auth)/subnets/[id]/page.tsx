@@ -5,12 +5,11 @@ import { eq, and } from "drizzle-orm";
 import { endpoints, subnets, validators } from "@/db/schema";
 import { SubnetType } from "@/db/types/subnet";
 import { getAuthUser } from "@/actions/auth";
-import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function Page({ params }: any) {
   const user = await getAuthUser();
   
-  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
+  if (!user) return;
 
   const { id } = params;
   const vali = await getValidators({

@@ -18,7 +18,7 @@ export default async function Page({ params }: any) {
   const validator: ValidatorType = await getValidator({ id });
   const user = await getAuthUser();
 
-  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
+  if (!user) return;
 
   let validatorArr = await getValidators({
     where: and(eq(validators.userId, user?.id!), eq(validators.id, id)),

@@ -173,12 +173,10 @@ export function ValidatorEdit({
         if (isValid) {
           await updateValidator({
             id: validator.id,
-            // signature,
             account,
             verified: true,
           });
           notifySuccess("Validator verification successful");
-          setTimeout(() => router.back(), 1000);
         }
       }
     } else {
@@ -207,10 +205,9 @@ export function ValidatorEdit({
     });
 
     if (!res?.error) {
-      notifySuccess("Validator verification successful.");
-      setTimeout(() => router.back(), 1000);
+      notifySuccess("Stripe integration successful.");
     } else {
-      notifyError("Validator verification failed.");
+      notifyError("Stripe integration failed.");
     }
   };
 

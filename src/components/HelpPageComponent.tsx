@@ -1,11 +1,8 @@
-import { getAuthUser } from "@/actions/auth";
+"use client"
 import AccordionList from "@/components/accordion-list";
-import { questionsForRole } from "./faq-questions";
+import withAuthGuard from "@/guard/auth-guard";
 
-export default async function HelpPage() {
-  const user = await getAuthUser();
-
-  if (!user) return;
+const HelpPageComponent = ({questionsForRole, user}) => {
 
   return (
     <div className="container max-w-5xl mx-auto mb-32">
@@ -19,7 +16,9 @@ export default async function HelpPage() {
           .
         </p>
       </div>
-      <AccordionList items={questionsForRole(user?.user_metadata?.role)} />
+      <AccordionList items={questionsForRole} />
     </div>
   );
 }
+
+export default withAuthGuard(HelpPageComponent);

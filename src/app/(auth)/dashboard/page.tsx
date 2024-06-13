@@ -2,7 +2,7 @@ import { getAuthUser } from "@/actions/auth";
 import { getValidators } from "@/actions/validators";
 import { getSubnets } from "@/actions/subnets";
 import { Consumer } from "@/components/Consumer";
-import { ValidatorDashboard } from "@/components/ValidatorDashboard";
+import ValidatorDashboard from "@/components/ValidatorDashboard/ValidatorDashboard";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { and, eq } from "drizzle-orm";
 import { subscriptions, validators, contracts } from "@/db/schema";
@@ -13,15 +13,14 @@ import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function Page() {
   const user = await getAuthUser();
-
-  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
+  if (!user) return;
 
   if (!user?.user_metadata?.onboarded) {
     return <ClientRedirect href="/onboarding" />;
   }
 
   let validatorArr = await getValidators({
-    where: and(eq(validators.userId, user.id)),
+    where: and(eq(validators.userId, user?.id)),
     with: {
       endpoints: {
         with: {

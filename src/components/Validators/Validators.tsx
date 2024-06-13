@@ -59,8 +59,8 @@ export function Validators({
           <Table highlightOnHover striped>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ width: "15%" }}>Validator</Table.Th>
-                <Table.Th style={{ width: "25%" }}>Server Url</Table.Th>
+                <Table.Th>Validator</Table.Th>
+                <Table.Th>Server Url</Table.Th>
                 <Table.Th>Subnet</Table.Th>
                 <Table.Th>Verification Status</Table.Th>
                 <Table.Th></Table.Th>
@@ -100,9 +100,9 @@ export function Validators({
                   <Table.Td>
                     <Box className="leading-7">
                       {validator.verified ? (
-                        <Badge>Validator Verified</Badge>
+                        <Badge className="mr-2">Hotkey Verified</Badge>
                       ) : (
-                        <Badge color="black">Validator Unverified</Badge>
+                        <Badge className="mr-2" color="black">Hotkey Unverified</Badge>
                       )}
                       {validator.stripeEnabled ? (
                         <Badge>Stripe Verified</Badge>

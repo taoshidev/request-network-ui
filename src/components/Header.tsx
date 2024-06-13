@@ -31,6 +31,7 @@ import { getUserNotifications } from "@/actions/notifications";
 import { UserNotificationType } from "@/db/types/user-notifications";
 import { isArray as _isArray } from "lodash";
 import Notifications from "./Notifications";
+import { useAuth } from "@/providers/auth-provider";
 
 const iconSize = 20;
 const navLinks = [
@@ -93,10 +94,12 @@ export function Header() {
   const [notificationsOpened, { toggle: toggleNotifications }] =
     useDisclosure();
 
+  const { user, loading, logout } = useAuth();
+
   const handleSignOut = async () => {
     localStorage?.removeItem?.("_reg_data");
     close();
-    await signout();
+    await logout();
   };
 
   return (
