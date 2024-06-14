@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Anchor,
   Box,
   Container,
   Divider,
@@ -9,6 +10,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import Link from "next/link";
 
 interface PageProps {
   children: React.ReactNode;
@@ -21,9 +23,13 @@ export default function Page({ children }: PageProps) {
         <Box className="bg-primary-500 h-full overflow-hidden" p="xl">
           <Box>
             <Group className="items-center text-white">
-              <Text className="font-bold font-adlam-display text-3xl">
+              <Anchor
+                href="/"
+                component={Link}
+                className="text-white font-bold font-adlam-display text-3xl"
+              >
                 taoshi
-              </Text>
+              </Anchor>
               <Divider orientation="vertical" />
               <Text size="xl">request network</Text>
             </Group>

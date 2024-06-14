@@ -7,7 +7,7 @@ export default async function Page() {
   // if the user has already onboarded
   const user = await getAuthUser();
   
-  if (!user) return <ClientRedirect href="/login" message="Session expired..."/>;
+  if (!user) return;
 
   return <Onboarding />;
 }

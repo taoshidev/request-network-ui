@@ -1,7 +1,7 @@
 import { HeaderHome } from "@/components/HeaderHome";
 import ReactMarkdown from "react-markdown";
 import { readFileSync } from "fs";
-import path, { join } from "path";
+import path from "path";
 import * as classes from "./page.module.css";
 import React from "react";
 import { generateSlug } from "@/utils/generate-slug";

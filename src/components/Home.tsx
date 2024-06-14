@@ -458,7 +458,7 @@ export default function Home({startLink}: { startLink: string }) {
         </div>
       </div>
 
-      <div className="bg-primary-500">
+      <div className="bg-primary-500 px-4">
         <div className="container px-2 max-w-5xl mx-auto py-8 text-white">
           <p className="mb-12 font-adlam-display font-bold text-3xl">taoshi</p>
           <div className="flex">
