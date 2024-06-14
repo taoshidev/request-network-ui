@@ -1,0 +1,1 @@
+ALTER TABLE "validators" ADD COLUMN "stripe_live_mode" boolean DEFAULT false;

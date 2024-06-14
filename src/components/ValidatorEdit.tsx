@@ -125,6 +125,7 @@ export function ValidatorEdit({
       accountModalRef.current = modals.openModal({
         centered: true,
         title: "Select an Account",
+        size: "lg",
         children: (
           <AccountSelector
             accounts={accounts}
@@ -202,6 +203,7 @@ export function ValidatorEdit({
     const res = await updateValidator({
       id: validator.id,
       stripeEnabled: true,
+      stripeLiveMode: validator.stripeLiveMode,
     });
 
     if (!res?.error) {

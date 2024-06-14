@@ -73,8 +73,18 @@ export function Settings({
   apiKey: any;
   subscription: any;
 }) {
-  const isFree = useMemo(() => +subscription?.service?.price === 0, [subscription]);
-  const stripeEnabled = useMemo(() => !!subscription?.validator?.stripeEnabled, [subscription]);
+  const isFree = useMemo(
+    () => +subscription?.service?.price === 0,
+    [subscription]
+  );
+  const stripeEnabled = useMemo(
+    () => !!subscription?.validator?.stripeEnabled,
+    [subscription]
+  );
+  const stripeLiveMode = useMemo(
+    () => !!subscription?.validator?.stripeLiveMode,
+    [subscription]
+  );
   const [disabled, setDisabled] = useState(!stripeEnabled);
   const [opened, { open, close }] = useDisclosure(false);
   const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
@@ -293,19 +303,29 @@ export function Settings({
                 <Box>Subscription is not active.</Box>
               )}
               <Group justify="flex-end" mt="lg">
-                {stripeEnabled && !isFree && (
-                  <Button
-                    onClick={stripePayment}
-                    disabled={disabled}
-                    type="button"
-                    variant={subscription?.active ? "light" : "orange"}
-                  >
-                    {subscription?.active
-                      ? "Cancel Payment Subscription"
-                      : "Set up Payment Subscription"}
-                  </Button>
-                )}
+                {stripeEnabled &&
+                  !isFree &&
+                  (stripeLiveMode ||
+                    process.env.NEXT_PUBLIC_NODE_ENV !== "production") && (
+                    <Button
+                      onClick={stripePayment}
+                      disabled={disabled}
+                      type="button"
+                      variant={subscription?.active ? "light" : "orange"}
+                    >
+                      {subscription?.active
+                        ? "Cancel Payment Subscription"
+                        : "Set up Payment Subscription"}
+                    </Button>
+                  )}
               </Group>
+              {(stripeLiveMode ||
+                process.env.NEXT_PUBLIC_NODE_ENV !== "production") && (
+                <Text>
+                  {subscription?.validator?.name} is not currently configured to
+                  accept live payments. Please contact support.
+                </Text>
+              )}
             </Box>
           </Alert>
         </Box>

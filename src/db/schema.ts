@@ -119,6 +119,7 @@ export const validators = pgTable("validators", {
   signature: varchar("signature"),
   verified: boolean("verified").notNull().default(false),
   stripeEnabled: boolean("stripe_enabled").default(false),
+  stripeLiveMode: boolean("stripe_live_mode").default(false),
   agreedToTOS: boolean("agreed_to_tos").default(false),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {

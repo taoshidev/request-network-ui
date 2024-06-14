@@ -96,10 +96,10 @@ export function ContractDisplayModal({
         </Text>
 
         <Box
-          className="mx-8 mt-8"
+          className="mx-8 mt-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 justify-stretch"
           style={{
             display: "grid",
-            gridTemplateColumns: `repeat(${review ? 1 : numColumns}, 1fr)`,
+            // gridTemplateColumns: `repeat(${review ? 1 : numColumns}, 1fr)`,
             gap: "16px",
           }}
         >
