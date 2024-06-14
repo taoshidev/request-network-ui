@@ -37,6 +37,7 @@ import { isValidEthereumAddress } from "@/utils/address";
 import { isCrypto } from "@/utils/is-crypto";
 import { sendNotification } from "@/actions/notifications";
 import clsx from "clsx";
+import { useOrientation } from "@/hooks/use-orientation";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -105,9 +106,7 @@ export function RegistrationStepper({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<ZodIssue[]>([]);
   const [disabled, setDisabled] = useState(true);
-  const [orientation, setOrientation] = useState<"horizontal" | "vertical">(
-    "horizontal"
-  );
+  const orientation = useOrientation(950);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -525,11 +524,11 @@ export function RegistrationStepper({
       </Stepper>
 
       <Group className="justify-center mt-14">
-        <Button variant="default" onClick={prevStep} disabled={active === 0}>
+        <Button variant="default" onClick={prevStep} disabled={active === 0 || loading}>
           Back
         </Button>
         {isLastStep ? (
-          <Button onClick={nextStep} disabled={disabled}>
+          <Button onClick={nextStep} disabled={disabled || loading}>
             {stepText[active]}
           </Button>
         ) : (

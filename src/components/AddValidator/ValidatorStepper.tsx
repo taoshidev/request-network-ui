@@ -23,6 +23,7 @@ import { UserType } from "@/db/types/user";
 import { SubnetType } from "@/db/types/subnet";
 import { ContractType } from "@/db/types/contract";
 import clsx from "clsx";
+import { useOrientation } from "@/hooks/use-orientation";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -54,6 +55,7 @@ export default function ValidatorStepper({
       agreedToTOS: false,
       name: "",
       description: "",
+      hotkey: "",
       userId: user?.id || "",
       verified: false,
       enabled: false,
@@ -66,9 +68,7 @@ export default function ValidatorStepper({
   });
 
   const [active, setActive] = useState(0);
-  const [orientation, setOrientation] = useState<"horizontal" | "vertical">(
-    "horizontal"
-  );
+  const orientation = useOrientation(950);
 
   function getErrors() {
     const nextErrors =
@@ -142,6 +142,7 @@ export default function ValidatorStepper({
         `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on mainnet in subnet: ${netUid}. Please check validity of your hotkey in previous step.`
       );
       if (process.env.NEXT_PUBLIC_NODE_ENV === "production") {
+        setLoading(false);
         return;
       }
       notifyInfo(
@@ -185,6 +186,7 @@ export default function ValidatorStepper({
 
       if ((res as DatabaseResponseType)?.error)
         throw new Error((res as DatabaseResponseType)?.message);
+
       const { validator: newValidator } = res as {
         validator: ValidatorType;
       };
@@ -205,6 +207,7 @@ export default function ValidatorStepper({
         userNotifications: [user],
       });
     } catch (error: Error | unknown) {
+      setLoading(false);
       notifyError((error as Error).message);
     } finally {
       setLoading(false);
@@ -229,7 +232,11 @@ export default function ValidatorStepper({
         className="w-full"
         onSubmit={form.onSubmit(onSubmit)}
       >
-        <Stepper active={active} onStepClick={setStep} orientation={orientation}>
+        <Stepper
+          active={active}
+          onStepClick={setStep}
+          orientation={orientation}
+        >
           <Stepper.Step
             label="Terms of Service"
             description="Agree to terms of service"
@@ -302,13 +309,13 @@ export default function ValidatorStepper({
 
         <Group justify="center" mt="xl">
           {active < 4 && (
-            <Button variant="default" onClick={prevStep} disabled={active < 1}>
+            <Button variant="default" onClick={prevStep} disabled={(active < 1) || loading}>
               Back
             </Button>
           )}
           {active < 3 && (
             <Button
-              disabled={hotkeyExists || (active === 1 && walletExists)}
+              disabled={hotkeyExists || (active === 1 && walletExists) || loading}
               onClick={nextStep}
             >
               {active === 0 ? "Agree To Terms of Service" : "Next step"}
