@@ -10,7 +10,7 @@ import {
   Code,
 } from "@mantine/core";
 import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export type keyType = "apiKey" | "apiSecret" | "walletAddress" | "endpoint";
 
