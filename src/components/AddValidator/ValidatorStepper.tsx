@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Button, Group, NavLink, Stepper, Title } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CreateValidator } from "./steps/CreateValidator";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
@@ -24,6 +24,8 @@ import { SubnetType } from "@/db/types/subnet";
 import { ContractType } from "@/db/types/contract";
 import clsx from "clsx";
 import { useOrientation } from "@/hooks/use-orientation";
+import AgreeTOSModal from "../AgreeTOSModal";
+import { useModals } from "@mantine/modals";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -37,7 +39,6 @@ export default function ValidatorStepper({
   contracts: ContractType[];
 }) {
   const stepInputs = [
-    ["agreedToTOS"],
     ["name", "description", "hotkey", "baseApiUrl"],
     ["url", "contractId", "walletAddress"],
   ];
@@ -68,7 +69,25 @@ export default function ValidatorStepper({
   });
 
   const [active, setActive] = useState(0);
-  const orientation = useOrientation(950);
+  const orientation = useOrientation(700);
+  const modals = useModals();
+
+  const agreeModalRef = useRef<string | null>(null);
+
+  const openAgreeModal = () => {
+    agreeModalRef.current = modals.openModal({
+      centered: true,
+      size: "xl",
+      title: "Terms of Service Agreement",
+      children: <AgreeTOSModal user={user} modalRef={agreeModalRef} />,
+    });
+  };
+
+  useEffect(() => {
+    if (!user.user_metadata?.agreed_to_tos && !agreeModalRef?.current) {
+      openAgreeModal();
+    }
+  }, []);
 
   function getErrors() {
     const nextErrors =
@@ -104,8 +123,14 @@ export default function ValidatorStepper({
 
   const nextStep = () => {
     if (active === 0) {
+      if (!user?.user_metadata?.agreed_to_tos) {
+        openAgreeModal();
+        return;
+      }
+
       form.setValues({ agreedToTOS: true });
     }
+
     if (valid()[active] && !hotkeyExists) {
       setDirection("left");
       setTimeout(
@@ -238,27 +263,6 @@ export default function ValidatorStepper({
           orientation={orientation}
         >
           <Stepper.Step
-            label="Terms of Service"
-            description="Agree to terms of service"
-          >
-            <Box className={clsx("w-full h-full slide", direction)}>
-              <Box
-                component="object"
-                style={{ height: "calc(100vh - 320px)", marginBottom: "100px" }}
-                className={clsx("w-full slide", direction)}
-                type="application/pdf"
-                data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
-              >
-                <Box>
-                  File can not be displayed in browser.{" "}
-                  <NavLink href="/request-network-terms-of-service.pdf">
-                    Request Network Terms of Service
-                  </NavLink>
-                </Box>
-              </Box>
-            </Box>
-          </Stepper.Step>
-          <Stepper.Step
             label="Create Validator"
             description="Validator information"
           >
@@ -308,20 +312,26 @@ export default function ValidatorStepper({
         </Stepper>
 
         <Group justify="center" mt="xl">
-          {active < 4 && (
-            <Button variant="default" onClick={prevStep} disabled={(active < 1) || loading}>
+          {active < 3 && (
+            <Button
+              variant="default"
+              onClick={prevStep}
+              disabled={active < 1 || loading}
+            >
               Back
             </Button>
           )}
-          {active < 3 && (
+          {active < 2 && (
             <Button
-              disabled={hotkeyExists || (active === 1 && walletExists) || loading}
+              disabled={
+                hotkeyExists || (active === 1 && walletExists) || loading
+              }
               onClick={nextStep}
             >
-              {active === 0 ? "Agree To Terms of Service" : "Next step"}
+              Next step
             </Button>
           )}
-          {active === 3 && (
+          {active === 2 && (
             <Button
               type="submit"
               loading={loading}

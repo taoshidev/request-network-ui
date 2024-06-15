@@ -4,14 +4,20 @@ import { Box, Button, NavLink } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 import { MutableRefObject, Ref, useEffect, useState } from "react";
 
-export default function AgreeTOSModal({ user, modalRef }: { user: UserType, modalRef: MutableRefObject<string | null> }) {
+export default function AgreeTOSModal({
+  user,
+  modalRef,
+}: {
+  user: UserType;
+  modalRef: MutableRefObject<string | null>;
+}) {
   const [loading, setLoading] = useState(false);
   const modals = useModals();
 
   useEffect(() => {
-    if (!user) {
+    if (!user && modalRef?.current) {
       setLoading(false);
-      modals.closeAll();
+      modals.closeModal(modalRef.current!);
     }
   }, [user]);
 
@@ -19,7 +25,6 @@ export default function AgreeTOSModal({ user, modalRef }: { user: UserType, moda
     setLoading(true);
     await updateUser({ data: { agreed_to_tos: true } });
     setLoading(false);
-    console.log(modalRef);
     if (modalRef?.current) modals.closeModal(modalRef.current!);
   };
 

@@ -108,7 +108,7 @@ export function RegistrationStepper({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<ZodIssue[]>([]);
   const [disabled, setDisabled] = useState(true);
-  const orientation = useOrientation(950);
+  const orientation = useOrientation(800);
   const modals = useModals();
 
   const agreeModalRef = useRef<string | null>(null);
@@ -123,7 +123,7 @@ export function RegistrationStepper({
   };
 
   useEffect(() => {
-    if (!user.user_metadata?.agreed_to_tos) {
+    if (!user.user_metadata?.agreed_to_tos && !agreeModalRef?.current) {
       openAgreeModal();
     }
   }, []);
