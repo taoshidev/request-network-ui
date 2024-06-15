@@ -33,6 +33,7 @@ export const users = authSchema.table("users", {
   username: varchar("username"),
   phone: varchar("phone", { length: 256 }),
   onboarded: boolean("onboarded").notNull().default(false),
+  agreedToTOS: boolean("agreed_to_tos").default(false),
   onboardingStep: integer("onboardingStep").notNull().default(0),
   stripeEnabled: boolean("stripe_enabled").default(true),
   cryptoEnabled: boolean("crypto_enabled").default(false),

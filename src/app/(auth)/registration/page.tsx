@@ -108,6 +108,7 @@ export default async function Page() {
 
   return (
     <Registration
+      user={user}
       currentSubscriptions={userSubscriptions}
       validators={validatorWithInfo}
       subnets={subnets!}

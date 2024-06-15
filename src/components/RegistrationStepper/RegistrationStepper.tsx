@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Stepper,
@@ -38,6 +38,9 @@ import { isCrypto } from "@/utils/is-crypto";
 import { sendNotification } from "@/actions/notifications";
 import clsx from "clsx";
 import { useOrientation } from "@/hooks/use-orientation";
+import { UserType } from "@/db/types/user";
+import { useModals } from "@mantine/modals";
+import AgreeTOSModal from "../AgreeTOSModal";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -60,31 +63,30 @@ const domainSchema = z.object({
     .optional(),
 });
 
-const REGISTRATION_STEPS = 5;
+const REGISTRATION_STEPS = 4;
 interface StepText {
   [key: string | number]: string;
 }
 
 const stepText: StepText = {
-  "0": "Agree to Terms of Service",
-  "1": "Validator Selection",
-  "2": "Endpoint Selection",
-  "3": "Review Selection",
-  "4": "Continue",
+  "0": "Validator Selection",
+  "1": "Endpoint Selection",
+  "2": "Review Selection",
+  "3": "Continue",
 };
 
 export function RegistrationStepper({
+  user,
   StepOne,
   StepTwo,
   StepThree,
   StepFour,
-  StepFive,
 }: {
+  user: UserType;
   StepOne: React.ReactElement;
   StepTwo: React.ReactElement;
   StepThree: React.ReactElement;
   StepFour: React.ReactElement;
-  StepFive: React.ReactElement;
 }) {
   const [keys, setKeys] = useState<{
     apiKey: string;
@@ -107,21 +109,44 @@ export function RegistrationStepper({
   const [errors, setErrors] = useState<ZodIssue[]>([]);
   const [disabled, setDisabled] = useState(true);
   const orientation = useOrientation(950);
+  const modals = useModals();
+
+  const agreeModalRef = useRef<string | null>(null);
+
+  const openAgreeModal = () => {
+    agreeModalRef.current = modals.openModal({
+      centered: true,
+      size: "xl",
+      title: "Terms of Service Agreement",
+      children: <AgreeTOSModal user={user} modalRef={agreeModalRef} />,
+    });
+  };
+
+  useEffect(() => {
+    if (!user.user_metadata?.agreed_to_tos) {
+      openAgreeModal();
+    }
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const nextStep = () => {
-    setActive((current) =>
-      current < REGISTRATION_STEPS ? current + 1 : current
-    );
-
     if (active === 0) {
+      if (!user?.user_metadata?.agreed_to_tos) {
+        openAgreeModal();
+        return;
+      }
+
       updateData({
         agreedToTOS: true,
       });
     }
+
+    setActive((current) =>
+      current < REGISTRATION_STEPS ? current + 1 : current
+    );
 
     updateData({ direction: "left" });
 
@@ -149,7 +174,7 @@ export function RegistrationStepper({
     updateData({ currentStep: value } as RegistrationData);
   };
 
-  const isLastStep = useMemo(() => active !== REGISTRATION_STEPS, [active]);
+  const isNotLastStep = useMemo(() => active !== REGISTRATION_STEPS, [active]);
 
   useEffect(() => {
     if (registrationData) {
@@ -161,12 +186,12 @@ export function RegistrationStepper({
 
   useEffect(() => {
     const disabled =
-      active === 0 || active >= 4
+      active >= 3
         ? false
         : active >= REGISTRATION_STEPS - 1 ||
-          (active === 1 && !registrationData?.subnet) ||
-          (active === 2 && !registrationData?.validator) ||
-          (active === 3 && !registrationData?.endpoint);
+          (active === 0 && !registrationData?.subnet) ||
+          (active === 1 && !registrationData?.validator) ||
+          (active === 2 && !registrationData?.endpoint);
     setDisabled(disabled);
   }, [registrationData, active]);
 
@@ -417,27 +442,20 @@ export function RegistrationStepper({
         allowNextStepsSelect={false}
         orientation={orientation}
       >
-        <Stepper.Step
-          label="Terms of Service"
-          description="Agree to terms of service"
-        >
+        <Stepper.Step label="Subnet" description="Browse a Subnet">
           <StepOne.type {...StepOne.props} />
         </Stepper.Step>
 
-        <Stepper.Step label="Subnet" description="Browse a Subnet">
+        <Stepper.Step label="Validator" description="Select a Validator">
           <StepTwo.type {...StepTwo.props} />
         </Stepper.Step>
 
-        <Stepper.Step label="Validator" description="Select a Validator">
+        <Stepper.Step label="Endpoint" description="Select an Endpoint">
           <StepThree.type {...StepThree.props} />
         </Stepper.Step>
 
-        <Stepper.Step label="Endpoint" description="Select an Endpoint">
-          <StepFour.type {...StepFour.props} />
-        </Stepper.Step>
-
         <Stepper.Step label="Review" description="Review Selection">
-          <StepFive.type {...StepFive.props} />
+          <StepFour.type {...StepFour.props} />
         </Stepper.Step>
 
         <Stepper.Completed>
@@ -524,10 +542,14 @@ export function RegistrationStepper({
       </Stepper>
 
       <Group className="justify-center mt-14">
-        <Button variant="default" onClick={prevStep} disabled={active === 0 || loading}>
+        <Button
+          variant="default"
+          onClick={prevStep}
+          disabled={active === 0 || loading}
+        >
           Back
         </Button>
-        {isLastStep ? (
+        {isNotLastStep ? (
           <Button onClick={nextStep} disabled={disabled || loading}>
             {stepText[active]}
           </Button>
