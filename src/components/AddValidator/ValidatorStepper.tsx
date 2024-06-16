@@ -164,10 +164,10 @@ export default function ValidatorStepper({
       form?.values?.hotkey as string
     );
     if (!neuronInfo) {
-      notifyError(
-        `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on mainnet in subnet: ${netUid}. Please check validity of your hotkey in previous step.`
-      );
       if (process.env.NEXT_PUBLIC_NODE_ENV === "production") {
+        notifyError(
+          `Cannot find validator neuron info with hotkey: ${form?.values?.hotkey} on mainnet in subnet: ${netUid}. Please check validity of your hotkey in previous step.`
+        );
         setLoading(false);
         return;
       }
