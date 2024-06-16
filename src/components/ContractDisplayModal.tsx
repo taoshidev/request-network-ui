@@ -61,7 +61,7 @@ export function ContractDisplayModal({
         )?.length,
         3
       ),
-    [services, review, selectedServiceId]
+    [services, review, selectedServiceId, subscribedServiceId]
   );
 
   const handleAcceptTerms = async (termsAccepted: boolean) => {

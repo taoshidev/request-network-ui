@@ -48,7 +48,7 @@ export function UpdateEndpoint({
     );
 
     return validatorVerified && (stripeEnabled || hasFreeService);
-  }, []);
+  }, [contracts, endpoint?.contractId, endpoint?.validator]);
 
   const form = useForm({
     initialValues: {
