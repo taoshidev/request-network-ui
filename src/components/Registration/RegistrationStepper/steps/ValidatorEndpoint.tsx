@@ -85,7 +85,10 @@ export function ValidatorEndpoint({
     (endpoint, { termsAccepted, selectedService }) => {
       endpoint.termsAccepted = termsAccepted;
       endpoint.selectedService = selectedService;
+
+      setTimeout(() => handleSubscribeClick(endpoint), 500);
     },
+    //eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 

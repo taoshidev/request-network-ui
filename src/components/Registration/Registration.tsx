@@ -1,14 +1,14 @@
 "use client";
 
 import { RegistrationProvider } from "@/providers/registration";
-import { Subnets } from "@/components/Subnets";
+import { Subnets } from "./RegistrationStepper/steps/Subnets";
 import { SubnetValidator } from "@/components/SubnetValidator";
-import { SubnetValidatorReview } from "@/components/RegistrationStepper/steps/SubnetValidatorReview";
-import { RegistrationStepper } from "@/components/RegistrationStepper/RegistrationStepper";
+import { SubnetValidatorReview } from "@/components/Registration/RegistrationStepper/steps/SubnetValidatorReview";
+import { RegistrationStepper } from "@/components/Registration/RegistrationStepper/RegistrationStepper";
 import { SubscriptionType } from "@/db/types/subscription";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
-import { ValidatorEndpoint } from "@/components/RegistrationStepper/steps/ValidatorEndpoint";
+import { ValidatorEndpoint } from "@/components/Registration/RegistrationStepper/steps/ValidatorEndpoint";
 import { Alert, Text } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
 import clsx from "clsx";
@@ -78,7 +78,7 @@ export function Registration({
         StepThree={
           <ValidatorEndpoint currentSubscriptions={currentSubscriptions} />
         }
-        StepFour={<SubnetValidatorReview />}
+        StepFour={<SubnetValidatorReview user={user} />}
       />
     </RegistrationProvider>
   );

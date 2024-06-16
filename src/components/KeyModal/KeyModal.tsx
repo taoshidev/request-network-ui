@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { IconAlertCircle, IconCopy } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export type keyType = "apiKey" | "apiSecret" | "walletAddress" | "endpoint";
 
@@ -73,7 +74,9 @@ export function KeyModal({
   isConsumer?: boolean;
 }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const onCloseCancel = () => {
+    setLoading(true);
     router.push("/dashboard");
     onClose();
   };
@@ -194,12 +197,7 @@ export function KeyModal({
         </>
       )}
       <Box className="sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
-        <Button
-          className="w-full"
-          component="a"
-          href="/dashboard"
-          onClick={onClose}
-        >
+        <Button className="w-full" onClick={onCloseCancel} loading={loading}>
           Go to Dashboard
         </Button>
       </Box>

@@ -40,7 +40,7 @@ import clsx from "clsx";
 import { useOrientation } from "@/hooks/use-orientation";
 import { UserType } from "@/db/types/user";
 import { useModals } from "@mantine/modals";
-import AgreeTOSModal from "../AgreeTOSModal";
+import AgreeTOSModal from "../../AgreeTOSModal";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -122,16 +122,29 @@ export function RegistrationStepper({
     });
   };
 
+  const cleanUp = () => {
+    updateData(defaultContextValue.registrationData);
+  };
+
   useEffect(() => {
     if (!user.user_metadata?.agreed_to_tos && !agreeModalRef?.current) {
       setTimeout(() => openAgreeModal(), 1000);
     }
+
+    return cleanUp;
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const allowNextStepsSelect = useMemo(() => {
+    if (active === 0) {
+      return !!registrationData.agreedToTOS;
+    }
+    return !disabled;
+  }, [active, disabled, registrationData.agreedToTOS]);
 
   const nextStep = () => {
     if (active === 0) {
@@ -143,6 +156,18 @@ export function RegistrationStepper({
       updateData({
         agreedToTOS: true,
       });
+
+      if (
+        registrationData?.subnet?.id !==
+        registrationData?.validator?.endpoints?.[0]?.subnetId
+      ) {
+        updateData({ validator: null });
+      }
+    } else if (
+      active === 1 &&
+      registrationData.validator?.id !== registrationData?.endpoint?.validatorId
+    ) {
+      updateData({ endpoint: null, agreedToTOS: false });
     }
 
     setActive((current) =>
@@ -172,7 +197,12 @@ export function RegistrationStepper({
   };
 
   const handleStepChange = (value: number) => {
-    updateData({ currentStep: value } as RegistrationData);
+    updateData({ direction: value > active ? "left" : "right" });
+
+    setTimeout(() => {
+      updateData({ currentStep: value } as RegistrationData);
+      scrollToTop();
+    }, 0);
   };
 
   const isNotLastStep = useMemo(() => active !== REGISTRATION_STEPS, [active]);
@@ -407,12 +437,6 @@ export function RegistrationStepper({
     }
   };
 
-  const handleKeyModalClose = () => {
-    router.push("/dashboard");
-    updateData(defaultContextValue.registrationData);
-    close();
-  };
-
   return pageLoading ? (
     <Loading />
   ) : (
@@ -424,7 +448,7 @@ export function RegistrationStepper({
         endpoint={keys?.endpoint}
         opened={opened}
         isConsumer={true}
-        onClose={handleKeyModalClose}
+        onClose={close}
         onCopy={(key: keyType) =>
           setKeys((prev) => ({ ...prev, [key]: prev[key] }))
         }
@@ -439,8 +463,8 @@ export function RegistrationStepper({
       <Stepper
         size="sm"
         active={active}
-        onStepClick={() => handleStepChange(active)}
-        allowNextStepsSelect={false}
+        onStepClick={(step) => handleStepChange(step)}
+        allowNextStepsSelect={allowNextStepsSelect}
         orientation={orientation}
       >
         <Stepper.Step label="Subnet" description="Browse a Subnet">
@@ -551,7 +575,7 @@ export function RegistrationStepper({
           Back
         </Button>
         {isNotLastStep ? (
-          <Button onClick={nextStep} disabled={disabled || loading}>
+          <Button onClick={nextStep} loading={loading} disabled={disabled}>
             {stepText[active]}
           </Button>
         ) : (
