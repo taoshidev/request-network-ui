@@ -1,7 +1,7 @@
 "use client";
 
 import { RegistrationProvider } from "@/providers/registration";
-import { Subnets } from "@/components/Subnets";
+import { Subnets } from "./RegistrationStepper/steps/Subnets";
 import { SubnetValidator } from "@/components/SubnetValidator";
 import { SubnetValidatorReview } from "@/components/Registration/RegistrationStepper/steps/SubnetValidatorReview";
 import { RegistrationStepper } from "@/components/Registration/RegistrationStepper/RegistrationStepper";
@@ -78,7 +78,7 @@ export function Registration({
         StepThree={
           <ValidatorEndpoint currentSubscriptions={currentSubscriptions} />
         }
-        StepFour={<SubnetValidatorReview />}
+        StepFour={<SubnetValidatorReview user={user} />}
       />
     </RegistrationProvider>
   );

@@ -150,6 +150,18 @@ export function RegistrationStepper({
       updateData({
         agreedToTOS: true,
       });
+
+      if (
+        registrationData?.subnet?.id !==
+        registrationData?.validator?.endpoints?.[0]?.subnetId
+      ) {
+        updateData({ validator: null });
+      }
+    } else if (
+      active === 1 &&
+      registrationData.validator?.id !== registrationData?.endpoint?.validatorId
+    ) {
+      updateData({ endpoint: null });
     }
 
     setActive((current) =>

@@ -18,10 +18,25 @@ import { TextEditor } from "@/components/TextEditor";
 import { useDisclosure } from "@mantine/hooks";
 import { ContractDisplayModal } from "@/components/ContractDisplayModal";
 import clsx from "clsx";
+import { useModals } from "@mantine/modals";
+import { useRef } from "react";
+import AgreeTOSModal from "@/components/AgreeTOSModal";
+import { UserType } from "@/db/types/user";
 
-export function SubnetValidatorReview() {
+export function SubnetValidatorReview({ user }: { user: UserType }) {
   const { registrationData } = useRegistration();
   const [opened, { open, close }] = useDisclosure(false);
+  const modals = useModals();
+  const agreeModalRef = useRef<string | null>(null);
+
+  const viewTOS = () => {
+    agreeModalRef.current = modals.openModal({
+      centered: true,
+      size: "xl",
+      title: "Terms of Service Agreement",
+      children: <AgreeTOSModal user={user} mode="view" modalRef={agreeModalRef} />,
+    });
+  };
 
   return (
     <Box className={clsx("mt-10 slide", registrationData.direction)}>
@@ -38,7 +53,12 @@ export function SubnetValidatorReview() {
                 html={registrationData?.validator?.description as string}
               />
             </Box>
-            <Button onClick={open}>View Accepted Terms</Button>
+            <Box className="grid grid-cols-2 gap-4 px-4">
+              <Button onClick={open}>View Accepted Terms</Button>
+              <Button onClick={viewTOS} variant="outline">
+                View Taoshi TOS
+              </Button>
+            </Box>
             <ContractDisplayModal
               services={registrationData?.endpoint?.contract?.services}
               validator={registrationData?.validator!}

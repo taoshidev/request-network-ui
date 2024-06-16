@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 import dayjs from "dayjs";
-import { Title, Box, Table } from "@mantine/core";
+import { Title, Box, Table, Card } from "@mantine/core";
 import { KeyType } from "@/db/types/key";
 import { ValidatorType } from "@/db/types/validator";
 
@@ -18,9 +18,9 @@ export function StatTable({
   return (
     <Box>
       {(caption.length === 0 || (Array.isArray(data) && data?.length > 0)) && (
-        <Fragment>
+        <Card className="shadow-sm">
           {data && (
-            <Title size="sm" order={2} className="mt-4">
+            <Title size="sm" order={2}>
               {caption ? caption : "Usage Statistics"}
             </Title>
           )}
@@ -77,7 +77,7 @@ export function StatTable({
               </Table.Tbody>
             </Table>
           </Table.ScrollContainer>
-        </Fragment>
+        </Card>
       )}
     </Box>
   );
