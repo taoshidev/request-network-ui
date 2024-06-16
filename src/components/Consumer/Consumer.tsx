@@ -47,6 +47,7 @@ export function Consumer({
     SubscriptionEndpointValidatorType[] | undefined
   >(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const [btnLoading, setBtnLoading] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -92,14 +93,23 @@ export function Consumer({
         <Group className="justify-between mb-10">
           <Title className="text-2xl">Api Keys</Title>
           <Box>
-            <Button component="a" href="/registration">
+            <Button
+              type="button"
+              onClick={() => setBtnLoading("registration")}
+              loading={btnLoading === "registration"}
+              component={Link}
+              href="/registration"
+            >
               {!subscriptionData ? "Register" : "Browse Subnets"}
             </Button>
             {subscriptionData?.length! > 0 && (
               <Button
+                type="button"
+                onClick={() => setBtnLoading("insights")}
+                loading={btnLoading === "insights"}
                 variant="outline"
                 className="ml-2"
-                component="a"
+                component={Link}
                 href={`/dashboard/${user?.id}/consumer-payment-dashboard`}
               >
                 Insights
@@ -143,39 +153,49 @@ export function Consumer({
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {validator?.subscriptions?.map?.((subscription) => (
-                    <Table.Tr key={subscription?.id}>
-                      <Table.Td>
-                        <Anchor
-                          className="font-semibold text-black"
-                          component={Link}
-                          href={`/keys/${subscription?.keyData?.id}`}
-                        >
-                          {subscription?.keyData?.name}
-                        </Anchor>
-                      </Table.Td>
-                      <Table.Td>{subscription?.consumerApiUrl}</Table.Td>
-                      <Table.Td>
-                        {subscription?.endpoint?.validator?.name}
-                      </Table.Td>
-                      <Table.Td>
-                        {dayjs(subscription?.keyData?.createdAt).format(
-                          "MMM DD, YYYY"
-                        )}
-                      </Table.Td>
-                      <Table.Td>{subscription?.keyData?.meta?.type}</Table.Td>
-                      <Table.Td>{subscription?.keyData?.remaining}</Table.Td>
-                      <Table.Td className="text-right">
-                        <Anchor
-                          className="text-sm"
-                          component={Link}
-                          href={`/keys/${subscription?.keyData?.id}`}
-                        >
-                          View Subscription
-                        </Anchor>
-                      </Table.Td>
-                    </Table.Tr>
-                  ))}
+                  {validator?.subscriptions?.map?.(
+                    (subscription, index: number) => (
+                      <Table.Tr key={subscription?.id}>
+                        <Table.Td>
+                          <Anchor
+                            className="font-semibold text-black"
+                            component={Link}
+                            href={`/keys/${subscription?.keyData?.id}`}
+                          >
+                            {subscription?.keyData?.name}
+                          </Anchor>
+                        </Table.Td>
+                        <Table.Td>{subscription?.consumerApiUrl}</Table.Td>
+                        <Table.Td>
+                          {subscription?.endpoint?.validator?.name}
+                        </Table.Td>
+                        <Table.Td>
+                          {dayjs(subscription?.keyData?.createdAt).format(
+                            "MMM DD, YYYY"
+                          )}
+                        </Table.Td>
+                        <Table.Td>{subscription?.keyData?.meta?.type}</Table.Td>
+                        <Table.Td>{subscription?.keyData?.remaining}</Table.Td>
+                        <Table.Td className="text-right">
+                          <Button
+                            component={Link}
+                            type="button"
+                            className="text-sm"
+                            variant="subtle"
+                            onClick={() =>
+                              setBtnLoading(`view-subscription-${index}`)
+                            }
+                            loading={
+                              btnLoading === `view-subscription-${index}`
+                            }
+                            href={`/keys/${subscription?.keyData?.id}`}
+                          >
+                            View Subscription
+                          </Button>
+                        </Table.Td>
+                      </Table.Tr>
+                    )
+                  )}
                 </Table.Tbody>
               </Table>
             </Table.ScrollContainer>

@@ -133,6 +133,13 @@ export function RegistrationStepper({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const allowNextStepsSelect = useMemo(() => {
+    if (active === 0) {
+      return !!registrationData.agreedToTOS;
+    }
+    return !disabled;
+  }, [user, disabled]);
+
   const nextStep = () => {
     if (active === 0) {
       if (!user?.user_metadata?.agreed_to_tos) {
@@ -172,7 +179,12 @@ export function RegistrationStepper({
   };
 
   const handleStepChange = (value: number) => {
-    updateData({ currentStep: value } as RegistrationData);
+    updateData({ direction: value > active ? "left" : "right" });
+
+    setTimeout(() => {
+      updateData({ currentStep: value } as RegistrationData);
+      scrollToTop();
+    }, 0);
   };
 
   const isNotLastStep = useMemo(() => active !== REGISTRATION_STEPS, [active]);
@@ -439,8 +451,8 @@ export function RegistrationStepper({
       <Stepper
         size="sm"
         active={active}
-        onStepClick={() => handleStepChange(active)}
-        allowNextStepsSelect={false}
+        onStepClick={(step) => handleStepChange(step)}
+        allowNextStepsSelect={allowNextStepsSelect}
         orientation={orientation}
       >
         <Stepper.Step label="Subnet" description="Browse a Subnet">
@@ -551,7 +563,7 @@ export function RegistrationStepper({
           Back
         </Button>
         {isNotLastStep ? (
-          <Button onClick={nextStep} disabled={disabled || loading}>
+          <Button onClick={nextStep} loading={loading} disabled={disabled}>
             {stepText[active]}
           </Button>
         ) : (
