@@ -43,33 +43,39 @@ export const getEndpoint = async ({ id }: { id: string }) => {
   }
 };
 
-export const getEndpointWithSubscription = async ({ id }: { id: string }): Promise<EndpointType | Error> => {
+export const getEndpointWithSubscription = async ({
+  id,
+}: {
+  id: string;
+}): Promise<EndpointType | Error> => {
   try {
     const results = await db.query.endpoints.findFirst({
       where: eq(endpoints.id, id),
       with: {
         subscriptions: {
           columns: {
-            id: true
+            id: true,
           },
           with: {
             user: {
               columns: {
                 id: true,
-                email: true
-              }
-            }
-          }
+                email: true,
+              },
+            },
+          },
         },
         validator: {
           columns: {
             id: true,
             baseApiUrl: true,
             hotkey: true,
-            apiPrefix: true
-          }
-        }
-      }
+            apiPrefix: true,
+            verified: true,
+            stripeEnabled: true,
+          },
+        },
+      },
     });
 
     return results as EndpointType;
@@ -98,11 +104,11 @@ export const updateEndpoint = async ({
 }: Partial<EndpointType>) => {
   try {
     const currentEndpoint = await db
-    .select({
-      url: endpoints.url
-    } as any)
-    .from(endpoints)
-    .where(eq(endpoints.id, id));
+      .select({
+        url: endpoints.url,
+      } as any)
+      .from(endpoints)
+      .where(eq(endpoints.id, id));
 
     const res = await db
       .update(endpoints)

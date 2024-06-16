@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Title, Group, Box, Button, Switch, NavLink } from "@mantine/core";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
@@ -38,6 +38,17 @@ export function UpdateEndpoint({
   const [enabled, setEnabled] = useState(endpoint.enabled);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const router = useRouter();
+  const endpointReady = useMemo(() => {
+    const { verified: validatorVerified, stripeEnabled } = endpoint?.validator;
+    const endpointContract = contracts.find(
+      (contract) => contract.id === endpoint.contractId
+    );
+    const hasFreeService = endpointContract?.services.some(
+      (service) => +service.price === 0
+    );
+
+    return validatorVerified && (stripeEnabled || hasFreeService);
+  }, []);
 
   const form = useForm({
     initialValues: {
@@ -177,7 +188,7 @@ export function UpdateEndpoint({
             label="Enable or Disable Endpoint"
             checked={enabled}
             onChange={handleEnable}
-            disabled={subscriptionCount > 0 && enabled}
+            disabled={!endpointReady || (subscriptionCount > 0 && enabled)}
           />
         </Box>
         <Box
