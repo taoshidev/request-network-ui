@@ -73,8 +73,7 @@ export function Validators({
                   <Table.Tr key={validator?.id}>
                     <Table.Td>{validator?.name}</Table.Td>
                     <Table.Td>
-                      {validator?.baseApiUrl +
-                        (validator?.apiPrefix ? validator?.apiPrefix : "")}
+                      {validator?.baseApiUrl}
                     </Table.Td>
                     <Table.Td>
                       <Box className="leading-7">

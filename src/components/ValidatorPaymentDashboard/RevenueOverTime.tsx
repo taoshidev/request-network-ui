@@ -40,7 +40,7 @@ export default function RevenueOverTime({ data }) {
       </Box>
       <Box className="h-40">
         <ResponsiveLine
-          animate
+          animate={false}
           enablePoints={false}
           enableGridX={false}
           enableGridY={false}

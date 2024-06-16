@@ -46,6 +46,7 @@ export function Endpoints({
       validatorId: "",
       // walletAddress: "",
       contractId: "",
+      enabled: false
     },
     validate: zodResolver(EndpointSchema),
   });

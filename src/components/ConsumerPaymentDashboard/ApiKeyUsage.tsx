@@ -46,7 +46,7 @@ export default function ApiKeyUsage({ data }) {
       </Box>
       <Box className="h-80">
         <ResponsiveLine
-          animate
+          animate={false}
           enablePoints={false}
           enableGridX={false}
           enableGridY={false}

@@ -35,7 +35,7 @@ export function Subnets({
       updateData?.({ subnet: null } as RegistrationData);
     } else {
       setSelectedSubnet(subnet.id);
-      updateData?.({ subnet, validator: null } as RegistrationData);
+      updateData?.({ subnet } as RegistrationData);
     }
 
     if (mode === "navigation") {

@@ -4,13 +4,15 @@ export const components = {
   Input: {
     styles: () => ({
       input: {
+        height: "2.5rem",
+        borderRadius: "3px",
+        fontSize: "1rem",
       },
     }),
   },
   Checkbox: {
     styles: () => ({
-      input: {
-      },
+      input: {},
     }),
   },
   Badge: {

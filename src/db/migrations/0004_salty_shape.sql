@@ -1,0 +1,1 @@
+ALTER TABLE "auth"."users" ADD COLUMN "agreed_to_tos" boolean DEFAULT false;

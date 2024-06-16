@@ -1,0 +1,1 @@
+ALTER TABLE "endpoints" ALTER COLUMN "enabled" SET DEFAULT false;

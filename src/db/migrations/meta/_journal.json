@@ -22,6 +22,27 @@
       "when": 1717644271548,
       "tag": "0002_military_celestials",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1718400741796,
+      "tag": "0003_wakeful_martin_li",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1718483653538,
+      "tag": "0004_salty_shape",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1718508318277,
+      "tag": "0005_flowery_krista_starr",
+      "breakpoints": true
     }
   ]
 }

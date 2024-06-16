@@ -54,7 +54,9 @@ export default function StripeSetupModal({
     setMissingWebhookEvents(!stripe?.webhookEvents);
     setDisabled(
       (stripe?.isHttps ? missingLiveWebhook || missingEnv : missingEnv) ||
-        stripe?.rnUrl !== process.env.NEXT_PUBLIC_DOMAIN
+        stripe?.rnUrl !== process.env.NEXT_PUBLIC_DOMAIN ||
+        (!stripe?.stripeLiveMode &&
+          process.env.NEXT_PUBLIC_NODE_ENV === "production")
     );
     // eslint-disable-next-line
   }, [stripe]);
@@ -188,6 +190,28 @@ export default function StripeSetupModal({
                   It looks like you are in local development mode. Go to your
                   Stripe account to set up a local listener if you have not done
                   this yet.
+                </Box>
+              </Notification>
+            )}
+            {!stripe?.stripeLiveMode && (
+              <Notification
+                className="zoom in shadow-md border border-gray-200 mb-3"
+                style={{
+                  borderLeft: `4px solid ${NOTIFICATION_COLOR.WARNING}`,
+                }}
+                icon={NOTIFICATION_ICON.WARNING}
+                color={NOTIFICATION_COLOR.WARNING}
+                title="Stripe Test Mode"
+                withCloseButton={false}
+              >
+                <Box className="text-slate-700">
+                  Your Stripe account is set to test mode. Only test credit card
+                  numbers will work and real payments will not be processed.
+                  Once you have switched to live Stripe credentials on your
+                  validator server .env, your account will be able to process
+                  live payments. If you have a test webhook key, remove it when
+                  adding the live credentials so a live webhook will be created
+                  automatically.
                 </Box>
               </Notification>
             )}

@@ -17,7 +17,7 @@ export default function ClientRedirect({
   const router = useRouter();
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push(href);
+      if (href) router.push(href);
     }, delay);
 
     return () => clearTimeout(timer);
