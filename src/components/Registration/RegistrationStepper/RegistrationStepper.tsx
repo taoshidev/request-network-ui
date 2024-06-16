@@ -144,7 +144,7 @@ export function RegistrationStepper({
       return !!registrationData.agreedToTOS;
     }
     return !disabled;
-  }, [user, disabled]);
+  }, [active, disabled, registrationData.agreedToTOS]);
 
   const nextStep = () => {
     if (active === 0) {

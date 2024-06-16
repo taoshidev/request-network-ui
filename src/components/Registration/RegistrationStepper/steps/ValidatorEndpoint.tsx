@@ -88,6 +88,7 @@ export function ValidatorEndpoint({
 
       setTimeout(() => handleSubscribeClick(endpoint), 500);
     },
+    //eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
