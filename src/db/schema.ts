@@ -158,7 +158,7 @@ export const endpoints = pgTable(
       onDelete: "set null",
     }),
     url: varchar("url").notNull(),
-    enabled: boolean("enabled").default(true).notNull(),
+    enabled: boolean("enabled").default(false).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at", {
       withTimezone: true,
