@@ -122,10 +122,16 @@ export function RegistrationStepper({
     });
   };
 
+  const cleanUp = () => {
+    updateData(defaultContextValue.registrationData);
+  };
+
   useEffect(() => {
     if (!user.user_metadata?.agreed_to_tos && !agreeModalRef?.current) {
       setTimeout(() => openAgreeModal(), 1000);
     }
+
+    return cleanUp;
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -161,7 +167,7 @@ export function RegistrationStepper({
       active === 1 &&
       registrationData.validator?.id !== registrationData?.endpoint?.validatorId
     ) {
-      updateData({ endpoint: null });
+      updateData({ endpoint: null, agreedToTOS: false });
     }
 
     setActive((current) =>
@@ -431,12 +437,6 @@ export function RegistrationStepper({
     }
   };
 
-  const handleKeyModalClose = () => {
-    router.push("/dashboard");
-    updateData(defaultContextValue.registrationData);
-    close();
-  };
-
   return pageLoading ? (
     <Loading />
   ) : (
@@ -448,7 +448,7 @@ export function RegistrationStepper({
         endpoint={keys?.endpoint}
         opened={opened}
         isConsumer={true}
-        onClose={handleKeyModalClose}
+        onClose={close}
         onCopy={(key: keyType) =>
           setKeys((prev) => ({ ...prev, [key]: prev[key] }))
         }
