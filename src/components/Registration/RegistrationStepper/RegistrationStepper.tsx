@@ -167,7 +167,7 @@ export function RegistrationStepper({
       active === 1 &&
       registrationData.validator?.id !== registrationData?.endpoint?.validatorId
     ) {
-      updateData({ endpoint: null, agreedToTOS: false });
+      updateData({ endpoint: null });
     }
 
     setActive((current) =>
