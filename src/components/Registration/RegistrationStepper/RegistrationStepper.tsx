@@ -40,7 +40,7 @@ import clsx from "clsx";
 import { useOrientation } from "@/hooks/use-orientation";
 import { UserType } from "@/db/types/user";
 import { useModals } from "@mantine/modals";
-import AgreeTOSModal from "../AgreeTOSModal";
+import AgreeTOSModal from "../../AgreeTOSModal";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),

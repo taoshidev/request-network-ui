@@ -29,8 +29,8 @@ export function SubnetValidatorReview() {
         <Title className="text-xl mb-4">
           {registrationData?.validator?.name}
         </Title>
-        <Group className="justify-between items-start gap-8">
-          <Box className="flex-1">
+        <Group className="flex flex-wrap justify-between items-start gap-8">
+          <Box className="flex-none w-full md:flex-1">
             <Box className="h-[353px] mb-5 overflow-auto">
               <TextEditor<ValidatorType>
                 type="BubbleEditor"
@@ -48,7 +48,7 @@ export function SubnetValidatorReview() {
               close={close}
             />
           </Box>
-          <Stack className="flex-1 gap-2">
+          <Stack className="flex-none w-full md:flex-1 gap-2">
             <Group className="justify-between items-center text-sm">
               <Text className="text-sm">Subnet</Text>
               <Text className="text-sm">{registrationData?.subnet?.label}</Text>
