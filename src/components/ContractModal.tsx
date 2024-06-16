@@ -45,6 +45,7 @@ export function ContractModal({
   const editServiceIndexRef = useRef<number | null>(null);
   const { notifySuccess, notifyError } = useNotification();
   const modals = useModals();
+  const serviceRef = useRef<HTMLDivElement | null>(null);
 
   const getDefaultValues = (contract: ContractType | null) => ({
     id: contract?.id || "",
@@ -133,11 +134,14 @@ export function ContractModal({
         )
       );
     } else {
-      setServices((prevServices) => [...prevServices, service]);
+      setServices((prevServices) => [service, ...prevServices]);
     }
     if (serviceModalRef.current) {
       modals.closeModal(serviceModalRef.current);
     }
+    setTimeout(() => {
+      serviceRef?.current?.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const openServiceModal = (service?: ServiceType, index?: number) => {
@@ -224,7 +228,11 @@ export function ContractModal({
                 <Table.Tbody>
                   {services.map((service: ServiceType, index: number) => (
                     <Table.Tr key={index}>
-                      <Table.Td>{service?.name}</Table.Td>
+                      <Table.Td>
+                        <Box ref={index === 0 ? serviceRef : undefined}>
+                          {service?.name}
+                        </Box>
+                      </Table.Td>
                       <Table.Td>
                         {dayjs(contract?.expires).format("MMM DD, YYYY")}
                       </Table.Td>

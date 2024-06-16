@@ -19,6 +19,7 @@ export default function AgreeTOSModal({
       setLoading(false);
       modals.closeModal(modalRef.current!);
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleAgreeToTOS = async () => {
@@ -32,7 +33,7 @@ export default function AgreeTOSModal({
     <Box className="w-full h-full">
       <Box
         component="object"
-        style={{ height: "calc(100vh - 220px)" }}
+        style={{ height: "calc(100vh - 245px)" }}
         className="h-full w-full mb-4"
         type="application/pdf"
         data="/request-network-terms-of-service.pdf#view=FitH&scrollbar=0&navpanes=0"
@@ -44,7 +45,7 @@ export default function AgreeTOSModal({
           </NavLink>
         </Box>
       </Box>
-      <Box className="flex justify-center gap-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
+      <Box className="flex justify-end gap-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
         <Button onClick={handleAgreeToTOS} loading={loading}>
           Agree to Term of Service
         </Button>

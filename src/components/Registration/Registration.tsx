@@ -64,7 +64,7 @@ export function Registration({
             />
           ) : (
             <Alert
-              className={clsx("mt-8 shadow-sm slide", direction)}
+              className={clsx("w-full mt-8 shadow-sm slide", direction)}
               color="orange"
               icon={<IconAlertCircle />}
             >

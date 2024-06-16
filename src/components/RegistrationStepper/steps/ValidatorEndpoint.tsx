@@ -11,6 +11,7 @@ import {
   Button,
   Group,
   Divider,
+  Alert,
 } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRegistration } from "@/providers/registration";
@@ -20,6 +21,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { ContractDisplayModal } from "@/components/ContractDisplayModal";
 import clsx from "clsx";
 import { ServiceType } from "@/db/types/service";
+import { IconAlertCircle } from "@tabler/icons-react";
 
 export function ValidatorEndpoint({
   currentSubscriptions,
@@ -120,76 +122,94 @@ export function ValidatorEndpoint({
             })
           }
         />
-
-        {registrationData?.validator?.endpoints?.map(
-          (endpoint: EndpointType) => (
-            <Grid.Col key={endpoint.id} span={{ base: 12, md: 6, lg: 4 }}>
-              <Box className="p-2">
-                <Card
-                  shadow="sm"
-                  padding="lg"
-                  withBorder
-                  className={clsx(
-                    "rn-select",
-                    registrationData?.endpoint?.id === endpoint.id &&
-                      "rn-selected"
-                  )}
-                >
-                  <Text className="font-bold mb-4" truncate>
-                    {endpoint?.url || "-"}
-                  </Text>
-                  <Divider className="border-dashed" />
-                  <Group className="justify-between items-center my-2">
-                    <Text className="text-sm">Date Created</Text>
-                    <Badge size="sm" variant="light">
-                      {dayjs(endpoint?.createdAt).format("MMM DD, YYYY") || "-"}
-                    </Badge>
-                  </Group>
+        {!registrationData?.validator?.endpoints?.length ? (
+          <Alert
+            className={clsx(
+              "w-full mt-8 shadow-sm slide",
+              registrationData?.direction
+            )}
+            color="orange"
+            icon={<IconAlertCircle />}
+          >
+            <Text className="mb-2 text-base">
+              There are no endpoints available for{" "}
+              {registrationData?.validator?.name} at the moment. Please check
+              back soon!
+            </Text>
+          </Alert>
+        ) : (
+          registrationData?.validator?.endpoints?.map(
+            (endpoint: EndpointType) => (
+              <Grid.Col key={endpoint.id} span={{ base: 12, md: 6, lg: 4 }}>
+                <Box className="p-2">
+                  <Card
+                    shadow="sm"
+                    padding="lg"
+                    withBorder
+                    className={clsx(
+                      "rn-select",
+                      registrationData?.endpoint?.id === endpoint.id &&
+                        "rn-selected"
+                    )}
+                  >
+                    <Text className="font-bold mb-4" truncate>
+                      {endpoint?.url || "-"}
+                    </Text>
                     <Divider className="border-dashed" />
-                  <Group className="justify-between items-center my-2">
-                    <Text className="text-sm">Last Updated</Text>
-                    <Badge size="sm" variant="light">
-                      {dayjs(endpoint?.updatedAt).format("MMM DD, YYYY") || "-"}
-                    </Badge>
-                  </Group>
-                  <Divider className="border-dashed" />
-                  <Group className="justify-between items-center my-2">
-                    <Text className="text-sm">Status:</Text>
-                    <Badge size="sm" variant="light">
-                      {endpoint?.enabled ? "Enabled" : "Disabled"}
-                    </Badge>
-                  </Group>
-                  <Divider className="border-dashed" />
-                  <Group className="justify-between items-center my-2">
-                    <Text className="text-sm">Active:</Text>
-                    <Badge size="sm" variant="light">
-                      {endpoint?.active ? "Yes" : "No"}
-                    </Badge>
-                  </Group>
-                  <Divider className="border-dashed" />
-                  <Box className="mt-6 grid grid-cols-2 gap-4 justify-items-stretch">
-                    <Button
-                      variant="outline"
-                      onClick={() => openContractModal(endpoint)}
-                    >
-                      Agreement
-                    </Button>
-                    <Button
-                      disabled={disabled(endpoint)}
-                      variant={
-                        registrationData &&
-                        registrationData?.endpoint?.id === endpoint.id
-                          ? ""
-                          : "outline"
-                      }
-                      onClick={() => handleSubscribeClick(endpoint)}
-                    >
-                      {buttonText(endpoint)}
-                    </Button>
-                  </Box>
-                </Card>
-              </Box>
-            </Grid.Col>
+                    <Group className="justify-between items-center my-2">
+                      <Text className="text-sm">Date Created</Text>
+                      <Badge size="sm" variant="light">
+                        {dayjs(endpoint?.createdAt).format("MMM DD, YYYY") ||
+                          "-"}
+                      </Badge>
+                    </Group>
+                    <Divider className="border-dashed" />
+                    <Group className="justify-between items-center my-2">
+                      <Text className="text-sm">Last Updated</Text>
+                      <Badge size="sm" variant="light">
+                        {dayjs(endpoint?.updatedAt).format("MMM DD, YYYY") ||
+                          "-"}
+                      </Badge>
+                    </Group>
+                    <Divider className="border-dashed" />
+                    <Group className="justify-between items-center my-2">
+                      <Text className="text-sm">Status:</Text>
+                      <Badge size="sm" variant="light">
+                        {endpoint?.enabled ? "Enabled" : "Disabled"}
+                      </Badge>
+                    </Group>
+                    <Divider className="border-dashed" />
+                    <Group className="justify-between items-center my-2">
+                      <Text className="text-sm">Active:</Text>
+                      <Badge size="sm" variant="light">
+                        {endpoint?.active ? "Yes" : "No"}
+                      </Badge>
+                    </Group>
+                    <Divider className="border-dashed" />
+                    <Box className="mt-6 grid grid-cols-2 gap-4 justify-items-stretch">
+                      <Button
+                        variant="outline"
+                        onClick={() => openContractModal(endpoint)}
+                      >
+                        Agreement
+                      </Button>
+                      <Button
+                        disabled={disabled(endpoint)}
+                        variant={
+                          registrationData &&
+                          registrationData?.endpoint?.id === endpoint.id
+                            ? ""
+                            : "outline"
+                        }
+                        onClick={() => handleSubscribeClick(endpoint)}
+                      >
+                        {buttonText(endpoint)}
+                      </Button>
+                    </Box>
+                  </Card>
+                </Box>
+              </Grid.Col>
+            )
           )
         )}
       </Grid>

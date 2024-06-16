@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -51,7 +51,18 @@ export function ContractDisplayModal({
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(
     registrationData?.endpoint?.selectedService?.id || null
   );
-  const numColumns = Math.min(services?.length, 3);
+  const numColumns = useMemo(
+    () =>
+      Math.min(
+        services?.filter(
+          (service) =>
+            !review ||
+            [selectedServiceId, subscribedServiceId].includes(service?.id)
+        )?.length,
+        3
+      ),
+    [services, review, selectedServiceId]
+  );
 
   const handleAcceptTerms = async (termsAccepted: boolean) => {
     if (!selectedServiceId) {
@@ -96,12 +107,11 @@ export function ContractDisplayModal({
         </Text>
 
         <Box
-          className="mx-8 mt-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 justify-stretch"
-          style={{
-            display: "grid",
-            // gridTemplateColumns: `repeat(${review ? 1 : numColumns}, 1fr)`,
-            gap: "16px",
-          }}
+          className={clsx(
+            "mx-8 mt-8 grid gap-4 justify-stretch grid-cols-1",
+            numColumns > 1 && "lg:grid-cols-2",
+            numColumns > 2 && " xl:grid-cols-3"
+          )}
         >
           {services
             ?.filter(

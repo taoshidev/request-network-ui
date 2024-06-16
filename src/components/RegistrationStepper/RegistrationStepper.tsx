@@ -124,8 +124,9 @@ export function RegistrationStepper({
 
   useEffect(() => {
     if (!user.user_metadata?.agreed_to_tos && !agreeModalRef?.current) {
-      openAgreeModal();
+      setTimeout(() => openAgreeModal(), 1000);
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const scrollToTop = () => {

@@ -319,13 +319,14 @@ export function Settings({
                     </Button>
                   )}
               </Group>
-              {(stripeLiveMode ||
-                process.env.NEXT_PUBLIC_NODE_ENV !== "production") && (
-                <Text>
-                  {subscription?.validator?.name} is not currently configured to
-                  accept live payments. Please contact support.
-                </Text>
-              )}
+              {!isFree &&
+                !stripeLiveMode &&
+                process.env.NEXT_PUBLIC_NODE_ENV === "production" && (
+                  <Text>
+                    {subscription?.endpoint?.validator?.name} is not currently
+                    configured to accept live payments. Please contact support.
+                  </Text>
+                )}
             </Box>
           </Alert>
         </Box>
