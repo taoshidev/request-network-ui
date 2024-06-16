@@ -33,7 +33,9 @@ export function Onboarding() {
     const user = await getAuthUser();
 
     if (role) {
-      const saveUser = { data: { role, onboarded: true } };
+      const saveUser = {
+        data: { role, onboarded: true, agreed_to_tos: false },
+      };
 
       if (role === "validator") {
         Object.assign(saveUser.data, {

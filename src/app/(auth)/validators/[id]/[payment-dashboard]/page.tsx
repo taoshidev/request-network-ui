@@ -8,7 +8,6 @@ import { getValidators } from "@/actions/validators";
 import { getUserAPIKeys, getVerifications } from "@/actions/keys";
 import { getStartAndEndTimestamps } from "@/utils/date";
 import { fetchSubscriptions, fetchTransactions } from "@/utils/validators";
-import ClientRedirect from "@/components/ClientRedirect";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

@@ -45,13 +45,13 @@ export function Profile({ user }: any) {
           </Grid.Col>
           <Grid.Col span={10}>
             <Text size="sm">Account Email</Text>
-            <Title>{user.email}</Title>
+            <Title order={2}>{user.email}</Title>
           </Grid.Col>
         </Grid>
       </Box>
 
       <Box mb="xl">
-        <Title order={2}>Basic Details</Title>
+        <Title order={3}>Basic Details</Title>
         <TextInput
           label="Email Address"
           placeholder="Email Address"
@@ -89,7 +89,7 @@ export function Profile({ user }: any) {
       </Box>
 
       <Box mb="xl">
-        <Title order={2}>Profile</Title>
+        <Title order={3}>Profile</Title>
         <TextInput label="Discord Username" placeholder="Discord Username" />
       </Box>
     </Container>

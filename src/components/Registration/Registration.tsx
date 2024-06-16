@@ -12,16 +12,18 @@ import { ValidatorEndpoint } from "@/components/RegistrationStepper/steps/Valida
 import { Alert, Text } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
 import clsx from "clsx";
-import RegistrationTOS from "../RegistrationStepper/steps/RegistrationTOS";
 import { useState } from "react";
+import { UserType } from "@/db/types/user";
 
 type ValidatorWithInfo = ValidatorType & { neuronInfo: any };
 
 export function Registration({
+  user,
   currentSubscriptions,
   subnets,
   validators,
 }: {
+  user: UserType;
   currentSubscriptions: SubscriptionType[];
   subnets: SubnetType[];
   validators: ValidatorWithInfo[];
@@ -31,8 +33,8 @@ export function Registration({
   return (
     <RegistrationProvider>
       <RegistrationStepper
-        StepOne={<RegistrationTOS />}
-        StepTwo={
+        user={user}
+        StepOne={
           validators?.length! > 0 ? (
             <Subnets
               subnets={subnets}
@@ -52,7 +54,7 @@ export function Registration({
             </Alert>
           )
         }
-        StepThree={
+        StepTwo={
           validators?.length! > 0 ? (
             <SubnetValidator
               currentSubscriptions={currentSubscriptions}
@@ -62,7 +64,7 @@ export function Registration({
             />
           ) : (
             <Alert
-              className={clsx("mt-8 shadow-sm slide", direction)}
+              className={clsx("w-full mt-8 shadow-sm slide", direction)}
               color="orange"
               icon={<IconAlertCircle />}
             >
@@ -73,12 +75,10 @@ export function Registration({
             </Alert>
           )
         }
-        StepFour={
-          <ValidatorEndpoint
-            currentSubscriptions={currentSubscriptions}
-          />
+        StepThree={
+          <ValidatorEndpoint currentSubscriptions={currentSubscriptions} />
         }
-        StepFive={<SubnetValidatorReview />}
+        StepFour={<SubnetValidatorReview />}
       />
     </RegistrationProvider>
   );

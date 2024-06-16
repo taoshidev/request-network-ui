@@ -11,14 +11,7 @@ export const StripeCheckSchema = z.object({
   webhooks: z.boolean(),
   webhookEvents: z.boolean(),
   rnUrl: z.string(),
-  account: z.object({
-    requirements: z.object({
-      currently_due: z.array(z.any()),
-      eventually_due: z.array(z.any()),
-      past_due: z.array(z.any()),
-    }),
-    capabilities: z.any(),
-  }),
+  stripeLiveMode: z.boolean(),
   error: z.any()
 });
 

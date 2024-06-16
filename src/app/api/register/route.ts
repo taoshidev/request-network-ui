@@ -1,14 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateValidator } from "@/actions/validators";
-import { jsonResponse, verifyApiServerRequest } from "@/utils/verify-api-server-request";
+import {
+  jsonResponse,
+  verifyApiServerRequest,
+} from "@/utils/verify-api-server-request";
+import { StripeCheckType } from "@/db/types/stripe-check";
 
 /**
  * Handles POST requests for validator registration.
  */
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
-  const { status, message, body, validator } = await verifyApiServerRequest(req);
+  const { status, message, body, validator } = await verifyApiServerRequest(
+    req
+  );
 
-  if ( status !== 200) {
+  if (status !== 200) {
     return jsonResponse(status, message);
   }
 
@@ -21,19 +27,17 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
   return await syncValidators(body.validators);
 };
 
-
 /**
  * Registers the validator with the provided API URL.
  */
 const registerValidator = async (
-
-  body: { baseApiUrl: string; apiPrefix: string },
+  body: { baseApiUrl: string; apiPrefix: string; stripeStatus: StripeCheckType },
   validatorId: string
 ): Promise<NextResponse> => {
-  const { baseApiUrl, apiPrefix } = body;
+  const { baseApiUrl, apiPrefix, stripeStatus } = body;
   const updated = await updateValidator({
     id: validatorId,
-    ...{ baseApiUrl, apiPrefix },
+    ...{ baseApiUrl, apiPrefix, stripeLiveMode: stripeStatus.stripeLiveMode },
   });
   if (updated?.data) {
     return jsonResponse(200, "Registration complete");
@@ -46,7 +50,6 @@ const registerValidator = async (
  * Sync validators with apiPrefixes.
  */
 const syncValidators = async (
-
   validators: Array<{ id: string; apiPrefix: string; baseApiUrl: string }>
 ): Promise<NextResponse> => {
   try {

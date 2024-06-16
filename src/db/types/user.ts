@@ -12,6 +12,7 @@ export const UserSchema = z.object({
   phone: z.string().optional(),
   onboarded: z.boolean(),
   onboardingStep: z.number().int(),
+  agreedToTOS: z.boolean(),
   contracts: z.lazy(() => z.array(ContractSchema)).optional(),
   userNotification: z.lazy(() => z.array(UserNotificationSchema)).optional(),
   stripeEnabled: z.boolean().optional(),

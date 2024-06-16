@@ -133,7 +133,7 @@ export function TextEditor<T>({
         <RichTextEditor
           editor={editor}
           className={clsx(
-            " text-sm",
+            " text-base",
             !editable ? "!border-none" : ""
           )}
         >

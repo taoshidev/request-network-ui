@@ -30,6 +30,9 @@ a {
 .mantine-Stepper-content::-webkit-scrollbar {
   display: none;
 }
+.mantine-Switch-track, .mantine-Switch-thumb, .mantine-Switch-trackLabel {
+  cursor: pointer;
+}
 
 .code {
   min-height: 20px;

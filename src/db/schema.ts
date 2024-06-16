@@ -33,6 +33,7 @@ export const users = authSchema.table("users", {
   username: varchar("username"),
   phone: varchar("phone", { length: 256 }),
   onboarded: boolean("onboarded").notNull().default(false),
+  agreedToTOS: boolean("agreed_to_tos").default(false),
   onboardingStep: integer("onboardingStep").notNull().default(0),
   stripeEnabled: boolean("stripe_enabled").default(true),
   cryptoEnabled: boolean("crypto_enabled").default(false),
@@ -119,6 +120,7 @@ export const validators = pgTable("validators", {
   signature: varchar("signature"),
   verified: boolean("verified").notNull().default(false),
   stripeEnabled: boolean("stripe_enabled").default(false),
+  stripeLiveMode: boolean("stripe_live_mode").default(false),
   agreedToTOS: boolean("agreed_to_tos").default(false),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {
@@ -156,7 +158,7 @@ export const endpoints = pgTable(
       onDelete: "set null",
     }),
     url: varchar("url").notNull(),
-    enabled: boolean("enabled").default(true).notNull(),
+    enabled: boolean("enabled").default(false).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at", {
       withTimezone: true,
