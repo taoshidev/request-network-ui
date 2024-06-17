@@ -6,7 +6,6 @@ import { getValidators } from "@/actions/validators";
 import { getSubnets } from "@/actions/subnets";
 import { Endpoints } from "@/components/Endpoints";
 import { getContracts } from "@/actions/contracts";
-import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function Page() {
   const user = await getAuthUser();

@@ -1,5 +1,4 @@
 import { getAuthUser } from "@/actions/auth";
-import ClientRedirect from "@/components/ClientRedirect";
 import { Onboarding } from "@/components/Onboarding";
 
 export default async function Page() {
