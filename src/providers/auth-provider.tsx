@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { signout, getAuthUser } from "@/actions/auth";
 import { UserType } from "@/db/types/user";
 import ClientRedirect from "@/components/ClientRedirect";
-import { setUser as setSentryUser } from "@sentry/nextjs";
+import { setUser as setSentryUser, setTag } from "@sentry/nextjs";
 
 type AuthContextValue = {
   user: UserType | null;
@@ -63,8 +63,9 @@ export const AuthProvider = ({ children }) => {
       setSentryUser({
         id: user?.id || undefined,
         email: user?.email || undefined,
-        role: user?.user_metadata?.role || undefined,
       });
+      setTag("ID", user?.id || undefined);
+      setTag("Role", user?.user_metadata?.role || undefined);
     }
   };
 
