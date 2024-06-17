@@ -193,7 +193,7 @@ export function Consumer({
                               loading={
                                 btnLoading === `view-subscription-${index}`
                               }
-                              href={`/keys/${subscription?.keyData?.id}`}
+                              href={`/subscription/${subscription?.id}`}
                             >
                               View Subscription
                             </Button>

@@ -4,7 +4,6 @@ import {
   Button,
   Modal,
   TextInput,
-  Divider,
   Table,
   Text,
 } from "@mantine/core";
@@ -22,6 +21,7 @@ import { ServiceType } from "@/db/types/service";
 import { createService, updateService } from "@/actions/services";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import CurrencyFormatter from "./CurrencyFormatter";
 
 export function ContractModal({
   user,
@@ -236,7 +236,12 @@ export function ContractModal({
                       <Table.Td>
                         {dayjs(contract?.expires).format("MMM DD, YYYY")}
                       </Table.Td>
-                      <Table.Td>{service?.price}</Table.Td>
+                      <Table.Td>
+                        <CurrencyFormatter
+                          price={service?.price}
+                          currencyType={service?.currencyType}
+                        />
+                      </Table.Td>
                       <Table.Td>{service?.limit}</Table.Td>
                       <Table.Td>{service?.remaining}</Table.Td>
                       <Table.Td>{service?.refillRate}</Table.Td>

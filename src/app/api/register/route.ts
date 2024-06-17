@@ -37,7 +37,7 @@ const registerValidator = async (
   const { baseApiUrl, apiPrefix, stripeStatus } = body;
   const updated = await updateValidator({
     id: validatorId,
-    ...{ baseApiUrl, apiPrefix, stripeLiveMode: stripeStatus.stripeLiveMode },
+    ...{ baseApiUrl, apiPrefix, stripeLiveMode: stripeStatus?.stripeLiveMode },
   });
   if (updated?.data) {
     return jsonResponse(200, "Registration complete");

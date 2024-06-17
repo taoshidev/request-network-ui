@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { SubscriptionType } from "@/db/types/subscription";
 import { formatter } from "@/utils/number-formatter";
+import CurrencyFormatter from "../CurrencyFormatter";
 
 dayjs.extend(relativeTime);
 
@@ -45,7 +46,10 @@ export default function ConsumerTable({
                   {sub?.service?.name}
                 </Table.Td>
                 <Table.Td className="truncate max-w-xs">
-                  {formatter.format(sub?.service?.price)}
+                  <CurrencyFormatter
+                    price={sub?.service?.price}
+                    currencyType={sub?.service?.currencyType}
+                  />
                 </Table.Td>
               </Table.Tr>
             ))}

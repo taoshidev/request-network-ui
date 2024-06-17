@@ -1,7 +1,6 @@
 import { getAuthUser } from "@/actions/auth";
 import { getKey } from "@/actions/keys";
 import { getSubscriptions } from "@/actions/subscriptions";
-import ClientRedirect from "@/components/ClientRedirect";
 
 import { Keys } from "@/components/Keys/Keys";
 import { subscriptions } from "@/db/schema";
@@ -11,14 +10,12 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function Page({ params }: any) {
-  const { id } = params;
-  const { result } = await getKey({ keyId: id });
   const user = await getAuthUser();
 
   if (!user) return;
-
+  const { id } = params;
   const data = await getSubscriptions({
-    where: eq(subscriptions.id, (result?.meta?.subscription as any)?.id),
+    where: eq(subscriptions.id, id),
     with: {
       service: true,
       validator: {
@@ -43,6 +40,8 @@ export default async function Page({ params }: any) {
       },
     },
   });
+
+  const { result } = await getKey({ keyId: data?.[0]?.keyId });
 
   return <Keys apiKey={result} subscription={data?.[0]} />;
 }

@@ -22,6 +22,7 @@ import { useModals } from "@mantine/modals";
 import { useRef } from "react";
 import AgreeTOSModal from "@/components/AgreeTOSModal";
 import { UserType } from "@/db/types/user";
+import CurrencyFormatter from "@/components/CurrencyFormatter";
 
 export function SubnetValidatorReview({ user }: { user: UserType }) {
   const { registrationData } = useRegistration();
@@ -34,7 +35,9 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
       centered: true,
       size: "xl",
       title: "Terms of Service Agreement",
-      children: <AgreeTOSModal user={user} mode="view" modalRef={agreeModalRef} />,
+      children: (
+        <AgreeTOSModal user={user} mode="view" modalRef={agreeModalRef} />
+      ),
     });
   };
 
@@ -108,7 +111,12 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Price</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.selectedService.price}
+                <CurrencyFormatter
+                  price={registrationData?.endpoint?.selectedService.price}
+                  currencyType={
+                    registrationData?.endpoint?.selectedService?.currencyType
+                  }
+                />
               </Text>
             </Group>
             <Divider className="border-dashed" />

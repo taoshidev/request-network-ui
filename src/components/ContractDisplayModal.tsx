@@ -17,6 +17,7 @@ import { ServiceType } from "@/db/types/service";
 import dayjs from "dayjs";
 import clsx from "clsx";
 import { ValidatorType } from "@/db/types/validator";
+import CurrencyFormatter from "./CurrencyFormatter";
 
 export function ContractDisplayModal({
   html,
@@ -170,9 +171,12 @@ export function ContractDisplayModal({
                 <Divider className="border-dashed" />
 
                 <Group className="justify-between items-center m-2">
-                  <Text className="text-xs">Price:</Text>
+                  <Text className="text-xs">Price: </Text>
                   <Badge size="sm" variant="light">
-                    {service?.price}
+                    <CurrencyFormatter
+                      price={service?.price}
+                      currencyType={service?.currencyType}
+                    />
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />

@@ -5,6 +5,7 @@ import { isEmpty as _isEmpty } from "lodash";
 import React from "react";
 import { DateTime } from "luxon";
 import clsx from "clsx";
+import CurrencyFormatter from "@/components/CurrencyFormatter";
 
 export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
   return (
@@ -67,23 +68,12 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                         {+service.price === 0 ? (
                           <span className="float-right">FREE</span>
                         ) : (
-                          <>
-                            {service.currencyType === "FIAT" && (
-                              <span className="float-right">
-                                ${service.price}
-                              </span>
-                            )}
-                            {service.currencyType === "USDC" && (
-                              <span className="float-right">
-                                {service.price} USDC
-                              </span>
-                            )}
-                            {service.currencyType === "USDT" && (
-                              <span className="float-right">
-                                {service.price} USDT
-                              </span>
-                            )}
-                          </>
+                          <span className="float-right">
+                            <CurrencyFormatter
+                              price={service?.price}
+                              currencyType={service?.currencyType}
+                            />
+                          </span>
                         )}
                       </Table.Th>
                     </Table.Tr>
