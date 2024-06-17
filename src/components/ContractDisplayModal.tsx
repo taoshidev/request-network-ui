@@ -8,7 +8,6 @@ import {
   Group,
   Badge,
   Divider,
-  NumberFormatter,
 } from "@mantine/core";
 import { TextEditor } from "@/components/TextEditor";
 import { useNotification } from "@/hooks/use-notification";
@@ -18,6 +17,7 @@ import { ServiceType } from "@/db/types/service";
 import dayjs from "dayjs";
 import clsx from "clsx";
 import { ValidatorType } from "@/db/types/validator";
+import CurrencyFormatter from "./CurrencyFormatter";
 
 export function ContractDisplayModal({
   html,
@@ -172,26 +172,12 @@ export function ContractDisplayModal({
 
                 <Group className="justify-between items-center m-2">
                   <Text className="text-xs">Price: </Text>
-                  {+(service?.price || 0) === 0 ? (
-                    "FREE"
-                  ) : (
-                    <Badge size="sm" variant="light">
-                      <NumberFormatter
-                        prefix={
-                          {
-                            FIAT: "$",
-                            USDC: "USDC ",
-                            USDT: "USDT ",
-                            none: "",
-                          }[service?.currencyType || "none"]
-                        }
-                        thousandSeparator
-                        fixedDecimalScale
-                        value={+(service?.price || 0)}
-                        decimalScale={2}
-                      />
-                    </Badge>
-                  )}
+                  <Badge size="sm" variant="light">
+                    <CurrencyFormatter
+                      price={service?.price}
+                      currencyType={service?.currencyType}
+                    />
+                  </Badge>
                 </Group>
                 <Divider className="border-dashed" />
 

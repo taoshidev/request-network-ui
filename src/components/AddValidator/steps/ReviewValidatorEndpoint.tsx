@@ -1,10 +1,11 @@
 import { TextEditor } from "@/components/TextEditor";
 import { ValidatorType } from "@/db/types/validator";
-import { Title, Box, Table, Text, NumberFormatter } from "@mantine/core";
+import { Title, Box, Table, Text } from "@mantine/core";
 import { isEmpty as _isEmpty } from "lodash";
 import React from "react";
 import { DateTime } from "luxon";
 import clsx from "clsx";
+import CurrencyFormatter from "@/components/CurrencyFormatter";
 
 export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
   return (
@@ -68,24 +69,10 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                           <span className="float-right">FREE</span>
                         ) : (
                           <span className="float-right">
-                            {+(service?.price || 0) === 0 ? (
-                              "FREE"
-                            ) : (
-                              <NumberFormatter
-                                prefix={
-                                  {
-                                    FIAT: "$",
-                                    USDC: "USDC ",
-                                    USDT: "USDT ",
-                                    none: "",
-                                  }[service?.currencyType || "none"]
-                                }
-                                thousandSeparator
-                                fixedDecimalScale
-                                value={+(service?.price || 0)}
-                                decimalScale={2}
-                              />
-                            )}
+                            <CurrencyFormatter
+                              price={service?.price}
+                              currencyType={service?.currencyType}
+                            />
                           </span>
                         )}
                       </Table.Th>

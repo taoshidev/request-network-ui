@@ -4,10 +4,8 @@ import {
   Button,
   Modal,
   TextInput,
-  Divider,
   Table,
   Text,
-  NumberFormatter,
 } from "@mantine/core";
 import { TextEditor } from "@/components/TextEditor";
 import { useForm } from "@mantine/form";
@@ -23,6 +21,7 @@ import { ServiceType } from "@/db/types/service";
 import { createService, updateService } from "@/actions/services";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import CurrencyFormatter from "./CurrencyFormatter";
 
 export function ContractModal({
   user,
@@ -238,24 +237,10 @@ export function ContractModal({
                         {dayjs(contract?.expires).format("MMM DD, YYYY")}
                       </Table.Td>
                       <Table.Td>
-                        {+(service?.price || 0) === 0 ? (
-                          "FREE"
-                        ) : (
-                          <NumberFormatter
-                            prefix={
-                              {
-                                FIAT: "$",
-                                USDC: "USDC ",
-                                USDT: "USDT ",
-                                none: "",
-                              }[service?.currencyType || "none"]
-                            }
-                            thousandSeparator
-                            fixedDecimalScale
-                            value={+(service?.price || 0)}
-                            decimalScale={2}
-                          />
-                        )}
+                        <CurrencyFormatter
+                          price={service?.price}
+                          currencyType={service?.currencyType}
+                        />
                       </Table.Td>
                       <Table.Td>{service?.limit}</Table.Td>
                       <Table.Td>{service?.remaining}</Table.Td>

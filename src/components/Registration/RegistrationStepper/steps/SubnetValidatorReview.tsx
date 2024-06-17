@@ -10,7 +10,6 @@ import {
   Stack,
   Divider,
   Button,
-  NumberFormatter,
 } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRegistration } from "@/providers/registration";
@@ -23,6 +22,7 @@ import { useModals } from "@mantine/modals";
 import { useRef } from "react";
 import AgreeTOSModal from "@/components/AgreeTOSModal";
 import { UserType } from "@/db/types/user";
+import CurrencyFormatter from "@/components/CurrencyFormatter";
 
 export function SubnetValidatorReview({ user }: { user: UserType }) {
   const { registrationData } = useRegistration();
@@ -111,30 +111,12 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Price</Text>
               <Text className="text-sm">
-                {+(registrationData?.endpoint?.selectedService.price || 0) ===
-                0 ? (
-                  "FREE"
-                ) : (
-                  <NumberFormatter
-                    prefix={
-                      {
-                        FIAT: "$",
-                        USDC: "USDC ",
-                        USDT: "USDT ",
-                        none: "",
-                      }[
-                        registrationData?.endpoint?.selectedService
-                          ?.currencyType || "none"
-                      ]
-                    }
-                    thousandSeparator
-                    fixedDecimalScale
-                    value={
-                      +(registrationData?.endpoint?.selectedService.price || 0)
-                    }
-                    decimalScale={2}
-                  />
-                )}
+                <CurrencyFormatter
+                  price={registrationData?.endpoint?.selectedService.price}
+                  currencyType={
+                    registrationData?.endpoint?.selectedService?.currencyType
+                  }
+                />
               </Text>
             </Group>
             <Divider className="border-dashed" />

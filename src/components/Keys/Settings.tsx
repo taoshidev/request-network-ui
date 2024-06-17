@@ -12,7 +12,6 @@ import {
   Alert,
   CopyButton,
   Grid,
-  NumberFormatter,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
@@ -32,6 +31,7 @@ import { cancelSubscription, requestPayment } from "@/actions/payments";
 import { ConfirmModal } from "../ConfirmModal";
 import { sendToProxy } from "@/actions/apis";
 import { updateSubscription } from "@/actions/subscriptions";
+import CurrencyFormatter from "../CurrencyFormatter";
 
 const updateSchema = z.object({
   name: z
@@ -292,24 +292,10 @@ export function Settings({
                     <Grid.Col span={6}>
                       <Text>
                         Price:{" "}
-                        {+(subscription?.service?.price || 0) === 0 ? (
-                          "FREE"
-                        ) : (
-                          <NumberFormatter
-                            prefix={
-                              {
-                                FIAT: "$",
-                                USDC: "USDC ",
-                                USDT: "USDT ",
-                                none: "",
-                              }[subscription?.service?.currencyType || "none"]
-                            }
-                            thousandSeparator
-                            fixedDecimalScale
-                            value={+(subscription?.service?.price || 0)}
-                            decimalScale={2}
-                          />
-                        )}
+                        <CurrencyFormatter
+                          price={subscription?.service?.price}
+                          currencyType={subscription?.service?.currencyType}
+                        />
                       </Text>
                       <Text>
                         Validator: {subscription?.endpoint?.validator?.name}

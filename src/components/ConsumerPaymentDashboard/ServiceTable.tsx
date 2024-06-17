@@ -1,8 +1,9 @@
-import { Card, Table, Text, Button, NumberFormatter } from "@mantine/core";
+import { Card, Table, Text, Button } from "@mantine/core";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { SubscriptionType } from "@/db/types/subscription";
 import { formatter } from "@/utils/number-formatter";
+import CurrencyFormatter from "../CurrencyFormatter";
 
 dayjs.extend(relativeTime);
 
@@ -45,24 +46,10 @@ export default function ConsumerTable({
                   {sub?.service?.name}
                 </Table.Td>
                 <Table.Td className="truncate max-w-xs">
-                  {+(sub?.service?.price || 0) === 0 ? (
-                    "FREE"
-                  ) : (
-                    <NumberFormatter
-                      prefix={
-                        {
-                          FIAT: "$",
-                          USDC: "USDC ",
-                          USDT: "USDT ",
-                          none: "",
-                        }[sub?.service?.currencyType || "none"]
-                      }
-                      thousandSeparator
-                      fixedDecimalScale
-                      value={+(sub?.service?.price || 0)}
-                      decimalScale={2}
-                    />
-                  )}
+                  <CurrencyFormatter
+                    price={sub?.service?.price}
+                    currencyType={sub?.service?.currencyType}
+                  />
                 </Table.Td>
               </Table.Tr>
             ))}
