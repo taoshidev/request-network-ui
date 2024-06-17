@@ -26,7 +26,6 @@ import {
   IconDashboard,
 } from "@tabler/icons-react";
 import useSWR from "swr";
-import { signout } from "@/actions/auth";
 import { getUserNotifications } from "@/actions/notifications";
 import { UserNotificationType } from "@/db/types/user-notifications";
 import { isArray as _isArray } from "lodash";

@@ -1,6 +1,6 @@
 import { TextEditor } from "@/components/TextEditor";
 import { ValidatorType } from "@/db/types/validator";
-import { Title, Box, Table, Text } from "@mantine/core";
+import { Title, Box, Table, Text, NumberFormatter } from "@mantine/core";
 import { isEmpty as _isEmpty } from "lodash";
 import React from "react";
 import { DateTime } from "luxon";
@@ -67,23 +67,26 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                         {+service.price === 0 ? (
                           <span className="float-right">FREE</span>
                         ) : (
-                          <>
-                            {service.currencyType === "FIAT" && (
-                              <span className="float-right">
-                                ${service.price}
-                              </span>
+                          <span className="float-right">
+                            {+(service?.price || 0) === 0 ? (
+                              "FREE"
+                            ) : (
+                              <NumberFormatter
+                                prefix={
+                                  {
+                                    FIAT: "$",
+                                    USDC: "USDC ",
+                                    USDT: "USDT ",
+                                    none: "",
+                                  }[service?.currencyType || "none"]
+                                }
+                                thousandSeparator
+                                fixedDecimalScale
+                                value={+(service?.price || 0)}
+                                decimalScale={2}
+                              />
                             )}
-                            {service.currencyType === "USDC" && (
-                              <span className="float-right">
-                                {service.price} USDC
-                              </span>
-                            )}
-                            {service.currencyType === "USDT" && (
-                              <span className="float-right">
-                                {service.price} USDT
-                              </span>
-                            )}
-                          </>
+                          </span>
                         )}
                       </Table.Th>
                     </Table.Tr>

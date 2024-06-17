@@ -8,6 +8,7 @@ import {
   Group,
   Badge,
   Divider,
+  NumberFormatter,
 } from "@mantine/core";
 import { TextEditor } from "@/components/TextEditor";
 import { useNotification } from "@/hooks/use-notification";
@@ -170,10 +171,27 @@ export function ContractDisplayModal({
                 <Divider className="border-dashed" />
 
                 <Group className="justify-between items-center m-2">
-                  <Text className="text-xs">Price:</Text>
-                  <Badge size="sm" variant="light">
-                    {service?.price}
-                  </Badge>
+                  <Text className="text-xs">Price: </Text>
+                  {+(service?.price || 0) === 0 ? (
+                    "FREE"
+                  ) : (
+                    <Badge size="sm" variant="light">
+                      <NumberFormatter
+                        prefix={
+                          {
+                            FIAT: "$",
+                            USDC: "USDC ",
+                            USDT: "USDT ",
+                            none: "",
+                          }[service?.currencyType || "none"]
+                        }
+                        thousandSeparator
+                        fixedDecimalScale
+                        value={+(service?.price || 0)}
+                        decimalScale={2}
+                      />
+                    </Badge>
+                  )}
                 </Group>
                 <Divider className="border-dashed" />
 

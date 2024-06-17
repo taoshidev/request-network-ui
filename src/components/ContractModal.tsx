@@ -7,6 +7,7 @@ import {
   Divider,
   Table,
   Text,
+  NumberFormatter,
 } from "@mantine/core";
 import { TextEditor } from "@/components/TextEditor";
 import { useForm } from "@mantine/form";
@@ -236,7 +237,26 @@ export function ContractModal({
                       <Table.Td>
                         {dayjs(contract?.expires).format("MMM DD, YYYY")}
                       </Table.Td>
-                      <Table.Td>{service?.price}</Table.Td>
+                      <Table.Td>
+                        {+(service?.price || 0) === 0 ? (
+                          "FREE"
+                        ) : (
+                          <NumberFormatter
+                            prefix={
+                              {
+                                FIAT: "$",
+                                USDC: "USDC ",
+                                USDT: "USDT ",
+                                none: "",
+                              }[service?.currencyType || "none"]
+                            }
+                            thousandSeparator
+                            fixedDecimalScale
+                            value={+(service?.price || 0)}
+                            decimalScale={2}
+                          />
+                        )}
+                      </Table.Td>
                       <Table.Td>{service?.limit}</Table.Td>
                       <Table.Td>{service?.remaining}</Table.Td>
                       <Table.Td>{service?.refillRate}</Table.Td>

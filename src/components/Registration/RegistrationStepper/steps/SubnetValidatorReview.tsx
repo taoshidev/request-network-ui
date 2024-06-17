@@ -10,6 +10,7 @@ import {
   Stack,
   Divider,
   Button,
+  NumberFormatter,
 } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRegistration } from "@/providers/registration";
@@ -34,7 +35,9 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
       centered: true,
       size: "xl",
       title: "Terms of Service Agreement",
-      children: <AgreeTOSModal user={user} mode="view" modalRef={agreeModalRef} />,
+      children: (
+        <AgreeTOSModal user={user} mode="view" modalRef={agreeModalRef} />
+      ),
     });
   };
 
@@ -108,7 +111,30 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Price</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.selectedService.price}
+                {+(registrationData?.endpoint?.selectedService.price || 0) ===
+                0 ? (
+                  "FREE"
+                ) : (
+                  <NumberFormatter
+                    prefix={
+                      {
+                        FIAT: "$",
+                        USDC: "USDC ",
+                        USDT: "USDT ",
+                        none: "",
+                      }[
+                        registrationData?.endpoint?.selectedService
+                          ?.currencyType || "none"
+                      ]
+                    }
+                    thousandSeparator
+                    fixedDecimalScale
+                    value={
+                      +(registrationData?.endpoint?.selectedService.price || 0)
+                    }
+                    decimalScale={2}
+                  />
+                )}
               </Text>
             </Group>
             <Divider className="border-dashed" />

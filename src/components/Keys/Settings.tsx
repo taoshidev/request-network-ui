@@ -12,6 +12,7 @@ import {
   Alert,
   CopyButton,
   Grid,
+  NumberFormatter,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
@@ -289,7 +290,27 @@ export function Settings({
                   Endpoint subscription active.
                   <Grid>
                     <Grid.Col span={6}>
-                      <Text>Price: ${subscription?.service?.price}</Text>
+                      <Text>
+                        Price:{" "}
+                        {+(subscription?.service?.price || 0) === 0 ? (
+                          "FREE"
+                        ) : (
+                          <NumberFormatter
+                            prefix={
+                              {
+                                FIAT: "$",
+                                USDC: "USDC ",
+                                USDT: "USDT ",
+                                none: "",
+                              }[subscription?.service?.currencyType || "none"]
+                            }
+                            thousandSeparator
+                            fixedDecimalScale
+                            value={+(subscription?.service?.price || 0)}
+                            decimalScale={2}
+                          />
+                        )}
+                      </Text>
                       <Text>
                         Validator: {subscription?.endpoint?.validator?.name}
                       </Text>
