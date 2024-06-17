@@ -161,7 +161,7 @@ export function Consumer({
                             <Anchor
                               className="font-semibold text-black"
                               component={Link}
-                              href={`/keys/${subscription?.keyData?.id}`}
+                              href={`/subscription/${subscription?.id}`}
                             >
                               {subscription?.keyData?.name}
                             </Anchor>
