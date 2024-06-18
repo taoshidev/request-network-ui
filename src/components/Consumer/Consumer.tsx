@@ -161,7 +161,7 @@ export function Consumer({
                             <Anchor
                               className="font-semibold text-black"
                               component={Link}
-                              href={`/keys/${subscription?.keyData?.id}`}
+                              href={`/subscription/${subscription?.id}`}
                             >
                               {subscription?.keyData?.name}
                             </Anchor>
@@ -193,7 +193,7 @@ export function Consumer({
                               loading={
                                 btnLoading === `view-subscription-${index}`
                               }
-                              href={`/keys/${subscription?.keyData?.id}`}
+                              href={`/subscription/${subscription?.id}`}
                             >
                               View Subscription
                             </Button>

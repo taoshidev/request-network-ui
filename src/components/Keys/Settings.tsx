@@ -31,6 +31,7 @@ import { cancelSubscription, requestPayment } from "@/actions/payments";
 import { ConfirmModal } from "../ConfirmModal";
 import { sendToProxy } from "@/actions/apis";
 import { updateSubscription } from "@/actions/subscriptions";
+import CurrencyFormatter from "../CurrencyFormatter";
 
 const updateSchema = z.object({
   name: z
@@ -289,7 +290,13 @@ export function Settings({
                   Endpoint subscription active.
                   <Grid>
                     <Grid.Col span={6}>
-                      <Text>Price: ${subscription?.service?.price}</Text>
+                      <Text>
+                        Price:{" "}
+                        <CurrencyFormatter
+                          price={subscription?.service?.price}
+                          currencyType={subscription?.service?.currencyType}
+                        />
+                      </Text>
                       <Text>
                         Validator: {subscription?.endpoint?.validator?.name}
                       </Text>

@@ -7,7 +7,6 @@ import { zodResolver } from "mantine-form-zod-resolver";
 import { useNotification } from "@/hooks/use-notification";
 import { ServiceSchema, ServiceType } from "@/db/types/service";
 import { ServiceFormInput } from "@/components/Services/ServiceFormInput";
-import { getAuthUser } from "@/actions/auth";
 import { UserType } from "@/db/types/user";
 import { createService } from "@/actions/services";
 

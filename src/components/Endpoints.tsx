@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { Title, Box, Table, Badge, Button, Group, Modal } from "@mantine/core";
@@ -28,8 +28,10 @@ export function Endpoints({
 }) {
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
+  const [btnLoading, setBtnLoading] = useState("");
 
   const handleEdit = (endpoint: any) => {
+    setBtnLoading(`edit-endpoint-${endpoint.id}`);
     router.push(`/endpoints/${endpoint?.id}`);
   };
 
@@ -46,7 +48,7 @@ export function Endpoints({
       validatorId: "",
       // walletAddress: "",
       contractId: "",
-      enabled: false
+      enabled: false,
     },
     validate: zodResolver(EndpointSchema),
   });
@@ -126,6 +128,7 @@ export function Endpoints({
                       <Button
                         size="sm"
                         variant="subtle"
+                        loading={btnLoading === `edit-endpoint-${endpoint.id}`}
                         onClick={() => handleEdit(endpoint)}
                       >
                         Edit

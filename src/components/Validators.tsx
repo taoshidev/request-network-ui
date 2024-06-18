@@ -26,14 +26,16 @@ export function Validators({
 }) {
   const router = useRouter();
   const [keyModalOpened, setKeyModalOpened] = useState(false);
-
+  const [btnLoading, setBtnLoading] = useState("");
   const [keys, setKeys] = useState<KeyType>({ apiKey: "", apiSecret: "" });
 
   const handleEdit = (validator: any) => {
+    setBtnLoading(`edit-validator-${validator.id}`);
     router.push(`/validators/${validator?.id}`);
   };
 
   function addValidator() {
+    setBtnLoading("add-validator");
     router.push("/validators/add");
   }
 
@@ -53,7 +55,12 @@ export function Validators({
           <Title order={2} className="mb-5">
             Validators
           </Title>
-          <Button onClick={addValidator}>Add New Validator</Button>
+          <Button
+            onClick={addValidator}
+            loading={btnLoading === "add-validator"}
+          >
+            Add New Validator
+          </Button>
         </Group>
         {validators && !isEmpty(validators) && (
           <Table.ScrollContainer minWidth={700}>
@@ -69,12 +76,10 @@ export function Validators({
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
-                {(validators || []).map((validator: any) => (
+                {(validators || []).map((validator: ValidatorType) => (
                   <Table.Tr key={validator?.id}>
                     <Table.Td>{validator?.name}</Table.Td>
-                    <Table.Td>
-                      {validator?.baseApiUrl}
-                    </Table.Td>
+                    <Table.Td>{validator?.baseApiUrl}</Table.Td>
                     <Table.Td>
                       <Box className="leading-7">
                         {(validator.endpoints || [])
@@ -118,6 +123,9 @@ export function Validators({
                       <Button
                         size="sm"
                         variant="subtle"
+                        loading={
+                          btnLoading === `edit-validator-${validator.id}`
+                        }
                         onClick={() => handleEdit(validator)}
                       >
                         {validator.verified ? "Edit" : "Verify"}
@@ -127,11 +135,15 @@ export function Validators({
                       <Button
                         size="sm"
                         variant="light"
-                        onClick={() =>
+                        loading={
+                          btnLoading === `validator-insights-${validator.id}`
+                        }
+                        onClick={() => {
+                          setBtnLoading(`validator-insights-${validator.id}`);
                           router.push(
                             `/validators/${validator?.id}/payment-dashboard`
-                          )
-                        }
+                          );
+                        }}
                       >
                         insights
                       </Button>

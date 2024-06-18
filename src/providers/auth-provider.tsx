@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { signout, getAuthUser } from "@/actions/auth";
 import { UserType } from "@/db/types/user";
 import ClientRedirect from "@/components/ClientRedirect";
+import { setUser as setSentryUser, setTag } from "@sentry/nextjs";
 
 type AuthContextValue = {
   user: UserType | null;
@@ -53,6 +54,25 @@ export const AuthProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
+  const updateSentryUser = (user: UserType | null) => {
+    if (
+      ["production", "staging"].includes(
+        process.env.NEXT_PUBLIC_NODE_ENV as string
+      )
+    ) {
+      setSentryUser({
+        id: user?.id || undefined,
+        email: user?.email || undefined,
+      });
+      setTag("ID", user?.id || undefined);
+      setTag("Role", user?.user_metadata?.role || undefined);
+    }
+  };
+
+  useEffect(() => {
+    updateSentryUser(user);
+  }, [user]);
+
   const setAuthUser = (user) => {
     setUser(user);
   };
@@ -72,6 +92,7 @@ export const AuthProvider = ({ children }) => {
     await signout();
     setRedirect({ path: "/login", message: "Logging out...", delay: 3000 });
     setUser(null);
+    updateSentryUser(null);
     setLoading(false);
   };
 
