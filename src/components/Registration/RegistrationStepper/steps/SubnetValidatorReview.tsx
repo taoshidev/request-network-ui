@@ -22,7 +22,8 @@ import { useModals } from "@mantine/modals";
 import { useRef } from "react";
 import AgreeTOSModal from "@/components/AgreeTOSModal";
 import { UserType } from "@/db/types/user";
-import CurrencyFormatter from "@/components/CurrencyFormatter";
+import CurrencyFormatter from "@/components/Formatters/CurrencyFormatter";
+import FixedFormatter from "@/components/Formatters/FixedFormatter";
 
 export function SubnetValidatorReview({ user }: { user: UserType }) {
   const { registrationData } = useRegistration();
@@ -123,27 +124,37 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Request Limit</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.selectedService.remaining}
+                <FixedFormatter
+                  value={registrationData?.endpoint?.selectedService.remaining}
+                />
               </Text>
             </Group>
             <Group className="justify-between items-center">
               <Text className="text-sm">Limit</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.selectedService.limit}
+                <FixedFormatter
+                  value={registrationData?.endpoint?.selectedService.limit}
+                />
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Refill Interval</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.selectedService.refillInterval}
+                <FixedFormatter
+                  value={
+                    registrationData?.endpoint?.selectedService.refillInterval
+                  }
+                />
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Refill Rate</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.selectedService.refillRate}
+                <FixedFormatter
+                  value={registrationData?.endpoint?.selectedService.refillRate}
+                />
               </Text>
             </Group>
             <Divider className="border-dashed" />
