@@ -57,7 +57,7 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
                 html={registrationData?.validator?.description as string}
               />
             </Box>
-            <Box className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-4">
+            <Box className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-4 px-4">
               <Button onClick={open}>View Accepted Terms</Button>
               <Button onClick={viewTOS} variant="outline">
                 View Taoshi TOS
