@@ -11,6 +11,12 @@ export function Login() {
   const [loading, setLoading] = useState<boolean>(false);
   const supabase = createClient();
 
+  const handleLoading = (event) => {
+    if (event?.target?.tagName?.toLowerCase() === "button") {
+      setLoading(true);
+    }
+  };
+
   return loading ? (
     <ClientRedirect message="Initializing session..." />
   ) : (
@@ -22,7 +28,7 @@ export function Login() {
           Github
         </Text>
       </Box>
-      <Box onClick={() => setLoading(true)}>
+      <Box onClick={handleLoading}>
         <Auth
           redirectTo={`${process.env.NEXT_PUBLIC_DOMAIN}/callback`}
           supabaseClient={supabase}
