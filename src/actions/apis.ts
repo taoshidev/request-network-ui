@@ -103,7 +103,6 @@ export const sendToProxy = async ({
     }
     return await res.json();
   } catch (error) {
-    console.error(error);
     return { error: JSON.stringify(error) };
   }
 };

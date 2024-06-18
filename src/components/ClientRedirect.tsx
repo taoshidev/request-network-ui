@@ -10,7 +10,7 @@ export default function ClientRedirect({
   message,
   delay = 0,
 }: {
-  href: Route;
+  href?: Route;
   message?: string;
   delay?: number;
 }) {
