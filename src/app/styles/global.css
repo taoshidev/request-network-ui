@@ -34,6 +34,12 @@ a {
   cursor: pointer;
 }
 
+.table-align-top {
+  th, td {
+    vertical-align: top;
+  }
+}
+
 .code {
   min-height: 20px;
   padding: 19px;

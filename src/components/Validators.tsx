@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Title, Group, Table, Button, Badge } from "@mantine/core";
+import {
+  Box,
+  Title,
+  Group,
+  Table,
+  Button,
+  Badge,
+  Tooltip,
+} from "@mantine/core";
 import { isEmpty } from "lodash";
 import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
 import { UserType } from "@/db/types/user";
@@ -39,7 +47,6 @@ export function Validators({
     setBtnLoading("add-validator");
     router.push("/validators/add");
   }
-
   return (
     <Box>
       <KeyModal
@@ -81,11 +88,19 @@ export function Validators({
                 {(validators || []).map((validator: ValidatorWithInfo) => (
                   <Table.Tr key={validator?.id}>
                     <Table.Td className="px-1">
-                      {validator.health?.message?.toLowerCase() === "ok" ? (
-                        <IconCircleCheck className="inline-block text-green-600" />
-                      ) : (
-                        <IconAlertTriangle className="inline-block text-red-700" />
-                      )}
+                      <Tooltip
+                        label={`Validator ${
+                          validator.health?.message?.toLowerCase() === "ok"
+                            ? "Online"
+                            : "Offline"
+                        }`}
+                      >
+                        {validator.health?.message?.toLowerCase() === "ok" ? (
+                          <IconCircleCheck className="inline-block text-green-600" />
+                        ) : (
+                          <IconAlertTriangle className="inline-block text-red-700" />
+                        )}
+                      </Tooltip>
                     </Table.Td>
                     <Table.Td>{validator?.name}</Table.Td>
                     <Table.Td>{validator?.baseApiUrl}</Table.Td>
@@ -127,7 +142,6 @@ export function Validators({
                         )}
                       </Box>
                     </Table.Td>
-
                     <Table.Td>
                       <Button
                         size="sm"

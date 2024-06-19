@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { validators } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
@@ -11,6 +11,7 @@ import { createUnkeyApiKey, generateApiKey, generateApiSecret } from "./apis";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { DatabaseResponseType } from "@/db/error";
+import { UserType } from "@/db/types/user";
 
 export const getValidators = async (
   query: object = {},
@@ -45,7 +46,6 @@ export const getValidators = async (
 
       for (const [index, validator] of validators.entries()) {
         validator.health = healthRes[index].json ? await healthRes[index].json() : healthRes[index];
-        console.log(validator.health);
       }
     }
 
@@ -62,6 +62,37 @@ export const getValidator = async ({ id }: { id: string }) => {
   if (!res) throw new Error(`Validator with ID ${id} not found.`);
   return res;
 };
+
+
+export const getValidatorStatusPage = async (user: UserType) => {
+  const where: any[] = [];
+
+  if (user?.user_metadata?.role === 'validator' ) {
+    where.push(eq(validators.userId, user?.id as string));
+  }
+
+  let validatorsRes = await getValidators(
+    {
+      where: and(...where),
+      with: {
+        endpoints: {
+          with: {
+            subnet: true,
+            contract: {
+              with: {
+                services: true,
+              },
+            },
+          },
+        },
+      },
+    },
+    { withStatus: true }
+  );
+
+  if (validatorsRes?.error) validatorsRes = [];
+  return validatorsRes;
+}
 
 export const updateValidator = async ({
   id,
