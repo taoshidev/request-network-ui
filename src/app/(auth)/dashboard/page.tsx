@@ -19,21 +19,24 @@ export default async function Page() {
     return <ClientRedirect href="/onboarding" />;
   }
 
-  let validatorArr = await getValidators({
-    where: and(eq(validators.userId, user?.id)),
-    with: {
-      endpoints: {
-        with: {
-          subnet: true,
-          contract: {
-            with: {
-              services: true,
+  let validatorArr = await getValidators(
+    {
+      where: and(eq(validators.userId, user?.id)),
+      with: {
+        endpoints: {
+          with: {
+            subnet: true,
+            contract: {
+              with: {
+                services: true,
+              },
             },
           },
         },
       },
     },
-  });
+    { withStatus: true }
+  );
 
   if (validatorArr?.error) validatorArr = [];
 

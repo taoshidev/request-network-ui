@@ -7,9 +7,10 @@ import { isEmpty } from "lodash";
 import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
 import { UserType } from "@/db/types/user";
 import { SubnetType } from "@/db/types/subnet";
-import { ValidatorType } from "@/db/types/validator";
+import { ValidatorType, ValidatorWithInfo } from "@/db/types/validator";
 import { ContractType } from "@/db/types/contract";
 import { EndpointType } from "@/db/types/endpoint";
+import { IconAlertTriangle, IconCircleCheck } from "@tabler/icons-react";
 
 export type KeyType = { apiKey: string; apiSecret: string };
 
@@ -21,7 +22,7 @@ export function Validators({
 }: {
   user: UserType;
   subnets: SubnetType[];
-  validators: ValidatorType[];
+  validators: ValidatorWithInfo[];
   contracts: ContractType[];
 }) {
   const router = useRouter();
@@ -67,6 +68,7 @@ export function Validators({
             <Table highlightOnHover striped>
               <Table.Thead>
                 <Table.Tr>
+                  <Table.Th></Table.Th>
                   <Table.Th>Validator</Table.Th>
                   <Table.Th>Server Url</Table.Th>
                   <Table.Th>Subnet</Table.Th>
@@ -76,8 +78,15 @@ export function Validators({
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
-                {(validators || []).map((validator: ValidatorType) => (
+                {(validators || []).map((validator: ValidatorWithInfo) => (
                   <Table.Tr key={validator?.id}>
+                    <Table.Td className="px-1">
+                      {validator.health?.message?.toLowerCase() === "ok" ? (
+                        <IconCircleCheck className="inline-block text-green-600" />
+                      ) : (
+                        <IconAlertTriangle className="inline-block text-red-700" />
+                      )}
+                    </Table.Td>
                     <Table.Td>{validator?.name}</Table.Td>
                     <Table.Td>{validator?.baseApiUrl}</Table.Td>
                     <Table.Td>

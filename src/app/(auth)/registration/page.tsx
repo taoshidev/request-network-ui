@@ -6,8 +6,7 @@ import { getValidators } from "@/actions/validators";
 import { Registration } from "@/components/Registration/Registration";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { fetchValidatorInfo } from "@/actions/bittensor/bittensor";
-import { ValidatorType } from "@/db/types/validator";
-import ClientRedirect from "@/components/ClientRedirect";
+import { ValidatorType, ValidatorWithInfo } from "@/db/types/validator";
 
 export default async function Page() {
   const user = await getAuthUser();
@@ -60,7 +59,7 @@ export default async function Page() {
     subnets?.map((subnet) => [subnet.id, subnet.netUid])
   );
 
-  const fetchAllValidatorInfo = async (validatorArr: ValidatorType[]) => {
+  const fetchAllValidatorInfo = async (validatorArr: ValidatorWithInfo[]) => {
     const fetchEndpointInfo = async (endpoint, validator) => {
       const netUid = subnetMap.get(endpoint.subnetId);
       if (!netUid) {

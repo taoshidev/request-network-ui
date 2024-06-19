@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRegistration } from "@/providers/registration";
-import { ValidatorType } from "@/db/types/validator";
+import { ValidatorType, ValidatorWithInfo } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { SubscriptionType } from "@/db/types/subscription";
 import clsx from "clsx";
@@ -22,10 +22,6 @@ import { EndpointType } from "@/db/types/endpoint";
 import { ServiceType } from "@/db/types/service";
 import { IconAlertTriangle, IconCircleCheck } from "@tabler/icons-react";
 
-type ValidatorWithInfo = ValidatorType & {
-  neuronInfo: any;
-  health: { uptime: number; message: string };
-};
 
 export function SubnetValidator({
   currentSubscriptions,
@@ -104,9 +100,9 @@ export function SubnetValidator({
               >
                 <Text className="font-bold mb-4" truncate>
                   {validator.health?.message?.toLowerCase() === "ok" ? (
-                    <IconCircleCheck className="inline-block" />
+                    <IconCircleCheck className="inline-block text-green-600" />
                   ) : (
-                    <IconAlertTriangle className="inline-block" />
+                    <IconAlertTriangle className="inline-block text-red-700" />
                   )}{" "}
                   {validator?.name || "Validator"}
                   {validator.health?.message?.toLowerCase() === "ok" ? (

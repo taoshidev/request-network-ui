@@ -74,3 +74,8 @@ export const ValidatorSchema = z.object({
 
 const NullableValidatorSchema = nullableSchema(ValidatorSchema);
 export type ValidatorType = z.infer<typeof NullableValidatorSchema>;
+
+export type ValidatorWithInfo = ValidatorType & {
+  neuronInfo: any;
+  health: { uptime: number; message: string };
+};
