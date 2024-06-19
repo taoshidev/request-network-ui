@@ -15,7 +15,10 @@ import clsx from "clsx";
 import { useState } from "react";
 import { UserType } from "@/db/types/user";
 
-type ValidatorWithInfo = ValidatorType & { neuronInfo: any };
+type ValidatorWithInfo = ValidatorType & {
+  neuronInfo: any;
+  health: { uptime: number; message: string };
+};
 
 export function Registration({
   user,

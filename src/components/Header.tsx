@@ -35,9 +35,8 @@ import { useAuth } from "@/providers/auth-provider";
 const iconSize = 20;
 const navLinks = [
   {
-    href: "https://docs.taoshi.io",
+    href: "/status",
     name: "Status",
-    target: "_blank",
     indicator: true,
     icon: <IconChartBar size={20} />,
     dataCy: "btn-header-status",
@@ -132,7 +131,6 @@ export function Header() {
                 className="text-sm text-black"
                 component={Link}
                 href={navLink.href}
-                target={navLink.target}
                 data-cy={navLink.dataCy}
               >
                 {navLink.indicator ? (
@@ -237,7 +235,6 @@ export function Header() {
                 className="text-black flex justify-left px-1 hover:text-white hover:bg-primary-500"
                 component={Link}
                 href={navLink.href}
-                target={navLink.target}
                 onClick={close}
                 data-cy={navLink.dataCy}
               >

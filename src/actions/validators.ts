@@ -12,14 +12,44 @@ import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { DatabaseResponseType } from "@/db/error";
 
-export const getValidators = async (query: object = {}) => {
+export const getValidators = async (
+  query: object = {},
+  options: { withStatus?: boolean } = {}
+) => {
   try {
     const res = await db.query.validators.findMany(
       Object.assign(query, {
         orderBy: (validators, { asc }) => [asc(validators?.name)],
       })
     );
-    return filterData(res, [""]);
+
+    const validators = filterData(res, [""]);
+
+    if (!validators.error && options.withStatus) {
+      const healthReq = validators.map(async (validator) => {
+        try {
+          return await fetch(`${validator.baseApiUrl}/health`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+        } catch (e) {
+          return Promise.resolve({
+            message: "Server offline",
+            uptime: 0,
+            date: null,
+          });
+        }
+      });
+
+      const healthRes = await Promise.all(healthReq);
+
+      for (const [index, validator] of validators.entries()) {
+        validator.health = healthRes[index].json ? await healthRes[index].json() : healthRes[index];
+        console.log(validator.health);
+      }
+    }
+
+    return validators;
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }

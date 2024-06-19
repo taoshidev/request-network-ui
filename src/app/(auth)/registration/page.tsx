@@ -28,21 +28,22 @@ export default async function Page() {
     },
   });
 
-  const validatorArr = await getValidators({
-    where: and(eq(validators.verified, true)),
-    with: {
-      endpoints: {
-        where: and(eq(endpoints.enabled, true)),
-        with: {
-          contract: {
-            with: {
-              services: true,
+  const validatorArr = await getValidators(
+    {
+      where: and(eq(validators.verified, true)),
+      with: {
+        endpoints: {
+          where: and(eq(endpoints.enabled, true)),
+          with: {
+            contract: {
+              with: {
+                services: true,
+              },
             },
           },
         },
       },
-    },
-  });
+    }, { withStatus: true });
 
   const userSubscriptions = await getSubscriptions({
     where: and(eq(subscriptions.userId, user?.id!)),
