@@ -9,6 +9,7 @@ import { IconAlertTriangle, IconCircleCheck } from "@tabler/icons-react";
 import clsx from "clsx";
 import useSWR from "swr";
 import { getValidatorStatusPage } from "@/actions/validators";
+import { cloneDeep as _cloneDeep } from "lodash";
 
 export default function ValidatorStatus({
   user,
@@ -19,12 +20,28 @@ export default function ValidatorStatus({
     health: { uptime: number; message: string };
   })[];
 }) {
+  const requestRate = 10; // send request every 10 seconds
+  let count = 0;
   let { data: validators } = useSWR(
     "/validator-status",
-    async () => await getValidatorStatusPage(user),
+    async () => {
+      if (count < requestRate) {
+        count++;
+        return _cloneDeep(
+          validators.map((validator) => {
+            if (validator.health.uptime) {
+              validator.health.uptime += 1;
+            }
+            return validator;
+          })
+        );
+      }
+      count = 0;
+      return await getValidatorStatusPage(user);
+    },
     {
       fallbackData: initialValidators,
-      refreshInterval: 5000,
+      refreshInterval: 1000,
     }
   );
 
@@ -33,7 +50,7 @@ export default function ValidatorStatus({
       <Group className="flex items-stretch grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-stretch">
         {validators?.map((validator) => (
           <Card key={validator.id} shadow="sm" padding="lg" withBorder>
-            <Box className="-m-5">
+            <Box className="-m-5 pb-[5.1rem]">
               <Table className="w-100 table-align-top">
                 <Table.Tbody>
                   <Table.Tr>
@@ -52,14 +69,18 @@ export default function ValidatorStatus({
                       )}{" "}
                       {validator.name}{" "}
                       {validator.health?.message?.toLowerCase() === "ok" ? (
-                        <Badge className="float-end bg-green-600">Online</Badge>
+                        <Badge className="float-end bg-green-600 zoom in">
+                          Online
+                        </Badge>
                       ) : (
-                        <Badge className="float-end bg-red-700">Offline</Badge>
+                        <Badge className="float-end bg-red-700 zoom in">
+                          Offline
+                        </Badge>
                       )}
                     </Table.Th>
                   </Table.Tr>
                   <Table.Tr>
-                    <Table.Th className="w-[9rem]">Subnets</Table.Th>
+                    <Table.Th>Subnets</Table.Th>
                     <Table.Td className="text-right">
                       {(validator.endpoints || [])
                         .filter(
@@ -96,7 +117,11 @@ export default function ValidatorStatus({
                     </Table.Td>
                   </Table.Tr>
                   <Table.Tr>
-                    <Table.Th>Bittensor Net Uid</Table.Th>
+                    <Table.Th>
+                      Bittensor
+                      <br />
+                      Net Uid
+                    </Table.Th>
                     <Table.Td className="text-right">
                       {validator?.bittensorNetUid || "-"}
                     </Table.Td>
@@ -116,11 +141,12 @@ export default function ValidatorStatus({
                   <Table.Tr>
                     <Table.Td colSpan={2}>
                       <Box className="flex justify-center">
-                        {validator?.stripeEnabled && (
-                          <Badge className="ml-1" color="darkblue">
-                            Stripe
-                          </Badge>
-                        )}
+                        {validator?.stripeEnabled &&
+                          (validator.endpoints?.length || 0) !== 0 && (
+                            <Badge className="ml-1" color="darkblue">
+                              Stripe
+                            </Badge>
+                          )}
                         {validator.endpoints?.some((endpoint) =>
                           endpoint?.contract?.services?.some(
                             (service) => +service.price === 0
@@ -152,16 +178,22 @@ export default function ValidatorStatus({
                             USDT
                           </Badge>
                         )}
+                        {(validator.endpoints?.length || 0) === 0 && (
+                          <Badge className="ml-1 text-black " color="#ccc">
+                            No Active Endpoints
+                          </Badge>
+                        )}
                       </Box>
                     </Table.Td>
                   </Table.Tr>
-                  <Table.Tr>
-                    <Table.Th colSpan={2}>
-                      <UptimeFormatter seconds={validator.health?.uptime} />
-                    </Table.Th>
-                  </Table.Tr>
                 </Table.Tbody>
               </Table>
+              <Box className="absolute w-full bottom-0 left-0 pb-2">
+                <Text className="px-3 text-sm font-bold text-center border border-top">
+                  Uptime
+                </Text>
+                <UptimeFormatter seconds={validator.health?.uptime} />
+              </Box>
             </Box>
           </Card>
         ))}

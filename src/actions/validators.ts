@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { validators } from "@/db/schema";
+import { endpoints, validators } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
 import { filterData } from "@/utils/sanitize";
 import { createEndpoint } from "./endpoints";
@@ -25,7 +25,6 @@ export const getValidators = async (
     );
 
     const validators = filterData(res, [""]);
-
     if (!validators.error && options.withStatus) {
       const healthReq = validators.map(async (validator) => {
         try {
@@ -45,7 +44,9 @@ export const getValidators = async (
       const healthRes = await Promise.all(healthReq);
 
       for (const [index, validator] of validators.entries()) {
-        validator.health = healthRes[index].json ? await healthRes[index].json() : healthRes[index];
+        validator.health = healthRes[index].json
+          ? await healthRes[index].json()
+          : healthRes[index];
       }
     }
 
@@ -63,19 +64,25 @@ export const getValidator = async ({ id }: { id: string }) => {
   return res;
 };
 
-
 export const getValidatorStatusPage = async (user: UserType) => {
   const where: any[] = [];
 
-  if (user?.user_metadata?.role === 'validator' ) {
+  if (user?.user_metadata?.role === "validator") {
     where.push(eq(validators.userId, user?.id as string));
+  } else if (user?.user_metadata?.role === "consumer") {
+    where.push(eq(validators.verified, true));
   }
 
   let validatorsRes = await getValidators(
     {
       where: and(...where),
+      columns: {
+        apiKey: false,
+        apiSecret: false,
+      },
       with: {
         endpoints: {
+          where: and(eq(endpoints.enabled, true)),
           with: {
             subnet: true,
             contract: {
@@ -92,7 +99,7 @@ export const getValidatorStatusPage = async (user: UserType) => {
 
   if (validatorsRes?.error) validatorsRes = [];
   return validatorsRes;
-}
+};
 
 export const updateValidator = async ({
   id,

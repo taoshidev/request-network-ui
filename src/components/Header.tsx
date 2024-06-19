@@ -5,7 +5,6 @@ import {
   Group,
   Anchor,
   Menu,
-  Indicator,
   Button,
   Text,
   Divider,
@@ -37,7 +36,6 @@ const navLinks = [
   {
     href: "/status",
     name: "Status",
-    indicator: true,
     icon: <IconChartBar size={20} />,
     dataCy: "btn-header-status",
   },
@@ -133,13 +131,7 @@ export function Header() {
                 href={navLink.href}
                 data-cy={navLink.dataCy}
               >
-                {navLink.indicator ? (
-                  <Indicator position="top-start" size={6}>
-                    {navLink.name}
-                  </Indicator>
-                ) : (
-                  navLink.name
-                )}
+                {navLink.name}
               </Anchor>
             ))}
             <>
@@ -239,15 +231,7 @@ export function Header() {
                 data-cy={navLink.dataCy}
               >
                 <Box className="p-3">{navLink.icon}</Box>
-                <Box className=" p-3 grow">
-                  {navLink.indicator ? (
-                    <Indicator position="top-start" size={6}>
-                      {navLink.name}
-                    </Indicator>
-                  ) : (
-                    navLink.name
-                  )}
-                </Box>
+                <Box className=" p-3 grow">{navLink.name}</Box>
               </Anchor>
             </Box>
           ))}

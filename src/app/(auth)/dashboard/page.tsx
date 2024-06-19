@@ -22,6 +22,10 @@ export default async function Page() {
   let validatorArr = await getValidators(
     {
       where: and(eq(validators.userId, user?.id)),
+      columns: {
+        apiKey: false,
+        apiSecret: false
+      },
       with: {
         endpoints: {
           with: {
