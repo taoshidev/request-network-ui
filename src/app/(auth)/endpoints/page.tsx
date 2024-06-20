@@ -13,7 +13,12 @@ export default async function Page() {
   if (!user) return;
 
   const endpoints = await getEndpoints();
-  const validators = await getValidators();
+  const validators = await getValidators({
+    columns: {
+      apiKey: false,
+      apiSecret: false,
+    },
+  });
   const subnets = await getSubnets();
 
   const userContracts = await getContracts({

@@ -4,8 +4,8 @@ import { Title, Box, Table, Text } from "@mantine/core";
 import { isEmpty as _isEmpty } from "lodash";
 import React from "react";
 import { DateTime } from "luxon";
-import clsx from "clsx";
-import CurrencyFormatter from "@/components/CurrencyFormatter";
+import CurrencyFormatter from "@/components/Formatters/CurrencyFormatter";
+import FixedFormatter from "@/components/Formatters/FixedFormatter";
 
 export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
   return (
@@ -79,13 +79,19 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                     </Table.Tr>
                     <Table.Tr>
                       <Table.Th>Refill Rate</Table.Th>
-                      <Table.Td>{service.refillRate}</Table.Td>
+                      <Table.Td>
+                        <FixedFormatter value={service.refillRate} />
+                      </Table.Td>
                       <Table.Th>Refill Interval</Table.Th>
-                      <Table.Td>{service.refillInterval}</Table.Td>
+                      <Table.Td>
+                        <FixedFormatter value={service.refillInterval} />
+                      </Table.Td>
                     </Table.Tr>
                     <Table.Tr>
                       <Table.Th>Remaining</Table.Th>
-                      <Table.Td>{service.remaining}</Table.Td>
+                      <Table.Td>
+                        <FixedFormatter value={service.remaining} />
+                      </Table.Td>
                       <Table.Th>Active</Table.Th>
                       <Table.Td>{service.active ? "Yes" : "No"}</Table.Td>
                     </Table.Tr>

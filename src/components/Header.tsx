@@ -5,7 +5,6 @@ import {
   Group,
   Anchor,
   Menu,
-  Indicator,
   Button,
   Text,
   Divider,
@@ -35,10 +34,8 @@ import { useAuth } from "@/providers/auth-provider";
 const iconSize = 20;
 const navLinks = [
   {
-    href: "https://docs.taoshi.io",
+    href: "/status",
     name: "Status",
-    target: "_blank",
-    indicator: true,
     icon: <IconChartBar size={20} />,
     dataCy: "btn-header-status",
   },
@@ -132,16 +129,9 @@ export function Header() {
                 className="text-sm text-black"
                 component={Link}
                 href={navLink.href}
-                target={navLink.target}
                 data-cy={navLink.dataCy}
               >
-                {navLink.indicator ? (
-                  <Indicator position="top-start" size={6}>
-                    {navLink.name}
-                  </Indicator>
-                ) : (
-                  navLink.name
-                )}
+                {navLink.name}
               </Anchor>
             ))}
             <>
@@ -237,20 +227,11 @@ export function Header() {
                 className="text-black flex justify-left px-1 hover:text-white hover:bg-primary-500"
                 component={Link}
                 href={navLink.href}
-                target={navLink.target}
                 onClick={close}
                 data-cy={navLink.dataCy}
               >
                 <Box className="p-3">{navLink.icon}</Box>
-                <Box className=" p-3 grow">
-                  {navLink.indicator ? (
-                    <Indicator position="top-start" size={6}>
-                      {navLink.name}
-                    </Indicator>
-                  ) : (
-                    navLink.name
-                  )}
-                </Box>
+                <Box className=" p-3 grow">{navLink.name}</Box>
               </Anchor>
             </Box>
           ))}

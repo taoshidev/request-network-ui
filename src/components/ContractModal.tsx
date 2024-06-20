@@ -1,12 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  Box,
-  Button,
-  Modal,
-  TextInput,
-  Table,
-  Text,
-} from "@mantine/core";
+import { Box, Button, Modal, TextInput, Table, Text } from "@mantine/core";
 import { TextEditor } from "@/components/TextEditor";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
@@ -21,7 +14,8 @@ import { ServiceType } from "@/db/types/service";
 import { createService, updateService } from "@/actions/services";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
-import CurrencyFormatter from "./CurrencyFormatter";
+import CurrencyFormatter from "./Formatters/CurrencyFormatter";
+import FixedFormatter from "./Formatters/FixedFormatter";
 
 export function ContractModal({
   user,
@@ -67,10 +61,10 @@ export function ContractModal({
   });
 
   useEffect(() => {
-    form.setValues(getDefaultValues(contract as ContractType));
+    if (opened) form.setValues(getDefaultValues(contract as ContractType));
     setServices(contract?.services || []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contract]);
+  }, [contract, opened]);
 
   const onSubmit = async (values: Partial<ContractType>) => {
     setLoading(true);
@@ -134,7 +128,7 @@ export function ContractModal({
         )
       );
     } else {
-      setServices((prevServices) => [service, ...prevServices]);
+      setServices((prevServices) => [...prevServices, service]);
     }
     if (serviceModalRef.current) {
       modals.closeModal(serviceModalRef.current);
@@ -226,46 +220,56 @@ export function ContractModal({
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {services.map((service: ServiceType, index: number) => (
-                    <Table.Tr key={index}>
-                      <Table.Td>
-                        <Box ref={index === 0 ? serviceRef : undefined}>
-                          {service?.name}
-                        </Box>
-                      </Table.Td>
-                      <Table.Td>
-                        {dayjs(contract?.expires).format("MMM DD, YYYY")}
-                      </Table.Td>
-                      <Table.Td>
-                        <CurrencyFormatter
-                          price={service?.price}
-                          currencyType={service?.currencyType}
-                        />
-                      </Table.Td>
-                      <Table.Td>{service?.limit}</Table.Td>
-                      <Table.Td>{service?.remaining}</Table.Td>
-                      <Table.Td>{service?.refillRate}</Table.Td>
-                      <Table.Td>{service?.refillInterval}</Table.Td>
-                      <Table.Td className="text-right">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => openServiceModal(service, index)}
-                        >
-                          Edit
-                        </Button>
-                      </Table.Td>
-                      <Table.Td className="text-right">
-                        <Button
-                          size="sm"
-                          variant="light"
-                          onClick={() => openServiceDeleteConfirm(index)}
-                        >
-                          Delete
-                        </Button>
-                      </Table.Td>
-                    </Table.Tr>
-                  ))}
+                  {services
+                    .reverse()
+                    .map((service: ServiceType, index: number) => (
+                      <Table.Tr key={index}>
+                        <Table.Td>
+                          <Box ref={index === 0 ? serviceRef : undefined}>
+                            {service?.name}
+                          </Box>
+                        </Table.Td>
+                        <Table.Td>
+                          {dayjs(contract?.expires).format("MMM DD, YYYY")}
+                        </Table.Td>
+                        <Table.Td>
+                          <CurrencyFormatter
+                            price={service?.price}
+                            currencyType={service?.currencyType}
+                          />
+                        </Table.Td>
+                        <Table.Td>
+                          <FixedFormatter value={service.limit} />
+                        </Table.Td>
+                        <Table.Td>
+                          <FixedFormatter value={service.remaining} />
+                        </Table.Td>
+                        <Table.Td>
+                          <FixedFormatter value={service.refillRate} />
+                        </Table.Td>
+                        <Table.Td>
+                          <FixedFormatter value={service.refillInterval} />
+                        </Table.Td>
+                        <Table.Td className="text-right">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openServiceModal(service, index)}
+                          >
+                            Edit
+                          </Button>
+                        </Table.Td>
+                        <Table.Td className="text-right">
+                          <Button
+                            size="sm"
+                            variant="light"
+                            onClick={() => openServiceDeleteConfirm(index)}
+                          >
+                            Delete
+                          </Button>
+                        </Table.Td>
+                      </Table.Tr>
+                    ))}
                 </Table.Tbody>
               </Table>
             )}

@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { SubscriptionType } from "@/db/types/subscription";
 import { formatter } from "@/utils/number-formatter";
-import CurrencyFormatter from "../CurrencyFormatter";
+import CurrencyFormatter from "../Formatters/CurrencyFormatter";
 
 dayjs.extend(relativeTime);
 

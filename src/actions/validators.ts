@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { validators } from "@/db/schema";
+import { endpoints, validators } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
 import { filterData } from "@/utils/sanitize";
 import { createEndpoint } from "./endpoints";
@@ -11,15 +11,46 @@ import { createUnkeyApiKey, generateApiKey, generateApiSecret } from "./apis";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { DatabaseResponseType } from "@/db/error";
+import { UserType } from "@/db/types/user";
 
-export const getValidators = async (query: object = {}) => {
+export const getValidators = async (
+  query: object = {},
+  options: { withStatus?: boolean } = {}
+) => {
   try {
     const res = await db.query.validators.findMany(
       Object.assign(query, {
         orderBy: (validators, { asc }) => [asc(validators?.name)],
       })
     );
-    return filterData(res, [""]);
+
+    const validators = filterData(res, [""]);
+    if (!validators.error && options.withStatus) {
+      const healthReq = validators.map(async (validator) => {
+        try {
+          return await fetch(`${validator.baseApiUrl}/health`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+        } catch (e) {
+          return Promise.resolve({
+            message: "Server offline",
+            uptime: 0,
+            date: null,
+          });
+        }
+      });
+
+      const healthRes = await Promise.all(healthReq);
+
+      for (const [index, validator] of validators.entries()) {
+        validator.health = healthRes[index].json
+          ? await healthRes[index].json()
+          : healthRes[index];
+      }
+    }
+
+    return validators;
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }
@@ -31,6 +62,43 @@ export const getValidator = async ({ id }: { id: string }) => {
   });
   if (!res) throw new Error(`Validator with ID ${id} not found.`);
   return res;
+};
+
+export const getValidatorStatusPage = async (user: UserType) => {
+  const where: any[] = [];
+
+  if (user?.user_metadata?.role === "validator") {
+    where.push(eq(validators.userId, user?.id as string));
+  } else if (user?.user_metadata?.role === "consumer") {
+    where.push(eq(validators.verified, true));
+  }
+
+  let validatorsRes = await getValidators(
+    {
+      where: and(...where),
+      columns: {
+        apiKey: false,
+        apiSecret: false,
+      },
+      with: {
+        endpoints: {
+          where: and(eq(endpoints.enabled, true)),
+          with: {
+            subnet: true,
+            contract: {
+              with: {
+                services: true,
+              },
+            },
+          },
+        },
+      },
+    },
+    { withStatus: true }
+  );
+
+  if (validatorsRes?.error) validatorsRes = [];
+  return validatorsRes;
 };
 
 export const updateValidator = async ({
