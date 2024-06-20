@@ -64,7 +64,7 @@ export default function ValidatorStatus({
               validator.health?.message?.toLowerCase() !== "ok" && "opacity-70"
             )}
           >
-            <Box className="-m-2 -mt-5 pb-[4.4rem]">
+            <Box className="-m-2 -mt-5 pb-[5rem]">
               <Box
                 className={clsx(
                   "p-3 -mx-3",
@@ -193,7 +193,7 @@ export default function ValidatorStatus({
                 </Table.Tbody>
               </Table>
               <Box className="absolute w-full bottom-0 left-0 pb-2">
-                <Text className="px-3 text-sm font-bold text-center border border-top">
+                <Text className="px-3 py-1 text-sm font-bold text-center border border-top">
                   Uptime
                 </Text>
                 <UptimeFormatter seconds={validator.health?.uptime} />
