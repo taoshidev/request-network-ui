@@ -22,7 +22,6 @@ import { EndpointType } from "@/db/types/endpoint";
 import { ServiceType } from "@/db/types/service";
 import { IconAlertTriangle, IconCircleCheck } from "@tabler/icons-react";
 
-
 export function SubnetValidator({
   currentSubscriptions,
   subnet,
@@ -98,19 +97,22 @@ export function SubnetValidator({
                     "rn-selected"
                 )}
               >
-                <Text className="font-bold mb-4" truncate>
+                <Box className="font-bold mb-4">
                   {validator.health?.message?.toLowerCase() === "ok" ? (
-                    <IconCircleCheck className="inline-block text-green-600" />
+                    <IconCircleCheck className="float-start text-green-600" />
                   ) : (
-                    <IconAlertTriangle className="inline-block text-red-700" />
-                  )}{" "}
-                  {validator?.name || "Validator"}
+                    <IconAlertTriangle className="float-start text-red-700" />
+                  )}
+                  <Text className="font-bold mb-4 inline-block" truncate>
+                    &nbsp;
+                    {validator?.name || "Validator"}
+                  </Text>
                   {validator.health?.message?.toLowerCase() === "ok" ? (
                     <Badge className="float-end bg-green-600">Online</Badge>
                   ) : (
                     <Badge className="float-end bg-red-700">Offline</Badge>
                   )}
-                </Text>
+                </Box>
                 <Divider className="border-dashed" />
                 <Group className="justify-between items-center my-1">
                   <Text className="text-sm">Active:</Text>

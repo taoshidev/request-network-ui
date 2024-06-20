@@ -10,6 +10,9 @@ import clsx from "clsx";
 import useSWR from "swr";
 import { getValidatorStatusPage } from "@/actions/validators";
 import { cloneDeep as _cloneDeep } from "lodash";
+import { useState } from "react";
+
+const requestRate = 10; // send request every 10 seconds
 
 export default function ValidatorStatus({
   user,
@@ -20,23 +23,25 @@ export default function ValidatorStatus({
     health: { uptime: number; message: string };
   })[];
 }) {
-  const requestRate = 10; // send request every 10 seconds
-  let count = 0;
+  const [count, setCount] = useState(1);
+
   let { data: validators } = useSWR(
     "/validator-status",
     async () => {
       if (count < requestRate) {
-        count++;
-        return _cloneDeep(
-          validators.map((validator) => {
-            if (validator.health.uptime) {
-              validator.health.uptime += 1;
-            }
-            return validator;
-          })
+        setCount(count + 1);
+        return await Promise.resolve(
+          _cloneDeep(
+            validators.map((validator) => {
+              if (validator.health?.uptime) {
+                validator.health.uptime += 1;
+              }
+              return validator;
+            })
+          )
         );
       }
-      count = 0;
+      setCount(1);
       return await getValidatorStatusPage(user);
     },
     {
@@ -49,36 +54,43 @@ export default function ValidatorStatus({
     <Box>
       <Group className="flex items-stretch grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-stretch">
         {validators?.map((validator) => (
-          <Card key={validator.id} shadow="sm" padding="lg" withBorder>
-            <Box className="-m-5 pb-[5.1rem]">
+          <Card
+            key={validator.id}
+            shadow="sm"
+            padding="lg"
+            withBorder
+            className={clsx(
+              "card-table",
+              validator.health?.message?.toLowerCase() !== "ok" && "opacity-70"
+            )}
+          >
+            <Box className="-m-2 -mt-5 pb-[4.4rem]">
+              <Box
+                className={clsx(
+                  "p-3 -mx-3",
+                  validator.health?.message?.toLowerCase() === "ok"
+                    ? "text-green-800"
+                    : "text-black"
+                )}
+              >
+                {validator.health?.message?.toLowerCase() === "ok" ? (
+                  <IconCircleCheck className="inline-block" />
+                ) : (
+                  <IconAlertTriangle className="inline-block" />
+                )}{" "}
+                {validator.name}{" "}
+                {validator.health?.message?.toLowerCase() === "ok" ? (
+                  <Badge className="float-end bg-green-600 zoom in">
+                    Online
+                  </Badge>
+                ) : (
+                  <Badge className="float-end bg-red-700 zoom in">
+                    Offline
+                  </Badge>
+                )}
+              </Box>
               <Table className="w-100 table-align-top">
                 <Table.Tbody>
-                  <Table.Tr>
-                    <Table.Th
-                      colSpan={2}
-                      className={clsx(
-                        validator.health?.message?.toLowerCase() === "ok"
-                          ? "text-white bg-green-800"
-                          : "text-black bg-gray-300"
-                      )}
-                    >
-                      {validator.health?.message?.toLowerCase() === "ok" ? (
-                        <IconCircleCheck className="inline-block" />
-                      ) : (
-                        <IconAlertTriangle className="inline-block" />
-                      )}{" "}
-                      {validator.name}{" "}
-                      {validator.health?.message?.toLowerCase() === "ok" ? (
-                        <Badge className="float-end bg-green-600 zoom in">
-                          Online
-                        </Badge>
-                      ) : (
-                        <Badge className="float-end bg-red-700 zoom in">
-                          Offline
-                        </Badge>
-                      )}
-                    </Table.Th>
-                  </Table.Tr>
                   <Table.Tr>
                     <Table.Th>Subnets</Table.Th>
                     <Table.Td className="text-right">
@@ -118,18 +130,10 @@ export default function ValidatorStatus({
                   </Table.Tr>
                   <Table.Tr>
                     <Table.Th>
-                      Bittensor
-                      <br />
                       Net Uid
                     </Table.Th>
                     <Table.Td className="text-right">
                       {validator?.bittensorNetUid || "-"}
-                    </Table.Td>
-                  </Table.Tr>
-                  <Table.Tr>
-                    <Table.Th>Bittensor Uid</Table.Th>
-                    <Table.Td className="text-right">
-                      {validator?.bittensorUid || "-"}
                     </Table.Td>
                   </Table.Tr>
                   <Table.Tr>

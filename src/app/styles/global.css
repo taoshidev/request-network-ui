@@ -177,6 +177,10 @@ a {
   transform: scale(0);
 }
 
+.card-table th, .card-table td {
+  padding: 4px 0px;
+}
+
 @-webkit-keyframes zoom-in {
   0%  {
     opacity: 0;
