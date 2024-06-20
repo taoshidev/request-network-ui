@@ -1,4 +1,4 @@
-import { Box, Divider, Group } from "@mantine/core";
+import { Box, Group } from "@mantine/core";
 
 export default function UptimeFormatter({ seconds }: { seconds: number }) {
   const days = Math.floor(seconds / (24 * 3600));

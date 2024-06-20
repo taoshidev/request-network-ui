@@ -4,7 +4,7 @@ import { EndpointType } from "@/db/types/endpoint";
 import { UserType } from "@/db/types/user";
 import { ValidatorType } from "@/db/types/validator";
 import { Badge, Box, Card, Group, Table, Text } from "@mantine/core";
-import UptimeFormatter from "./UptimeFormatter";
+import UptimeFormatter from "./Formatters/UptimeFormatter";
 import { IconAlertTriangle, IconCircleCheck } from "@tabler/icons-react";
 import clsx from "clsx";
 import useSWR from "swr";
