@@ -5,6 +5,7 @@ import { contracts } from "@/db/schema";
 import { getAuthUser } from "@/actions/auth";
 import { UpdateEndpoint } from "@/components/UpdateEndpoint";
 import { EndpointType } from "@/db/types/endpoint";
+import ClientRedirect from "@/components/ClientRedirect";
 interface PageProps {
   params: {
     id: string;
@@ -18,6 +19,15 @@ export default async function Page({ params }: PageProps) {
   if (!user) return;
 
   const result: EndpointType = await getEndpointWithSubscription({ id });
+
+  if (user?.id !== result?.validator?.userId)
+    return (
+      <ClientRedirect
+        message="Page does not exist. Returning to previous page"
+        delay={5000}
+        back
+      />
+    );
 
   const userContracts = await getContracts({
     where: and(eq(contracts.userId, user?.id!)),

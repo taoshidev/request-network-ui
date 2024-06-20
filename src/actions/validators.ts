@@ -12,6 +12,7 @@ import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { DatabaseResponseType } from "@/db/error";
 import { UserType } from "@/db/types/user";
+import { getAuthUser } from "./auth";
 
 export const getValidators = async (
   query: object = {},
@@ -106,6 +107,12 @@ export const updateValidator = async ({
   ...values
 }: Partial<ValidatorType>) => {
   try {
+    const user = await getAuthUser();
+
+    if (user?.id !== values?.userId) {
+      throw new Error("Error: Not authorized");
+    }
+
     const res = await db
       .update(validators)
       .set({ ...values } as any)

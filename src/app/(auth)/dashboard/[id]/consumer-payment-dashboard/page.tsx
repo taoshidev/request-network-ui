@@ -8,6 +8,7 @@ import { getVerifications } from "@/actions/keys";
 import { getStartAndEndTimestamps } from "@/utils/date";
 import { fetchServiceTransactions, fetchPaymentStatusTransactions } from "@/utils/validators";
 import { addDays, getDaysInMonth, startOfMonth } from "date-fns";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,7 +16,13 @@ export const revalidate = 0;
 export default async function Page({ params }: any) {
   const user = await getAuthUser();
 
-  if (!user) return
+  if (!user) return;
+
+  if (user?.user_metadata?.role !== "consumer") {
+    return <ClientRedirect href="/dashboard" />;
+  } else if (!user.user_metadata?.onboarded) {
+    return <ClientRedirect href="/onboarding" />;
+  }
 
   const { start, end, prevStart, prevEnd } = getStartAndEndTimestamps();
 

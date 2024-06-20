@@ -68,6 +68,7 @@ export const getEndpointWithSubscription = async ({
         validator: {
           columns: {
             id: true,
+            userId: true,
             baseApiUrl: true,
             hotkey: true,
             apiPrefix: true,
