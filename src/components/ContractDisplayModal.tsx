@@ -17,7 +17,8 @@ import { ServiceType } from "@/db/types/service";
 import dayjs from "dayjs";
 import clsx from "clsx";
 import { ValidatorType } from "@/db/types/validator";
-import CurrencyFormatter from "./CurrencyFormatter";
+import CurrencyFormatter from "./Formatters/CurrencyFormatter";
+import FixedFormatter from "./Formatters/FixedFormatter";
 
 export function ContractDisplayModal({
   html,
@@ -184,7 +185,7 @@ export function ContractDisplayModal({
                 <Group className="justify-between items-center m-2">
                   <Text className="text-xs">Refill Interval:</Text>
                   <Badge size="sm" variant="light">
-                    {service.refillInterval}
+                    <FixedFormatter value={service.refillInterval} />
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />
@@ -192,7 +193,7 @@ export function ContractDisplayModal({
                 <Group className="justify-between items-center m-2">
                   <Text className="text-xs">Limit:</Text>
                   <Badge size="sm" variant="light">
-                    {service?.limit}
+                    <FixedFormatter value={service.limit} />
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />
@@ -200,7 +201,7 @@ export function ContractDisplayModal({
                 <Group className="justify-between items-center m-2">
                   <Text className="text-xs">Refill Rate:</Text>
                   <Badge size="sm" variant="light">
-                    {service.refillRate}
+                    <FixedFormatter value={service.refillRate} />
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />
@@ -208,7 +209,7 @@ export function ContractDisplayModal({
                 <Group className="justify-between items-center m-2">
                   <Text className="text-xs">Request Limit</Text>
                   <Badge size="sm" variant="light">
-                    {service?.remaining}
+                    <FixedFormatter value={service.remaining} />
                   </Badge>
                 </Group>
               </Card>

@@ -31,7 +31,7 @@ import { cancelSubscription, requestPayment } from "@/actions/payments";
 import { ConfirmModal } from "../ConfirmModal";
 import { sendToProxy } from "@/actions/apis";
 import { updateSubscription } from "@/actions/subscriptions";
-import CurrencyFormatter from "../CurrencyFormatter";
+import CurrencyFormatter from "../Formatters/CurrencyFormatter";
 
 const updateSchema = z.object({
   name: z

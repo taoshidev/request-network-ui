@@ -53,9 +53,9 @@ export default function ServiceModal({
   });
 
   useEffect(() => {
-    form.setValues(getDefaultValues(service as ServiceType));
+    if (opened) form.setValues(getDefaultValues(service as ServiceType));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [service]);
+  }, [service, opened]);
 
   const onSubmit = async (values: Partial<ServiceType>) => {
     setLoading(true);

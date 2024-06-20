@@ -41,6 +41,7 @@ import { useOrientation } from "@/hooks/use-orientation";
 import { UserType } from "@/db/types/user";
 import { useModals } from "@mantine/modals";
 import AgreeTOSModal from "../../AgreeTOSModal";
+import { randomBytes } from "crypto";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -114,7 +115,8 @@ export function RegistrationStepper({
   const agreeModalRef = useRef<string | null>(null);
 
   const openAgreeModal = () => {
-    agreeModalRef.current = modals.openModal({
+    modals.openModal({
+      modalId: agreeModalRef.current!,
       centered: true,
       size: "xl",
       title: "Terms of Service Agreement",
@@ -128,6 +130,7 @@ export function RegistrationStepper({
 
   useEffect(() => {
     if (!user.user_metadata?.agreed_to_tos && !agreeModalRef?.current) {
+      agreeModalRef.current = `rn-modal-${randomBytes(10).toString("hex")}`;
       setTimeout(() => openAgreeModal(), 1000);
     }
 
