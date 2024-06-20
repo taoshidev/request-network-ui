@@ -36,7 +36,26 @@ export const updateService = async ({
 }: Partial<ServiceType>) => {
   try {
     const user = await getAuthUser();
-    if (!!user?.user_metadata?.stripe_enabled || values.currencyType !== 'FIAT') {
+
+    if (user?.user_metadata?.role !== "validator") {
+      throw new Error("Error: Unauthorized!");
+    }
+
+    const currentService = await db
+      .select({
+        userId: services.userId,
+      } as any)
+      .from(services)
+      .where(eq(services.id, id as string));
+
+    if (user?.id !== currentService?.[0]?.userId) {
+      throw new Error("Error: Unauthorized!");
+    }
+
+    if (
+      !!user?.user_metadata?.stripe_enabled ||
+      values.currencyType !== "FIAT"
+    ) {
       const res = await db
         .update(services)
         .set({ ...values } as any)
@@ -46,9 +65,8 @@ export const updateService = async ({
       // revalidatePath(`/service/${id}`);
       return parseResult(res);
     } else {
-      throw new Error('Stripe payments not enabled.');
+      throw new Error("Stripe payments not enabled.");
     }
-
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }
@@ -57,17 +75,23 @@ export const updateService = async ({
 export const createService = async (service: ServiceType) => {
   try {
     const user = await getAuthUser();
-    if (!!user?.user_metadata?.stripe_enabled || service.currencyType !== 'FIAT') {
+    if (user?.user_metadata?.role !== "validator") {
+      throw new Error("Error: Unauthorized!");
+    }
 
-    const res = await db
-      .insert(services)
-      .values(service as any)
-      .returning();
+    if (
+      !!user?.user_metadata?.stripe_enabled ||
+      service.currencyType !== "FIAT"
+    ) {
+      const res = await db
+        .insert(services)
+        .values(service as any)
+        .returning();
 
-    revalidatePath("/dashboard");
-    return parseResult(res);
+      revalidatePath("/dashboard");
+      return parseResult(res);
     } else {
-      throw new Error('Stripe payments not enabled.');
+      throw new Error("Stripe payments not enabled.");
     }
   } catch (error) {
     if (error instanceof Error) return parseError(error);

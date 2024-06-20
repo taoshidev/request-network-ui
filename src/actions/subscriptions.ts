@@ -8,6 +8,7 @@ import { parseError, parseResult } from "@/db/error";
 import { filterData } from "@/utils/sanitize";
 import { SubscriptionType } from "@/db/types/subscription";
 import { generateApiKey, generateApiSecret } from "./apis";
+import { getAuthUser } from "./auth";
 
 export const getSubscriptions = async (query: object = {}) => {
   try {
@@ -32,6 +33,22 @@ export const updateSubscription = async ({
   ...values
 }: Partial<SubscriptionType>) => {
   try {
+    const user = await getAuthUser();
+
+    if (user?.user_metadata?.role !== "consumer")
+      throw new Error("Error: Unauthorized!");
+
+    const currentSubscription = await db
+      .select({
+        userId: subscriptions.userId,
+      } as any)
+      .from(subscriptions)
+      .where(eq(subscriptions.id, id as string));
+
+    if (user?.id !== currentSubscription?.[0]?.userId) {
+      throw new Error("Error: Unauthorized!");
+    }
+
     const res = await db
       .update(subscriptions)
       .set({ ...values } as any)
@@ -48,6 +65,11 @@ export const updateSubscription = async ({
 export const createSubscription = async (
   subscription: Partial<SubscriptionType>
 ) => {
+  const user = await getAuthUser();
+
+  if (user?.user_metadata?.role !== "consumer")
+    throw new Error("Error: Unauthorized!");
+
   subscription["apiKey"] = generateApiKey();
   subscription["apiSecret"] = generateApiSecret();
 

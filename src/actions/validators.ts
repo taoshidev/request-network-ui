@@ -109,8 +109,18 @@ export const updateValidator = async ({
   try {
     const user = await getAuthUser();
 
-    if (user?.id !== values?.userId) {
-      throw new Error("Error: Not authorized");
+    if (user?.user_metadata?.role !== "validator")
+      throw new Error("Error: Unauthorized!");
+
+    const currentValidator = await db
+      .select({
+        userId: validators.userId,
+      } as any)
+      .from(validators)
+      .where(eq(validators.id, id as string));
+
+    if (user?.id !== currentValidator?.[0]?.userId) {
+      throw new Error("Error: Unauthorized!");
     }
 
     const res = await db
@@ -128,6 +138,11 @@ export const updateValidator = async ({
 
 export const createValidator = async (validator: ValidatorType) => {
   try {
+    const user = await getAuthUser();
+
+    if (user?.user_metadata?.role !== "validator")
+      throw new Error("Error: Unauthorized!");
+
     const res = await db
       .insert(validators)
       .values(validator as any)
@@ -147,6 +162,11 @@ export const createValidatorEndpoint = async (
   { validator: ValidatorType; endpoint: EndpointType } | DatabaseResponseType
 > => {
   try {
+    const user = await getAuthUser();
+
+    if (user?.user_metadata?.role !== "validator")
+      throw new Error("Error: Unauthorized!");
+
     const res = await db.transaction(async (tx) => {
       const record = await createValidator(validator as ValidatorType);
 

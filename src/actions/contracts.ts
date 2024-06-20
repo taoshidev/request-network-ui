@@ -8,6 +8,7 @@ import { filterData } from "@/utils/sanitize";
 import { contracts } from "@/db/schema";
 import { ContractType } from "@/db/types/contract";
 import { EndpointType } from "@/db/types/endpoint";
+import { getAuthUser } from "./auth";
 
 export const getContracts = async (query: object = {}) => {
   try {
@@ -35,6 +36,23 @@ export const updateContract = async ({
   ...values
 }: Partial<ContractType>) => {
   try {
+    const user = await getAuthUser();
+
+    if (user?.user_metadata?.role !== "validator") {
+      throw new Error("Error: Unauthorized!");
+    }
+
+    const currentContract = await db
+      .select({
+        userId: contracts.userId,
+      } as any)
+      .from(contracts)
+      .where(eq(contracts.id, id as string));
+
+    if (user?.id !== currentContract?.[0]?.userId) {
+      throw new Error("Error: Unauthorized!");
+    }
+
     const res = await db
       .update(contracts)
       .set({ ...values } as any)
@@ -50,6 +68,12 @@ export const updateContract = async ({
 
 export const createContract = async (contract: ContractType) => {
   try {
+    const user = await getAuthUser();
+
+    if (user?.user_metadata?.role !== "validator") {
+      throw new Error("Error: Unauthorized!");
+    }
+
     const res = await db
       .insert(contracts)
       .values(contract as any)
