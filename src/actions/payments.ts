@@ -81,7 +81,7 @@ export async function cancelSubscription(proxyServiceId) {
     },
   });
 
-  revalidatePath("/keys");
+  revalidatePath("/subscription");
   return proxyRes;
 }
 
