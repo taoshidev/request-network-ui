@@ -34,6 +34,12 @@ a {
   cursor: pointer;
 }
 
+.table-align-top {
+  th, td {
+    vertical-align: top;
+  }
+}
+
 .code {
   min-height: 20px;
   padding: 19px;
@@ -169,6 +175,10 @@ a {
   animation: zoom-out .5s normal ease-in-out;
   opacity: 0;
   transform: scale(0);
+}
+
+.card-table th, .card-table td {
+  padding: 4px 0px;
 }
 
 @-webkit-keyframes zoom-in {
