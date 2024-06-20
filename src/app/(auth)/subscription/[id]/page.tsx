@@ -1,6 +1,7 @@
 import { getAuthUser } from "@/actions/auth";
 import { getKey } from "@/actions/keys";
 import { getSubscriptions } from "@/actions/subscriptions";
+import ClientRedirect from "@/components/ClientRedirect";
 
 import { Keys } from "@/components/Keys/Keys";
 import { subscriptions } from "@/db/schema";
@@ -13,6 +14,7 @@ export default async function Page({ params }: any) {
   const user = await getAuthUser();
 
   if (!user) return;
+
   const { id } = params;
   const data = await getSubscriptions({
     where: eq(subscriptions.id, id),
@@ -40,6 +42,16 @@ export default async function Page({ params }: any) {
       },
     },
   });
+
+  if (user?.id !== data?.[0]?.userId)
+    return (
+      <ClientRedirect
+        message="Page does not exist. Returning to previous page"
+        delay={5000}
+        back
+      />
+    );
+
 
   const { result } = await getKey({ keyId: data?.[0]?.keyId });
 

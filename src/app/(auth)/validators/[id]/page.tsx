@@ -6,6 +6,7 @@ import { getContracts } from "@/actions/contracts";
 import { and, eq } from "drizzle-orm";
 import { contracts, services } from "@/db/schema";
 import { getServices } from "@/actions/services";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function Page({ params }: any) {
   const { id } = params;
@@ -13,14 +14,22 @@ export default async function Page({ params }: any) {
   const user = await getAuthUser();
 
   if (!user) return;
+  if (user?.id !== validator.userId)
+    return (
+      <ClientRedirect
+        message="Page does not exist. Returning to previous page"
+        delay={5000}
+        back
+      />
+    );
 
   const userContracts = await getContracts({
     where: and(eq(contracts.userId, user?.id!)),
-    with: { services: true }
+    with: { services: true },
   });
 
   const userServices = await getServices({
-    where: and(eq(services.userId, user?.id!))
+    where: and(eq(services.userId, user?.id!)),
   });
 
   return (

@@ -7,11 +7,18 @@ import { Registration } from "@/components/Registration/Registration";
 import { getSubscriptions } from "@/actions/subscriptions";
 import { fetchValidatorInfo } from "@/actions/bittensor/bittensor";
 import { ValidatorType, ValidatorWithInfo } from "@/db/types/validator";
+import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function Page() {
   const user = await getAuthUser();
 
   if (!user) return;
+
+  if (user?.user_metadata?.role !== "consumer") {
+    return <ClientRedirect href="/dashboard" />;
+  } else if (!user.user_metadata?.onboarded) {
+    return <ClientRedirect href="/onboarding" />;
+  }
 
   const subnets = await getSubnets({
     with: {
@@ -32,7 +39,7 @@ export default async function Page() {
       where: and(eq(validators.verified, true)),
       columns: {
         apiKey: false,
-        apiSecret: false
+        apiSecret: false,
       },
       with: {
         endpoints: {
@@ -46,7 +53,9 @@ export default async function Page() {
           },
         },
       },
-    }, { withStatus: true });
+    },
+    { withStatus: true }
+  );
 
   const userSubscriptions = await getSubscriptions({
     where: and(eq(subscriptions.userId, user?.id!)),
