@@ -16,7 +16,7 @@ export const getEndpoints = async (query: object = {}) => {
 
     return results;
   } catch (error) {
-    if (error instanceof Error) console.log(error.stack);
+    if (error instanceof Error) console.error(error.stack);
   }
 };
 
@@ -40,7 +40,7 @@ export const getEndpoint = async ({ id }: { id: string }) => {
 
     return results;
   } catch (error) {
-    if (error instanceof Error) console.log(error.stack);
+    if (error instanceof Error) console.error(error.stack);
   }
 };
 
@@ -82,7 +82,7 @@ export const getEndpointWithSubscription = async ({
 
     return results as EndpointType;
   } catch (error) {
-    if (error instanceof Error) console.log(error.stack);
+    if (error instanceof Error) console.error(error.stack);
     return parseError(error);
   }
 };

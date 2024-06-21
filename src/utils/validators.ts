@@ -29,7 +29,7 @@ export const fetchServiceTransactions = async (validator, proxyServiceId) => {
   });
 
   if (res?.error) {
-    console.log(res?.error);
+    console.error(res?.error);
     return {};
   }
 
@@ -76,7 +76,7 @@ export const fetchTransactions = async (
   });
 
   if (res?.error) {
-    console.log(res?.error);
+    console.error(res?.error);
     return [];
   }
 
@@ -129,7 +129,7 @@ export const fetchPaymentStatusTransactions = async (
   });
 
   if (res?.error) {
-    console.log(res?.error);
+    console.error(res?.error);
     return [];
   }
 

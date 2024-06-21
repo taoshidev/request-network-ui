@@ -15,7 +15,6 @@ export const getSubscriptions = async (query: object = {}) => {
     const res = await db.query.subscriptions.findMany(query);
     return filterData(res, ["apiKey", "apiSecret"]);
   } catch (error) {
-    console.log(error);
     if (error instanceof Error) return parseError(error);
   }
 };
@@ -61,6 +60,25 @@ export const updateSubscription = async ({
     if (error instanceof Error) return parseError(error);
   }
 };
+
+export const updateSubscriptionFromWebhook = async ({
+  id,
+  ...values
+}: Partial<SubscriptionType>) => {
+  try {
+    const res = await db
+      .update(subscriptions)
+      .set({ ...values } as any)
+      .where(eq(subscriptions.id, id as string))
+      .returning();
+
+    // revalidatePath(`/subscriptions/${id}`);
+    return parseResult(res, { filter: ["key", "keyId"] });
+  } catch (error) {
+    if (error instanceof Error) return parseError(error);
+  }
+};
+
 
 export const createSubscription = async (
   subscription: Partial<SubscriptionType>
