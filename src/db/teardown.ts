@@ -16,14 +16,14 @@ export const db = drizzle(client);
 
 const teardown = async () => {
   try {
-    console.log("Teardown Started...");
+    console.info("Teardown Started...");
 
     await db.delete(users);
     await db.delete(subnets);
     await db.delete(validators);
     await db.delete(endpoints);
 
-    console.log("Teardown Completed");
+    console.info("Teardown Completed");
   } catch (error) {
     console.error("Teardown failed:", error);
     process.exit(1);

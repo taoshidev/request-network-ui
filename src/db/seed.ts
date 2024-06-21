@@ -19,7 +19,7 @@ export const db = drizzle(client);
 
 const seed = async () => {
   try {
-    console.log("Seeding...");
+    console.info("Seeding...");
 
     const dbSubnets = await db.select().from(subnets);
     const subnetNetUids = dbSubnets.map((sn) => sn.netUid);
@@ -59,7 +59,7 @@ const seed = async () => {
       }
     }
 
-    console.log("Seeded");
+    console.info("Seeded");
   } catch (error) {
     console.error("Seeding failed:", error);
     process.exit(1);

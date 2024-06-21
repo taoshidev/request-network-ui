@@ -9,7 +9,7 @@ export const getSubnets = async (query?: object): Promise<SubnetType[] | void> =
 
     return results as SubnetType[];
   } catch (error) {
-    if (error instanceof Error) console.log(error.stack);
+    if (error instanceof Error) console.error(error.stack);
   }
 };
 

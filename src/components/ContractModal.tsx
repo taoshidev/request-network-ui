@@ -167,7 +167,7 @@ export function ContractModal({
         <Text size="sm">Are you sure you want to remove this service?</Text>
       ),
       labels: { confirm: "Confirm", cancel: "Cancel" },
-      onCancel: () => console.log("Cancel"),
+      onCancel: () => () => {},
       onConfirm: () => handleServiceDelete(index),
     });
 
