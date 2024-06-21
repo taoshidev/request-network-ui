@@ -23,8 +23,8 @@ import { getKey } from "@/actions/keys";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import Loading from "@/app/(auth)/loading";
-import { useRouter } from "next/navigation";
 import { UserType } from "@/db/types/user";
+import FixedFormatter from "../Formatters/FixedFormatter";
 
 type SubscriptionEndpointValidatorType = SubscriptionType & {
   keyId: string;
@@ -91,7 +91,7 @@ export function Consumer({
 
       {!isLoading && (
         <Group className="justify-between mb-10">
-          <Title className="text-2xl">Api Keys</Title>
+          <Title className="text-2xl">Subscriptions</Title>
           <Box>
             <Button
               type="button"
@@ -142,7 +142,7 @@ export function Consumer({
             <Card className="shadow-sm">
               <Title order={2}>{validator?.name}</Title>
               <Table.ScrollContainer minWidth={700}>
-                <Table className="mt-3">
+                <Table className="mt-3" highlightOnHover striped>
                   <Table.Thead>
                     <Table.Tr>
                       <Table.Th>Name</Table.Th>
@@ -179,7 +179,7 @@ export function Consumer({
                             {subscription?.keyData?.meta?.type}
                           </Table.Td>
                           <Table.Td>
-                            {subscription?.keyData?.remaining}
+                          <FixedFormatter value={subscription?.keyData?.remaining} />
                           </Table.Td>
                           <Table.Td className="text-right">
                             <Button

@@ -1,5 +1,5 @@
 {
-  "id": "5d58a666-fb4f-4e5b-af6f-f8c69b7c9c94",
+  "id": "82ae9313-c447-4045-a1fa-1a9c3d9ee82e",
   "prevId": "bef6475e-e633-4b78-a5dc-cacbbb2c662b",
   "version": "5",
   "dialect": "pg",
@@ -705,19 +705,13 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "subscriptions_app_name_unique": {
-          "name": "subscriptions_app_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "app_name"
-          ]
-        },
-        "subscriptions_endpoint_id_user_id_unique": {
-          "name": "subscriptions_endpoint_id_user_id_unique",
+        "subscriptions_endpoint_id_user_id_deleted_at_unique": {
+          "name": "subscriptions_endpoint_id_user_id_deleted_at_unique",
           "nullsNotDistinct": false,
           "columns": [
             "endpoint_id",
-            "user_id"
+            "user_id",
+            "deleted_at"
           ]
         }
       }

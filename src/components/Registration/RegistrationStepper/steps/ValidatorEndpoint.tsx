@@ -55,7 +55,7 @@ export function ValidatorEndpoint({
     (endpoint: EndpointType) => {
       const stripeEnabled = registrationData?.validator?.stripeEnabled;
       const isAlreadySubscribed = currentSubscriptions?.some(
-        (s) => s.endpointId === endpoint?.id
+        (s) => s.endpointId === endpoint?.id && !s.deletedAt
       );
       const isEnabled =
         endpoint?.enabled && (stripeEnabled || hasFreeService(endpoint));
@@ -68,7 +68,7 @@ export function ValidatorEndpoint({
   const buttonText = useCallback(
     (endpoint: EndpointType) => {
       const isSubscribed = currentSubscriptions?.some(
-        (s) => s.endpointId === endpoint.id
+        (s) => s.endpointId === endpoint.id && !s.deletedAt
       );
       return isSubscribed
         ? "Subscribed"
@@ -109,14 +109,14 @@ export function ValidatorEndpoint({
           validator={registrationData?.validator!}
           subscribedServiceId={
             currentSubscriptions?.find(
-              (s) => s.endpointId === selectedEndpoint?.id
+              (s) => s.endpointId === selectedEndpoint?.id && !s?.deletedAt
             )?.serviceId!
           }
           html={selectedEndpoint?.contract?.content}
           opened={opened}
           close={close}
           review={currentSubscriptions?.some(
-            (s) => s.endpointId === selectedEndpoint?.id
+            (s) => s.endpointId === selectedEndpoint?.id && !s.deletedAt
           )}
           onTermsAccepted={({ termsAccepted, selectedService }) =>
             handleAcceptTerms(selectedEndpoint, {

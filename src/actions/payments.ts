@@ -2,7 +2,7 @@
 
 import { and, eq } from "drizzle-orm";
 import { sendToProxy } from "./apis";
-import { getSubscriptions } from "./subscriptions";
+import { getSubscriptions, updateSubscription } from "./subscriptions";
 import { subscriptions } from "@/db/schema";
 import { getAuthUser } from "./auth";
 import { getValidator } from "./validators";
@@ -64,7 +64,6 @@ export async function cancelSubscription(proxyServiceId) {
   });
 
   const subscription = subRes?.[0];
-
   if (user?.id !== subscription?.userId) {
     throw new Error("Error: Unauthorized!");
   }
@@ -79,6 +78,11 @@ export async function cancelSubscription(proxyServiceId) {
     data: {
       serviceId: subscription?.proxyServiceId as string,
     },
+  });
+
+  await updateSubscription({
+    id: subscription?.id,
+    active: false,
   });
 
   revalidatePath("/subscription");

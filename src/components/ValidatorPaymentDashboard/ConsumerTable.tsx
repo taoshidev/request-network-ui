@@ -40,7 +40,11 @@ export default function ConsumerTable({
                 <Table.Td className="truncate max-w-xs">
                   {dayjs(sub?.createdAt).format("MMM DD, YYYY")}
                 </Table.Td>
-                <Table.Td className="truncate max-w-xs">-</Table.Td>
+                <Table.Td className="truncate max-w-xs">
+                  {sub?.deletedAt
+                    ? dayjs(sub?.deletedAt).format("MMM DD, YYYY")
+                    : "-"}
+                </Table.Td>
               </Table.Tr>
             ))}
           </Table.Tbody>

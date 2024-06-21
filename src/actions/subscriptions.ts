@@ -9,6 +9,7 @@ import { filterData } from "@/utils/sanitize";
 import { SubscriptionType } from "@/db/types/subscription";
 import { generateApiKey, generateApiSecret } from "./apis";
 import { getAuthUser } from "./auth";
+import { sendToProxy } from "./apis";
 
 export const getSubscriptions = async (query: object = {}) => {
   try {
@@ -115,4 +116,29 @@ export const deleteSubscription = async (id: string) => {
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }
+};
+
+export const fetchProxyService = async (validator, proxyServiceId) => {
+  const res = await sendToProxy({
+    endpoint: {
+      url: validator?.baseApiUrl!,
+      method: "POST",
+      path: `${validator?.apiPrefix}/services/query`,
+    },
+    validatorId: validator?.id!,
+    data: {
+      where: [
+        {
+          type: "eq",
+          column: "id",
+          value: proxyServiceId!,
+        },
+      ],
+    },
+  });
+
+  if (res?.error) {
+    return {};
+  }
+  return res?.data?.[0] || {};
 };
