@@ -15,6 +15,7 @@ export function StatTable({
   data: { validator: ValidatorKeyType | ValidatorKeyType[] };
   caption?: string;
 }) {
+
   return (
     <Box>
       {(caption.length === 0 || (Array.isArray(data) && data?.length > 0)) && (
