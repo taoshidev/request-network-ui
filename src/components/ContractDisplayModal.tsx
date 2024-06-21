@@ -119,7 +119,10 @@ export function ContractDisplayModal({
             ?.filter(
               (service) =>
                 !review ||
-                [selectedServiceId, subscribedServiceId].includes(service?.id)
+                ([selectedServiceId, subscribedServiceId].includes(
+                  service?.id
+                ) &&
+                  !service?.deletedAt)
             )
             .map((service) => (
               <Card

@@ -261,7 +261,7 @@ export const subscriptions = pgTable(
     reqKey: varchar("req_key"),
     apiKey: varchar("api_key"),
     apiSecret: varchar("api_secret"),
-    appName: varchar("app_name").unique(),
+    appName: varchar("app_name"),
     consumerApiUrl: varchar("consumer_api_url").notNull(),
     consumerWalletAddress: varchar("consumer_wallet_address"),
     termsAccepted: boolean("terms_accepted").default(true).notNull(),
@@ -276,7 +276,7 @@ export const subscriptions = pgTable(
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => ({
-    unique: unique().on(table.endpointId, table.userId),
+    unique: unique().on(table.endpointId, table.userId, table.deletedAt),
   })
 );
 

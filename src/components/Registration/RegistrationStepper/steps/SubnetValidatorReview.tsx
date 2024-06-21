@@ -161,7 +161,7 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Expiry</Text>
               <Text className="text-sm">
-                {dayjs(registrationData?.endpoint?.expires).format(
+                {dayjs(registrationData?.endpoint?.selectedService?.expires).format(
                   "MMM DD, YYYY"
                 )}
               </Text>

@@ -70,7 +70,7 @@ export function SubnetValidator({
     (validator: ValidatorType) => {
       const isFree = checkFreeService(validator?.endpoints);
       const isSubscribed = currentSubscriptions?.some(
-        (s) => s.endpointId === validator?.endpoints?.[0]?.id
+        (s) => s.endpointId === validator?.endpoints?.[0]?.id && !s.deletedAt
       );
       return isSubscribed
         ? "Subscribed"

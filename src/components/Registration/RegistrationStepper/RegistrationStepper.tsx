@@ -414,7 +414,6 @@ export function RegistrationStepper({
       });
       open();
 
-      // send subscribed email to client
       if (
         currentUser &&
         currentUser?.email &&
