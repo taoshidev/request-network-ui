@@ -47,7 +47,11 @@ export const getValidators = async (
       for (const [index, validator] of validators.entries()) {
         validator.health = healthRes[index].json
           ? await healthRes[index].json()
-          : healthRes[index];
+          : {
+              message: healthRes[index]?.message || "Server offline",
+              uptime: healthRes[index]?.uptime || 0,
+              date: healthRes[index]?.date || null,
+            };
       }
     }
 
