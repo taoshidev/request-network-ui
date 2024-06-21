@@ -222,7 +222,6 @@ export function ContractModal({
                   </Table.Thead>
                   <Table.Tbody>
                     {services
-                      .reverse()
                       .map((service: ServiceType, index: number) => (
                         <Table.Tr key={index}>
                           <Table.Td>

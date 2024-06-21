@@ -26,6 +26,7 @@ import clsx from "clsx";
 import { useOrientation } from "@/hooks/use-orientation";
 import AgreeTOSModal from "../AgreeTOSModal";
 import { useModals } from "@mantine/modals";
+import { randomBytes } from "crypto";
 
 type KeyType = { apiKey: string; apiSecret: string };
 
@@ -76,6 +77,7 @@ export default function ValidatorStepper({
 
   const openAgreeModal = () => {
     agreeModalRef.current = modals.openModal({
+      modalId: agreeModalRef.current!,
       centered: true,
       size: "xl",
       title: "Terms of Service Agreement",
@@ -85,6 +87,7 @@ export default function ValidatorStepper({
 
   useEffect(() => {
     if (!user.user_metadata?.agreed_to_tos && !agreeModalRef?.current) {
+      agreeModalRef.current = `rn-modal-${randomBytes(10).toString("hex")}`;
       setTimeout(() => openAgreeModal(), 1000);
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
