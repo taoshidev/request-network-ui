@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { Title, Box, Table, Card } from "@mantine/core";
 import { KeyType } from "@/db/types/key";
 import { ValidatorType } from "@/db/types/validator";
+import FixedFormatter from "./Formatters/FixedFormatter";
 
 export type ValidatorKeyType = { validator: ValidatorType & { keys: KeyType } };
 
@@ -14,7 +15,6 @@ export function StatTable({
   data: { validator: ValidatorKeyType | ValidatorKeyType[] };
   caption?: string;
 }) {
-
   return (
     <Box>
       {(caption.length === 0 || (Array.isArray(data) && data?.length > 0)) && (
@@ -57,7 +57,9 @@ export function StatTable({
                       <Table.Td>
                         {dayjs(key?.expires).format("MMM DD, YYYY")}
                       </Table.Td>
-                      <Table.Td>{key?.remaining}</Table.Td>
+                      <Table.Td>
+                        <FixedFormatter value={key?.remaining} />
+                      </Table.Td>
                       <Table.Td>{key?.refill?.interval || "-"}</Table.Td>
                       <Table.Td>{key?.refill?.amount || "-"}</Table.Td>
                       <Table.Td>{key?.ratelimit?.type || "-"}</Table.Td>
