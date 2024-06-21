@@ -45,15 +45,23 @@ export const getValidators = async (
       const healthRes = await Promise.all(healthReq);
 
       for (const [index, validator] of validators.entries()) {
-        const health = healthRes[index].json
-          ? await healthRes[index].json()
-          : healthRes[index];
+        try {
+          const health = healthRes[index].json
+            ? await healthRes[index].json()
+            : healthRes[index];
 
-        validator.health = {
-          message: health?.message || "Server offline",
-          uptime: health?.uptime || 0,
-          date: health?.date || null,
-        };
+          validator.health = {
+            message: health?.message || "Server offline",
+            uptime: health?.uptime || 0,
+            date: health?.date || null,
+          };
+        } catch (e) {
+          validator.health = {
+            message: "Server offline",
+            uptime: 0,
+            date: null,
+          };
+        }
       }
     }
 
