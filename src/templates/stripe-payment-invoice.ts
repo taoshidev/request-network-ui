@@ -52,10 +52,10 @@ export const invoiceHTML = ({
               <p>Endpoint Url: ${endpointUrl}</p>
               <p><a href="${
                 meta?.hosted_invoice_url
-              }"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%">View ${validatorName} Invoice</button></a></p>
+              }"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">View ${validatorName} Invoice</button></a></p>
               <p><a href="${
                 meta?.invoice_pdf
-              }"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%">Download ${validatorName} Invoice</button></a></p>
+              }"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">Download ${validatorName} Invoice</button></a></p>
             </div>
             <p></p>
             <p style="font-style: italic">

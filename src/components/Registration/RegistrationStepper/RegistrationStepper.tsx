@@ -427,15 +427,17 @@ export function RegistrationStepper({
           userNotifications: [currentUser],
         });
       }
-    } catch (error: Error | unknown) {
-      throw new Error((error as Error)?.message);
-    } finally {
-      setLoading(false);
+
       updateData({
         appName: "",
         consumerApiUrl: "",
         consumerWalletAddress: "",
       });
+    } catch (error: Error | unknown) {
+      notifyError('Error subscribing to endpoint');
+      throw new Error((error as Error)?.message);
+    } finally {
+      setLoading(false);
     }
   };
 
