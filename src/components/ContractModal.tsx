@@ -205,73 +205,75 @@ export function ContractModal({
 
           <Box className="mt-7">
             {services.length > 0 && (
-              <Table highlightOnHover striped>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th>Service</Table.Th>
-                    <Table.Th>Expires</Table.Th>
-                    <Table.Th>Price</Table.Th>
-                    <Table.Th>Limit</Table.Th>
-                    <Table.Th>Requests</Table.Th>
-                    <Table.Th>Refill</Table.Th>
-                    <Table.Th>Interval</Table.Th>
-                    <Table.Th className="text-right"></Table.Th>
-                    <Table.Th className="text-right"></Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  {services
-                    .reverse()
-                    .map((service: ServiceType, index: number) => (
-                      <Table.Tr key={index}>
-                        <Table.Td>
-                          <Box ref={index === 0 ? serviceRef : undefined}>
-                            {service?.name}
-                          </Box>
-                        </Table.Td>
-                        <Table.Td>
-                          {dayjs(contract?.expires).format("MMM DD, YYYY")}
-                        </Table.Td>
-                        <Table.Td>
-                          <CurrencyFormatter
-                            price={service?.price}
-                            currencyType={service?.currencyType}
-                          />
-                        </Table.Td>
-                        <Table.Td>
-                          <FixedFormatter value={service.limit} />
-                        </Table.Td>
-                        <Table.Td>
-                          <FixedFormatter value={service.remaining} />
-                        </Table.Td>
-                        <Table.Td>
-                          <FixedFormatter value={service.refillRate} />
-                        </Table.Td>
-                        <Table.Td>
-                          <FixedFormatter value={service.refillInterval} />
-                        </Table.Td>
-                        <Table.Td className="text-right">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => openServiceModal(service, index)}
-                          >
-                            Edit
-                          </Button>
-                        </Table.Td>
-                        <Table.Td className="text-right">
-                          <Button
-                            size="sm"
-                            variant="light"
-                            onClick={() => openServiceDeleteConfirm(index)}
-                          >
-                            Delete
-                          </Button>
-                        </Table.Td>
-                      </Table.Tr>
-                    ))}
-                </Table.Tbody>
-              </Table>
+              <Table.ScrollContainer minWidth={700}>
+                <Table highlightOnHover striped>
+                  <Table.Thead>
+                    <Table.Tr>
+                      <Table.Th>Service</Table.Th>
+                      <Table.Th>Expires</Table.Th>
+                      <Table.Th>Price</Table.Th>
+                      <Table.Th>Limit</Table.Th>
+                      <Table.Th>Requests</Table.Th>
+                      <Table.Th>Refill</Table.Th>
+                      <Table.Th>Interval</Table.Th>
+                      <Table.Th className="text-right"></Table.Th>
+                      <Table.Th className="text-right"></Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
+                  <Table.Tbody>
+                    {services
+                      .reverse()
+                      .map((service: ServiceType, index: number) => (
+                        <Table.Tr key={index}>
+                          <Table.Td>
+                            <Box ref={index === 0 ? serviceRef : undefined}>
+                              {service?.name}
+                            </Box>
+                          </Table.Td>
+                          <Table.Td>
+                            {dayjs(contract?.expires).format("MMM DD, YYYY")}
+                          </Table.Td>
+                          <Table.Td>
+                            <CurrencyFormatter
+                              price={service?.price}
+                              currencyType={service?.currencyType}
+                            />
+                          </Table.Td>
+                          <Table.Td>
+                            <FixedFormatter value={service.limit} />
+                          </Table.Td>
+                          <Table.Td>
+                            <FixedFormatter value={service.remaining} />
+                          </Table.Td>
+                          <Table.Td>
+                            <FixedFormatter value={service.refillRate} />
+                          </Table.Td>
+                          <Table.Td>
+                            <FixedFormatter value={service.refillInterval} />
+                          </Table.Td>
+                          <Table.Td className="text-right">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openServiceModal(service, index)}
+                            >
+                              Edit
+                            </Button>
+                          </Table.Td>
+                          <Table.Td className="text-right">
+                            <Button
+                              size="sm"
+                              variant="light"
+                              onClick={() => openServiceDeleteConfirm(index)}
+                            >
+                              Delete
+                            </Button>
+                          </Table.Td>
+                        </Table.Tr>
+                      ))}
+                  </Table.Tbody>
+                </Table>
+              </Table.ScrollContainer>
             )}
           </Box>
           <Box className="grid grid-cols-2 mt-4 gap-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
