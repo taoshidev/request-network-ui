@@ -95,11 +95,11 @@ export async function checkForStripe(
   const validator: ValidatorType = await getValidator({ id: validatorId });
   return await sendToProxy({
     endpoint: {
-      url: "http://localhost:8080" as string,
+      url: validator?.baseApiUrl as string,
       method: "POST",
       path: "/has-stripe",
     },
-    validatorId: validator.id as string,
+    validatorId: validator?.id as string,
     data: {},
   });
 }
