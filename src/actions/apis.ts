@@ -101,8 +101,8 @@ export const sendToProxy = async ({
       },
     });
     return await res.json();
-  } catch (error) {
+  } catch (error: Error | unknown) {
     captureException(error);
-    return { error: JSON.stringify(error) };
+    return { error: (error as Error)?.message };
   }
 };

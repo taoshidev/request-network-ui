@@ -1,10 +1,11 @@
 import { Card, Text } from "@mantine/core";
 import { ResponsiveTimeRange } from "@nivo/calendar";
-import { subDays, formatISO } from "date-fns";
+import { subDays, formatISO, addDays } from "date-fns";
 
 export default function PaymentHistory({ data }: { data: any[] }) {
   const today = new Date();
   const last60Days = subDays(today, 59);
+  const tomorrow = addDays(today, 1);
 
   return (
     <Card className="shadow-sm border-gray-200" withBorder>
@@ -14,7 +15,7 @@ export default function PaymentHistory({ data }: { data: any[] }) {
       <ResponsiveTimeRange
         data={data}
         from={formatISO(last60Days, { representation: "date" })}
-        to={formatISO(today, { representation: "date" })}
+        to={formatISO(tomorrow, { representation: "date" })}
         emptyColor="#eeeeee"
         colors={["#eeeeee", "#66FF66", "#33CC33", "#009900", "#006D00"]}
         margin={{ top: 0, right: 0, bottom: 0, left: -65 }}

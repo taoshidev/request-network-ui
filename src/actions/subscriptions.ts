@@ -119,6 +119,9 @@ export const deleteSubscription = async (id: string) => {
 };
 
 export const fetchProxyService = async (validator, proxyServiceId) => {
+  if(!validator?.apiPrefix) {
+    return {}
+  }
   const res = await sendToProxy({
     endpoint: {
       url: validator?.baseApiUrl!,

@@ -31,10 +31,15 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
  * Registers the validator with the provided API URL.
  */
 const registerValidator = async (
-  body: { baseApiUrl: string; apiPrefix: string; stripeStatus: StripeCheckType },
+  body: {
+    baseApiUrl: string;
+    apiPrefix: string;
+    stripeStatus: StripeCheckType;
+  },
   validatorId: string
 ): Promise<NextResponse> => {
   const { baseApiUrl, apiPrefix, stripeStatus } = body;
+
   const updated = await updateValidator({
     id: validatorId,
     ...{ baseApiUrl, apiPrefix, stripeLiveMode: stripeStatus?.stripeLiveMode },
