@@ -50,7 +50,6 @@ export const createKey = async (apiId: string, params: any) => {
       prefix: "req",
       ...params,
     });
-
     return {
       result,
       error: null,

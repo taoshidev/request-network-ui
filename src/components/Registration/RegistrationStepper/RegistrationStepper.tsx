@@ -320,8 +320,12 @@ export function RegistrationStepper({
         keyPayload
       );
 
+      if (!result && !CreateKeyError) {
+        return notifyError(
+          "Cannot create required keys at this time. Please try again later."
+        );
+      }
       if (CreateKeyError) return;
-
       const { key, keyId } = result as { key: string; keyId: string };
 
       const res = await createSubscription({
@@ -434,7 +438,7 @@ export function RegistrationStepper({
         consumerWalletAddress: "",
       });
     } catch (error: Error | unknown) {
-      notifyError('Error subscribing to endpoint');
+      notifyError("Error subscribing to endpoint");
       throw new Error((error as Error)?.message);
     } finally {
       setLoading(false);
@@ -499,14 +503,23 @@ export function RegistrationStepper({
                 <Text className="text-center text-xl mb-4">
                   Congratulations!
                 </Text>
-                <Text className="text-center text-sm">
-                  You&apos;re one step away from your making your first request,
-                  integrating your app, and start building! Tell us your
-                  application, domain name and attach an ERC-20 Wallet address
-                  so that we can get you started. The wallet address is the
-                  public address of the ERC-20 wallet you want to use to make
-                  monthly payment.
-                </Text>
+                {isCrypto(registrationData?.endpoint?.selectedService) ? (
+                  <Text className="text-center text-sm">
+                    You&apos;re one step away from your making your first
+                    request, integrating your app, and start building! Tell us
+                    your application, domain name and attach an ERC-20 Wallet
+                    address so that we can get you started. The wallet address
+                    is the public address of the ERC-20 wallet you want to use
+                    to make monthly payment.
+                  </Text>
+                ) : (
+                  <Text className="text-center text-sm">
+                    You&apos;re one step away from your making your first
+                    request, integrating your app, and start building! Tell us
+                    your application name and domain so that we can get you
+                    started.
+                  </Text>
+                )}
                 <Box className="mt-7">
                   <TextInput
                     label="Application Name"

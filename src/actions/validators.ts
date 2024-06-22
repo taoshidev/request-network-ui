@@ -123,6 +123,7 @@ export const updateValidator = async ({
   try {
     const user = await getAuthUser();
 
+   if(user) {
     if (user?.user_metadata?.role !== "validator")
       throw new Error("Error: Unauthorized!");
 
@@ -136,14 +137,15 @@ export const updateValidator = async ({
     if (user?.id !== currentValidator?.[0]?.userId) {
       throw new Error("Error: Unauthorized!");
     }
+   }
 
-    const res = await db
+   const res = await db
       .update(validators)
       .set({ ...values } as any)
       .where(eq(validators.id, id as string))
       .returning();
 
-    revalidatePath(`/validators/${id}`);
+      revalidatePath(`/validators/${id}`);
     return parseResult(res, { filter: ["hotkey"] });
   } catch (error) {
     if (error instanceof Error) return parseError(error);
