@@ -116,6 +116,24 @@ export const getValidatorStatusPage = async (user: UserType) => {
   return validatorsRes;
 };
 
+export const apiUpdateValidator = async ({
+  id,
+  ...values
+}: Partial<ValidatorType>) => {
+  try {
+    const res = await db
+      .update(validators)
+      .set({ ...values } as any)
+      .where(eq(validators.id, id as string))
+      .returning();
+
+    revalidatePath(`/validators/${id}`);
+    return parseResult(res, { filter: ["hotkey"] });
+  } catch (error) {
+    if (error instanceof Error) return parseError(error);
+  }
+};
+
 export const updateValidator = async ({
   id,
   ...values
@@ -123,30 +141,23 @@ export const updateValidator = async ({
   try {
     const user = await getAuthUser();
 
-   if(user) {
-    if (user?.user_metadata?.role !== "validator")
-      throw new Error("Error: Unauthorized!");
+    if (user) {
+      if (user?.user_metadata?.role !== "validator")
+        throw new Error("Error: Unauthorized!");
 
-    const currentValidator = await db
-      .select({
-        userId: validators.userId,
-      } as any)
-      .from(validators)
-      .where(eq(validators.id, id as string));
+      const currentValidator = await db
+        .select({
+          userId: validators.userId,
+        } as any)
+        .from(validators)
+        .where(eq(validators.id, id as string));
 
-    if (user?.id !== currentValidator?.[0]?.userId) {
-      throw new Error("Error: Unauthorized!");
+      if (user?.id !== currentValidator?.[0]?.userId) {
+        throw new Error("Error: Unauthorized!");
+      }
     }
-   }
 
-   const res = await db
-      .update(validators)
-      .set({ ...values } as any)
-      .where(eq(validators.id, id as string))
-      .returning();
-
-      revalidatePath(`/validators/${id}`);
-    return parseResult(res, { filter: ["hotkey"] });
+    return await apiUpdateValidator({ id, ...values });
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }

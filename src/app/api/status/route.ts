@@ -1,7 +1,6 @@
 import { sendEmail } from "@/actions/email";
 import {
-  updateSubscription,
-  updateSubscriptionFromWebhook,
+  apiUpdateSubscription,
 } from "@/actions/subscriptions";
 import { endpoints, subscriptions, users, validators } from "@/db/schema";
 import { db } from "@/db";
@@ -26,7 +25,7 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     const { subscriptionId: id, active, type, transaction } = body;
-    await updateSubscriptionFromWebhook({
+    await apiUpdateSubscription({
       id,
       active,
     });

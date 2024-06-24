@@ -49,20 +49,13 @@ export const updateSubscription = async ({
       throw new Error("Error: Unauthorized!");
     }
 
-    const res = await db
-      .update(subscriptions)
-      .set({ ...values } as any)
-      .where(eq(subscriptions.id, id as string))
-      .returning();
-
-    // revalidatePath(`/subscriptions/${id}`);
-    return parseResult(res, { filter: ["key", "keyId"] });
+    return apiUpdateSubscription({ id, ...values });
   } catch (error) {
     if (error instanceof Error) return parseError(error);
   }
 };
 
-export const updateSubscriptionFromWebhook = async ({
+export const apiUpdateSubscription = async ({
   id,
   ...values
 }: Partial<SubscriptionType>) => {
@@ -79,7 +72,6 @@ export const updateSubscriptionFromWebhook = async ({
     if (error instanceof Error) return parseError(error);
   }
 };
-
 
 export const createSubscription = async (
   subscription: Partial<SubscriptionType>
@@ -119,8 +111,8 @@ export const deleteSubscription = async (id: string) => {
 };
 
 export const fetchProxyService = async (validator, proxyServiceId) => {
-  if(!validator?.apiPrefix) {
-    return {}
+  if (!validator?.apiPrefix) {
+    return {};
   }
   const res = await sendToProxy({
     endpoint: {

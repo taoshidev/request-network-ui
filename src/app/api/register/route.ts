@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateValidator } from "@/actions/validators";
+import { apiUpdateValidator } from "@/actions/validators";
 import {
   jsonResponse,
   verifyApiServerRequest,
@@ -40,7 +40,7 @@ const registerValidator = async (
 ): Promise<NextResponse> => {
   const { baseApiUrl, apiPrefix, stripeStatus } = body;
 
-  const updated = await updateValidator({
+  const updated = await apiUpdateValidator({
     id: validatorId,
     ...{ baseApiUrl, apiPrefix, stripeLiveMode: stripeStatus?.stripeLiveMode },
   });
@@ -61,7 +61,7 @@ const syncValidators = async (
     if (validators.length > 0) {
       const promises = validators.map(
         (validator: { id: string; apiPrefix: string }) => {
-          return updateValidator({
+          return apiUpdateValidator({
             ...validator,
           });
         }

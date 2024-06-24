@@ -1,4 +1,4 @@
-import { updateValidator } from "@/actions/validators";
+import { apiUpdateValidator } from "@/actions/validators";
 import {
   jsonResponse,
   verifyApiServerRequest,
@@ -15,7 +15,7 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     if (validator?.id) {
-      await updateValidator({
+      await apiUpdateValidator({
         id: validator.id,
         stripeEnabled: true,
       });
