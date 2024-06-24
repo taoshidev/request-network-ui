@@ -7,17 +7,20 @@ import { Box, Center, Loader, Title } from "@mantine/core";
 
 export default function ClientRedirect({
   href,
+  back,
   message,
   delay = 0,
 }: {
   href?: Route;
+  back?: boolean
   message?: string;
   delay?: number;
 }) {
   const router = useRouter();
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (href) router.push(href);
+      if (back) router.back();
+      else if (href) router.push(href);
     }, delay);
 
     return () => clearTimeout(timer);

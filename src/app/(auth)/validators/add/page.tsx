@@ -22,7 +22,7 @@ export default async function AddValidatorPage() {
 
   if (user?.user_metadata?.role !== "validator") {
     return <ClientRedirect href="/dashboard" />;
-  } else if (!user.user_metadata.onboarded) {
+  } else if (!user.user_metadata?.onboarded) {
     return <ClientRedirect href="/onboarding" />;
   }
 

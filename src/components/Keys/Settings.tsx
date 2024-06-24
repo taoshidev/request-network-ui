@@ -29,8 +29,7 @@ import { useNotification } from "@/hooks/use-notification";
 import { StatTable } from "../StatTable";
 import { cancelSubscription, requestPayment } from "@/actions/payments";
 import { ConfirmModal } from "../ConfirmModal";
-import { sendToProxy } from "@/actions/apis";
-import { updateSubscription } from "@/actions/subscriptions";
+import { updateSubscription, fetchProxyService } from "@/actions/subscriptions";
 import CurrencyFormatter from "../Formatters/CurrencyFormatter";
 
 const updateSchema = z.object({
@@ -41,31 +40,6 @@ const updateSchema = z.object({
 });
 
 type User = z.infer<typeof updateSchema>;
-
-const fetchProxyService = async (validator, proxyServiceId) => {
-  const res = await sendToProxy({
-    endpoint: {
-      url: validator?.baseApiUrl!,
-      method: "POST",
-      path: `${validator?.apiPrefix}/services/query`,
-    },
-    validatorId: validator?.id!,
-    data: {
-      where: [
-        {
-          type: "eq",
-          column: "id",
-          value: proxyServiceId!,
-        },
-      ],
-    },
-  });
-
-  if (res?.error) {
-    return {};
-  }
-  return res?.data?.[0] || {};
-};
 
 export function Settings({
   apiKey,
@@ -142,14 +116,10 @@ export function Settings({
     mode: "onChange",
     resolver: zodResolver(updateSchema),
   });
-  const handleDeleteKey = async () => {
-    setLoading(true);
+  const deleteUnkey = async () => {
     const res = await deleteKey({ keyId: apiKey?.id });
     if (res?.status !== 204) return notifyError(res?.message as string);
     notifySuccess(res?.message as string);
-    setLoading(false);
-
-    router.push("/dashboard");
   };
 
   const onUpdateKey: SubmitHandler<User> = async (values) => {
@@ -200,22 +170,43 @@ export function Settings({
     subscription?.active ? unSubOpen() : sendPaymentRequest();
   };
 
+  const handleDeleteSubscription = async () => {
+    setLoading(true);
+    await unsubscribe();
+    await deleteUnkey();
+    await updateSubscription({
+      id: subscription?.id,
+      active: false,
+      deletedAt: new Date(),
+    });
+    setLoading(false);
+    notifySuccess("Subscription deleted successfully");
+    setTimeout(() => router.back(), 1000);
+  };
+
   return (
     <>
       <Modal
         centered
         opened={opened}
         onClose={close}
-        title="Are you sure you want to delete API Key?"
+        title="Are you sure you want to delete subscription?"
       >
         <Box mb="lg">
-          Deleting will remove access to Taoshi for this project immediately.
-          This cannot be undone.
+          <Text>
+            Any applications using this project&apos;s keys will no longer be
+            able to access this Taoshi Api.
+          </Text>{" "}
+          <Text>This cannot be undone.</Text>
         </Box>
-        <Box className="sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
-          <Button w="100%" loading={loading} onClick={handleDeleteKey}>
-            Yes, Delete API Key
-          </Button>
+        <Box className="grid grid-cols-2 gap-2 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
+          <Button w="100%" onClick={close} variant="outline">
+              No, Cancel
+            </Button>
+
+            <Button w="100%" loading={loading} onClick={handleDeleteSubscription}>
+              Yes, Delete my subscription
+            </Button>
         </Box>
       </Modal>
 
@@ -362,26 +353,22 @@ export function Settings({
       </Box>
       <StatTable data={apiKey} />
 
-      {/* <Box my="xl">
-          <Title order={2}>Requirements</Title>
-        </Box> */}
-
       <Box my="xl">
         <Alert
           className="shadow-sm"
           variant="light"
           color="orange"
-          title="Delete Key"
+          title="Delete Subscription"
           icon={<IconAlertCircle />}
         >
           <Box>
             <Box>
               Any applications using this project&apos;s keys will no longer be
-              able to access the Taoshi&apos;s API.
+              able to access the Taoshi&apos;s Api.
             </Box>
             <Group justify="flex-end" mt="lg">
-              <Button variant="orange" onClick={open} disabled>
-                Delete Key
+              <Button variant="orange" onClick={open}>
+                Delete Subscription
               </Button>
             </Group>
           </Box>

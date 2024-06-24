@@ -4,10 +4,11 @@ import { rpc } from "./rpc";
 import { types } from "./types";
 import { ValidatorType } from "@/db/types/validator";
 
-const PROVIDER_URL =
-  ["development", "testing"].includes(process.env.NEXT_PUBLIC_NODE_ENV as string)
-    ? "wss://test.finney.opentensor.ai:443"
-    : "wss://entrypoint-finney.opentensor.ai:443";
+const PROVIDER_URL = ["development", "testing"].includes(
+  process.env.NEXT_PUBLIC_NODE_ENV as string
+)
+  ? "wss://test.finney.opentensor.ai:443"
+  : "wss://entrypoint-finney.opentensor.ai:443";
 
 let api: typeof ApiPromise;
 
@@ -25,10 +26,6 @@ export const createBittensorApi = async () => {
     ]);
 
     // api.on("error", (error: Error) => console.error("API error:", error));
-    
-    // console.log(
-    //   `Connected to chain ${chain} using ${nodeName} v${nodeVersion}`
-    // );
   }
   await api.isReadyOrError;
   return api;
@@ -43,12 +40,19 @@ export const checkMetadata = async () => {
   return JSON.stringify(metadata, null, 2);
 };
 
-export const fetchValidatorInfo = async (netUid: number, hotkey?: string, uId?: number) => {
+export const fetchValidatorInfo = async (
+  netUid: number,
+  hotkey?: string,
+  uId?: number
+) => {
   try {
     const api = await createBittensorApi();
-    if(!uId) {
+    if (!uId) {
       const result = await fetchNeuronsLite(netUid);
-      return (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0] || null;
+      return (
+        (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0] ||
+        null
+      );
     }
     return await fetchNeuronLite(netUid, uId);
   } catch (error) {
@@ -74,7 +78,6 @@ export const fetchNeuronLite = async (netUid: number, uId: number) => {
     throw error;
   }
 };
-
 
 export const fetchSubnetsInfo = async () => {
   const api = await createBittensorApi();

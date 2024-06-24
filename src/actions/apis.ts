@@ -4,7 +4,7 @@ import crypto, { randomBytes } from "crypto";
 const UNKEY_ROOT_KEY = process.env.UNKEY_ROOT_KEY as string;
 const UNKEY_API_URL = process.env.UNKEY_API_URL as string;
 import { getValidator } from "./validators";
-import { ValidatorType } from "@/db/types/validator";
+import { captureException } from "@sentry/nextjs";
 
 export const createUnkeyApiKey = async ({ name }: { name: object }) => {
   try {
@@ -44,7 +44,7 @@ export const signRequest = ({
   nonce?: string;
 }) => {
   // const nonce = Date.now();
-  const message = `${method}${path}${body || ''}${apiKey}${nonce}`;
+  const message = `${method}${path}${body || ""}${apiKey}${nonce}`;
   const signature = crypto
     .createHmac("sha256", apiSecret)
     .update(message)
@@ -86,7 +86,10 @@ export const sendToProxy = async ({
       apiKey: apiKey as string,
       apiSecret: apiSecret as string,
     });
-
+    const proxyPath = `${baseApiUrl}${path}`;
+    if (!proxyPath) {
+      return;
+    }
     const res = await fetch(`${baseApiUrl}${path}`, {
       method: method,
       body: JSON.stringify(data || {}),
@@ -97,12 +100,9 @@ export const sendToProxy = async ({
         "x-taoshi-nonce": nonce,
       },
     });
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res?.status}`);
-    }
     return await res.json();
-  } catch (error) {
-    return { error: JSON.stringify(error) };
+  } catch (error: Error | unknown) {
+    captureException(error);
+    return { error: (error as Error)?.message };
   }
 };

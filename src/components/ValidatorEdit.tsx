@@ -99,7 +99,7 @@ export function ValidatorEdit({
       notifySuccess(res?.message as string);
       router.back();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }

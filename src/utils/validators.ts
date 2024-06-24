@@ -3,6 +3,7 @@ import { and, eq, gte, lte } from "drizzle-orm";
 import { subscriptions } from "@/db/schema";
 import dayjs from "dayjs";
 import { sendToProxy } from "@/actions/apis";
+import { captureException } from "@sentry/nextjs";
 
 export const fetchServiceTransactions = async (validator, proxyServiceId) => {
   const res = await sendToProxy({
@@ -29,7 +30,7 @@ export const fetchServiceTransactions = async (validator, proxyServiceId) => {
   });
 
   if (res?.error) {
-    console.log(res?.error);
+    console.error(res?.error);
     return {};
   }
 
@@ -76,7 +77,7 @@ export const fetchTransactions = async (
   });
 
   if (res?.error) {
-    console.log(res?.error);
+    captureException(res?.error);
     return [];
   }
 
@@ -129,7 +130,7 @@ export const fetchPaymentStatusTransactions = async (
   });
 
   if (res?.error) {
-    console.log(res?.error);
+    console.error(res?.error);
     return [];
   }
 

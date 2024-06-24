@@ -23,40 +23,42 @@ export default function TransactionsTable({
         total of <span className="text-orange-500">{transactions?.length}</span>{" "}
         transactions
       </Text>
-      <Table highlightOnHover verticalSpacing="sm" borderColor="#DEE2E6">
-        <Table.Thead>
-          {/* <Table.Tr>
+      <Table.ScrollContainer minWidth={700}>
+        <Table highlightOnHover verticalSpacing="sm" borderColor="#DEE2E6">
+          <Table.Thead>
+            {/* <Table.Tr>
             <Table.Th>Hash</Table.Th>
             <Table.Th>Time</Table.Th>
             <Table.Th>From</Table.Th>
             <Table.Th>Amount</Table.Th>
           </Table.Tr> */}
-        </Table.Thead>
-        <Table.Tbody>
-          {latestTransactions.map((tx: TransactionType, index) => (
-            <Table.Tr key={index} className="text-sm">
-              <Table.Td className="truncate max-w-xs">
-                Hash:{" "}
-                <span className="text-orange-500 capitalize">
-                  {tx?.transactionHash}
-                </span>
-              </Table.Td>
-              <Table.Td className="truncate max-w-xs">
-                {dayjs(tx?.createdAt).fromNow()}
-              </Table.Td>
-              <Table.Td className="truncate max-w-xs">
-                From:{" "}
-                <span className="text-orange-500 capitalize">
-                  {tx?.fromAddress}
-                </span>
-              </Table.Td>
-              <Table.Td className="truncate max-w-xs">
-                {formatter.format(tx?.amount)} {tx?.tokenAddress}
-              </Table.Td>
-            </Table.Tr>
-          ))}
-        </Table.Tbody>
-      </Table>
+          </Table.Thead>
+          <Table.Tbody>
+            {latestTransactions.map((tx: TransactionType, index) => (
+              <Table.Tr key={index} className="text-sm">
+                <Table.Td className="truncate max-w-xs">
+                  Hash:{" "}
+                  <span className="text-orange-500 capitalize">
+                    {tx?.transactionHash}
+                  </span>
+                </Table.Td>
+                <Table.Td className="truncate max-w-xs">
+                  {dayjs(tx?.createdAt).fromNow()}
+                </Table.Td>
+                <Table.Td className="truncate max-w-xs">
+                  From:{" "}
+                  <span className="text-orange-500 capitalize">
+                    {tx?.fromAddress}
+                  </span>
+                </Table.Td>
+                <Table.Td className="truncate max-w-xs">
+                  {formatter.format(tx?.amount)} {tx?.tokenAddress}
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
       <Button className="mt-5" variant="white" color="orange" fullWidth>
         View All Transactions
       </Button>

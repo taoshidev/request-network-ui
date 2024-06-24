@@ -12,6 +12,7 @@ import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
 import { DatabaseResponseType } from "@/db/error";
 import { UserType } from "@/db/types/user";
+import { getAuthUser } from "./auth";
 
 export const getValidators = async (
   query: object = {},
@@ -44,9 +45,23 @@ export const getValidators = async (
       const healthRes = await Promise.all(healthReq);
 
       for (const [index, validator] of validators.entries()) {
-        validator.health = healthRes[index].json
-          ? await healthRes[index].json()
-          : healthRes[index];
+        try {
+          const health = healthRes[index].json
+            ? await healthRes[index].json()
+            : healthRes[index];
+
+          validator.health = {
+            message: health?.message || "Server offline",
+            uptime: health?.uptime || 0,
+            date: health?.date || null,
+          };
+        } catch (e) {
+          validator.health = {
+            message: "Server offline",
+            uptime: 0,
+            date: null,
+          };
+        }
       }
     }
 
@@ -101,7 +116,7 @@ export const getValidatorStatusPage = async (user: UserType) => {
   return validatorsRes;
 };
 
-export const updateValidator = async ({
+export const apiUpdateValidator = async ({
   id,
   ...values
 }: Partial<ValidatorType>) => {
@@ -119,8 +134,42 @@ export const updateValidator = async ({
   }
 };
 
+export const updateValidator = async ({
+  id,
+  ...values
+}: Partial<ValidatorType>) => {
+  try {
+    const user = await getAuthUser();
+
+    if (user) {
+      if (user?.user_metadata?.role !== "validator")
+        throw new Error("Error: Unauthorized!");
+
+      const currentValidator = await db
+        .select({
+          userId: validators.userId,
+        } as any)
+        .from(validators)
+        .where(eq(validators.id, id as string));
+
+      if (user?.id !== currentValidator?.[0]?.userId) {
+        throw new Error("Error: Unauthorized!");
+      }
+    }
+
+    return await apiUpdateValidator({ id, ...values });
+  } catch (error) {
+    if (error instanceof Error) return parseError(error);
+  }
+};
+
 export const createValidator = async (validator: ValidatorType) => {
   try {
+    const user = await getAuthUser();
+
+    if (user?.user_metadata?.role !== "validator")
+      throw new Error("Error: Unauthorized!");
+
     const res = await db
       .insert(validators)
       .values(validator as any)
@@ -140,6 +189,11 @@ export const createValidatorEndpoint = async (
   { validator: ValidatorType; endpoint: EndpointType } | DatabaseResponseType
 > => {
   try {
+    const user = await getAuthUser();
+
+    if (user?.user_metadata?.role !== "validator")
+      throw new Error("Error: Unauthorized!");
+
     const res = await db.transaction(async (tx) => {
       const record = await createValidator(validator as ValidatorType);
 

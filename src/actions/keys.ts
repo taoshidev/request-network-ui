@@ -1,6 +1,7 @@
 "use server";
 
 import { Unkey } from "@unkey/api";
+import { getAuthUser } from "./auth";
 const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY as string });
 
 export const updateKey = async ({
@@ -11,6 +12,13 @@ export const updateKey = async ({
   params: object;
 }) => {
   try {
+    const user = await getAuthUser();
+    const key = await await unkey.keys.get({ keyId });
+
+    if (user?.id !== key?.result?.ownerId) {
+      throw new Error('Error: Unauthorized!')
+    }
+
     await unkey.keys.update({
       keyId,
       ...params,
@@ -42,7 +50,6 @@ export const createKey = async (apiId: string, params: any) => {
       prefix: "req",
       ...params,
     });
-
     return {
       result,
       error: null,

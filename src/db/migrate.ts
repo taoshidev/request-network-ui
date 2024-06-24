@@ -10,14 +10,14 @@ export const runMigration = async (): Promise<void> => {
     const client = postgres(connectionString, { prepare: false });
     const db = drizzle(client, { schema });
 
-    console.log("Running migrations...");
+    console.info("Running migrations...");
     await migrate(db, { migrationsFolder: "src/db/migrations" });
 
     await client.end();
-    console.log("Migrations completed successfully.");
+    console.info("Migrations completed successfully.");
   } catch (error) {
-    console.log(`Failed to execute migrations: ${error}`);
+    console.error(`Failed to execute migrations: ${error}`);
   }
 };
 
-runMigration().catch((error) => console.log(error));
+runMigration().catch((error) => console.error(error));

@@ -11,6 +11,7 @@ import useSWR from "swr";
 import { getValidatorStatusPage } from "@/actions/validators";
 import { cloneDeep as _cloneDeep } from "lodash";
 import { useState } from "react";
+import { DateTime } from "luxon";
 
 const requestRate = 10; // send request every 10 seconds
 
@@ -24,25 +25,30 @@ export default function ValidatorStatus({
   })[];
 }) {
   const [count, setCount] = useState(1);
+  const [reqTime, setReqTime] = useState(DateTime.now());
 
   let { data: validators } = useSWR(
     "/validator-status",
     async () => {
       if (count < requestRate) {
+        const now = DateTime.now();
         setCount(count + 1);
-        return await Promise.resolve(
-          _cloneDeep(
-            validators.map((validator) => {
-              if (validator.health?.uptime) {
-                validator.health.uptime += 1;
-              }
-              return validator;
-            })
-          )
+        const validatorStatusRes = _cloneDeep(
+          validators.map((validator) => {
+            if (validator.health?.uptime) {
+              validator.health.uptime +=
+                now.diff(reqTime).toObject()?.milliseconds / 1000;
+            }
+            return validator;
+          })
         );
+        setReqTime(DateTime.now());
+        return validatorStatusRes;
       }
       setCount(1);
-      return await getValidatorStatusPage(user);
+      const validatorStatusRes = await getValidatorStatusPage(user);
+      setReqTime(DateTime.now());
+      return validatorStatusRes;
     },
     {
       fallbackData: initialValidators,
@@ -129,9 +135,7 @@ export default function ValidatorStatus({
                     </Table.Td>
                   </Table.Tr>
                   <Table.Tr>
-                    <Table.Th>
-                      Net Uid
-                    </Table.Th>
+                    <Table.Th>Net Uid</Table.Th>
                     <Table.Td className="text-right">
                       {validator?.bittensorNetUid || "-"}
                     </Table.Td>

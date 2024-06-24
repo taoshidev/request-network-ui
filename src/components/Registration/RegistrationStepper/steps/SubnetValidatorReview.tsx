@@ -24,6 +24,7 @@ import AgreeTOSModal from "@/components/AgreeTOSModal";
 import { UserType } from "@/db/types/user";
 import CurrencyFormatter from "@/components/Formatters/CurrencyFormatter";
 import FixedFormatter from "@/components/Formatters/FixedFormatter";
+import { randomBytes } from "crypto";
 
 export function SubnetValidatorReview({ user }: { user: UserType }) {
   const { registrationData } = useRegistration();
@@ -32,7 +33,9 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
   const agreeModalRef = useRef<string | null>(null);
 
   const viewTOS = () => {
+    agreeModalRef.current = `rn-modal-${randomBytes(10).toString("hex")}`;
     agreeModalRef.current = modals.openModal({
+      modalId: agreeModalRef.current!,
       centered: true,
       size: "xl",
       title: "Terms of Service Agreement",
@@ -161,7 +164,7 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Expiry</Text>
               <Text className="text-sm">
-                {dayjs(registrationData?.endpoint?.expires).format(
+                {dayjs(registrationData?.endpoint?.selectedService?.expires).format(
                   "MMM DD, YYYY"
                 )}
               </Text>

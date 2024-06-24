@@ -4,7 +4,7 @@ import { getSubnets } from "@/actions/subnets";
 import { Consumer } from "@/components/Consumer";
 import ValidatorDashboard from "@/components/ValidatorDashboard";
 import { getSubscriptions } from "@/actions/subscriptions";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { subscriptions, validators, contracts } from "@/db/schema";
 import { getUserAPIKeys } from "@/actions/keys";
 import { ValidatorType } from "@/db/types/validator";
@@ -24,7 +24,7 @@ export default async function Page() {
       where: and(eq(validators.userId, user?.id)),
       columns: {
         apiKey: false,
-        apiSecret: false
+        apiSecret: false,
       },
       with: {
         endpoints: {
@@ -47,7 +47,10 @@ export default async function Page() {
   // if user is a consumer, render consumer dashboard
   if (user.user_metadata.role === "consumer") {
     let subs = await getSubscriptions({
-      where: and(eq(subscriptions.userId, user.id)),
+      where: and(
+        eq(subscriptions.userId, user.id),
+        isNull(subscriptions.deletedAt)
+      ),
       with: {
         endpoint: {
           with: {

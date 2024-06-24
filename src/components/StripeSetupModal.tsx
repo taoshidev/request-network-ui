@@ -73,20 +73,41 @@ export default function StripeSetupModal({
         <Text>Your servers current Stripe integration configuration</Text>
         <br />
         {stripe?.error ? (
-          <Notification
-            className="zoom in shadow-md border border-gray-200 mb-3"
-            style={{
-              borderLeft: `4px solid ${NOTIFICATION_COLOR.WARNING}`,
-            }}
-            icon={NOTIFICATION_ICON.WARNING}
-            color={NOTIFICATION_COLOR.WARNING}
-            title="Server offline"
-            withCloseButton={false}
-          >
-            <Box className="text-slate-700">
-              Server currently offline, waiting for server restart...
-            </Box>
-          </Notification>
+          <>
+            {stripe.error !== "Unauthorized: Signature check failed" ? (
+              <Notification
+                className="zoom in shadow-md border border-gray-200 mb-3"
+                style={{
+                  borderLeft: `4px solid ${NOTIFICATION_COLOR.WARNING}`,
+                }}
+                icon={NOTIFICATION_ICON.WARNING}
+                color={NOTIFICATION_COLOR.WARNING}
+                title="Server offline"
+                withCloseButton={false}
+              >
+                <Box className="text-slate-700">
+                  Server currently offline, waiting for server restart...
+                </Box>
+              </Notification>
+            ) : (
+              <Notification
+                className="zoom in shadow-md border border-gray-200 mb-3"
+                style={{
+                  borderLeft: `4px solid ${NOTIFICATION_COLOR.WARNING}`,
+                }}
+                icon={NOTIFICATION_ICON.WARNING}
+                color={NOTIFICATION_COLOR.WARNING}
+                title="Server Configuration Error"
+                withCloseButton={false}
+              >
+                <Box className="text-slate-700">
+                  Your server appears to be on-line however it is not configured
+                  correctly. Check your env variables and make sure they have
+                  been set correctly.
+                </Box>
+              </Notification>
+            )}
+          </>
         ) : (
           <>
             {stripe?.rnUrl !== process.env.NEXT_PUBLIC_DOMAIN && (

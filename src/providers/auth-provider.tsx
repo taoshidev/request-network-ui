@@ -5,6 +5,7 @@ import { signout, getAuthUser } from "@/actions/auth";
 import { UserType } from "@/db/types/user";
 import ClientRedirect from "@/components/ClientRedirect";
 import { setUser as setSentryUser, setTag } from "@sentry/nextjs";
+import * as Sentry from "@sentry/nextjs";
 
 type AuthContextValue = {
   user: UserType | null;
@@ -32,26 +33,30 @@ export const AuthProvider = ({ children }) => {
   const [redirect, setRedirect] = useState<RedirectParamType | null>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const authenticatedUser = await getAuthUser();
-      if (!authenticatedUser) {
-        setRedirect({ path: "/login", message: "Auth Session expired..." });
-      } else {
-        setUser(authenticatedUser as UserType);
-      }
-      setLoading(false);
-    };
+    try {
+      const fetchUser = async () => {
+        const authenticatedUser = await getAuthUser();
+        if (!authenticatedUser) {
+          setRedirect({ path: "/login", message: "Auth Session expired..." });
+        } else {
+          setUser(authenticatedUser as UserType);
+        }
+        setLoading(false);
+      };
 
-    fetchUser();
+      fetchUser();
 
-    const interval = setInterval(async () => {
-      const authenticatedUser = await getAuthUser();
-      if (!authenticatedUser) {
-        setRedirect({ path: "/login", message: "Auth Session expired..." });
-      }
-    }, 5000);
+      const interval = setInterval(async () => {
+        const authenticatedUser = await getAuthUser();
+        if (!authenticatedUser) {
+          setRedirect({ path: "/login", message: "Auth Session expired..." });
+        }
+      }, 5000);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    } catch (e) {
+      Sentry.captureException(e);
+    }
   }, []);
 
   const updateSentryUser = (user: UserType | null) => {

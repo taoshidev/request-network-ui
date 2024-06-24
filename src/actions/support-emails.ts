@@ -1,8 +1,6 @@
 "use server";
 
 import { sendEmail } from "./email";
-import { parseError } from "@/db/error";
-import { db } from "@/db";
 import { SupportEmailType } from "@/db/types/support-email";
 import { UserType } from "@/db/types/user";
 import { omit as _omit } from "lodash";

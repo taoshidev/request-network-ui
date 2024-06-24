@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 
 export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
@@ -61,9 +62,7 @@ export async function middleware(request: NextRequest) {
       }
     );
   } catch (error) {
-    if (!["/login", "/callback"].includes(request.nextUrl.pathname)) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
+    Sentry.captureException(error);
   }
   return response;
 }
