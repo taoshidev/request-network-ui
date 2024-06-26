@@ -43,7 +43,7 @@ export default function Services({
 
   const handleDeleteConfirmed = async () => {
     if (selectedService) {
-      const deleted = await deleteService(selectedService);
+      const deleted = await deleteService({id: selectedService?.id});
       if (deleted?.error) {
         notifyError(deleted.error.message || "Failed to delete service");
       } else {

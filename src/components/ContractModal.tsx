@@ -239,15 +239,18 @@ export function ContractModal({
                         </Table.Td>
                         <Table.Td>
                           {service?.paymentType
-                            ?.toLowerCase()
-                            .charAt(0)
-                            .toUpperCase() +
-                            service?.paymentType
-                              ?.toLowerCase()
-                              .slice(1)
-                              ?.split("_")
-                              ?.join(" ")}
+                            ? service.paymentType
+                                .toLowerCase()
+                                .charAt(0)
+                                .toUpperCase() +
+                              service.paymentType
+                                .toLowerCase()
+                                .slice(1)
+                                .split("_")
+                                .join(" ")
+                            : ""}
                         </Table.Td>
+
                         <Table.Td>
                           {dayjs(contract?.expires).format("MMM DD, YYYY")}
                         </Table.Td>

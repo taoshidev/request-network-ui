@@ -98,7 +98,7 @@ export const createService = async (service: ServiceType) => {
   }
 };
 
-export const deleteService = async (service: ServiceType) => {
+export const deleteService = async ({ id }) => {
   try {
     // check if can delete
     // const check = await canDelete(contract);
@@ -112,7 +112,7 @@ export const deleteService = async (service: ServiceType) => {
 
     const res = await db
       .delete(services)
-      .where(eq(services.id, service.id as string))
+      .where(eq(services.id, id as string))
       .returning();
 
     return parseResult(res);
