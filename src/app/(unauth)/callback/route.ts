@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       if (next && next.length > 1) {
         return NextResponse.redirect(`${origin}${next}`);
       }
-      // send welcome to request network email
+
       if (!data.user?.user_metadata?.onboarded) {
         return NextResponse.redirect(new URL("/onboarding", request.url));
       } else {

@@ -40,6 +40,7 @@ export function Onboarding() {
       if (role === "validator") {
         Object.assign(saveUser.data, {
           stripe_enabled: true,
+          paypal_enabled: true,
           crpyto_enabled: false,
         });
       }
@@ -48,6 +49,7 @@ export function Onboarding() {
 
       if (UpdateUserError) return;
 
+      // send welcome to request network email
       sendNotification({
         type: NOTIFICATION_TYPE.SUCCESS,
         subject: "Welcome to Request Network!",

@@ -9,6 +9,7 @@ import { getValidator } from "./validators";
 import { ValidatorType } from "@/db/types/validator";
 import { revalidatePath } from "next/cache";
 import { StripeCheckType } from "@/db/types/stripe-check";
+import { PayPalCheckType } from "@/db/types/paypal-check";
 
 export async function requestPayment(
   proxyServiceId: string,
@@ -98,6 +99,21 @@ export async function checkForStripe(
       url: validator?.baseApiUrl as string,
       method: "POST",
       path: "/has-stripe",
+    },
+    validatorId: validator?.id as string,
+    data: {},
+  });
+}
+
+export async function checkForPayPal(
+  validatorId: string
+): Promise<Partial<PayPalCheckType>> {
+  const validator: ValidatorType = await getValidator({ id: validatorId });
+  return await sendToProxy({
+    endpoint: {
+      url: validator?.baseApiUrl as string,
+      method: "POST",
+      path: "/has-paypal",
     },
     validatorId: validator?.id as string,
     data: {},
