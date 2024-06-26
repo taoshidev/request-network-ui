@@ -54,6 +54,8 @@ export const ValidatorSchema = z.object({
   stats: StatsSchema.optional(),
   stripeEnabled: z.boolean().default(false).optional(),
   stripeLiveMode:  z.boolean().default(false).optional(),
+  payPalEnabled: z.boolean().default(false).optional(),
+  payPalLiveMode:  z.boolean().default(false).optional(),
   agreedToTOS: z.boolean(),
   active: z.boolean().optional(),
   createdAt: z

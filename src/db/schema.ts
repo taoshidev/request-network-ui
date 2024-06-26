@@ -42,6 +42,7 @@ export const users = authSchema.table("users", {
   agreedToTOS: boolean("agreed_to_tos").default(false),
   onboardingStep: integer("onboardingStep").notNull().default(0),
   stripeEnabled: boolean("stripe_enabled").default(true),
+  payPalEnabled: boolean("paypal_enabled").default(true),
   cryptoEnabled: boolean("crypto_enabled").default(false),
 });
 
@@ -127,6 +128,8 @@ export const validators = pgTable("validators", {
   verified: boolean("verified").notNull().default(false),
   stripeEnabled: boolean("stripe_enabled").default(false),
   stripeLiveMode: boolean("stripe_live_mode").default(false),
+  payPalEnabled: boolean("paypal_enabled").default(false),
+  payPalLiveMode: boolean("paypal_live_mode").default(false),
   agreedToTOS: boolean("agreed_to_tos").default(false),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {
