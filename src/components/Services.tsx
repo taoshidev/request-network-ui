@@ -10,6 +10,8 @@ import dayjs from "dayjs";
 import { ServiceType } from "@/db/types/service";
 import ServiceModal from "./ServiceModal";
 import { deleteService } from "@/actions/services";
+import CurrencyFormatter from "./Formatters/CurrencyFormatter";
+import FixedFormatter from "./Formatters/FixedFormatter";
 
 export default function Services({
   user,
@@ -85,6 +87,8 @@ export default function Services({
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>Title</Table.Th>
+                <Table.Th>Payment Type</Table.Th>
+                <Table.Th>Price</Table.Th>
                 <Table.Th>Status</Table.Th>
                 <Table.Th>Created</Table.Th>
                 <Table.Th>Updated</Table.Th>
@@ -96,6 +100,23 @@ export default function Services({
               {(services || []).map((service: any) => (
                 <Table.Tr key={service?.id}>
                   <Table.Td>{service?.name}</Table.Td>
+                  <Table.Td>
+                    {service?.paymentType
+                      ?.toLowerCase()
+                      .charAt(0)
+                      .toUpperCase() +
+                      service?.paymentType
+                        ?.toLowerCase()
+                        .slice(1)
+                        ?.split("_")
+                        ?.join(" ")}
+                  </Table.Td>
+                  <Table.Td>
+                    <CurrencyFormatter
+                      price={service?.price}
+                      currencyType={service?.currencyType}
+                    />
+                  </Table.Td>
                   <Table.Td>{service?.active ? "Active" : "Inactive"}</Table.Td>
                   <Table.Td>
                     {dayjs(service?.createdAt).format("MMM DD, YYYY")}

@@ -12,6 +12,8 @@ export const ServiceSchema = z.object({
   name: z.string().min(1),
   price: z.string().min(1),
   currencyType: z.string().min(1),
+  paymentType: z.string().min(1),
+  tiers: z.any().optional(),
   limit: z.number().int().min(1),
   expires: z.date().optional(),
   refillRate: z.number().int().min(1),

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -19,6 +19,7 @@ import clsx from "clsx";
 import { ValidatorType } from "@/db/types/validator";
 import CurrencyFormatter from "./Formatters/CurrencyFormatter";
 import FixedFormatter from "./Formatters/FixedFormatter";
+import { useModals } from "@mantine/modals";
 
 export function ContractDisplayModal({
   html,
@@ -45,6 +46,8 @@ export function ContractDisplayModal({
     selectedService: ServiceType;
   }) => void;
 }) {
+  const modals = useModals();
+  const tierModalRef = useRef<string | null>(null);
   const { notifySuccess, notifyInfo, notifyError } = useNotification();
   const { registrationData } = useRegistration();
   const [termsAccepted, setTermsAccepted] = useState<boolean>(
@@ -53,6 +56,7 @@ export function ContractDisplayModal({
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(
     registrationData?.endpoint?.selectedService?.id || null
   );
+
   const numColumns = useMemo(
     () =>
       Math.min(
@@ -97,8 +101,48 @@ export function ContractDisplayModal({
     notifyError(`Service "${service?.name}" is not currently available.`);
   };
 
-  const handleServiceSelect = (serviceId: string) => {
-    if (!review) setSelectedServiceId(serviceId);
+  const handleServiceSelect = (service: ServiceType) => {
+    if (!review) setSelectedServiceId(service?.id as string);
+    if (service?.tiers?.length > 0) {
+      setTimeout(() => {
+        tierModalRef.current = modals.openModal({
+          centered: true,
+          size: "lg",
+          title: service?.name + " - Pay Per Request / Tier Pricing",
+          children: (
+            <Box>
+              {service.tiers.map((tier, index) => (
+                <Box key={index}>
+                  <Group
+                    key={index}
+                    className="justify-between items-center m-2"
+                  >
+                    <Text>
+                      From{" "}
+                      <Badge variant="light">
+                        <FixedFormatter value={tier.from} />
+                      </Badge>{" "}
+                      to{" "}
+                      <Badge variant="light">
+                        <FixedFormatter value={tier.to} />{" "}
+                      </Badge>{" "}
+                      requests
+                    </Text>
+                    <Badge size="lg" variant="light">
+                      <CurrencyFormatter
+                        price={tier.price}
+                        currencyType={service.currencyType}
+                      />
+                    </Badge>
+                  </Group>
+                  <Divider className="border-dashed" />
+                </Box>
+              ))}
+            </Box>
+          ),
+        });
+      }, 1000);
+    }
   };
 
   return (
@@ -149,7 +193,7 @@ export function ContractDisplayModal({
                 onClick={
                   disabled(service)
                     ? () => handleDisabled(service)
-                    : () => handleServiceSelect(service?.id as string)
+                    : () => handleServiceSelect(service)
                 }
               >
                 <Group className="justify-between items-center m-2">
@@ -167,9 +211,17 @@ export function ContractDisplayModal({
                 <Divider className="border-dashed" />
 
                 <Group className="justify-between items-center m-2">
-                  <Text className="text-xs">Payment Method:</Text>
+                  <Text className="text-xs">Currency:</Text>
                   <Badge size="sm" variant="light">
                     {service?.currencyType}
+                  </Badge>
+                </Group>
+                <Divider className="border-dashed" />
+
+                <Group className="justify-between items-center m-2">
+                  <Text className="text-xs">Payment:</Text>
+                  <Badge size="sm" variant="light">
+                    {service?.paymentType?.split("_")?.join(" ")}
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />

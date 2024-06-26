@@ -43,6 +43,13 @@
       "when": 1718937924044,
       "tag": "0005_previous_maggott",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1719329383616,
+      "tag": "0006_shiny_shriek",
+      "breakpoints": true
     }
   ]
 }

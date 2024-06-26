@@ -129,7 +129,7 @@ export default function Notifications({
       <br />
       {isLoading ? (
         <Box className="text-center">
-          <Loader size="xl" />
+          <Loader size="lg" />
         </Box>
       ) : (
         (userNotifications || []).map((userNotification) => (

@@ -29,7 +29,7 @@ import { getAuthUser } from "@/actions/auth";
 import { NOTIFICATION_TYPE, useNotification } from "@/hooks/use-notification";
 import { Logo } from "@/components/Logo";
 import { KeyModal, keyType } from "@components/KeyModal";
-import Loading from "@/app/(auth)/loading";
+import ClientRedirect from "@components/ClientRedirect";
 import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
 import { z, ZodIssue } from "zod";
@@ -446,7 +446,7 @@ export function RegistrationStepper({
   };
 
   return pageLoading ? (
-    <Loading />
+    <ClientRedirect />
   ) : (
     <>
       <KeyModal
