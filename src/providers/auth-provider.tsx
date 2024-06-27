@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }) => {
       <ClientRedirect
         href={redirect?.path!}
         message={redirect?.message}
-        delay={redirect?.delay || 3500}
+        delay={redirect?.delay || 2000}
       />
     );
   }

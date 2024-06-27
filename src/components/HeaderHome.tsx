@@ -12,6 +12,7 @@ import {
 } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import ClientRedirect from "@components/ClientRedirect";
+import Loading from "@/app/(auth)/loading";
 
 export function HeaderHome({
   startLink = "/dashboard",

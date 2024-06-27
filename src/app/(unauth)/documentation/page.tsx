@@ -1,19 +1,13 @@
-import { HeaderHome } from "@/components/HeaderHome";
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import { readFileSync } from "fs";
 import path from "path";
 import * as classes from "./page.module.css";
-import React from "react";
 import { generateSlug } from "@/utils/generate-slug";
-import { getAuthUser } from "@/actions/auth";
-import Footer from "@/components/Footer";
 
 export default async function DocumentationPage() {
   const filePath = path.resolve("./public", "validator-instructions.md");
   const markdown = readFileSync(filePath, "utf8");
-  const user = await getAuthUser();
-
-  const startLink = user ? "/dashboard" : "/login";
 
   const MarkdownComponents: object = {
     h2: (props) => {
@@ -66,20 +60,12 @@ export default async function DocumentationPage() {
 
   return (
     <div className="bg-stone-100">
-      <div className="bg-primary-500 mb-8">
-        <div className="container max-w-5xl mx-auto mb-10">
-          <HeaderHome startLink={startLink} />
-        </div>
-      </div>
       <div className="container mx-auto py-1 px-2 lg:px-20 pb-20">
         <div className={classes["markdown-container"]}>
           <ReactMarkdown components={MarkdownComponents}>
             {markdown}
           </ReactMarkdown>
         </div>
-      </div>
-      <div className="bg-white">
-        <Footer />
       </div>
     </div>
   );

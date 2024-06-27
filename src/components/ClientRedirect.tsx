@@ -27,8 +27,11 @@ export default function ClientRedirect({
       }, 0);
 
       const navigateTimer = setTimeout(() => {
-        if (back) router.back();
-        else if (href) router.push(href);
+        if (back) {
+          router.back();
+        } else if (href) {
+          router.push(href);
+        }
       }, delay);
 
       return () => {
@@ -38,13 +41,13 @@ export default function ClientRedirect({
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [delay]);
+  }, [delay, href, back]);
 
   return (
     <>
       {showLoader && (
         <Box className="fixed inset-0 flex items-center justify-center z-50 overflow-hidden">
-          <Box className="absolute inset-0 bg-black bg-opacity-10 backdrop-blur-sm"></Box>
+          <Box className="absolute inset-0 backdrop-blur-sm"></Box>
           <Box className="relative text-center">
             {message && (
               <Title className="pb-10 text-black text-base">{message}</Title>
