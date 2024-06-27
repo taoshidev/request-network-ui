@@ -352,7 +352,7 @@ export function Settings({
                           component={NextImage}
                           src={stripeBtn}
                           w="auto"
-                          h={25}
+                          h={30}
                           alt="Stripe Subscribe"
                         />
                       )}
