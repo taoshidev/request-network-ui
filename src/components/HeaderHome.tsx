@@ -1,13 +1,7 @@
 "use client";
 
-import {
-  Group,
-  Anchor,
-  Button,
-  Burger,
-  Box,
-  Drawer,
-} from "@mantine/core";
+import { useState, useEffect, useCallback } from "react";
+import { Group, Anchor, Button, Burger, Box, Drawer } from "@mantine/core";
 import Link from "next/link";
 import {
   IconHelpSquare,
@@ -17,13 +11,15 @@ import {
   IconDashboard,
 } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
-import { useCallback } from "react";
+import ClientRedirect from "@components/ClientRedirect";
+import Loading from "@/app/(auth)/loading";
 
 export function HeaderHome({
   startLink = "/dashboard",
 }: {
   startLink?: string;
 }) {
+  const [loading, setLoading] = useState(false);
   const iconSizeLg = 20;
   const iconSizeSm = 14;
 
@@ -71,8 +67,13 @@ export function HeaderHome({
 
   const [opened, { toggle, close }] = useDisclosure();
 
+  useEffect(() => {
+    return () => setLoading(false);
+  }, []);
+
   return (
     <>
+      {loading && <ClientRedirect />}
       <div className="h-full p-4">
         <div className="flex-1 flex md:justify-between justify-center">
           <Burger
@@ -101,6 +102,9 @@ export function HeaderHome({
                 target={navLink.target}
                 variant={navLink.variant}
                 data-cy={navLink.dataCy}
+                onClick={() => {
+                  if(navLink.name === "Dashboard") setLoading(true)
+                }}
               >
                 {navLink.name}
               </Button>

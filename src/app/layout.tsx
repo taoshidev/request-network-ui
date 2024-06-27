@@ -46,7 +46,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="RN Marketplace" />
         <meta name="theme-color" content="#000000" />
       </head>
-      <body>
+      <body className="bg-stone-100">
         <ColorSchemeScript />
         <MantineProvider theme={theme}>
           <ModalsProvider>

@@ -22,6 +22,12 @@ export const currencyTypeEnum = pgEnum("currency_type", [
   "USDT",
 ]);
 
+export const servicePaymentTypeEnum = pgEnum("payment_type", [
+  "FREE",
+  "SUBSCRIPTION",
+  "PAY_PER_REQUEST",
+]);
+
 export const users = authSchema.table("users", {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
@@ -183,10 +189,12 @@ export const services = pgTable("services", {
     .references(() => users.id, { onDelete: "cascade" }),
   contractId: uuid("contract_id")
     .notNull()
-    .references(() => contracts.id, { onDelete: "set null" }),
+    .references(() => contracts.id, { onDelete: "cascade" }),
   name: varchar("name"),
   price: varchar("price"),
   currencyType: currencyTypeEnum("currency_type").notNull().default("USDC"),
+  paymentType: servicePaymentTypeEnum("payment_type").notNull().default("FREE"),
+  tiers: jsonb("tiers"),
   limit: integer("limit").default(10),
   expires: timestamp("expires", {
     withTimezone: true,
@@ -296,8 +304,7 @@ export const notifications = pgTable("notifications", {
   fromUserId: uuid("from_user_id")
     .references(() => users.id, {
       onDelete: "set null",
-    })
-    .notNull(),
+    }),
   subject: varchar("subject"),
   content: varchar("content"),
   type: notificationTypeEnum("type").notNull().default("info"),

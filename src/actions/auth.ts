@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -61,9 +62,7 @@ export async function updateUserById(formData: any) {
 
 export async function signout() {
   const supabase = createClient();
-
   await supabase.auth.signOut();
-
   revalidatePath("/", "layout");
   redirect("/");
 }

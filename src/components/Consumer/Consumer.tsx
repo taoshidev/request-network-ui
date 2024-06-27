@@ -22,7 +22,7 @@ import { SubscriptionType } from "@/db/types/subscription";
 import { getKey } from "@/actions/keys";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
-import Loading from "@/app/(auth)/loading";
+import ClientRedirect from "@components/ClientRedirect";
 import { UserType } from "@/db/types/user";
 import FixedFormatter from "../Formatters/FixedFormatter";
 
@@ -80,7 +80,7 @@ export function Consumer({
   }, [subscriptions]);
 
   return isLoading ? (
-    <Loading />
+    <ClientRedirect />
   ) : (
     <Container className="mx-0 px-0 max-w-6xl">
       {!validators && (

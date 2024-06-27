@@ -1,16 +1,32 @@
-import { useEffect, useState } from "react";
-import { Box, NumberInput, TextInput, Select, Group } from "@mantine/core";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import {
+  Box,
+  NumberInput,
+  TextInput,
+  Select,
+  Group,
+  Text,
+  Button,
+  ActionIcon,
+} from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import { UseFormReturnType } from "@mantine/form";
 import { ServiceType } from "@/db/types/service";
 import { getAuthUser } from "@/actions/auth";
 import { UserType } from "@/db/types/user";
 import { useRouter } from "next/navigation";
+import { IconPlus, IconX } from "@tabler/icons-react";
 
 export function ServiceFormInput({
   form,
+  tiers,
+  setTiers,
 }: {
   form: UseFormReturnType<Partial<ServiceType>>;
+  tiers: { from: number; to: number; price: number }[];
+  setTiers: Dispatch<
+    SetStateAction<{ from: number; to: number; price: number }[]>
+  >;
 }) {
   const [currencyType, setCurrencyType] = useState("");
   const [user, setUser] = useState<UserType | null>(null);
@@ -52,6 +68,57 @@ export function ServiceFormInput({
     },
   ];
 
+  const paymentType = [
+    {
+      value: "FREE",
+      label: "Free",
+    },
+    {
+      value: "SUBSCRIPTION",
+      label: "Subscription",
+    },
+    {
+      value: "PAY_PER_REQUEST",
+      label: "Pay Per Request",
+    },
+  ];
+
+  const handlePaymentTypeChange = (paymentType: string | null) => {
+    if (paymentType === "FREE") {
+      form.setFieldValue("price", "0.00");
+    }
+    form.setFieldValue("paymentType", paymentType);
+  };
+
+  const addTier = () => {
+    const lastTier = tiers[tiers.length - 1];
+    setTiers([
+      ...tiers,
+      {
+        from: lastTier.to + 1,
+        to: lastTier.to + 1000,
+        price: lastTier.price + 10,
+      },
+    ]);
+  };
+
+  const updateTier = (index: number, field: string, value: string | number) => {
+    const updatedTiers = [...tiers];
+    updatedTiers[index][field] = value;
+
+    if (field === "to" && index < updatedTiers.length - 1) {
+      updatedTiers[index + 1].from = +value + 1;
+    }
+
+    setTiers(updatedTiers);
+  };
+
+  const removeTier = (index: number) => {
+    const updatedTiers = [...tiers];
+    updatedTiers.splice(index, 1);
+    setTiers(updatedTiers);
+  };
+
   return (
     <>
       <Box mb="md">
@@ -63,7 +130,7 @@ export function ServiceFormInput({
         />
       </Box>
       <Group mb="md" grow>
-        <Box mb="md">
+        <Box>
           <Select
             label="Currency Type"
             withAsterisk
@@ -73,24 +140,105 @@ export function ServiceFormInput({
             {...form.getInputProps("currencyType")}
           />
         </Box>
-
-        <Box mb="md">
-          <TextInput
+      </Group>
+      <Group grow>
+        <Box>
+          <Select
+            label="Payment Type"
             withAsterisk
-            label={
-              "Price in " +
-              (currencyType === "USDC" || currencyType === "USDT"
-                ? currencyType
-                : "USD")
-            }
-            placeholder="5"
-            {...form.getInputProps("price")}
+            value={form.values.paymentType || ""}
+            placeholder="Select payment type"
+            data={paymentType}
+            {...form.getInputProps("paymentType")}
+            onChange={(value) => handlePaymentTypeChange(value)}
           />
         </Box>
       </Group>
-
+      <Group mt="md" grow>
+        {form.values.paymentType === "PAY_PER_REQUEST" && (
+          <Box>
+            <Box className="grid grid-cols-[1fr_auto] gap-4">
+              <Text mb="lg">Tiers</Text>
+              <Button leftSection={<IconPlus />} onClick={addTier}>
+                Add Tier
+              </Button>
+            </Box>
+            {tiers.map((tier, index) => (
+              <Group
+                key={index}
+                mb="sm"
+                className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2"
+              >
+                <NumberInput
+                  label="From"
+                  min={0}
+                  value={tier.from}
+                  disabled
+                  onChange={(value) => updateTier(index, "from", value!)}
+                />
+                <NumberInput
+                  label="To"
+                  min={0}
+                  value={tier.to}
+                  onChange={(value) => updateTier(index, "to", value!)}
+                />
+                <NumberInput
+                  label="Tier Price"
+                  min={0}
+                  value={tier.price}
+                  step={0.01}
+                  onChange={(value) => {
+                    if (index > 0 && +value < +tiers[index - 1].price) {
+                      updateTier(
+                        index,
+                        "price",
+                        parseFloat((tiers[index - 1].price + 1).toFixed(2))
+                      );
+                    } else {
+                      if (typeof value === "number") {
+                        updateTier(
+                          index,
+                          "price",
+                          parseFloat(value.toFixed(2))
+                        );
+                      }
+                    }
+                  }}
+                />
+                <ActionIcon
+                  className="mt-6 float-end h-9 w-9"
+                  variant="outline"
+                  color="red"
+                  disabled={tiers.length === 1}
+                  onClick={() => removeTier(index)}
+                >
+                  <IconX />
+                </ActionIcon>
+              </Group>
+            ))}
+          </Box>
+        )}
+      </Group>
+      {form.values.paymentType === "SUBSCRIPTION" && (
+        <Group mb="md" grow>
+          <Box>
+            <TextInput
+              withAsterisk
+              description="Set price for service. For FREE payment type, set price to 0."
+              label={
+                "Price in " +
+                (currencyType === "USDC" || currencyType === "USDT"
+                  ? currencyType
+                  : "USD")
+              }
+              placeholder="5"
+              {...form.getInputProps("price")}
+            />
+          </Box>
+        </Group>
+      )}
       <Group mb="md" grow>
-        <Box mb="md">
+        <Box>
           <NumberInput
             label="Request Limit"
             withAsterisk
@@ -99,7 +247,7 @@ export function ServiceFormInput({
             {...form.getInputProps("remaining")}
           />
         </Box>
-        <Box mb="md">
+        <Box>
           <NumberInput
             label="Limit"
             withAsterisk

@@ -1,12 +1,12 @@
-import { Container, Loader, Center } from "@mantine/core";
+import { Loader, Box } from "@mantine/core";
 
 export default function Loading() {
-  // You can add any UI inside Loading, including a Skeleton.
   return (
-    <Container my="xl" h={500} className="z-99">
-      <Center h="100%">
-        <Loader size="xl" />
-      </Center>
-    </Container>
+    <Box className="fixed inset-0 flex items-center justify-center z-50 overflow-hidden">
+      <Box className="absolute inset-0"></Box>
+      <Box className="relative text-center">
+        <Loader size="lg" />
+      </Box>
+    </Box>
   );
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Anchor,
   Box,
@@ -12,14 +10,12 @@ import {
 } from "@mantine/core";
 import Link from "next/link";
 
-interface PageProps {
+export default async function LoginLayout({ children }: {
   children: React.ReactNode;
-}
-
-export default function Page({ children }: PageProps) {
+}) {
   return (
-    <Flex className="h-full">
-      <Box className="w-6/12" display={{ base: "none", sm: "block" }}>
+    <Flex className="h-full min-h-screen">
+      <Box className="w-6/12 hidden sm:block">
         <Box className="bg-primary-500 h-full overflow-hidden" p="xl">
           <Box>
             <Group className="items-center text-white">

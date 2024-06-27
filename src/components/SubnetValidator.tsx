@@ -99,11 +99,11 @@ export function SubnetValidator({
               >
                 <Box className="font-bold mb-4">
                   {validator.health?.message?.toLowerCase() === "ok" ? (
-                    <IconCircleCheck className="float-start text-green-600" />
+                    <IconCircleCheck className="mr-2 float-start text-green-600" />
                   ) : (
-                    <IconAlertTriangle className="float-start text-red-700" />
+                    <IconAlertTriangle className="mr-2 float-start text-red-700" />
                   )}
-                  <Text className="font-bold mb-4 inline-block" truncate>
+                  <Text className="font-bold inline-block" truncate>
                     &nbsp;
                     {validator?.name || "Validator"}
                   </Text>

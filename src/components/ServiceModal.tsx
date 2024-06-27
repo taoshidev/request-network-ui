@@ -25,19 +25,26 @@ export default function ServiceModal({
 }) {
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError } = useNotification();
+  const [tiers, setTiers] = useState([{ from: 0, to: 1000, price: 0 }]);
   const getDefaultValues = (service: ServiceType | null) => ({
     id: service?.id || "",
     name: service?.name || "",
     userId: service?.userId || user.id,
     contractId: service?.contractId || "",
-    price: service?.price || "",
+    price: service?.price || "0.00",
     currencyType: service?.currencyType || "",
     limit: service?.limit || 10,
     remaining: service?.remaining || 10000,
     refillRate: service?.refillRate || 1,
     refillInterval: service?.refillInterval || 1000,
     expires: service?.expires || DateTime.now().plus({ months: 3 }).toJSDate(),
+    // expires:
+    //   service?.expires ||
+    //   new Date(new Date().setMonth(new Date().getMonth() + 3)),
+    paymentType: service?.paymentType || "Free",
+    tiers: service?.tiers || [{ from: 0, to: 1000, price: 0 }],
   });
+
   const router = useRouter();
 
   const form = useForm<Partial<ServiceType>>({
@@ -48,12 +55,15 @@ export default function ServiceModal({
         active: true,
         createdAt: true,
         updatedAt: true,
+        contractId: !!service as true,
+        deletedAt: true,
       })
     ),
   });
 
   useEffect(() => {
     if (opened) form.setValues(getDefaultValues(service as ServiceType));
+    setTiers(service?.tiers || [{ from: 0, to: 1000, price: 0 }]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service, opened]);
 
@@ -61,9 +71,14 @@ export default function ServiceModal({
     setLoading(true);
     try {
       if (!service) delete values.id;
+      if (service?.paymentType !== "PAY_PER_REQUEST") {
+        values.tiers = [];
+      } else {
+        values.tiers = [...tiers];
+      }
       const res = service
-        ? await updateService(values as ServiceType)
-        : await createService(values as ServiceType);
+        ? await updateService({ ...values } as ServiceType)
+        : await createService({ ...values } as ServiceType);
 
       notifySuccess(`Service ${service ? "updated" : "created"} successfully`);
       onSuccess?.(res?.data as ServiceType);
@@ -96,13 +111,18 @@ export default function ServiceModal({
           className="w-full"
           onSubmit={form.onSubmit(onSubmit)}
         >
-          <ServiceFormInput form={form} />
-        </Box>
-          <Box className="grid grid-cols-1 mt-4 gap-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
-            <Button size="sm" variant="orange" type="submit" loading={loading}>
+          <ServiceFormInput form={form} tiers={tiers} setTiers={setTiers} />
+          <Box className="grid grid-cols-1 mt-4 gap-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4 z-10">
+            <Button
+              size="sm"
+              variant="orange"
+              type="submit"
+              loading={loading}
+            >
               {service ? "Update Service" : "Create Service"}
             </Button>
           </Box>
+        </Box>
       </Modal>
     </>
   );

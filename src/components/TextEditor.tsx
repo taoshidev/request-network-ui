@@ -12,7 +12,7 @@ import SubScript from "@tiptap/extension-subscript";
 import Placeholder from "@tiptap/extension-placeholder";
 import { debounce } from "lodash";
 import clsx from "clsx";
-import Loading from "@/app/(auth)/loading";
+import ClientRedirect from "@components/ClientRedirect";
 
 export function TextEditor<T>({
   onChange,
@@ -72,7 +72,7 @@ export function TextEditor<T>({
   );
 
   return isLoading ? (
-    <Loading />
+    <ClientRedirect />
   ) : (
     <Box>
       {label?.text && (
