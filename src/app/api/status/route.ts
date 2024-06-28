@@ -92,6 +92,7 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
       status: 200,
     });
   } catch (error: Error | unknown) {
+    console.error(error);
     return NextResponse.json({
       message: "Error updating subscription status.",
       status: 200,
