@@ -240,7 +240,7 @@ export function ValidatorEdit({
 
     if (!res?.error) {
       notifySuccess("PayPal integration successful.");
-      stripeClose();
+      payPalClose();
     } else {
       notifyError("PayPal integration failed.");
     }
