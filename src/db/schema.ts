@@ -129,7 +129,6 @@ export const validators = pgTable("validators", {
   stripeEnabled: boolean("stripe_enabled").default(false),
   stripeLiveMode: boolean("stripe_live_mode").default(false),
   payPalEnabled: boolean("paypal_enabled").default(false),
-  payPalLiveMode: boolean("paypal_live_mode").default(false),
   agreedToTOS: boolean("agreed_to_tos").default(false),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {

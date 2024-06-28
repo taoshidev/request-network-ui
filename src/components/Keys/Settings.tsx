@@ -65,6 +65,10 @@ export function Settings({
     () => !!subscription?.validator?.stripeLiveMode,
     [subscription]
   );
+  const payPalEnabled = useMemo(
+    () => !!subscription?.validator?.payPalEnabled,
+    [subscription]
+  );
   const [opened, { open, close }] = useDisclosure(false);
   const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
     useDisclosure(false);
@@ -314,23 +318,25 @@ export function Settings({
                 <Box>Subscription is not active.</Box>
               )}
               <Group justify="flex-end" mt="lg">
-                {!subscription?.active && (
-                  <Button
-                    onClick={payPalPayment}
-                    loading={loading === "paypal-payment"}
-                    type="button"
-                    variant="default"
-                    className="drop-shadow-md"
-                  >
-                    <Image
-                      component={NextImage}
-                      src={payPalBtn}
-                      w="auto"
-                      h={25}
-                      alt="PayPal Subscribe"
-                    />
-                  </Button>
-                )}
+                {!subscription?.active &&
+                  payPalEnabled &&
+                  !isFree && (
+                    <Button
+                      onClick={payPalPayment}
+                      loading={loading === "paypal-payment"}
+                      type="button"
+                      variant="default"
+                      className="drop-shadow-md"
+                    >
+                      <Image
+                        component={NextImage}
+                        src={payPalBtn}
+                        w="auto"
+                        h={25}
+                        alt="PayPal Subscribe"
+                      />
+                    </Button>
+                  )}
 
                 {stripeEnabled &&
                   !isFree &&

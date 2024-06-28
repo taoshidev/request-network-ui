@@ -6,7 +6,7 @@ export const PayPalCheckSchema = z.object({
   payPalSecretKey: z.boolean(),
   payPalClientId: z.boolean(),
   enrollmentSecret: z.boolean(),
-  payPalWebhooksKey: z.boolean(),
+  payPalWebhookId: z.boolean(),
   newEndpointCreated: z.boolean(),
   webhooks: z.boolean(),
   webhookEvents: z.boolean(),

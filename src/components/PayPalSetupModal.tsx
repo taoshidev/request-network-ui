@@ -46,7 +46,7 @@ export default function PayPalSetupModal({
       !payPal?.enrollmentSecret ||
       !payPal?.payPalSecretKey ||
       !payPal?.payPalClientId ||
-      !payPal?.payPalWebhooksKey;
+      !payPal?.payPalWebhookId;
     const missingLiveWebhook = !payPal?.webhooks || !payPal?.webhookEvents;
 
     setMissingEnv(missingEnv);
@@ -54,10 +54,7 @@ export default function PayPalSetupModal({
     setMissingWebhookEvents(!payPal?.webhookEvents);
     setDisabled(
       (payPal?.isHttps ? missingLiveWebhook || missingEnv : missingEnv) ||
-        payPal?.rnUrl !== process.env.NEXT_PUBLIC_DOMAIN ||
-        // todo: add check for live mode
-        (true/*!payPal?.payPalLiveMode*/ &&
-          process.env.NEXT_PUBLIC_NODE_ENV === "production")
+        payPal?.rnUrl !== process.env.NEXT_PUBLIC_DOMAIN        
     );
     // eslint-disable-next-line
   }, [payPal]);
@@ -148,7 +145,7 @@ export default function PayPalSetupModal({
                     !payPal?.enrollmentSecret && "ENROLLMENT_SECRET",
                     !payPal?.payPalSecretKey && "PAYPAL_CLIENT_SECRET",
                     !payPal?.payPalClientId && "PAYPAL_CLIENT_ID",
-                    !payPal?.payPalWebhooksKey && "PAYPAL_WEBHOOKS_KEY",
+                    !payPal?.payPalWebhookId && "PAYPAL_WEBHOOK_ID",
                   ]
                     .filter((item) => item)
                     .join('", "')
@@ -173,12 +170,12 @@ export default function PayPalSetupModal({
                   will automatically be created if your environment is set up
                   correctly. Make sure you are not missing PayPal credentials in
                   your .env Everything except the
-                  &quot;PAYPAL_WEBHOOKS_KEY&quot; are required for automatic
+                  &quot;PAYPAL_WEBHOOK_ID&quot; are required for automatic
                   configuration.
                 </Box>
               </Notification>
             )}
-            {payPal?.isHttps && !missingWebhooks && missingWebhookEvents && (
+            {/* {payPal?.isHttps && !missingWebhooks && missingWebhookEvents && (
               <Notification
                 className="zoom in shadow-md border border-gray-200 mb-3"
                 style={{
@@ -198,7 +195,7 @@ export default function PayPalSetupModal({
                   &quot;
                 </Box>
               </Notification>
-            )}
+            )} */}
             {!payPal?.isHttps && (
               <Notification
                 className="zoom in shadow-md border border-gray-200 mb-3"
@@ -213,32 +210,9 @@ export default function PayPalSetupModal({
                 </Box>
               </Notification>
             )}
-            {/* todo: add check for live mode */}
-            {false /*!payPal?.payPalLiveMode*/ && (
-              <Notification
-                className="zoom in shadow-md border border-gray-200 mb-3"
-                style={{
-                  borderLeft: `4px solid ${NOTIFICATION_COLOR.WARNING}`,
-                }}
-                icon={NOTIFICATION_ICON.WARNING}
-                color={NOTIFICATION_COLOR.WARNING}
-                title="PayPal Test Mode"
-                withCloseButton={false}
-              >
-                <Box className="text-slate-700">
-                  Your PayPal account is set to test mode. Only test credit card
-                  numbers will work and real payments will not be processed.
-                  Once you have switched to live PayPal credentials on your
-                  validator server .env, your account will be able to process
-                  live payments. If you have a test webhook key, remove it when
-                  adding the live credentials so a live webhook will be created
-                  automatically.
-                </Box>
-              </Notification>
-            )}
             {!missingWebhooks &&
               !missingWebhookEvents &&
-              !payPal?.payPalWebhooksKey && (
+              !payPal?.payPalWebhookId && (
                 <Notification
                   className="zoom in shadow-md border border-gray-200 mb-3"
                   style={{
@@ -250,8 +224,7 @@ export default function PayPalSetupModal({
                   withCloseButton={false}
                 >
                   <Box className="text-slate-700">
-                    A new PayPal webhook has been created. Go to your PayPal
-                    account and find your new webhook. Set the webhook&apos;s
+                    The webhook may be configured incorrectly verify that your webhook has been created and configured correctly. Set the webhook&apos;s
                     secret in your servers .env file.
                   </Box>
                 </Notification>
