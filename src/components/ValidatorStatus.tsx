@@ -150,9 +150,23 @@ export default function ValidatorStatus({
                     <Table.Td colSpan={2}>
                       <Box className="flex justify-center">
                         {validator?.stripeEnabled &&
-                          (validator.endpoints?.length || 0) !== 0 && (
+                          validator.endpoints?.some((endpoint) =>
+                            endpoint?.contract?.services?.some(
+                              (service) => +service.price !== 0
+                            )
+                          ) && (
                             <Badge className="ml-1" color="darkblue">
                               Stripe
+                            </Badge>
+                          )}
+                        {validator?.payPalEnabled &&
+                          validator.endpoints?.some((endpoint) =>
+                            endpoint?.contract?.services?.some(
+                              (service) => +service.price !== 0
+                            )
+                          ) && (
+                            <Badge className="ml-1" color="blue">
+                              PayPal
                             </Badge>
                           )}
                         {validator.endpoints?.some((endpoint) =>

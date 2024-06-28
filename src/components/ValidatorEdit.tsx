@@ -44,9 +44,10 @@ import { ServiceType } from "@/db/types/service";
 import { useModals } from "@mantine/modals";
 import AccountSelector from "@components/AccountSelector";
 import { isCrypto } from "@/utils/is-crypto";
-import { checkForStripe } from "@/actions/payments";
+import { checkForPayPal, checkForStripe } from "@/actions/payments";
 import StripeSetupModal from "./StripeSetupModal";
 import { StripeCheckType } from "@/db/types/stripe-check";
+import PayPalSetupModal from "./PayPalSetupModal";
 
 export const ValidatorEditSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -72,11 +73,14 @@ export function ValidatorEdit({
   const [opened, { open, close }] = useDisclosure(false);
   const [stripeOpened, { open: stripeOpen, close: stripeClose }] =
     useDisclosure(false);
+  const [payPalOpened, { open: payPalOpen, close: payPalClose }] =
+    useDisclosure(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const accountModalRef = useRef<string | null>(null);
   const router = useRouter();
   const modals = useModals();
   const [stripe, setStripe] = useState<Partial<StripeCheckType>>({});
+  const [payPal, setPayPal] = useState({});
 
   const form = useForm<Partial<ValidatorType>>({
     initialValues: {
@@ -199,6 +203,20 @@ export function ValidatorEdit({
     stripeOpen();
   };
 
+  const handleCheckPayPal = async () => {
+    // TODO: we might want to add stripe_setup_completed in database
+    if (!user?.user_metadata?.paypal_enabled) {
+      notifyError(
+        "Validator verification failed! PayPal is not enabled for your account."
+      );
+      return;
+    }
+
+    const paypal = await checkForPayPal(validator.id as string);
+    setPayPal(paypal || {});
+    payPalOpen();
+  };
+
   const handleFiatVerify = async () => {
     const res = await updateValidator({
       id: validator.id,
@@ -211,6 +229,20 @@ export function ValidatorEdit({
       stripeClose();
     } else {
       notifyError("Stripe integration failed.");
+    }
+  };
+
+  const handlePayPalVerify = async () => {
+    const res = await updateValidator({
+      id: validator.id,
+      payPalEnabled: true,
+    });
+
+    if (!res?.error) {
+      notifySuccess("PayPal integration successful.");
+      payPalClose();
+    } else {
+      notifyError("PayPal integration failed.");
     }
   };
 
@@ -251,6 +283,14 @@ export function ValidatorEdit({
         validatorId={validator?.id as string}
         onCancel={stripeClose}
         onConfirm={handleFiatVerify}
+      />
+
+      <PayPalSetupModal
+        opened={payPalOpened}
+        initialPayPal={payPal}
+        validatorId={validator?.id as string}
+        onCancel={payPalClose}
+        onConfirm={handlePayPalVerify}
       />
 
       <Box>
@@ -347,11 +387,30 @@ export function ValidatorEdit({
           >
             <Text mb="md" size="md">
               Your validator has not been verified yet. Verification is
-              essential to ensure that your stripe integration is working
+              essential to ensure that your Stripe integration is working
               properly.
             </Text>
             <Button onClick={handleCheckStripe} variant="light" mt="md">
-              Verify Integration
+              Verify Stripe Integration
+            </Button>
+          </Alert>
+        )}
+        {!validator?.payPalEnabled && (
+          <Alert
+            className="shadow-sm"
+            mb="xl"
+            color="orange"
+            radius="0"
+            title="Verify PayPal Integration"
+            icon={<IconAlertCircle />}
+          >
+            <Text mb="md" size="md">
+              Your validator has not been verified yet. Verification is
+              essential to ensure that your PayPal integration is working
+              properly.
+            </Text>
+            <Button onClick={handleCheckPayPal} variant="light" mt="md">
+              Verify PayPal Integration
             </Button>
           </Alert>
         )}

@@ -1,0 +1,1 @@
+ALTER TABLE "validators" DROP COLUMN IF EXISTS "paypal_live_mode";

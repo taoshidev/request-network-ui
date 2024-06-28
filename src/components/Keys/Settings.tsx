@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import NextImage from "next/image";
 import {
   Title,
   Text,
   Group,
+  Image,
   Box,
   Button,
   TextInput,
@@ -20,6 +22,8 @@ import {
   IconClockDollar,
   IconCopy,
 } from "@tabler/icons-react";
+import payPalBtn from "@/assets/paypal-1.svg";
+import stripeBtn from "@/assets/stripe.svg";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -31,6 +35,7 @@ import { cancelSubscription, requestPayment } from "@/actions/payments";
 import { ConfirmModal } from "../ConfirmModal";
 import { updateSubscription, fetchProxyService } from "@/actions/subscriptions";
 import CurrencyFormatter from "../Formatters/CurrencyFormatter";
+import clsx from "clsx";
 
 const updateSchema = z.object({
   name: z
@@ -60,12 +65,15 @@ export function Settings({
     () => !!subscription?.validator?.stripeLiveMode,
     [subscription]
   );
-  const [disabled, setDisabled] = useState(!stripeEnabled);
+  const payPalEnabled = useMemo(
+    () => !!subscription?.validator?.payPalEnabled,
+    [subscription]
+  );
   const [opened, { open, close }] = useDisclosure(false);
   const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
     useDisclosure(false);
   const { notifySuccess, notifyError } = useNotification();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState("");
   const [active, setActive] = useState(false);
   const router = useRouter();
   const [key]: Array<any> = useLocalStorage({
@@ -92,7 +100,7 @@ export function Settings({
     const onFocus = async (event) => {
       if (!active && document.visibilityState == "visible") {
         setActive(true);
-        if (stripeEnabled) setDisabled(false);
+        if (stripeEnabled) setLoading("");
         await fetchService();
         router.refresh();
       } else {
@@ -123,7 +131,7 @@ export function Settings({
   };
 
   const onUpdateKey: SubmitHandler<User> = async (values) => {
-    setLoading(true);
+    setLoading("update-key");
     const res = await updateKey({
       keyId: apiKey?.id,
       params: { name: values.name },
@@ -131,7 +139,7 @@ export function Settings({
 
     if (res?.status !== 200) return notifyError(res?.message as string);
     notifySuccess(res?.message as string);
-    setLoading(false);
+    setLoading("");
     router.refresh();
     setTimeout(() => router.back(), 1000);
   };
@@ -141,7 +149,7 @@ export function Settings({
     copy();
   };
 
-  const sendPaymentRequest = async () => {
+  const sendPaymentRequest = async (url = "subscribe") => {
     const requestPaymentRes = await requestPayment(
       subscription.proxyServiceId,
       window.location.pathname
@@ -152,7 +160,7 @@ export function Settings({
       requestPaymentRes.token
     ) {
       window.open(
-        `${requestPaymentRes.subscription.endpoint.validator.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`,
+        `${requestPaymentRes.subscription.endpoint.validator.baseApiUrl}/${url}?token=${requestPaymentRes.token}`,
         "_blank"
       );
     }
@@ -162,16 +170,21 @@ export function Settings({
     const unSubRes = await cancelSubscription(subscription.proxyServiceId);
     notifySuccess(`Subscription cancelled successfully`);
     unSubClose();
-    setDisabled(false);
+    setLoading("");
   };
 
   const stripePayment = () => {
-    setDisabled(true);
+    setLoading("stripe-payment");
     subscription?.active ? unSubOpen() : sendPaymentRequest();
   };
 
+  const payPalPayment = () => {
+    setLoading("paypal-payment");
+    false ? unSubOpen() : sendPaymentRequest("paypal-subscribe");
+  };
+
   const handleDeleteSubscription = async () => {
-    setLoading(true);
+    setLoading("delete-subscription");
     await unsubscribe();
     await deleteUnkey();
     await updateSubscription({
@@ -179,7 +192,7 @@ export function Settings({
       active: false,
       deletedAt: new Date(),
     });
-    setLoading(false);
+    setLoading("");
     notifySuccess("Subscription deleted successfully");
     setTimeout(() => router.back(), 1000);
   };
@@ -201,12 +214,16 @@ export function Settings({
         </Box>
         <Box className="grid grid-cols-2 gap-2 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
           <Button w="100%" onClick={close} variant="outline">
-              No, Cancel
-            </Button>
+            No, Cancel
+          </Button>
 
-            <Button w="100%" loading={loading} onClick={handleDeleteSubscription}>
-              Yes, Delete my subscription
-            </Button>
+          <Button
+            w="100%"
+            loading={loading === "delete-subscription"}
+            onClick={handleDeleteSubscription}
+          >
+            Yes, Delete my subscription
+          </Button>
         </Box>
       </Modal>
 
@@ -301,19 +318,50 @@ export function Settings({
                 <Box>Subscription is not active.</Box>
               )}
               <Group justify="flex-end" mt="lg">
+                {!subscription?.active &&
+                  payPalEnabled &&
+                  !isFree && (
+                    <Button
+                      onClick={payPalPayment}
+                      loading={loading === "paypal-payment"}
+                      type="button"
+                      variant="default"
+                      className="drop-shadow-md"
+                    >
+                      <Image
+                        component={NextImage}
+                        src={payPalBtn}
+                        w="auto"
+                        h={25}
+                        alt="PayPal Subscribe"
+                      />
+                    </Button>
+                  )}
+
                 {stripeEnabled &&
                   !isFree &&
                   (stripeLiveMode ||
                     process.env.NEXT_PUBLIC_NODE_ENV !== "production") && (
                     <Button
                       onClick={stripePayment}
-                      disabled={disabled}
+                      loading={loading === "stripe-payment"}
                       type="button"
-                      variant={subscription?.active ? "light" : "orange"}
+                      variant={subscription?.active ? "orange" : "default"}
+                      className={clsx(
+                        !subscription?.active && "drop-shadow-md"
+                      )}
                     >
-                      {subscription?.active
-                        ? "Cancel Payment Subscription"
-                        : "Set up Payment Subscription"}
+                      {subscription?.active ? (
+                        "Cancel Subscription"
+                      ) : (
+                        <Image
+                          component={NextImage}
+                          src={stripeBtn}
+                          w="auto"
+                          h={30}
+                          alt="Stripe Subscribe"
+                        />
+                      )}
                     </Button>
                   )}
               </Group>
@@ -345,7 +393,11 @@ export function Settings({
           />
 
           <Group justify="flex-end" mt="xl">
-            <Button type="submit" variant="primary">
+            <Button
+              loading={loading === "update-key"}
+              type="submit"
+              variant="primary"
+            >
               Update Name
             </Button>
           </Group>
