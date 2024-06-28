@@ -2,6 +2,8 @@
 
 import { Unkey } from "@unkey/api";
 import { getAuthUser } from "./auth";
+import * as Sentry from "@sentry/nextjs";
+
 const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY as string });
 
 export const updateKey = async ({
@@ -50,11 +52,13 @@ export const createKey = async (apiId: string, params: any) => {
       prefix: "req",
       ...params,
     });
+
     return {
       result,
       error: null,
     };
   } catch (error) {
+    Sentry.captureException(error);
     return { result: null, error };
   }
 };

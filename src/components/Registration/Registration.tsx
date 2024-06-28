@@ -2,7 +2,7 @@
 
 import { RegistrationProvider } from "@/providers/registration";
 import { Subnets } from "./RegistrationStepper/steps/Subnets";
-import { SubnetValidator } from "@/components/SubnetValidator";
+import { SubnetValidator } from "@/components/Registration/RegistrationStepper/steps/SubnetValidator";
 import { SubnetValidatorReview } from "@/components/Registration/RegistrationStepper/steps/SubnetValidatorReview";
 import { RegistrationStepper } from "@/components/Registration/RegistrationStepper/RegistrationStepper";
 import { SubscriptionType } from "@/db/types/subscription";

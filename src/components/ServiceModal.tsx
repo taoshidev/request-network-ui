@@ -9,6 +9,7 @@ import { createService, updateService } from "@/actions/services";
 import { DateTime } from "luxon";
 import { ServiceFormInput } from "./Services/ServiceFormInput";
 import { useRouter } from "next/navigation";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 
 export default function ServiceModal({
   user,
@@ -71,10 +72,17 @@ export default function ServiceModal({
     setLoading(true);
     try {
       if (!service) delete values.id;
-      if (service?.paymentType !== "PAY_PER_REQUEST") {
+      if (service?.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST) {
         values.tiers = [];
       } else {
         values.tiers = [...tiers];
+        values.expires = null;
+        const freeTier = values.tiers?.find((tier) => +tier.price === 0);
+        if (freeTier) {
+          values.remaining = freeTier.to;
+        } else {
+          values.remaining = 0;
+        }
       }
       const res = service
         ? await updateService({ ...values } as ServiceType)

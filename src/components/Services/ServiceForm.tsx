@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-} from "@mantine/core";
+import { Box, Button } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useNotification } from "@/hooks/use-notification";
@@ -10,6 +7,7 @@ import { ServiceSchema, ServiceType } from "@/db/types/service";
 import { ServiceFormInput } from "@/components/Services/ServiceFormInput";
 import { UserType } from "@/db/types/user";
 import { createService } from "@/actions/services";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 
 export function ServiceForm({
   onComplete,
@@ -67,10 +65,18 @@ export function ServiceForm({
 
   const onSubmit = async (values: Partial<ServiceType>) => {
     setLoading(true);
-    if (values?.paymentType !== "PAY_PER_REQUEST") {
+    if (values?.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST) {
       values.tiers = [];
     } else {
       values.tiers = [...tiers];
+      values.expires = null;
+      const freeTier = values.tiers?.find((tier) => +tier.price === 0);
+
+      if (freeTier) {
+        values.remaining = freeTier.to;
+      } else {
+        values.remaining = 0;
+      }
     }
     if (onDataPrepped) {
       onDataPrepped({ ...values } as ServiceType);

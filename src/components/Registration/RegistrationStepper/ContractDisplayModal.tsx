@@ -17,9 +17,10 @@ import { ServiceType } from "@/db/types/service";
 import dayjs from "dayjs";
 import clsx from "clsx";
 import { ValidatorType } from "@/db/types/validator";
-import CurrencyFormatter from "./Formatters/CurrencyFormatter";
-import FixedFormatter from "./Formatters/FixedFormatter";
+import CurrencyFormatter from "../../Formatters/CurrencyFormatter";
+import FixedFormatter from "../../Formatters/FixedFormatter";
 import { useModals } from "@mantine/modals";
+import ContractDisplayTierPricing from "./ContractDisplayTierPricing";
 
 export function ContractDisplayModal({
   html,
@@ -109,39 +110,9 @@ export function ContractDisplayModal({
           centered: true,
           size: "lg",
           title: service?.name + " - Pay Per Request / Tier Pricing",
-          children: (
-            <Box>
-              {service.tiers.map((tier, index) => (
-                <Box key={index}>
-                  <Group
-                    key={index}
-                    className="justify-between items-center m-2"
-                  >
-                    <Text>
-                      From{" "}
-                      <Badge variant="light">
-                        <FixedFormatter value={tier.from} />
-                      </Badge>{" "}
-                      to{" "}
-                      <Badge variant="light">
-                        <FixedFormatter value={tier.to} />{" "}
-                      </Badge>{" "}
-                      requests
-                    </Text>
-                    <Badge size="lg" variant="light">
-                      <CurrencyFormatter
-                        price={tier.price}
-                        currencyType={service.currencyType}
-                      />
-                    </Badge>
-                  </Group>
-                  <Divider className="border-dashed" />
-                </Box>
-              ))}
-            </Box>
-          ),
+          children: <ContractDisplayTierPricing service={service} />,
         });
-      }, 1000);
+      }, 700);
     }
   };
 

@@ -79,6 +79,7 @@ export function Consumer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptions]);
 
+
   return isLoading ? (
     <ClientRedirect />
   ) : (
@@ -149,6 +150,7 @@ export function Consumer({
                       <Table.Th>Domain</Table.Th>
                       <Table.Th>Validator</Table.Th>
                       <Table.Th>Created</Table.Th>
+                      <Table.Th>Expires</Table.Th>
                       <Table.Th>Role</Table.Th>
                       <Table.Th>Request</Table.Th>
                     </Table.Tr>
@@ -174,6 +176,11 @@ export function Consumer({
                             {dayjs(subscription?.keyData?.createdAt).format(
                               "MMM DD, YYYY"
                             )}
+                          </Table.Td>
+                          <Table.Td>
+                            {subscription?.keyData?.expires ? dayjs(subscription?.keyData?.expires).format(
+                              "MMM DD, YYYY"
+                            ) : "No Expiry"}
                           </Table.Td>
                           <Table.Td>
                             {subscription?.keyData?.meta?.type}
