@@ -239,7 +239,11 @@ export function Settings({
             No, Cancel
           </Button>
 
-          <Button w="100%" loading={loading === "delete-subscription"} onClick={handleDeleteSubscription}>
+          <Button
+            w="100%"
+            loading={loading === "delete-subscription"}
+            onClick={handleDeleteSubscription}
+          >
             Yes, Delete
           </Button>
         </Box>
@@ -341,25 +345,23 @@ export function Settings({
                 <Box>Subscription is not active.</Box>
               )}
               <Group justify="flex-end" mt="lg">
-                {!subscription?.active &&
-                  payPalEnabled &&
-                  !isFree && (
-                    <Button
-                      onClick={payPalPayment}
-                      loading={loading === "paypal-payment"}
-                      type="button"
-                      variant="default"
-                      className="drop-shadow-md"
-                    >
-                      <Image
-                        component={NextImage}
-                        src={payPalBtn}
-                        w="auto"
-                        h={25}
-                        alt="PayPal Subscribe"
-                      />
-                    </Button>
-                  )}
+                {!subscription?.active && payPalEnabled && !isFree && (
+                  <Button
+                    onClick={payPalPayment}
+                    loading={loading === "paypal-payment"}
+                    type="button"
+                    variant="default"
+                    className="drop-shadow-md"
+                  >
+                    <Image
+                      component={NextImage}
+                      src={payPalBtn}
+                      w="auto"
+                      h={25}
+                      alt="PayPal Subscribe"
+                    />
+                  </Button>
+                )}
 
                 {stripeEnabled &&
                   !isFree &&
@@ -430,8 +432,9 @@ export function Settings({
           </Group>
         </Box>
       </Card>
-      <StatTable data={apiKey} />
-
+      <Card className="shadow-sm border-gray-200" withBorder>
+        <StatTable data={apiKey} />
+      </Card>
       <Box mt="xl">
         <Alert
           className="shadow-sm border-gray-200"
