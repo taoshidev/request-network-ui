@@ -47,10 +47,10 @@ export default function ClientRedirect({
     <>
       {showLoader && (
         <Box className="fixed inset-0 flex items-center justify-center z-50 overflow-hidden">
-          <Box className="absolute inset-0 backdrop-blur-sm"></Box>
+          <Box className="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm"></Box>
           <Box className="relative text-center">
             {message && (
-              <Title className="pb-10 text-black text-base">{message}</Title>
+              <Title className="pb-10 text-white text-base">{message}</Title>
             )}
             <Loader size="lg" />
           </Box>

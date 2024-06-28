@@ -42,6 +42,8 @@ import { UserType } from "@/db/types/user";
 import { useModals } from "@mantine/modals";
 import AgreeTOSModal from "../../AgreeTOSModal";
 import { randomBytes } from "crypto";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { ServiceType } from "@/db/types/service";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -271,6 +273,11 @@ export function RegistrationStepper({
       selectedService?.id
     );
 
+    const isActive =
+      selectedService?.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST
+        ? +selectedService?.price === 0
+        : selectedService.remaining !== 0;
+
     try {
       const refill = {
         interval: "daily",
@@ -298,6 +305,7 @@ export function RegistrationStepper({
         endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
         validatorId,
         subscription: {} as SubscriptionType,
+        service: {} as ServiceType,
         proxyServiceId: "",
       };
 
@@ -310,6 +318,14 @@ export function RegistrationStepper({
         ratelimit,
         meta,
       };
+
+      if (
+        selectedService?.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST &&
+        +selectedService?.remaining === 0
+      ) {
+        delete keyPayload.remaining;
+        delete keyPayload.refill;
+      }
 
       if (selectedService?.expires || selectedService?.expires?.length > 0) {
         keyPayload.expires = new Date(selectedService?.expires)?.getTime();
@@ -341,7 +357,7 @@ export function RegistrationStepper({
         agreedToTOS: registrationData.agreedToTOS,
         serviceId: selectedService?.id,
         contractId: registrationData?.endpoint?.contract?.id,
-        active: +selectedService?.price === 0,
+        active: isActive,
       } as SubscriptionType);
 
       if (res?.error)
@@ -350,7 +366,9 @@ export function RegistrationStepper({
         );
 
       const subscription = res?.data?.[0];
+
       meta.subscription = subscription;
+      meta.service = selectedService;
 
       const { id: subscriptionId, apiSecret } = subscription;
 
@@ -375,7 +393,8 @@ export function RegistrationStepper({
           hotkey: registrationData?.validator?.hotkey,
           validatorWalletAddress: validator?.walletAddress,
           price: selectedService?.price,
-          active: +selectedService?.price === 0,
+          active: isActive,
+          //TODO: Add paymentType: selectedService?.paymentType, and add column in api db
           meta,
         },
       });

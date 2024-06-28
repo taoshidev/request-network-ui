@@ -14,6 +14,7 @@ import {
   Alert,
   CopyButton,
   Grid,
+  Card,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
@@ -36,6 +37,8 @@ import { ConfirmModal } from "../ConfirmModal";
 import { updateSubscription, fetchProxyService } from "@/actions/subscriptions";
 import CurrencyFormatter from "../Formatters/CurrencyFormatter";
 import clsx from "clsx";
+import TierPurchaseOption from "./TierPurchaseOption";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 
 const updateSchema = z.object({
   name: z
@@ -79,6 +82,20 @@ export function Settings({
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
   });
+  const [tiers, setTiers] = useState<
+    {
+      from: number;
+      to: number;
+      price: number;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    if (subscription?.service?.tiers?.length > 0) {
+      setTiers(subscription.service.tiers);
+    }
+  }, [subscription]);
+
   // refresh page when it comes back into view
   useEffect(() => {
     const fetchService = async () => {
@@ -185,7 +202,8 @@ export function Settings({
 
   const handleDeleteSubscription = async () => {
     setLoading("delete-subscription");
-    await unsubscribe();
+    if (subscription.service.paymentType === PAYMENT_TYPE.SUBSCRIPTION)
+      await unsubscribe();
     await deleteUnkey();
     await updateSubscription({
       id: subscription?.id,
@@ -203,7 +221,11 @@ export function Settings({
         centered
         opened={opened}
         onClose={close}
-        title="Are you sure you want to delete subscription?"
+        title={
+          subscription.service.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST
+            ? "Are you sure you want to delete subscription?"
+            : "Are you sure you want to delete access keys?"
+        }
       >
         <Box mb="lg">
           <Text>
@@ -222,7 +244,7 @@ export function Settings({
             loading={loading === "delete-subscription"}
             onClick={handleDeleteSubscription}
           >
-            Yes, Delete my subscription
+            Yes, Delete
           </Button>
         </Box>
       </Modal>
@@ -244,7 +266,7 @@ export function Settings({
             </Title>
 
             <Alert
-              className="shadow-sm"
+              className="shadow-sm border-gray-200"
               color="orange"
               radius="0"
               title=""
@@ -278,7 +300,7 @@ export function Settings({
       {apiKey?.meta?.currencyType === "FIAT" && (
         <Box my="xl">
           <Alert
-            className="shadow-sm"
+            className="shadow-sm border-gray-200"
             variant="light"
             color={subscription?.active ? "#33ad47" : "orange"}
             title={
@@ -300,10 +322,15 @@ export function Settings({
                     <Grid.Col span={6}>
                       <Text>
                         Price:{" "}
-                        <CurrencyFormatter
-                          price={subscription?.service?.price}
-                          currencyType={subscription?.service?.currencyType}
-                        />
+                        {subscription.service.paymentType !==
+                        PAYMENT_TYPE.PAY_PER_REQUEST ? (
+                          <CurrencyFormatter
+                            price={subscription?.service?.price}
+                            currencyType={subscription?.service?.currencyType}
+                          />
+                        ) : (
+                          "Pay Per Request"
+                        )}
                       </Text>
                       <Text>
                         Validator: {subscription?.endpoint?.validator?.name}
@@ -318,25 +345,23 @@ export function Settings({
                 <Box>Subscription is not active.</Box>
               )}
               <Group justify="flex-end" mt="lg">
-                {!subscription?.active &&
-                  payPalEnabled &&
-                  !isFree && (
-                    <Button
-                      onClick={payPalPayment}
-                      loading={loading === "paypal-payment"}
-                      type="button"
-                      variant="default"
-                      className="drop-shadow-md"
-                    >
-                      <Image
-                        component={NextImage}
-                        src={payPalBtn}
-                        w="auto"
-                        h={25}
-                        alt="PayPal Subscribe"
-                      />
-                    </Button>
-                  )}
+                {!subscription?.active && payPalEnabled && !isFree && (
+                  <Button
+                    onClick={payPalPayment}
+                    loading={loading === "paypal-payment"}
+                    type="button"
+                    variant="default"
+                    className="drop-shadow-md"
+                  >
+                    <Image
+                      component={NextImage}
+                      src={payPalBtn}
+                      w="auto"
+                      h={25}
+                      alt="PayPal Subscribe"
+                    />
+                  </Button>
+                )}
 
                 {stripeEnabled &&
                   !isFree &&
@@ -379,6 +404,10 @@ export function Settings({
       )}
 
       <Box my="xl">
+        {tiers.length > 0 && <TierPurchaseOption subscription={subscription} />}
+      </Box>
+
+      <Card className="shadow-sm border-gray-200" withBorder my="xl">
         <Title order={2} mb="sm">
           General Settings
         </Title>
@@ -402,15 +431,20 @@ export function Settings({
             </Button>
           </Group>
         </Box>
-      </Box>
-      <StatTable data={apiKey} />
-
-      <Box my="xl">
+      </Card>
+      <Card className="shadow-sm border-gray-200" withBorder>
+        <StatTable data={apiKey} />
+      </Card>
+      <Box mt="xl">
         <Alert
-          className="shadow-sm"
+          className="shadow-sm border-gray-200"
           variant="light"
           color="orange"
-          title="Delete Subscription"
+          title={
+            subscription.service.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST
+              ? "Delete Subscription"
+              : "Delete Key"
+          }
           icon={<IconAlertCircle />}
         >
           <Box>
@@ -420,7 +454,10 @@ export function Settings({
             </Box>
             <Group justify="flex-end" mt="lg">
               <Button variant="orange" onClick={open}>
-                Delete Subscription
+                {subscription.service.paymentType !==
+                PAYMENT_TYPE.PAY_PER_REQUEST
+                  ? "Delete Subscription"
+                  : "Delete Key"}
               </Button>
             </Group>
           </Box>

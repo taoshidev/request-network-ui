@@ -26,7 +26,7 @@ export function Keys({
 
   return (
     <Container>
-      <Box my="xl" pb="lg">
+      <Box my="xl">
         <Title className="mb-5">{subscription?.appName}</Title>
         <Text size="xs" mb="sm">
           Created: {dayjs(apiKey?.createdAt).format("MMM DD, YYYY")}

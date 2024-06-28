@@ -18,7 +18,7 @@ export function StatTable({
   return (
     <Box>
       {(caption.length === 0 || (Array.isArray(data) && data?.length > 0)) && (
-        <Card className="shadow-sm">
+        <Card>
           {data && (
             <Title size="sm" order={2}>
               {caption ? caption : "Usage Statistics"}

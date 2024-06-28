@@ -16,6 +16,7 @@ import { getAuthUser } from "@/actions/auth";
 import { UserType } from "@/db/types/user";
 import { useRouter } from "next/navigation";
 import { IconPlus, IconX } from "@tabler/icons-react";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 
 export function ServiceFormInput({
   form,
@@ -70,15 +71,15 @@ export function ServiceFormInput({
 
   const paymentType = [
     {
-      value: "FREE",
+      value: PAYMENT_TYPE.FREE,
       label: "Free",
     },
     {
-      value: "SUBSCRIPTION",
+      value: PAYMENT_TYPE.SUBSCRIPTION,
       label: "Subscription",
     },
     {
-      value: "PAY_PER_REQUEST",
+      value: PAYMENT_TYPE.PAY_PER_REQUEST,
       label: "Pay Per Request",
     },
   ];
@@ -86,6 +87,14 @@ export function ServiceFormInput({
   const handlePaymentTypeChange = (paymentType: string | null) => {
     if (paymentType === "FREE") {
       form.setFieldValue("price", "0.00");
+    } else if (paymentType === PAYMENT_TYPE.PAY_PER_REQUEST) {
+      form.setFieldValue("price", "0.00");
+      // form.setFieldValue("expires", "");
+      const freeTier = tiers?.find((tier) => +tier.price === 0);
+
+      if (freeTier) {
+        form.setFieldValue("remaining", freeTier.to);
+      }
     }
     form.setFieldValue("paymentType", paymentType);
   };
@@ -155,7 +164,7 @@ export function ServiceFormInput({
         </Box>
       </Group>
       <Group mt="md" grow>
-        {form.values.paymentType === "PAY_PER_REQUEST" && (
+        {form.values.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST && (
           <Box>
             <Box className="grid grid-cols-[1fr_auto] gap-4">
               <Text mb="lg">Tiers</Text>
@@ -179,6 +188,7 @@ export function ServiceFormInput({
                 <NumberInput
                   label="To"
                   min={0}
+                  step={1000}
                   value={tier.to}
                   onChange={(value) => updateTier(index, "to", value!)}
                 />
@@ -186,23 +196,9 @@ export function ServiceFormInput({
                   label="Tier Price"
                   min={0}
                   value={tier.price}
-                  step={0.01}
+                  step={100}
                   onChange={(value) => {
-                    if (index > 0 && +value < +tiers[index - 1].price) {
-                      updateTier(
-                        index,
-                        "price",
-                        parseFloat((tiers[index - 1].price + 1).toFixed(2))
-                      );
-                    } else {
-                      if (typeof value === "number") {
-                        updateTier(
-                          index,
-                          "price",
-                          parseFloat(value.toFixed(2))
-                        );
-                      }
-                    }
+                    updateTier(index, "price", parseFloat((+value).toFixed(2)));
                   }}
                 />
                 <ActionIcon
@@ -237,37 +233,39 @@ export function ServiceFormInput({
           </Box>
         </Group>
       )}
-      <Group mb="md" grow>
-        <Box>
-          <NumberInput
-            label="Request Limit"
-            withAsterisk
-            description="Determines the total numbers of requests."
-            placeholder="10000"
-            {...form.getInputProps("remaining")}
-          />
-        </Box>
-        <Box>
-          <NumberInput
-            label="Limit"
-            withAsterisk
-            description="The total amount of burstable requests."
-            placeholder="10"
-            {...form.getInputProps("limit")}
-          />
-        </Box>
-      </Group>
+      {form.values.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST && (
+        <Group mb="md" grow>
+          <Box>
+            <NumberInput
+              label="Request Limit"
+              withAsterisk
+              description="Determines the total numbers of requests."
+              placeholder="10000"
+              {...form.getInputProps("remaining")}
+            />
+          </Box>
+          <Box>
+            <DateTimePicker
+              label="Expiry Date"
+              description="When should your keys expire?"
+              withSeconds
+              valueFormat="MM/DD/YYYY hh:mm:ss A"
+              placeholder="Expiry Date"
+              {...form.getInputProps("expires")}
+            />
+          </Box>
+        </Group>
+      )}
+
       <Box mb="md">
-        <DateTimePicker
-          label="Expiry Date"
-          description="When should your keys expire?"
-          withSeconds
-          valueFormat="MM/DD/YYYY hh:mm:ss A"
-          placeholder="Expiry Date"
-          {...form.getInputProps("expires")}
+        <NumberInput
+          label="Limit"
+          withAsterisk
+          description="The total amount of burstable requests."
+          placeholder="10"
+          {...form.getInputProps("limit")}
         />
       </Box>
-
       <Group mb="md" grow>
         <Box>
           <NumberInput

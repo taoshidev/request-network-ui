@@ -46,7 +46,6 @@ export function Endpoints({
       url: "",
       subnetId: "",
       validatorId: "",
-      // walletAddress: "",
       contractId: "",
       enabled: false,
     },
