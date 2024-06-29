@@ -185,7 +185,15 @@ export function Settings({
   };
 
   const unsubscribe = async () => {
+    setLoading("");
     const unSubRes = await cancelSubscription(subscription.proxyServiceId);
+
+    if (unSubRes?.error) {
+      notifyError(`Subscription cancel failed.`);
+      setLoading("");
+      return;
+    }
+
     notifySuccess(`Subscription cancelled successfully`);
     unSubClose();
     setLoading("");

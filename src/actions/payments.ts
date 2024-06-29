@@ -86,6 +86,8 @@ export async function cancelSubscription(proxyServiceId) {
     },
   });
 
+  if (proxyRes?.error) return proxyRes;
+  
   await updateSubscription({
     id: subscription?.id,
     active: false,
