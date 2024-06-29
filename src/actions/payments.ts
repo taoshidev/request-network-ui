@@ -10,10 +10,13 @@ import { ValidatorType } from "@/db/types/validator";
 import { revalidatePath } from "next/cache";
 import { StripeCheckType } from "@/db/types/stripe-check";
 import { PayPalCheckType } from "@/db/types/paypal-check";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 
 export async function requestPayment(
   proxyServiceId: string,
-  returnRedirect: string = ""
+  returnRedirect: string = "",
+  price: string,
+  paymentType: string = PAYMENT_TYPE.SUBSCRIPTION
 ) {
   const user = await getAuthUser();
 
@@ -45,6 +48,8 @@ export async function requestPayment(
       email: user?.email,
       serviceId: subscription?.proxyServiceId as string,
       redirect: returnRedirect,
+      price,
+      paymentType,
     },
   });
 

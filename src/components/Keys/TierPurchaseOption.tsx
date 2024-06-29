@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import NextImage from "next/image";
 import {
   Box,
   Button,
   Group,
+  Image,
   Modal,
   Text,
   NumberInput,
@@ -16,6 +18,16 @@ import { useNotification } from "@/hooks/use-notification";
 import CurrencyFormatter from "../Formatters/CurrencyFormatter";
 import FixedFormatter from "../Formatters/FixedFormatter";
 import { requestPayment } from "@/actions/payments";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import payPalBtn from "@/assets/paypal-1.svg";
+import stripeBtn from "@/assets/stripe.svg";
+import clsx from "clsx";
+
+const isFree = false;
+const stripeEnabled = true;
+const stripeLiveMode = false;
+const payPalEnabled = true;
+const loading: string = "";
 
 const BUTTON_COUNT = 6;
 
@@ -66,7 +78,6 @@ export default function TierPurchaseOption({ subscription }) {
   ] = useDisclosure(false);
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
 
   useEffect(() => {
     if (subscription?.service?.tiers?.length > 0) {
@@ -98,7 +109,7 @@ export default function TierPurchaseOption({ subscription }) {
     }
   }, [quantity, selectedRequest, tiers]);
 
-  const confirmPurchase = async () => {
+  const stripePayment = async () => {
     notifySuccess(
       `Purchased ${selectedRequest! * quantity} requests successfully!`
     );
@@ -106,10 +117,20 @@ export default function TierPurchaseOption({ subscription }) {
     closeConfirmModal();
   };
 
-  const sendPaymentRequest = async () => {
+  const payPalPayment = async () => {
+    notifySuccess(
+      `Purchased ${selectedRequest! * quantity} requests successfully!`
+    );
+    await sendPaymentRequest("paypal-subscribe");
+    closeConfirmModal();
+  };
+
+  const sendPaymentRequest = async (url = "subscribe") => {
     const requestPaymentRes = await requestPayment(
       subscription.proxyServiceId,
-      window.location.pathname
+      window.location.pathname,
+      totalPrice.toString(),
+      PAYMENT_TYPE.PAY_PER_REQUEST
     );
 
     if (
@@ -117,7 +138,7 @@ export default function TierPurchaseOption({ subscription }) {
       requestPaymentRes.token
     ) {
       window.open(
-        `${requestPaymentRes.subscription.endpoint.validator.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`,
+        `${requestPaymentRes.subscription.endpoint.validator.baseApiUrl}/${url}?token=${requestPaymentRes.token}`,
         "_blank"
       );
     }
@@ -188,28 +209,51 @@ export default function TierPurchaseOption({ subscription }) {
               />
             </Text>
           </Box>
-          <Box mt="lg">
-            <RadioGroup
-              label="Select Payment Method"
-              description="You will be redirected to the payment provider to complete the purchase."
-              value={paymentMethod!}
-              onChange={(val) => setPaymentMethod(val)}
-            >
-              <Radio value="stripe" label="Stripe" />
-              <Radio value="paypal" label="PayPal" />
-            </RadioGroup>
-          </Box>
           <Group className="flex justify-end mt-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
             <Button onClick={closeConfirmModal} variant="outline">
               Cancel
             </Button>
-            <Button
-              onClick={confirmPurchase}
-              variant="primary"
-              disabled={!paymentMethod}
-            >
-              Initiate Purchase
-            </Button>
+            {!subscription?.active && payPalEnabled && !isFree && (
+              <Button
+                onClick={payPalPayment}
+                loading={loading === "paypal-payment"}
+                type="button"
+                variant="default"
+                className="drop-shadow-md"
+              >
+                <Image
+                  component={NextImage}
+                  src={payPalBtn}
+                  w="auto"
+                  h={25}
+                  alt="PayPal Subscribe"
+                />
+              </Button>
+            )}
+            {stripeEnabled &&
+              !isFree &&
+              (stripeLiveMode ||
+                process.env.NEXT_PUBLIC_NODE_ENV !== "production") && (
+                <Button
+                  onClick={stripePayment}
+                  loading={loading === "stripe-payment"}
+                  type="button"
+                  variant={subscription?.active ? "orange" : "default"}
+                  className={clsx(!subscription?.active && "drop-shadow-md")}
+                >
+                  {subscription?.active ? (
+                    "Cancel Subscription"
+                  ) : (
+                    <Image
+                      component={NextImage}
+                      src={stripeBtn}
+                      w="auto"
+                      h={30}
+                      alt="Stripe Subscribe"
+                    />
+                  )}
+                </Button>
+              )}
           </Group>
         </Box>
       </Modal>
