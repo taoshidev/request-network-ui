@@ -169,7 +169,8 @@ export function Settings({
   const sendPaymentRequest = async (url = "subscribe") => {
     const requestPaymentRes = await requestPayment(
       subscription.proxyServiceId,
-      window.location.pathname
+      window.location.pathname,
+      subscription?.service?.price
     );
 
     if (
@@ -184,7 +185,15 @@ export function Settings({
   };
 
   const unsubscribe = async () => {
+    setLoading("");
     const unSubRes = await cancelSubscription(subscription.proxyServiceId);
+
+    if (unSubRes?.error) {
+      notifyError(`Subscription cancel failed.`);
+      setLoading("");
+      return;
+    }
+
     notifySuccess(`Subscription cancelled successfully`);
     unSubClose();
     setLoading("");
@@ -362,7 +371,6 @@ export function Settings({
                     />
                   </Button>
                 )}
-
                 {stripeEnabled &&
                   !isFree &&
                   (stripeLiveMode ||

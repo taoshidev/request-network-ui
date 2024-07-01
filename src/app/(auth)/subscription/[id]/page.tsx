@@ -26,6 +26,7 @@ export default async function Page({ params }: any) {
           baseApiUrl: true,
           apiPrefix: true,
           stripeEnabled: true,
+          payPalEnabled: true,
         },
       },
       endpoint: {
