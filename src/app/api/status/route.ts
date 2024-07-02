@@ -1,7 +1,5 @@
 import { sendEmail } from "@/actions/email";
-import {
-  apiUpdateSubscription,
-} from "@/actions/subscriptions";
+import { apiUpdateSubscription } from "@/actions/subscriptions";
 import { endpoints, subscriptions, users, validators } from "@/db/schema";
 import { db } from "@/db";
 import {
@@ -47,6 +45,7 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
     const subscription: any = subscriptionRes?.[0];
 
     switch (type) {
+      case "charge.succeeded":
       case "invoice.payment_succeeded":
         sendEmail({
           to: subscription.to,

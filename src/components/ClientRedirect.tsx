@@ -46,7 +46,7 @@ export default function ClientRedirect({
   return (
     <>
       {showLoader && (
-        <Box className="fixed inset-0 flex items-center justify-center z-50 overflow-hidden">
+        <Box className="absolute inset-0 flex items-center justify-center z-50 overflow-hidden">
           <Box className="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm"></Box>
           <Box className="relative text-center">
             {message && (

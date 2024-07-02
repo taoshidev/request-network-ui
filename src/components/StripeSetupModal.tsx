@@ -31,6 +31,7 @@ export default function StripeSetupModal({
   );
 
   const requiredEvents = [
+    "charge.succeeded",
     "invoice.payment_succeeded",
     "invoice.payment_failed",
     "customer.subscription.deleted",

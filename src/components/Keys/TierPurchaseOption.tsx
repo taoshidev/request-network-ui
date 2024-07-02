@@ -111,7 +111,7 @@ export default function TierPurchaseOption({ subscription }) {
 
   const stripePayment = async () => {
     notifySuccess(
-      `Purchased ${selectedRequest! * quantity} requests successfully!`
+      `Purchasing ${selectedRequest! * quantity} requests!`
     );
     await sendPaymentRequest();
     closeConfirmModal();
@@ -119,7 +119,7 @@ export default function TierPurchaseOption({ subscription }) {
 
   const payPalPayment = async () => {
     notifySuccess(
-      `Purchased ${selectedRequest! * quantity} requests successfully!`
+      `Purchasing ${selectedRequest! * quantity} requests!`
     );
     await sendPaymentRequest("paypal-pay");
     closeConfirmModal();
@@ -196,7 +196,7 @@ export default function TierPurchaseOption({ subscription }) {
             <NumberInput
               label="Quantity"
               value={quantity}
-              onChange={(val) => setQuantity(+val ?? 1)}
+              onChange={(val) => setQuantity(+val ? +val : 1)}
               min={1}
             />
           </Box>
