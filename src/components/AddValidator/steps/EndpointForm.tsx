@@ -9,7 +9,7 @@ import { useNotification } from "@/hooks/use-notification";
 import { ContractType } from "@/db/types/contract";
 import clsx from "clsx";
 import { isCrypto } from "@/utils/is-crypto";
-import { PERCENT_REALTIME_LABEL, PERCENT_REALTIME_TYPE, PercentRealtimeOptions } from "@/interfaces/enum/percent-realtime-enum";
+import { PercentRealtimeOptions } from "@/interfaces/enum/percent-realtime-enum";
 
 const SN8_ONLY = true;
 export default function EndpointForm({
