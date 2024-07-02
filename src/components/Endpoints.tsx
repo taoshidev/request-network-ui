@@ -14,6 +14,7 @@ import { SubnetType } from "@/db/types/subnet";
 import { ContractType } from "@/db/types/contract";
 import { useForm, zodResolver } from "@mantine/form";
 import { uniq as _uniq } from "lodash";
+import { constructEndpointUrl } from "@/utils/endpoint-url";
 
 export function Endpoints({
   endpoints,
@@ -47,6 +48,7 @@ export function Endpoints({
       subnetId: "",
       validatorId: "",
       contractId: "",
+      percentRealtime: "",
       enabled: false,
     },
     validate: zodResolver(EndpointSchema),
@@ -56,6 +58,7 @@ export function Endpoints({
     <>
       <Modal
         centered
+        size="lg"
         opened={opened}
         onClose={close}
         title="Create a new Endpoint"
@@ -95,7 +98,9 @@ export function Endpoints({
               <Table.Tbody>
                 {(endpoints || []).map((endpoint: any) => (
                   <Table.Tr key={endpoint?.id}>
-                    <Table.Td>{endpoint.url}</Table.Td>
+                    <Table.Td>
+                    {constructEndpointUrl(endpoint?.url, endpoint?.percentRealtime)}
+                      </Table.Td>
                     <Table.Td>
                       {[
                         ..._uniq(

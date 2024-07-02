@@ -166,6 +166,7 @@ export const endpoints = pgTable(
       onDelete: "set null",
     }),
     url: varchar("url").notNull(),
+    percentRealtime: integer("percent_realtime").default(0),
     enabled: boolean("enabled").default(false).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at", {
@@ -177,7 +178,7 @@ export const endpoints = pgTable(
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => ({
-    unique: unique().on(table.validatorId, table.url),
+    unique: unique().on(table.validatorId, table.url, table.percentRealtime),
   })
 );
 

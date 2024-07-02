@@ -27,6 +27,8 @@ import FixedFormatter from "@/components/Formatters/FixedFormatter";
 import { randomBytes } from "crypto";
 import ContractDisplayTierPricing from "../ContractDisplayTierPricing";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { constructEndpointUrl } from "@/utils/endpoint-url";
+import { PERCENT_REALTIME_LABEL } from "@/interfaces/enum/percent-realtime-enum";
 
 export function SubnetValidatorReview({ user }: { user: UserType }) {
   const { registrationData } = useRegistration();
@@ -128,9 +130,26 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Endpoint</Text>
-              <Text className="text-sm">{registrationData?.endpoint?.url}</Text>
+              <Text className="text-sm">
+                {constructEndpointUrl(
+                  registrationData?.endpoint?.url,
+                  registrationData?.endpoint?.percentRealtime
+                )}
+              </Text>
             </Group>
             <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Realtime Tier</Text>
+              <Text className="text-sm">
+                {
+                  PERCENT_REALTIME_LABEL[
+                    registrationData?.endpoint?.percentRealtime
+                  ]
+                }
+              </Text>
+            </Group>
+            <Divider className="border-dashed" />
+
             <Group className="justify-between items-center">
               <Text className="text-sm">Payment Method</Text>
               <Text className="text-sm">
@@ -199,9 +218,11 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Expiry</Text>
               <Text className="text-sm">
-                {dayjs(
-                  registrationData?.endpoint?.selectedService?.expires
-                ).format("MMM DD, YYYY")}
+                {registrationData?.endpoint?.selectedService?.expires
+                  ? dayjs(
+                      registrationData?.endpoint?.selectedService?.expires
+                    ).format("MMM DD, YYYY")
+                  : "No Expiry"}
               </Text>
             </Group>
           </Stack>

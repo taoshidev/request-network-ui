@@ -65,6 +65,7 @@ export default function ValidatorStepper({
       subnetId: "",
       baseApiUrl: "",
       url: "",
+      percentRealtime: "",
     },
     validate: zodResolver(ValidatorEndpointSchema),
   });

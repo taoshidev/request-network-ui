@@ -64,6 +64,13 @@
       "when": 1719589778270,
       "tag": "0008_friendly_rawhide_kid",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1719894148918,
+      "tag": "0009_living_corsair",
+      "breakpoints": true
     }
   ]
 }
