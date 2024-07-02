@@ -1,6 +1,4 @@
 import { TransactionType } from "@/db/types/transaction";
-import { marked } from "marked";
-const { convert: toText } = require("html-to-text");
 
 export const invoiceHTML = ({
   consumerApiUrl,
@@ -14,7 +12,7 @@ export const invoiceHTML = ({
   transaction: TransactionType;
 }) => {
   const { amount } = transaction;
-  const stripeReceiptUrl = `<p><a href="${transaction?.meta?.receipt_url}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">View ${validatorName} Invoice</button></a></p>`;
+  const stripeReceiptUrl = `<p><a href="${transaction?.meta?.receipt_url}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">View ${validatorName} Receipt</button></a></p>`;
   const stripeInvoiceUrl = `<p><a href="${transaction?.meta?.hosted_invoice_url}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">View ${validatorName} Invoice</button></a></p>`;
   const stripeInvoicePdf = `<p><a href="${transaction?.meta?.invoice_pdf}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">Download ${validatorName} Invoice</button></a></p>`;
 
