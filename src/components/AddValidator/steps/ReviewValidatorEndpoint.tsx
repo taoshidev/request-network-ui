@@ -6,6 +6,7 @@ import React from "react";
 import { DateTime } from "luxon";
 import CurrencyFormatter from "@/components/Formatters/CurrencyFormatter";
 import FixedFormatter from "@/components/Formatters/FixedFormatter";
+import { constructEndpointUrl } from "@/utils/endpoint-url";
 
 export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
   return (
@@ -45,10 +46,10 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                   <Table.Td>{form.values.baseApiUrl}</Table.Td>
                   <Table.Th>Path</Table.Th>
                   <Table.Td>
-                    {form.values.url +
-                      (form.values?.percentRealtime
-                        ? `?tier=${form.values?.percentRealtime}`
-                        : ``)}
+                    {constructEndpointUrl(
+                      form?.values?.url,
+                      form?.values?.percentRealtime
+                    )}
                   </Table.Td>
                 </Table.Tr>
                 <Table.Tr>

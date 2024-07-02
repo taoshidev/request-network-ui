@@ -27,6 +27,7 @@ import FixedFormatter from "@/components/Formatters/FixedFormatter";
 import { randomBytes } from "crypto";
 import ContractDisplayTierPricing from "../ContractDisplayTierPricing";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { constructEndpointUrl } from "@/utils/endpoint-url";
 
 export function SubnetValidatorReview({ user }: { user: UserType }) {
   const { registrationData } = useRegistration();
@@ -129,10 +130,10 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Endpoint</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.url +
-                  (registrationData?.endpoint?.percentRealtime
-                    ? `?tier=${registrationData?.endpoint?.percentRealtime}`
-                    : ``)}
+                {constructEndpointUrl(
+                  registrationData?.endpoint?.url,
+                  registrationData?.endpoint?.percentRealtime
+                )}
               </Text>
             </Group>
             <Divider className="border-dashed" />
@@ -212,9 +213,11 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Expiry</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.selectedService?.expires ? dayjs(
-                  registrationData?.endpoint?.selectedService?.expires
-                ).format("MMM DD, YYYY") : "No Expiry"}
+                {registrationData?.endpoint?.selectedService?.expires
+                  ? dayjs(
+                      registrationData?.endpoint?.selectedService?.expires
+                    ).format("MMM DD, YYYY")
+                  : "No Expiry"}
               </Text>
             </Group>
           </Stack>

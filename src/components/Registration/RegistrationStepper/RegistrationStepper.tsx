@@ -44,6 +44,7 @@ import AgreeTOSModal from "../../AgreeTOSModal";
 import { randomBytes } from "crypto";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 import { ServiceType } from "@/db/types/service";
+import { constructEndpointUrl } from "@/utils/endpoint-url";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -272,7 +273,10 @@ export function RegistrationStepper({
       endpointId,
       selectedService?.id
     );
-
+    const endpointUrl = `${validator?.baseApiUrl}${constructEndpointUrl(
+      endpoint?.url,
+      endpoint?.percentRealtime
+    )}`;
     const isActive =
       selectedService?.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST
         ? +selectedService?.price === 0
@@ -302,12 +306,7 @@ export function RegistrationStepper({
         currencyType: selectedService?.currencyType,
         validatorWalletAddress: validator?.walletAddress,
         hotkey: registrationData?.validator?.hotkey,
-        endpoint: `${validator?.baseApiUrl}${
-          endpoint?.url +
-          (endpoint?.percentRealtime
-            ? `?tier=${endpoint?.percentRealtime}`
-            : ``)
-        }`,
+        endpoint: endpointUrl,
         validatorId,
         subscription: {} as SubscriptionType,
         service: {} as ServiceType,
@@ -438,12 +437,7 @@ export function RegistrationStepper({
         apiKey: key,
         apiSecret: apiSecret!,
         walletAddress: validator?.walletAddress!,
-        endpoint: `${validator?.baseApiUrl}${
-          endpoint?.url +
-          (endpoint?.percentRealtime
-            ? `?tier=${endpoint?.percentRealtime}`
-            : ``)
-        }`,
+        endpoint: endpointUrl,
       });
       open();
 

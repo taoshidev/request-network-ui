@@ -15,7 +15,7 @@ export const EndpointSchema = z.object({
   contractId: z.string().uuid().optional(),
   contract: ContractSchema.optional().nullish(),
   subscriptions: z.lazy(() => z.array(SubscriptionSchema)).optional(),
-  percentRealtime: z.number().min(0).max(100),
+  percentRealtime: z.number().min(-1).max(100),
   url: z.string().regex(/^\/[\w-]+(\/[\w-]+)*$/, {
     message: "Invalid endpoint path format",
   }),

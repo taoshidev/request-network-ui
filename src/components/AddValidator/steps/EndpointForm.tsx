@@ -7,9 +7,9 @@ import { EndpointType } from "@/db/types/endpoint";
 import { checkPropExists } from "@/actions/validators";
 import { useNotification } from "@/hooks/use-notification";
 import { ContractType } from "@/db/types/contract";
-
 import clsx from "clsx";
 import { isCrypto } from "@/utils/is-crypto";
+import { PERCENT_REALTIME_LABEL, PERCENT_REALTIME_TYPE, PercentRealtimeOptions } from "@/interfaces/enum/percent-realtime-enum";
 
 const SN8_ONLY = true;
 export default function EndpointForm({
@@ -109,28 +109,7 @@ export default function EndpointForm({
           label="Percent Realtime"
           withAsterisk
           placeholder="Choose percent realtime"
-          data={[
-            {
-              value: "0",
-              label:
-                "0% of positions real-time - 100% of positions 24-hour lagged",
-            },
-            {
-              value: "30",
-              label:
-                "30% of positions real-time - 70% of positions 24-hour lagged",
-            },
-            {
-              value: "50",
-              label:
-                "50% of positions real-time - 50% of positions 24-hour lagged",
-            },
-            {
-              value: "100",
-              label:
-                "100% of positions real-time - 0% of positions 24-hour lagged",
-            },
-          ]}
+          data={PercentRealtimeOptions}
           {...form.getInputProps("percentRealtime")}
           onChange={(val) => form.setFieldValue("percentRealtime", +val!)}
           value={form?.values?.percentRealtime?.toString() || ""}

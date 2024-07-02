@@ -23,6 +23,7 @@ import clsx from "clsx";
 import { ServiceType } from "@/db/types/service";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { constructEndpointUrl } from "@/utils/endpoint-url";
 
 export function ValidatorEndpoint({
   currentSubscriptions,
@@ -165,10 +166,10 @@ export function ValidatorEndpoint({
                     )}
                   >
                     <Text className="font-bold mb-4" truncate>
-                      {endpoint?.url +
-                        (endpoint?.percentRealtime
-                          ? `?tier=${endpoint?.percentRealtime}`
-                          : ``)}
+                      {constructEndpointUrl(
+                        endpoint?.url,
+                        endpoint?.percentRealtime
+                      )}
                     </Text>
                     <Divider className="border-dashed" />
                     <Group className="justify-between items-center my-2">
