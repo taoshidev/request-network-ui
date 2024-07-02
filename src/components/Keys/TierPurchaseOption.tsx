@@ -110,17 +110,13 @@ export default function TierPurchaseOption({ subscription }) {
   }, [quantity, selectedRequest, tiers]);
 
   const stripePayment = async () => {
-    notifySuccess(
-      `Purchasing ${selectedRequest! * quantity} requests!`
-    );
+    notifySuccess(`Purchasing ${selectedRequest! * quantity} requests!`);
     await sendPaymentRequest();
     closeConfirmModal();
   };
 
   const payPalPayment = async () => {
-    notifySuccess(
-      `Purchasing ${selectedRequest! * quantity} requests!`
-    );
+    notifySuccess(`Purchasing ${selectedRequest! * quantity} requests!`);
     await sendPaymentRequest("paypal-pay");
     closeConfirmModal();
   };
@@ -213,7 +209,7 @@ export default function TierPurchaseOption({ subscription }) {
             <Button onClick={closeConfirmModal} variant="outline">
               Cancel
             </Button>
-            {!subscription?.active && payPalEnabled && !isFree && (
+            {payPalEnabled && !isFree && (
               <Button
                 onClick={payPalPayment}
                 loading={loading === "paypal-payment"}
@@ -238,20 +234,16 @@ export default function TierPurchaseOption({ subscription }) {
                   onClick={stripePayment}
                   loading={loading === "stripe-payment"}
                   type="button"
-                  variant={subscription?.active ? "orange" : "default"}
-                  className={clsx(!subscription?.active && "drop-shadow-md")}
+                  variant="default"
+                  className="drop-shadow-md"
                 >
-                  {subscription?.active ? (
-                    "Cancel Subscription"
-                  ) : (
-                    <Image
-                      component={NextImage}
-                      src={stripeBtn}
-                      w="auto"
-                      h={30}
-                      alt="Stripe Subscribe"
-                    />
-                  )}
+                  <Image
+                    component={NextImage}
+                    src={stripeBtn}
+                    w="auto"
+                    h={30}
+                    alt="Stripe Subscribe"
+                  />
                 </Button>
               )}
           </Group>
