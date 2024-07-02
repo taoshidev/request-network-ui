@@ -47,6 +47,7 @@ export function Endpoints({
       subnetId: "",
       validatorId: "",
       contractId: "",
+      percentRealtime: "",
       enabled: false,
     },
     validate: zodResolver(EndpointSchema),
@@ -56,6 +57,7 @@ export function Endpoints({
     <>
       <Modal
         centered
+        size="lg"
         opened={opened}
         onClose={close}
         title="Create a new Endpoint"
@@ -95,7 +97,7 @@ export function Endpoints({
               <Table.Tbody>
                 {(endpoints || []).map((endpoint: any) => (
                   <Table.Tr key={endpoint?.id}>
-                    <Table.Td>{endpoint.url}</Table.Td>
+                    <Table.Td>{endpoint.url + (endpoint?.percentRealtime ? `?tier=${endpoint?.percentRealtime}`: ``)}</Table.Td>
                     <Table.Td>
                       {[
                         ..._uniq(

@@ -165,7 +165,10 @@ export function ValidatorEndpoint({
                     )}
                   >
                     <Text className="font-bold mb-4" truncate>
-                      {endpoint?.url || "-"}
+                      {endpoint?.url +
+                        (endpoint?.percentRealtime
+                          ? `?tier=${endpoint?.percentRealtime}`
+                          : ``)}
                     </Text>
                     <Divider className="border-dashed" />
                     <Group className="justify-between items-center my-2">

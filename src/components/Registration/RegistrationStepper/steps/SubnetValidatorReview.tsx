@@ -128,9 +128,22 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Endpoint</Text>
-              <Text className="text-sm">{registrationData?.endpoint?.url}</Text>
+              <Text className="text-sm">
+                {registrationData?.endpoint?.url +
+                  (registrationData?.endpoint?.percentRealtime
+                    ? `?tier=${registrationData?.endpoint?.percentRealtime}`
+                    : ``)}
+              </Text>
             </Group>
             <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Realtime Tier</Text>
+              <Text className="text-sm">
+                {registrationData?.endpoint?.percentRealtime + "%"}
+              </Text>
+            </Group>
+            <Divider className="border-dashed" />
+
             <Group className="justify-between items-center">
               <Text className="text-sm">Payment Method</Text>
               <Text className="text-sm">
@@ -199,9 +212,9 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Expiry</Text>
               <Text className="text-sm">
-                {dayjs(
+                {registrationData?.endpoint?.selectedService?.expires ? dayjs(
                   registrationData?.endpoint?.selectedService?.expires
-                ).format("MMM DD, YYYY")}
+                ).format("MMM DD, YYYY") : "No Expiry"}
               </Text>
             </Group>
           </Stack>

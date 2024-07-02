@@ -302,7 +302,12 @@ export function RegistrationStepper({
         currencyType: selectedService?.currencyType,
         validatorWalletAddress: validator?.walletAddress,
         hotkey: registrationData?.validator?.hotkey,
-        endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
+        endpoint: `${validator?.baseApiUrl}${
+          endpoint?.url +
+          (endpoint?.percentRealtime
+            ? `?tier=${endpoint?.percentRealtime}`
+            : ``)
+        }`,
         validatorId,
         subscription: {} as SubscriptionType,
         service: {} as ServiceType,
@@ -433,7 +438,12 @@ export function RegistrationStepper({
         apiKey: key,
         apiSecret: apiSecret!,
         walletAddress: validator?.walletAddress!,
-        endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
+        endpoint: `${validator?.baseApiUrl}${
+          endpoint?.url +
+          (endpoint?.percentRealtime
+            ? `?tier=${endpoint?.percentRealtime}`
+            : ``)
+        }`,
       });
       open();
 

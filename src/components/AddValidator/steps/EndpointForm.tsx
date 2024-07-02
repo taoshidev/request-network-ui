@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  TextInput,
-  Select,
-} from "@mantine/core";
+import { Box, TextInput, Select } from "@mantine/core";
 import { ValidatorType } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { UseFormReturnType } from "@mantine/form";
@@ -106,6 +102,38 @@ export default function EndpointForm({
           label="Endpoint Path"
           placeholder="/validator-checkpoint"
           {...form.getInputProps("url")}
+        />
+      </Box>
+      <Box mb="md">
+        <Select
+          label="Percent Realtime"
+          withAsterisk
+          placeholder="Choose percent realtime"
+          data={[
+            {
+              value: "0",
+              label:
+                "0% of positions real-time - 100% of positions 24-hour lagged",
+            },
+            {
+              value: "30",
+              label:
+                "30% of positions real-time - 70% of positions 24-hour lagged",
+            },
+            {
+              value: "50",
+              label:
+                "50% of positions real-time - 50% of positions 24-hour lagged",
+            },
+            {
+              value: "100",
+              label:
+                "100% of positions real-time - 0% of positions 24-hour lagged",
+            },
+          ]}
+          {...form.getInputProps("percentRealtime")}
+          onChange={(val) => form.setFieldValue("percentRealtime", +val!)}
+          value={form?.values?.percentRealtime?.toString() || ""}
         />
       </Box>
       {mode === "create" && validators && (
