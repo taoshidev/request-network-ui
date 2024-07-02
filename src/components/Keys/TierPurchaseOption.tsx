@@ -121,11 +121,11 @@ export default function TierPurchaseOption({ subscription }) {
     notifySuccess(
       `Purchased ${selectedRequest! * quantity} requests successfully!`
     );
-    await sendPaymentRequest("paypal-subscribe");
+    await sendPaymentRequest("paypal-pay");
     closeConfirmModal();
   };
 
-  const sendPaymentRequest = async (url = "subscribe") => {
+  const sendPaymentRequest = async (url = "stripe-pay") => {
     const requestPaymentRes = await requestPayment(
       subscription.proxyServiceId,
       window.location.pathname,
