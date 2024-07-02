@@ -28,6 +28,7 @@ import { randomBytes } from "crypto";
 import ContractDisplayTierPricing from "../ContractDisplayTierPricing";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 import { constructEndpointUrl } from "@/utils/endpoint-url";
+import { PERCENT_REALTIME_LABEL } from "@/interfaces/enum/percent-realtime-enum";
 
 export function SubnetValidatorReview({ user }: { user: UserType }) {
   const { registrationData } = useRegistration();
@@ -140,7 +141,11 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Group className="justify-between items-center">
               <Text className="text-sm">Realtime Tier</Text>
               <Text className="text-sm">
-                {registrationData?.endpoint?.percentRealtime + "%"}
+                {
+                  PERCENT_REALTIME_LABEL[
+                    registrationData?.endpoint?.percentRealtime
+                  ]
+                }
               </Text>
             </Group>
             <Divider className="border-dashed" />
