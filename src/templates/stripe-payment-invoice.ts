@@ -14,7 +14,8 @@ export const invoiceHTML = ({
   transaction: TransactionType;
 }) => {
   const { amount } = transaction;
-  const stripeInvoiceUrl = ` <p><a href="${transaction?.meta?.hosted_invoice_url}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">View ${validatorName} Invoice</button></a></p>`;
+  const stripeReceiptUrl = `<p><a href="${transaction?.meta?.receipt_url}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">View ${validatorName} Invoice</button></a></p>`;
+  const stripeInvoiceUrl = `<p><a href="${transaction?.meta?.hosted_invoice_url}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">View ${validatorName} Invoice</button></a></p>`;
   const stripeInvoicePdf = `<p><a href="${transaction?.meta?.invoice_pdf}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">Download ${validatorName} Invoice</button></a></p>`;
 
   return `
@@ -52,6 +53,7 @@ export const invoiceHTML = ({
               )}</p>
               <p>Api Url: ${consumerApiUrl}</p>
               <p>Endpoint Url: ${endpointUrl}</p>
+              ${transaction?.meta?.receipt_url ? stripeReceiptUrl : ""}
               ${transaction?.meta?.hosted_invoice_url ? stripeInvoiceUrl : ""}
               ${transaction?.meta?.invoice_pdf ? stripeInvoicePdf : ""}
             </div>
@@ -86,6 +88,11 @@ export const invoiceText = ({
   Price: $${(Math.round((amount as number) * 100) / 100).toFixed(2)}
   Api Url: ${consumerApiUrl}
   Endpoint Url: ${endpointUrl}
+  ${
+    transaction?.meta?.receipt_url
+      ? "View Receipt: " + transaction?.meta?.receipt_url
+      : ""
+  }
   ${
     transaction?.meta?.hosted_invoice_url
       ? "View Invoice: " + transaction?.meta?.hosted_invoice_url
