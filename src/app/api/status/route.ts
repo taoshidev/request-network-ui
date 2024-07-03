@@ -13,6 +13,8 @@ import {
   canceledSubHTML,
   canceledSubText,
 } from "@/templates/canceled-subscription";
+import { getKey, updateKey } from "@/actions/keys";
+import { revalidatePath } from "next/cache";
 
 export const PUT = async (req: NextRequest): Promise<NextResponse> => {
   try {
@@ -22,7 +24,7 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
       return jsonResponse(status, message);
     }
 
-    const { subscriptionId: id, active, type, transaction } = body;
+    const { subscriptionId: id, active, type, quantity, transaction } = body;
     await apiUpdateSubscription({
       id,
       active,
@@ -31,6 +33,8 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
     const subscriptionRes = await db
       .select({
         id: subscriptions.id,
+        userId: subscriptions.userId,
+        keyId: subscriptions.keyId,
         consumerApiUrl: subscriptions.consumerApiUrl,
         to: users.email,
         validatorName: validators.name,
@@ -46,6 +50,22 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
 
     switch (type) {
       case "charge.succeeded":
+      case "CHARGE.SUCCEEDED":
+        const { result, error } = await getKey({ keyId: subscription?.keyId });
+        const res = await updateKey({
+          keyId: subscription?.keyId,
+          userId: subscription?.userId,
+          params: { remaining: +(result?.remaining || 0) + +quantity },
+        });
+
+        if (res?.status !== 200) {
+          return NextResponse.json({
+            message: "Error updating unkey.",
+            status: 500,
+          });
+        }
+
+      case "BILLING.SUBSCRIPTION.ACTIVATED":
       case "invoice.payment_succeeded":
         sendEmail({
           to: subscription.to,
@@ -66,6 +86,8 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
         break;
       case "invoice.payment_failed":
         break;
+      case "BILLING.SUBSCRIPTION.EXPIRED":
+      case "BILLING.SUBSCRIPTION.CANCELLED":
       case "customer.subscription.deleted":
         sendEmail({
           to: subscription.to,

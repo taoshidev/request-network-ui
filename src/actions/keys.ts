@@ -8,17 +8,19 @@ const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY as string });
 
 export const updateKey = async ({
   keyId,
+  userId,
   params,
 }: {
   keyId: string;
+  userId?: string;
   params: object;
 }) => {
   try {
     const user = await getAuthUser();
     const key = await await unkey.keys.get({ keyId });
 
-    if (user?.id !== key?.result?.ownerId) {
-      throw new Error('Error: Unauthorized!')
+    if (![user?.id, userId].includes(key?.result?.ownerId)) {
+      throw new Error("Error: Unauthorized!");
     }
 
     await unkey.keys.update({

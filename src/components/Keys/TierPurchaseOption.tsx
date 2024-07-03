@@ -10,8 +10,6 @@ import {
   NumberInput,
   Title,
   Card,
-  RadioGroup,
-  Radio,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useNotification } from "@/hooks/use-notification";
@@ -21,7 +19,6 @@ import { requestPayment } from "@/actions/payments";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 import payPalBtn from "@/assets/paypal-1.svg";
 import stripeBtn from "@/assets/stripe.svg";
-import clsx from "clsx";
 
 const isFree = false;
 const stripeEnabled = true;
@@ -126,7 +123,8 @@ export default function TierPurchaseOption({ subscription }) {
       subscription.proxyServiceId,
       window.location.pathname,
       totalPrice.toString(),
-      PAYMENT_TYPE.PAY_PER_REQUEST
+      PAYMENT_TYPE.PAY_PER_REQUEST,
+      selectedRequest! * quantity
     );
 
     if (

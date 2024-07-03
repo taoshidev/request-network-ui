@@ -16,7 +16,8 @@ export async function requestPayment(
   proxyServiceId: string,
   returnRedirect: string = "",
   price: string,
-  paymentType: string = PAYMENT_TYPE.SUBSCRIPTION
+  paymentType: string = PAYMENT_TYPE.SUBSCRIPTION,
+  quantity?: number
 ) {
   const user = await getAuthUser();
 
@@ -49,6 +50,7 @@ export async function requestPayment(
       serviceId: subscription?.proxyServiceId as string,
       redirect: returnRedirect,
       price,
+      quantity,
       paymentType,
     },
   });
@@ -87,7 +89,7 @@ export async function cancelSubscription(proxyServiceId) {
   });
 
   if (proxyRes?.error) return proxyRes;
-  
+
   await updateSubscription({
     id: subscription?.id,
     active: false,
