@@ -33,6 +33,28 @@ export const updateKey = async ({
   }
 };
 
+export const updateRemaining = async ({
+  keyId,
+  userId,
+  value,
+  op = "increment",
+}: {
+  keyId: string;
+  userId?: string;
+  value: number;
+  op?: "increment" | "decrement" | "set";
+}) => {
+  const user = await getAuthUser();
+  const key = await await unkey.keys.get({ keyId });
+
+  if (![user?.id, userId].includes(key?.result?.ownerId)) {
+    throw new Error("Error: Unauthorized!");
+  }
+
+  await await unkey.keys.updateRemaining({ keyId, op, value });
+  return { status: 200, message: "Key updated successfully" };
+};
+
 export const deleteKey = async ({ keyId }: { keyId: string }) => {
   try {
     await unkey.keys.delete({ keyId });

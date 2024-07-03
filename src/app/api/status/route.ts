@@ -13,8 +13,10 @@ import {
   canceledSubHTML,
   canceledSubText,
 } from "@/templates/canceled-subscription";
-import { getKey, updateKey } from "@/actions/keys";
-import { revalidatePath } from "next/cache";
+import { updateRemaining } from "@/actions/keys";
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const PUT = async (req: NextRequest): Promise<NextResponse> => {
   try {
@@ -49,13 +51,12 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
     const subscription: any = subscriptionRes?.[0];
 
     switch (type) {
-      case "charge.succeeded":
+      case "charge.succeeded.activate":
       case "CHARGE.SUCCEEDED":
-        const { result, error } = await getKey({ keyId: subscription?.keyId });
-        const res = await updateKey({
+        const res = await updateRemaining({
           keyId: subscription?.keyId,
           userId: subscription?.userId,
-          params: { remaining: +(result?.remaining || 0) + +quantity },
+          value: +quantity,
         });
 
         if (res?.status !== 200) {
@@ -64,7 +65,6 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
             status: 500,
           });
         }
-
       case "BILLING.SUBSCRIPTION.ACTIVATED":
       case "invoice.payment_succeeded":
         sendEmail({
