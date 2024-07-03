@@ -54,6 +54,5 @@ export default async function Page({ params }: any) {
     );
 
   const { result } = await getKey({ keyId: data?.[0]?.keyId });
-
   return <Keys apiKey={result} subscription={data?.[0]} />;
 }

@@ -30,12 +30,6 @@ export default function PayPalSetupModal({
     }
   );
 
-  const requiredEvents = [
-    "invoice.payment_succeeded",
-    "invoice.payment_failed",
-    "customer.subscription.deleted",
-    "customer.subscription.updated",
-  ];
   const [disabled, setDisabled] = useState(true);
   const [missingEnv, setMissingEnv] = useState(true);
   const [missingWebhooks, setMissingWebhooks] = useState(true);

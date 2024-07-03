@@ -166,7 +166,7 @@ export function Settings({
     copy();
   };
 
-  const sendPaymentRequest = async (url = "subscribe") => {
+  const sendPaymentRequest = async (url = "stripe-pay") => {
     const requestPaymentRes = await requestPayment(
       subscription.proxyServiceId,
       window.location.pathname,
@@ -206,7 +206,7 @@ export function Settings({
 
   const payPalPayment = () => {
     setLoading("paypal-payment");
-    false ? unSubOpen() : sendPaymentRequest("paypal-subscribe");
+    false ? unSubOpen() : sendPaymentRequest("paypal-pay");
   };
 
   const handleDeleteSubscription = async () => {

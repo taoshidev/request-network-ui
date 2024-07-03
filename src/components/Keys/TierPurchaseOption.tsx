@@ -10,8 +10,6 @@ import {
   NumberInput,
   Title,
   Card,
-  RadioGroup,
-  Radio,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useNotification } from "@/hooks/use-notification";
@@ -21,7 +19,6 @@ import { requestPayment } from "@/actions/payments";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 import payPalBtn from "@/assets/paypal-1.svg";
 import stripeBtn from "@/assets/stripe.svg";
-import clsx from "clsx";
 
 const isFree = false;
 const stripeEnabled = true;
@@ -110,27 +107,24 @@ export default function TierPurchaseOption({ subscription }) {
   }, [quantity, selectedRequest, tiers]);
 
   const stripePayment = async () => {
-    notifySuccess(
-      `Purchased ${selectedRequest! * quantity} requests successfully!`
-    );
+    notifySuccess(`Purchasing ${selectedRequest! * quantity} requests!`);
     await sendPaymentRequest();
     closeConfirmModal();
   };
 
   const payPalPayment = async () => {
-    notifySuccess(
-      `Purchased ${selectedRequest! * quantity} requests successfully!`
-    );
-    await sendPaymentRequest("paypal-subscribe");
+    notifySuccess(`Purchasing ${selectedRequest! * quantity} requests!`);
+    await sendPaymentRequest("paypal-pay");
     closeConfirmModal();
   };
 
-  const sendPaymentRequest = async (url = "subscribe") => {
+  const sendPaymentRequest = async (url = "stripe-pay") => {
     const requestPaymentRes = await requestPayment(
       subscription.proxyServiceId,
       window.location.pathname,
       totalPrice.toString(),
-      PAYMENT_TYPE.PAY_PER_REQUEST
+      PAYMENT_TYPE.PAY_PER_REQUEST,
+      selectedRequest! * quantity
     );
 
     if (
@@ -196,7 +190,7 @@ export default function TierPurchaseOption({ subscription }) {
             <NumberInput
               label="Quantity"
               value={quantity}
-              onChange={(val) => setQuantity(+val ?? 1)}
+              onChange={(val) => setQuantity(+val ? +val : 1)}
               min={1}
             />
           </Box>
@@ -213,7 +207,7 @@ export default function TierPurchaseOption({ subscription }) {
             <Button onClick={closeConfirmModal} variant="outline">
               Cancel
             </Button>
-            {!subscription?.active && payPalEnabled && !isFree && (
+            {payPalEnabled && !isFree && (
               <Button
                 onClick={payPalPayment}
                 loading={loading === "paypal-payment"}
@@ -238,20 +232,16 @@ export default function TierPurchaseOption({ subscription }) {
                   onClick={stripePayment}
                   loading={loading === "stripe-payment"}
                   type="button"
-                  variant={subscription?.active ? "orange" : "default"}
-                  className={clsx(!subscription?.active && "drop-shadow-md")}
+                  variant="default"
+                  className="drop-shadow-md"
                 >
-                  {subscription?.active ? (
-                    "Cancel Subscription"
-                  ) : (
-                    <Image
-                      component={NextImage}
-                      src={stripeBtn}
-                      w="auto"
-                      h={30}
-                      alt="Stripe Subscribe"
-                    />
-                  )}
+                  <Image
+                    component={NextImage}
+                    src={stripeBtn}
+                    w="auto"
+                    h={30}
+                    alt="Stripe Subscribe"
+                  />
                 </Button>
               )}
           </Group>

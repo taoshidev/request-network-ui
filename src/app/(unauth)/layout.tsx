@@ -5,6 +5,9 @@ import Loading from "../(auth)/loading";
 import { getAuthUser } from "@/actions/auth";
 import { HeaderHome } from "@/components/HeaderHome";
 import Footer from "@/components/Footer";
+import { Header } from "@/components/Header";
+import clsx from "clsx";
+import { AuthProvider } from "@/providers/auth-provider";
 
 export default async function UnAuthLayout({ children }) {
   const user = await getAuthUser();
@@ -14,9 +17,15 @@ export default async function UnAuthLayout({ children }) {
     <Suspense fallback={<Loading />}>
       <NextTopLoader color="#fff" showSpinner={false} shadow={false} />
       <Box className="bg-stone-100">
-        <Box className="bg-primary-500 mb-8">
+        <Box className={clsx("mb-8", user ? "bg-white" : "bg-primary-500")}>
           <Box className="container max-w-6xl mx-auto mb-10">
-            <HeaderHome startLink={startLink} />
+            {user ? (
+              <AuthProvider>
+                <Header />
+              </AuthProvider>
+            ) : (
+              <HeaderHome startLink={startLink} />
+            )}
           </Box>
         </Box>
         {process.env.NEXT_PUBLIC_ENV_NAME && (
