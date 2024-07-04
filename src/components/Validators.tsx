@@ -136,9 +136,14 @@ export function Validators({
                           </Badge>
                         )}
                         {validator.stripeEnabled ? (
-                          <Badge>Stripe Verified</Badge>
+                          <Badge className="mr-2">Stripe Verified</Badge>
                         ) : (
-                          <Badge color="black">Stripe Unverified</Badge>
+                          <Badge className="mr-2" color="black">Stripe Unverified</Badge>
+                        )}
+                        {validator.payPalEnabled ? (
+                          <Badge>PayPal Verified</Badge>
+                        ) : (
+                          <Badge color="black">PayPal Unverified</Badge>
                         )}
                       </Box>
                     </Table.Td>

@@ -17,7 +17,7 @@ export const updateKey = async ({
 }) => {
   try {
     const user = await getAuthUser();
-    const key = await await unkey.keys.get({ keyId });
+    const key = await unkey.keys.get({ keyId });
 
     if (![user?.id, userId].includes(key?.result?.ownerId)) {
       throw new Error("Error: Unauthorized!");
@@ -45,13 +45,15 @@ export const updateRemaining = async ({
   op?: "increment" | "decrement" | "set";
 }) => {
   const user = await getAuthUser();
-  const key = await await unkey.keys.get({ keyId });
+  const key = await unkey.keys.get({ keyId });
 
   if (![user?.id, userId].includes(key?.result?.ownerId)) {
     throw new Error("Error: Unauthorized!");
   }
 
-  await await unkey.keys.updateRemaining({ keyId, op, value });
+  op = key.result?.remaining ? "increment" : "set";
+
+  await unkey.keys.updateRemaining({ keyId, op, value });
   return { status: 200, message: "Key updated successfully" };
 };
 

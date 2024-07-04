@@ -145,7 +145,7 @@ export default function StripeSetupModal({
                   <br />
                   &quot;
                   {[
-                    !stripe?.enrollmentSecret && "STRIPE_ENROLLMENT_SECRET",
+                    !stripe?.enrollmentSecret && "PAYMENT_ENROLLMENT_SECRET",
                     !stripe?.stripeKey && "STRIPE_SECRET_KEY",
                     !stripe?.stripePublicKey && "STRIPE_PUBLIC_KEY",
                     !stripe?.stripeWebhooksKey && "STRIPE_WEBHOOKS_KEY",
