@@ -67,7 +67,6 @@ export default async function Page() {
     );
     // if user is a validator, render validator dashboard
   } else if (user.user_metadata.role === "validator") {
-    const validatorEndpoints = validatorArr?.map((v) => v.endpoints);
 
     const subnets = await getSubnets();
 
