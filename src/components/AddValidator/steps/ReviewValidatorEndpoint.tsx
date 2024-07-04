@@ -3,10 +3,13 @@ import { ValidatorType } from "@/db/types/validator";
 import { Title, Box, Table, Text } from "@mantine/core";
 import { isEmpty as _isEmpty } from "lodash";
 import React from "react";
-import { DateTime } from "luxon";
 import CurrencyFormatter from "@/components/Formatters/CurrencyFormatter";
 import FixedFormatter from "@/components/Formatters/FixedFormatter";
 import { constructEndpointUrl } from "@/utils/endpoint-url";
+import dayjs from "dayjs";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import TierPurchaseOption from "@/components/Keys/TierPurchaseOption";
+import { SubscriptionType } from "@/db/types/subscription";
 
 export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
   return (
@@ -36,8 +39,10 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                   </Table.Td>
                 </Table.Tr>
                 <Table.Tr>
-                  <Table.Th colSpan={1}>Wallet Address</Table.Th>
-                  <Table.Td colSpan={1}>{form.values.walletAddress}</Table.Td>
+                  <Table.Th colSpan={1}>ERC-20 Wallet Address</Table.Th>
+                  <Table.Td colSpan={1}>
+                    {form.values.walletAddress || "Not Applicable"}
+                  </Table.Td>
                   <Table.Th colSpan={1}>Hot Key</Table.Th>
                   <Table.Td colSpan={1}>{form.values.hotkey}</Table.Td>
                 </Table.Tr>
@@ -73,7 +78,12 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                         >
                           {service.name}
                           {+service.price === 0 ? (
-                            <span className="float-right">FREE</span>
+                            <span className="float-right">
+                              {service.paymentType ===
+                              PAYMENT_TYPE.PAY_PER_REQUEST
+                                ? "Pay Per Request"
+                                : "FREE"}
+                            </span>
                           ) : (
                             <span className="float-right">
                               <CurrencyFormatter
@@ -95,7 +105,7 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                         </Table.Td>
                       </Table.Tr>
                       <Table.Tr>
-                        <Table.Th>Remaining</Table.Th>
+                        <Table.Th>Requests</Table.Th>
                         <Table.Td>
                           <FixedFormatter value={service.remaining} />
                         </Table.Td>
@@ -107,9 +117,38 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                         <Table.Td>{service.currencyType}</Table.Td>
                         <Table.Th>Expires</Table.Th>
                         <Table.Td>
-                          {DateTime.fromJSDate(service.expires).toFormat("f")}
+                          {service.expires
+                            ? dayjs(service.expires).format("MMM DD, YYYY")
+                            : "No Expiry"}
                         </Table.Td>
                       </Table.Tr>
+                      {service.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST && (
+                        <>
+                          <Table.Tr>
+                            <Table.Th
+                              className="bg-slate-400 text-white text-lg py-1"
+                              colSpan={4}
+                            >
+                              Tiered Pricing Preview{" "}
+                              <span className="float-end">
+                                *Visible to consumers
+                              </span>
+                            </Table.Th>
+                          </Table.Tr>
+                          <Table.Tr>
+                            <Table.Td colSpan={4}>
+                              <TierPurchaseOption
+                                subscription={
+                                  {
+                                    service,
+                                  } as SubscriptionType
+                                }
+                                preview={true}
+                              />
+                            </Table.Td>
+                          </Table.Tr>
+                        </>
+                      )}
                     </React.Fragment>
                   ))}
               </Table.Tbody>

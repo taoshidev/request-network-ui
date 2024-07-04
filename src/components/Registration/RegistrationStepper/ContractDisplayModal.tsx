@@ -176,7 +176,9 @@ export function ContractDisplayModal({
                 <Group className="justify-between items-center m-2">
                   <Text className="text-xs">Expires:</Text>
                   <Badge size="sm" variant="light">
-                    {dayjs(service?.expires).format("MMM DD, YYYY") || "-"}
+                    {service.expires
+                      ? dayjs(service.expires).format("MMM DD, YYYY")
+                      : "No Expiry"}
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />

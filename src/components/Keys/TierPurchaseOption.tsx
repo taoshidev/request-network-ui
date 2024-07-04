@@ -19,6 +19,7 @@ import { requestPayment } from "@/actions/payments";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 import payPalBtn from "@/assets/paypal-1.svg";
 import stripeBtn from "@/assets/stripe.svg";
+import { SubscriptionType } from "@/db/types/subscription";
 
 const isFree = false;
 const stripeEnabled = true;
@@ -58,8 +59,13 @@ const calculateIncrements = (tiers) => {
   return increments;
 };
 
-
-export default function TierPurchaseOption({ subscription }) {
+export default function TierPurchaseOption({
+  subscription,
+  preview = false,
+}: {
+  subscription: SubscriptionType;
+  preview?: boolean;
+}) {
   const { notifySuccess } = useNotification();
   const [tiers, setTiers] = useState<
     {
@@ -121,7 +127,7 @@ export default function TierPurchaseOption({ subscription }) {
 
   const sendPaymentRequest = async (url = "stripe-pay") => {
     const requestPaymentRes = await requestPayment(
-      subscription.proxyServiceId,
+      subscription.proxyServiceId!,
       window.location.pathname,
       totalPrice.toString(),
       PAYMENT_TYPE.PAY_PER_REQUEST,
@@ -154,6 +160,7 @@ export default function TierPurchaseOption({ subscription }) {
             return (
               <Button
                 key={index}
+                disabled={preview}
                 className="h-auto p-3"
                 variant="orange"
                 onClick={() => handlePurchase(increment)}
