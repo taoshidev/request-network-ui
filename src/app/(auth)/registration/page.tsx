@@ -68,24 +68,15 @@ export default async function Page() {
     },
   });
 
-  const subnetMap = new Map(
-    subnets?.map((subnet) => [subnet.id, subnet.netUid])
-  );
-
   const fetchAllValidatorInfo = async (validatorArr: ValidatorWithInfo[]) => {
-    const fetchEndpointInfo = async (endpoint, validator) => {
-      const netUid = subnetMap.get(endpoint.subnetId);
-      if (!netUid) {
-        console.error("No netUid found for subnet ID:", endpoint.subnetId);
-        return { error: "Net UID not found" };
-      }
+    const fetchNeuronInfo = async (endpoint, validator) => {
+      if (!endpoint?.subnetId) return { error: "Net UID not found" };
       try {
-        const stats = await fetchValidatorInfo(
-          netUid,
-          validator.hotkey,
+        return await fetchValidatorInfo(
+          validator?.bitensorNetUid,
+          validator?.hotkey,
           validator?.bittensorUid
         );
-        return stats;
       } catch (error) {
         return { error: (error as Error).message };
       }
@@ -95,18 +86,15 @@ export default async function Page() {
       const validatorsWithStats = await Promise.all(
         (validatorArr.length ? validatorArr : [])?.map(async (validator) => {
           const stats = await Promise.all(
-            validator?.endpoints?.map((endpoint) =>
-              fetchEndpointInfo(endpoint, validator)
+            validator?.endpoints?.map(
+              async (endpoint) => await fetchNeuronInfo(endpoint, validator)
             ) || []
           );
 
-          const accumulatedStats = stats.reduce((acc, curr) => {
-            if (curr && !curr?.error) {
-              return { ...acc, ...curr };
-            }
-            return acc;
-          }, {});
-
+          const accumulatedStats = stats.reduce(
+            (acc, curr) => (curr && !curr?.error ? { ...acc, ...curr } : acc),
+            {}
+          );
           return { ...validator, neuronInfo: accumulatedStats };
         })
       );

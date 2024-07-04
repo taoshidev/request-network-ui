@@ -2,9 +2,8 @@ const { ApiPromise, WsProvider } = require("@polkadot/api");
 import { ApiOptions } from "@polkadot/api/types";
 import { rpc } from "./rpc";
 import { types } from "./types";
-import { ValidatorType } from "@/db/types/validator";
 
-const PROVIDER_URL = ["development", "testing"].includes(
+const PROVIDER_URL = ["development", "testing", "staging"].includes(
   process.env.NEXT_PUBLIC_NODE_ENV as string
 )
   ? "wss://test.finney.opentensor.ai:443"
@@ -46,13 +45,13 @@ export const fetchValidatorInfo = async (
   uId?: number
 ) => {
   try {
-    const api = await createBittensorApi();
     if (!uId) {
-      const result = await fetchNeuronsLite(netUid);
-      return (
-        (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0] ||
-        null
-      );
+      return [];
+      // const result = await fetchNeuronsLite(netUid);
+      // return (
+      //   (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0] ||
+      //   null
+      // );
     }
     return await fetchNeuronLite(netUid, uId);
   } catch (error) {
