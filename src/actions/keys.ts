@@ -51,6 +51,8 @@ export const updateRemaining = async ({
     throw new Error("Error: Unauthorized!");
   }
 
+  op = key.result?.remaining ? "increment" : "set";
+
   await unkey.keys.updateRemaining({ keyId, op, value });
   return { status: 200, message: "Key updated successfully" };
 };
