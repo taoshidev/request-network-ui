@@ -32,31 +32,32 @@ const calculateIncrements = (tiers) => {
   const paidTiers = tiers.filter((tier) => tier.price > 0);
   if (paidTiers.length === 0) return [];
 
-  const minPaidFrom = Math.min(...paidTiers.map((tier) => tier.from));
+  const minPaidFrom = Math.min(...paidTiers.map((tier) => tier.to));
   const max = Math.max(...tiers.map((tier) => tier.to));
   const range = max - minPaidFrom;
   let increment;
 
   if (range > 10000) {
-    increment = Math.ceil(range / BUTTON_COUNT / 1000) * 1000;
+    increment = Math.ceil(range / (BUTTON_COUNT - 1) / 1000) * 1000;
   } else if (range > 1000) {
-    increment = Math.ceil(range / BUTTON_COUNT / 100) * 100;
+    increment = Math.ceil(range / (BUTTON_COUNT - 1) / 100) * 100;
   } else {
-    increment = Math.ceil(range / BUTTON_COUNT / 10) * 10;
+    increment = Math.ceil(range / (BUTTON_COUNT - 1) / 10) * 10;
   }
 
   const increments: number[] = [];
   let current = minPaidFrom;
 
   while (increments.length < BUTTON_COUNT - 1 && current < max) {
-    if (current % 2 !== 0) current++;
     increments.push(current);
     current += increment;
+    if (current % 2 !== 0) current++;
   }
   increments.push(max);
 
   return increments;
 };
+
 
 export default function TierPurchaseOption({ subscription }) {
   const { notifySuccess } = useNotification();
