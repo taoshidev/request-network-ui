@@ -46,12 +46,11 @@ export const fetchValidatorInfo = async (
 ) => {
   try {
     if (!uId) {
-      return [];
-      // const result = await fetchNeuronsLite(netUid);
-      // return (
-      //   (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0] ||
-      //   null
-      // );
+      const result = await fetchNeuronsLite(netUid);
+      return (
+        (result || []).filter((v: ValidatorType) => v.hotkey === hotkey)?.[0] ||
+        null
+      );
     }
     return await fetchNeuronLite(netUid, uId);
   } catch (error) {
