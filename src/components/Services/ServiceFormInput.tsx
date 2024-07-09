@@ -106,7 +106,7 @@ export function ServiceFormInput({
       {
         from: lastTier.to + 1,
         to: lastTier.to + 1000,
-        price: lastTier.price + 10,
+        price: 0,
       },
     ]);
   };
