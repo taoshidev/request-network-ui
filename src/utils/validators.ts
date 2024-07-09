@@ -98,8 +98,36 @@ export const fetchPaymentStatusTransactions = async (
   start: number,
   end: number,
   validator,
-  fromWalletAddress: string
+  fromWalletAddress?: string,
+  proxyServiceId?: string
 ) => {
+  const where: Array<{ type: string; column: string; value: number | string }> =
+    [
+      {
+        type: "gte",
+        column: "createdAt",
+        value: start,
+      },
+      {
+        type: "lte",
+        column: "createdAt",
+        value: end,
+      },
+    ];
+
+  if (fromWalletAddress) {
+    where.push({
+      type: "eq",
+      column: "fromAddress",
+      value: fromWalletAddress!,
+    });
+  } else if (proxyServiceId) {
+    where.push({
+      type: "eq",
+      column: "serviceId",
+      value: proxyServiceId!,
+    });
+  }
 
   const res = await sendToProxy({
     endpoint: {
@@ -108,25 +136,7 @@ export const fetchPaymentStatusTransactions = async (
       path: `${validator?.apiPrefix}/transactions/query`,
     },
     validatorId: validator?.id!,
-    data: {
-      where: [
-        {
-          type: "gte",
-          column: "createdAt",
-          value: start,
-        },
-        {
-          type: "lte",
-          column: "createdAt",
-          value: end,
-        },
-        {
-          type: "eq",
-          column: "fromAddress",
-          value: fromWalletAddress!,
-        },
-      ],
-    },
+    data: { where },
   });
 
   if (res?.error) {

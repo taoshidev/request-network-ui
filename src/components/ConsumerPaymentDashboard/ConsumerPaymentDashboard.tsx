@@ -65,6 +65,7 @@ export function ConsumerPaymentDashboard({
     string | null
   >(null);
   const [health, setHealth] = useState<string>("");
+  const [paymentsDue, setPaymentsDue] = useState<number>(0);
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const [zoomIn, setZoomIn] = useState(true);
   const {
@@ -125,6 +126,7 @@ export function ConsumerPaymentDashboard({
   );
 
   const amountDue = useMemo(() => {
+    setPaymentsDue(0);
     if (!stats?.subscriptions) {
       console.error("No subscriptions found in stats");
       return 0;
@@ -148,15 +150,48 @@ export function ConsumerPaymentDashboard({
 
     let currencies: string[] = [];
     let statuses: string[] = [];
-    const amount = proxyService.reduce((total: number, it: any) => {
-      const outstandingBalance = parseFloat(it?.outstandingBalance || "0");
-      currencies.push(it?.currencyType! as string);
-      statuses.push(it?.serviceStatusType! as string);
-      if (isNaN(outstandingBalance)) {
+    const currentTransactionsId = transactions.map((t: any) => t.serviceId);
+
+    let amount: string | number = proxyService.reduce(
+      (total: number, it: any) => {
+        const paymentType = it?.meta?.service?.paymentType;
+        const currencyType = it?.currencyType;
+        const createdAt = it?.createdAt;
+        const isCurrent = currentTransactionsId.includes(it?.id);
+        let outstandingBalance = 0;
+        if (!isCurrent) {
+          outstandingBalance = parseFloat(
+            (currencyType === "CRYPTO" ? it?.outstandingBalance : it?.price) ||
+              "0"
+          );
+
+          if (paymentType === "SUBSCRIPTION")
+            setPaymentsDue(
+              subscriptions?.length === 1
+                ? 1
+                : subscriptions?.length - currentTransactionsId?.length
+            );
+        }
+
+        currencies.push(it?.currencyType! as string);
+        statuses.push(it?.serviceStatusType! as string);
+
+        if (isNaN(outstandingBalance)) {
+          return total;
+        }
+
+        const today = dayjs();
+        const createdDay = dayjs(createdAt);
+        const daysDiff = today.diff(createdDay, "day");
+
+        if (daysDiff < 15 || isCurrent) return total;
+
+        if (currencyType === "CRYPTO" || paymentType === "SUBSCRIPTION")
+          return total + outstandingBalance;
         return total;
-      }
-      return total + outstandingBalance;
-    }, 0);
+      },
+      0
+    );
 
     if (statuses.includes("cancelled")) {
       setHealth("0%");
@@ -167,8 +202,15 @@ export function ConsumerPaymentDashboard({
     } else {
       setHealth("100%");
     }
-    return amount.toString() + " " + currencies.join(", ");
-  }, [stats, selectedSubscription]);
+    const currencyArr = Array.from(new Set(currencies));
+    if (currencyArr?.length === 1 && currencyArr[0] === "FIAT") {
+      amount = "$" + amount.toFixed(2).toString();
+    } else {
+      amount =
+        "~ " + amount.toFixed(2) + " " + currencyArr.join(", ").toString();
+    }
+    return amount;
+  }, [stats, selectedSubscription, transactions]);
 
   const subscriptionPercentageChange = useMemo(
     () =>
@@ -279,7 +321,7 @@ export function ConsumerPaymentDashboard({
         <Box className="p-3">
           <StatCard
             title="Payments Due"
-            value={subscriptions?.length?.toString() || "0"}
+            value={paymentsDue?.toString() || "0"}
             percentage={`${subscriptionPercentageChange}%`}
             comparison="Compared to last month"
             isPositive

@@ -129,7 +129,8 @@ export default async function Page({ params }: any) {
             paymentStatusStart,
             paymentStatusEnd,
             validator,
-            sub?.consumerWalletAddress
+            sub?.consumerWalletAddress,
+            sub?.proxyServiceId
           ),
         },
       });
