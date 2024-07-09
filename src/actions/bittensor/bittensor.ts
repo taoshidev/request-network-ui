@@ -2,6 +2,7 @@ const { ApiPromise, WsProvider } = require("@polkadot/api");
 import { ApiOptions } from "@polkadot/api/types";
 import { rpc } from "./rpc";
 import { types } from "./types";
+import { ValidatorType } from "@/db/types/validator";
 
 const PROVIDER_URL = ["development", "testing", "staging"].includes(
   process.env.NEXT_PUBLIC_NODE_ENV as string
@@ -24,7 +25,6 @@ export const createBittensorApi = async () => {
       api.rpc.system.version(),
     ]);
 
-    // api.on("error", (error: Error) => console.error("API error:", error));
   }
   await api.isReadyOrError;
   return api;

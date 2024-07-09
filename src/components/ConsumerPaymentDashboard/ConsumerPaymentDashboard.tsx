@@ -152,43 +152,46 @@ export function ConsumerPaymentDashboard({
     let statuses: string[] = [];
     const currentTransactionsId = transactions.map((t: any) => t.serviceId);
 
-    let amount = proxyService.reduce((total: number, it: any) => {
-      const paymentType = it?.meta?.service?.paymentType;
-      const currencyType = it?.currencyType;
-      const createdAt = it?.createdAt;
-      const isCurrent = currentTransactionsId.includes(it?.id);
-      let outstandingBalance = 0;
-      if (!isCurrent) {
-        outstandingBalance = parseFloat(
-          (currencyType === "CRYPTO" ? it?.outstandingBalance : it?.price) ||
-            "0"
-        );
-
-        if (paymentType === "SUBSCRIPTION")
-          setPaymentsDue(
-            subscriptions?.length === 1
-              ? 1
-              : subscriptions?.length - currentTransactionsId?.length
+    let amount: string | number = proxyService.reduce(
+      (total: number, it: any) => {
+        const paymentType = it?.meta?.service?.paymentType;
+        const currencyType = it?.currencyType;
+        const createdAt = it?.createdAt;
+        const isCurrent = currentTransactionsId.includes(it?.id);
+        let outstandingBalance = 0;
+        if (!isCurrent) {
+          outstandingBalance = parseFloat(
+            (currencyType === "CRYPTO" ? it?.outstandingBalance : it?.price) ||
+              "0"
           );
-      }
 
-      currencies.push(it?.currencyType! as string);
-      statuses.push(it?.serviceStatusType! as string);
+          if (paymentType === "SUBSCRIPTION")
+            setPaymentsDue(
+              subscriptions?.length === 1
+                ? 1
+                : subscriptions?.length - currentTransactionsId?.length
+            );
+        }
 
-      if (isNaN(outstandingBalance)) {
+        currencies.push(it?.currencyType! as string);
+        statuses.push(it?.serviceStatusType! as string);
+
+        if (isNaN(outstandingBalance)) {
+          return total;
+        }
+
+        const today = dayjs();
+        const createdDay = dayjs(createdAt);
+        const daysDiff = today.diff(createdDay, "day");
+
+        if (daysDiff < 15 || isCurrent) return total;
+
+        if (currencyType === "CRYPTO" || paymentType === "SUBSCRIPTION")
+          return total + outstandingBalance;
         return total;
-      }
-
-      const today = dayjs();
-      const createdDay = dayjs(createdAt);
-      const daysDiff = today.diff(createdDay, "day");
-
-      if (daysDiff < 15 || isCurrent) return total;
-
-      if (currencyType === "CRYPTO" || paymentType === "SUBSCRIPTION")
-        return total + outstandingBalance;
-      return total;
-    }, 0);
+      },
+      0
+    );
 
     if (statuses.includes("cancelled")) {
       setHealth("0%");
@@ -199,11 +202,12 @@ export function ConsumerPaymentDashboard({
     } else {
       setHealth("100%");
     }
-    const currencyArr = [...new Set(currencies)];
+    const currencyArr = Array.from(new Set(currencies));
     if (currencyArr?.length === 1 && currencyArr[0] === "FIAT") {
-      amount = "$" + amount.toFixed(2);
+      amount = "$" + amount.toFixed(2).toString();
     } else {
-      amount = "~ " + amount.toFixed(2) + " " + currencyArr.join(", ");
+      amount =
+        "~ " + amount.toFixed(2) + " " + currencyArr.join(", ").toString();
     }
     return amount;
   }, [stats, selectedSubscription, transactions]);

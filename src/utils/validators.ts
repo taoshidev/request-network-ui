@@ -101,18 +101,19 @@ export const fetchPaymentStatusTransactions = async (
   fromWalletAddress?: string,
   proxyServiceId?: string
 ) => {
-  const where = [
-    {
-      type: "gte",
-      column: "createdAt",
-      value: start,
-    },
-    {
-      type: "lte",
-      column: "createdAt",
-      value: end,
-    },
-  ];
+  const where: Array<{ type: string; column: string; value: number | string }> =
+    [
+      {
+        type: "gte",
+        column: "createdAt",
+        value: start,
+      },
+      {
+        type: "lte",
+        column: "createdAt",
+        value: end,
+      },
+    ];
 
   if (fromWalletAddress) {
     where.push({
