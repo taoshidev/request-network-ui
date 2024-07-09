@@ -213,7 +213,7 @@ export function ContractDisplayModal({
                 <Group className="justify-between items-center m-2">
                   <Text className="text-xs">Refill Interval:</Text>
                   <Badge size="sm" variant="light">
-                    <FixedFormatter value={service.refillInterval} />
+                    <FixedFormatter value={service.refillInterval} /> ms
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />
@@ -222,14 +222,6 @@ export function ContractDisplayModal({
                   <Text className="text-xs">Limit:</Text>
                   <Badge size="sm" variant="light">
                     <FixedFormatter value={service.limit} />
-                  </Badge>
-                </Group>
-                <Divider className="border-dashed" />
-
-                <Group className="justify-between items-center m-2">
-                  <Text className="text-xs">Refill Rate:</Text>
-                  <Badge size="sm" variant="light">
-                    <FixedFormatter value={service.refillRate} />
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />

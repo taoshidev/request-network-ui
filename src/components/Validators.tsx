@@ -15,7 +15,7 @@ import { isEmpty } from "lodash";
 import { KeyModal, keyType } from "@components/KeyModal/KeyModal";
 import { UserType } from "@/db/types/user";
 import { SubnetType } from "@/db/types/subnet";
-import { ValidatorType, ValidatorWithInfo } from "@/db/types/validator";
+import { ValidatorWithInfo } from "@/db/types/validator";
 import { ContractType } from "@/db/types/contract";
 import { EndpointType } from "@/db/types/endpoint";
 import { IconAlertTriangle, IconCircleCheck } from "@tabler/icons-react";
@@ -129,21 +129,37 @@ export function Validators({
                     <Table.Td>
                       <Box className="leading-7">
                         {validator.verified ? (
-                          <Badge className="mr-2">Hotkey Verified</Badge>
+                          <Badge className="mr-2">
+                            <IconCircleCheck className="h-[15px] mr-1 inline-block text-white" />
+                            Hotkey
+                          </Badge>
                         ) : (
                           <Badge className="mr-2" color="black">
-                            Hotkey Unverified
+                            <IconAlertTriangle className="h-[15px] mr-1 inline-block text-white" />
+                            Hotkey
                           </Badge>
                         )}
                         {validator.stripeEnabled ? (
-                          <Badge className="mr-2">Stripe Verified</Badge>
+                          <Badge className="mr-2">
+                            <IconCircleCheck className="h-[15px] mr-1 inline-block text-white" />
+                            Stripe
+                          </Badge>
                         ) : (
-                          <Badge className="mr-2" color="black">Stripe Unverified</Badge>
+                          <Badge className="mr-2" color="black">
+                            <IconAlertTriangle className="h-[15px] mr-1 inline-block text-white" />
+                            Stripe
+                          </Badge>
                         )}
                         {validator.payPalEnabled ? (
-                          <Badge>PayPal Verified</Badge>
+                          <Badge>
+                            <IconCircleCheck className="h-[15px] mr-1 inline-block text-white" />
+                            PayPal
+                          </Badge>
                         ) : (
-                          <Badge color="black">PayPal Unverified</Badge>
+                          <Badge color="black">
+                            <IconAlertTriangle className="h-[15px] mr-1 inline-block text-white" />
+                            PayPal
+                          </Badge>
                         )}
                       </Box>
                     </Table.Td>

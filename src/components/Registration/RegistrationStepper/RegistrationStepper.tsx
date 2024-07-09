@@ -284,16 +284,15 @@ export function RegistrationStepper({
 
     try {
       const refill = {
-        interval: "daily",
-        amount: 100,
+        interval: "monthly",
+        amount: +selectedService?.remaining,
       };
 
       const ratelimit = {
-        type: "fast",
+        async: true,
         limit: selectedService?.limit || 10,
-        refillRate: selectedService?.refillRate || 1,
-        refillInterval: selectedService?.refillInterval || 60,
-        duration: selectedService?.duration || 1000,
+        duration:
+          selectedService?.refillInterval || selectedService?.duration || 60000,
       };
 
       const meta = {
@@ -328,6 +327,10 @@ export function RegistrationStepper({
         +selectedService?.remaining === 0
       ) {
         delete keyPayload.remaining;
+        delete keyPayload.refill;
+      }
+
+      if (selectedService?.paymentType === PAYMENT_TYPE.FREE) {
         delete keyPayload.refill;
       }
 

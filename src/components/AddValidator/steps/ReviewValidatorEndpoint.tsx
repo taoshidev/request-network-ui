@@ -95,13 +95,9 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                         </Table.Th>
                       </Table.Tr>
                       <Table.Tr>
-                        <Table.Th>Refill Rate</Table.Th>
-                        <Table.Td>
-                          <FixedFormatter value={service.refillRate} />
-                        </Table.Td>
                         <Table.Th>Refill Interval</Table.Th>
                         <Table.Td>
-                          <FixedFormatter value={service.refillInterval} />
+                          <FixedFormatter value={service.refillInterval} /> ms
                         </Table.Td>
                       </Table.Tr>
                       <Table.Tr>

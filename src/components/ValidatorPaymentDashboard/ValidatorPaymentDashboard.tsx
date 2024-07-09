@@ -6,7 +6,7 @@ import TransactionsTable from "@/components/ValidatorPaymentDashboard/Transactio
 import { IconAlertCircle } from "@tabler/icons-react";
 import { formatter } from "@/utils/number-formatter";
 import { StatCard } from "@/components/StatCard";
-import { ValidatorType } from "@/db/types/validator";
+import { ValidatorType, ValidatorWithInfo } from "@/db/types/validator";
 import { ValidatorKeyType } from "@/components/StatTable";
 import { SubscriptionType } from "@/db/types/subscription";
 import { EndpointType } from "@/db/types/endpoint";
@@ -33,11 +33,17 @@ import { NOTIFICATION_ICON, NotificationTypes } from "@/hooks/use-notification";
 import removeMd from "remove-markdown";
 
 const generateConsumerMakeupData = (endpoints: EndpointType[] = []) => {
-  return endpoints.map((endpoint) => ({
-    id: endpoint?.url,
-    label: endpoint?.url,
-    value: endpoint?.subscriptions?.length || 0,
-  }));
+  return endpoints.map((endpoint) => {
+    const label =
+      endpoint?.percentRealtime === -1
+        ? endpoint?.url
+        : endpoint?.url + "?tier=" + endpoint?.percentRealtime;
+    return {
+      id: label,
+      label,
+      value: endpoint?.subscriptions?.length || 0,
+    };
+  });
 };
 
 export function ValidatorPaymentDashboard({
@@ -48,7 +54,7 @@ export function ValidatorPaymentDashboard({
   currentSubscriptions,
   previousSubscriptions,
 }: {
-  validator: ValidatorType;
+  validator: ValidatorWithInfo;
   stats: ValidatorKeyType[];
   currentTransactions: any[];
   previousTransactions: any[];
@@ -57,6 +63,7 @@ export function ValidatorPaymentDashboard({
 }) {
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState(currentTransactions);
+  const [health, setHealth] = useState<string>("");
   const [prevTransactions, setPrevTransactions] =
     useState(previousTransactions);
   const [revenueData, setRevenueData] = useState<
@@ -163,6 +170,18 @@ export function ValidatorPaymentDashboard({
     () => calculatePercentageChange(currentConsumers, previousConsumers),
     [currentConsumers, previousConsumers]
   );
+
+  useEffect(() => {
+    const healthArr = [
+      totalIncome > 0,
+      monthlyRequests > 0,
+      currentConsumers > 0,
+      validator?.health?.message === "Ok",
+    ];
+    const trueCount = healthArr.filter(Boolean).length;
+    const healthPercentage = (trueCount / healthArr.length) * 100;
+    setHealth(healthPercentage.toFixed(2) + "%");
+  }, [totalIncome, monthlyRequests, currentConsumers, validator]);
 
   useEffect(() => {
     setLoading(true);
@@ -377,7 +396,7 @@ export function ValidatorPaymentDashboard({
         <Box className="p-3">
           <StatCard
             title="Health"
-            value="0%"
+            value={health}
             percentage="-"
             comparison="Compared to last month"
             isPositive={false}

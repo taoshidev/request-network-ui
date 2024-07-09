@@ -33,8 +33,7 @@ export function ServiceForm({
     price: service?.price || "0.00",
     limit: service?.limit || 10,
     remaining: service?.remaining || 10000,
-    refillRate: service?.refillRate || 1,
-    refillInterval: service?.refillInterval || 1000,
+    refillInterval: service?.refillInterval || 60000,
     expires:
       service?.expires ||
       new Date(new Date().setMonth(new Date().getMonth() + 3)),
@@ -67,6 +66,9 @@ export function ServiceForm({
     setLoading(true);
     if (values?.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST) {
       values.tiers = [];
+      if (values?.paymentType == PAYMENT_TYPE.SUBSCRIPTION) {
+        values.expires = null;
+      }
     } else {
       values.tiers = [...tiers];
       values.expires = null;

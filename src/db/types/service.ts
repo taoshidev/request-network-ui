@@ -16,7 +16,6 @@ export const ServiceSchema = z.object({
   tiers: z.any().optional(),
   limit: z.number().int().min(1),
   expires: z.date().optional(),
-  refillRate: z.number().int().min(1),
   refillInterval: z.number().int().min(1),
   remaining: z.number().int().min(1),
   active: z.boolean().optional(),

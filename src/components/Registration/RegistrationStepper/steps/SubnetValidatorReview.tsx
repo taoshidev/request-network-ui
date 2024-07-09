@@ -202,16 +202,7 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
                   value={
                     registrationData?.endpoint?.selectedService.refillInterval
                   }
-                />
-              </Text>
-            </Group>
-            <Divider className="border-dashed" />
-            <Group className="justify-between items-center">
-              <Text className="text-sm">Refill Rate</Text>
-              <Text className="text-sm">
-                <FixedFormatter
-                  value={registrationData?.endpoint?.selectedService.refillRate}
-                />
+                /> ms
               </Text>
             </Group>
             <Divider className="border-dashed" />

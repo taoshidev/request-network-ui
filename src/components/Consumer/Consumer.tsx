@@ -79,7 +79,6 @@ export function Consumer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptions]);
 
-
   return isLoading ? (
     <ClientRedirect />
   ) : (
@@ -151,6 +150,7 @@ export function Consumer({
                       <Table.Th>Validator</Table.Th>
                       <Table.Th>Created</Table.Th>
                       <Table.Th>Expires</Table.Th>
+                      <Table.Th>Payment Type</Table.Th>
                       <Table.Th>Role</Table.Th>
                       <Table.Th>Request</Table.Th>
                     </Table.Tr>
@@ -178,15 +178,25 @@ export function Consumer({
                             )}
                           </Table.Td>
                           <Table.Td>
-                            {subscription?.keyData?.expires ? dayjs(subscription?.keyData?.expires).format(
-                              "MMM DD, YYYY"
-                            ) : "No Expiry"}
+                            {subscription?.keyData?.expires
+                              ? dayjs(subscription?.keyData?.expires).format(
+                                  "MMM DD, YYYY"
+                                )
+                              : "No Expiry"}
+                          </Table.Td>
+                          <Table.Td>
+                            {subscription?.keyData?.meta?.service?.paymentType
+                              ?.split("_")
+                              ?.join(" ")
+                              ?.toLowerCase()}
                           </Table.Td>
                           <Table.Td>
                             {subscription?.keyData?.meta?.type}
                           </Table.Td>
                           <Table.Td>
-                          <FixedFormatter value={subscription?.keyData?.remaining} />
+                            <FixedFormatter
+                              value={subscription?.keyData?.remaining}
+                            />
                           </Table.Td>
                           <Table.Td className="text-right">
                             <Button

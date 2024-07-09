@@ -100,6 +100,7 @@ export default function EndpointForm({
         <TextInput
           withAsterisk
           label="Endpoint Path"
+          disabled={hasSubs}
           placeholder="/validator-checkpoint"
           {...form.getInputProps("url")}
         />
@@ -109,6 +110,7 @@ export default function EndpointForm({
           label="Percent Realtime"
           withAsterisk
           placeholder="Choose percent realtime"
+          disabled={hasSubs}
           data={PercentRealtimeOptions}
           {...form.getInputProps("percentRealtime")}
           onChange={(val) => form.setFieldValue("percentRealtime", +val!)}
