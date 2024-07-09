@@ -9,6 +9,7 @@ import { IconAlertCircle } from "@tabler/icons-react";
 import { ContractModal } from "@/components/ContractModal";
 import { useDisclosure } from "@mantine/hooks";
 import withAuthGuard from "@/guard/auth-guard";
+import { orderBy as _orderBy } from "lodash";
 
 const ValidatorDashboard = ({
   user,
@@ -17,7 +18,11 @@ const ValidatorDashboard = ({
   stats,
   contracts,
 }: any) => {
-  const endpoints = validators?.map((v) => v.endpoints)?.flat();
+  const endpoints = _orderBy(
+    validators?.map((v) => v.endpoints)?.flat(),
+    ["url", "percentRealtime"],
+    ["asc", "asc"]
+  );
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
