@@ -61,7 +61,6 @@ export function ValidatorPaymentDashboard({
   currentSubscriptions: SubscriptionType[];
   previousSubscriptions: SubscriptionType[];
 }) {
-  console.log("validator", validator);
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState(currentTransactions);
   const [health, setHealth] = useState<string>("");
