@@ -202,6 +202,7 @@ export function ConsumerPaymentDashboard({
     } else {
       setHealth("100%");
     }
+
     const currencyArr = Array.from(new Set(currencies));
     if (currencyArr?.length === 1 && currencyArr[0] === "FIAT") {
       amount = "$" + amount.toFixed(2).toString();

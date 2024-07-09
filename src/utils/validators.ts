@@ -101,6 +101,7 @@ export const fetchPaymentStatusTransactions = async (
   fromWalletAddress?: string,
   proxyServiceId?: string
 ) => {
+
   const where: Array<{ type: string; column: string; value: number | string }> =
     [
       {
