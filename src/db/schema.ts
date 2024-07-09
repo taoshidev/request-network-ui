@@ -202,7 +202,6 @@ export const services = pgTable("services", {
   expires: timestamp("expires", {
     withTimezone: true,
   }),
-  refillRate: integer("refill_rate").default(1),
   refillInterval: integer("refill_interval").default(1000),
   remaining: integer("remaining").default(1000),
   active: boolean("active").default(true).notNull(),

@@ -244,7 +244,7 @@ export function ServiceFormInput({
               {...form.getInputProps("remaining")}
             />
           </Box>
-          <Box>
+          {form.values.paymentType !== PAYMENT_TYPE.SUBSCRIPTION && <Box>
             <DateTimePicker
               label="Expiry Date"
               description="When should your keys expire?"
@@ -253,7 +253,7 @@ export function ServiceFormInput({
               placeholder="Expiry Date"
               {...form.getInputProps("expires")}
             />
-          </Box>
+          </Box>}
         </Group>
       )}
 
@@ -267,15 +267,6 @@ export function ServiceFormInput({
         />
       </Box>
       <Group mb="md" grow>
-        <Box>
-          <NumberInput
-            label="Refill Rate"
-            withAsterisk
-            description="How many tokens to refill during each interval"
-            placeholder="1"
-            {...form.getInputProps("refillRate")}
-          />
-        </Box>
         <Box>
           <NumberInput
             label="Refill Interval"

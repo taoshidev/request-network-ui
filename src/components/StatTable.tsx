@@ -41,7 +41,6 @@ export function StatTable({
                   <Table.Th>Refill Amount</Table.Th>
                   <Table.Th>Rate Limit Type</Table.Th>
                   <Table.Th>Rate Limit</Table.Th>
-                  <Table.Th>Refill Rate</Table.Th>
                   <Table.Th>Refill Interval</Table.Th>
                   {!caption && <Table.Th>Status</Table.Th>}
                 </Table.Tr>
@@ -64,9 +63,14 @@ export function StatTable({
                       <Table.Td>{key?.refill?.amount || "-"}</Table.Td>
                       <Table.Td>{key?.ratelimit?.type || "-"}</Table.Td>
                       <Table.Td>{key?.ratelimit?.limit || "-"}</Table.Td>
-                      <Table.Td>{key?.ratelimit?.refillRate || "-"}</Table.Td>
                       <Table.Td>
-                        {key?.ratelimit?.refillInterval || "-"}
+                        {key?.ratelimit?.refillInterval
+                          ? (
+                              <FixedFormatter
+                                value={key?.ratelimit?.refillInterval}
+                              />
+                            ) + " ms"
+                          : "-"}
                       </Table.Td>
                       {!caption && (
                         <Table.Td>

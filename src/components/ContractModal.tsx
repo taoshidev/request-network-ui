@@ -223,7 +223,6 @@ export function ContractModal({
                       <Table.Th>Price</Table.Th>
                       <Table.Th>Limit</Table.Th>
                       <Table.Th>Requests</Table.Th>
-                      <Table.Th>Refill</Table.Th>
                       <Table.Th>Interval</Table.Th>
                       <Table.Th className="text-right"></Table.Th>
                       <Table.Th className="text-right"></Table.Th>
@@ -265,9 +264,6 @@ export function ContractModal({
                         </Table.Td>
                         <Table.Td>
                           <FixedFormatter value={service.remaining} />
-                        </Table.Td>
-                        <Table.Td>
-                          <FixedFormatter value={service.refillRate} />
                         </Table.Td>
                         <Table.Td>
                           <FixedFormatter value={service.refillInterval} />
