@@ -33,6 +33,7 @@ export function Registration({
     <RegistrationProvider>
       <RegistrationStepper
         user={user}
+        currentSubscriptions={currentSubscriptions}
         StepOne={
           validators?.length! > 0 ? (
             <Subnets
