@@ -15,6 +15,7 @@ import {
   CopyButton,
   Grid,
   Card,
+  Autocomplete,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
@@ -39,22 +40,26 @@ import CurrencyFormatter from "../Formatters/CurrencyFormatter";
 import clsx from "clsx";
 import TierPurchaseOption from "./TierPurchaseOption";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { omit as _omit } from "lodash";
 
-const updateSchema = z.object({
+const generalSettingsSchema = z.object({
   name: z
     .string()
     .regex(/^[^\s]*$/, { message: "Spaces are not allowed" })
     .min(3, { message: "Name must be at least 3 characters" }),
+  consumerApiUrl: z.string(),
 });
 
-type User = z.infer<typeof updateSchema>;
+type GeneralSettings = z.infer<typeof generalSettingsSchema>;
 
 export function Settings({
   apiKey,
   subscription,
+  consumerApiUrls,
 }: {
   apiKey: any;
   subscription: any;
+  consumerApiUrls: string[];
 }) {
   const isFree = useMemo(
     () => +subscription?.service?.price === 0,
@@ -78,6 +83,7 @@ export function Settings({
   const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState("");
   const [active, setActive] = useState(false);
+  const [consumerApiUrlError, setConsumerApiUrlError] = useState("");
   const router = useRouter();
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
@@ -137,9 +143,9 @@ export function Settings({
     register,
     handleSubmit: handleUpdateKey,
     formState: { isValid, errors },
-  } = useForm<User>({
+  } = useForm<GeneralSettings>({
     mode: "onChange",
-    resolver: zodResolver(updateSchema),
+    resolver: zodResolver(generalSettingsSchema),
   });
   const deleteUnkey = async () => {
     const res = await deleteKey({ keyId: apiKey?.id });
@@ -147,15 +153,27 @@ export function Settings({
     notifySuccess(res?.message as string);
   };
 
-  const onUpdateKey: SubmitHandler<User> = async (values) => {
+  const onUpdateKey: SubmitHandler<GeneralSettings> = async (values) => {
+    if (consumerApiUrlError) return notifyError(consumerApiUrlError as string);
+
     setLoading("update-key");
-    const res = await updateKey({
-      keyId: apiKey?.id,
-      params: { name: values.name },
-    });
+    const [res, subRes] = await Promise.all([
+      updateKey({
+        keyId: apiKey?.id,
+        params: { name: values.name },
+      }),
+      updateSubscription({
+        id: subscription?.id,
+        consumerApiUrl: values.consumerApiUrl,
+      }),
+    ]);
 
     if (res?.status !== 200) return notifyError(res?.message as string);
     notifySuccess(res?.message as string);
+
+    if (subRes?.error) return notifyError(subRes?.error?.message as string);
+    notifySuccess("Subscription domain name updated successfully." as string);
+
     setLoading("");
     router.refresh();
     setTimeout(() => router.back(), 1000);
@@ -422,11 +440,40 @@ export function Settings({
 
         <Box component="form" onSubmit={handleUpdateKey(onUpdateKey)} w="100%">
           <TextInput
+            className="mb-2"
             label="Edit Key Name"
+            withAsterisk
             defaultValue={apiKey?.name}
             placeholder={apiKey?.name}
             error={errors.name?.message}
             {...register("name", { required: true })}
+          />
+          <Autocomplete
+            label="Your Domain Name"
+            placeholder="https://mysite.com"
+            defaultValue={subscription?.consumerApiUrl}
+            data={consumerApiUrls}
+            withAsterisk
+            error={consumerApiUrlError}
+            {..._omit(register("consumerApiUrl", { required: true }), [
+              "onChange",
+            ])}
+            onChange={(consumerApiUrl) => {
+              switch (true) {
+                case consumerApiUrl.includes(" "):
+                  setConsumerApiUrlError("Domain name must not include spaces");
+                  break;
+                case !consumerApiUrl.includes("http://") &&
+                  !consumerApiUrl.includes("https://"):
+                  setConsumerApiUrlError(
+                    'Domain name must contain "http://" or "https://"'
+                  );
+                  break;
+                default:
+                  setConsumerApiUrlError("");
+                  break;
+              }
+            }}
           />
 
           <Group justify="flex-end" mt="xl">
@@ -435,7 +482,7 @@ export function Settings({
               type="submit"
               variant="primary"
             >
-              Update Name
+              Update Settings
             </Button>
           </Group>
         </Box>
