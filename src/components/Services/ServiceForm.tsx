@@ -22,7 +22,7 @@ export function ServiceForm({
 }) {
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
-  const [tiers, setTiers] = useState([{ from: 0, to: 1000, price: 0 }]);
+  const [tiers, setTiers] = useState([{ from: 0, to: 1000, price: 0, pricePerRequest: 0 }]);
 
   const getDefaultValues = () => ({
     id: service?.id || "",
@@ -38,7 +38,7 @@ export function ServiceForm({
       service?.expires ||
       new Date(new Date().setMonth(new Date().getMonth() + 3)),
     paymentType: service?.paymentType || "Free",
-    tiers: service?.tiers || [{ from: 0, to: 1000, price: 0 }],
+    tiers: service?.tiers || [{ from: 0, to: 1000, price: 0, pricePerRequest: 0 }],
   });
 
   const form = useForm<Partial<ServiceType>>({

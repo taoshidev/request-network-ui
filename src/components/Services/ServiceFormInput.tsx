@@ -24,9 +24,9 @@ export function ServiceFormInput({
   setTiers,
 }: {
   form: UseFormReturnType<Partial<ServiceType>>;
-  tiers: { from: number; to: number; price: number }[];
+  tiers: { from: number; to: number; price: number; pricePerRequest: number }[];
   setTiers: Dispatch<
-    SetStateAction<{ from: number; to: number; price: number }[]>
+    SetStateAction<{ from: number; to: number; price: number; pricePerRequest: number }[]>
   >;
 }) {
   const [currencyType, setCurrencyType] = useState("");
@@ -89,7 +89,6 @@ export function ServiceFormInput({
       form.setFieldValue("price", "0.00");
     } else if (paymentType === PAYMENT_TYPE.PAY_PER_REQUEST) {
       form.setFieldValue("price", "0.00");
-      // form.setFieldValue("expires", "");
       const freeTier = tiers?.find((tier) => +tier.price === 0);
 
       if (freeTier) {
@@ -107,6 +106,7 @@ export function ServiceFormInput({
         from: lastTier.to + 1,
         to: lastTier.to + 1000,
         price: 0,
+        pricePerRequest: 0,
       },
     ]);
   };
@@ -119,6 +119,15 @@ export function ServiceFormInput({
       updatedTiers[index + 1].from = +value + 1;
     }
 
+    if (field === "pricePerRequest") {
+      let cumulativePrice = 0;
+      updatedTiers.forEach((tier, idx) => {
+        const tierRange = tier.to - tier.from;
+        cumulativePrice += tierRange * tier.pricePerRequest;
+        tier.price = parseFloat(cumulativePrice.toFixed(2));
+      });
+    }
+
     setTiers(updatedTiers);
   };
 
@@ -127,6 +136,19 @@ export function ServiceFormInput({
     updatedTiers.splice(index, 1);
     setTiers(updatedTiers);
   };
+
+  useEffect(() => {
+    let cumulativePrice = 0;
+    const updatedTiers = tiers.map((tier) => {
+      const tierRange = tier.to - tier.from;
+      cumulativePrice += tierRange * tier.pricePerRequest;
+      return {
+        ...tier,
+        price: parseFloat(cumulativePrice.toFixed(2)),
+      };
+    });
+    setTiers(updatedTiers);
+  }, [tiers.length]);
 
   return (
     <>
@@ -176,30 +198,36 @@ export function ServiceFormInput({
               <Group
                 key={index}
                 mb="sm"
-                className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2"
+                className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-2"
               >
                 <NumberInput
                   label="From"
                   min={0}
+                  thousandSeparator=","
                   value={tier.from}
-                  disabled
                   onChange={(value) => updateTier(index, "from", value!)}
                 />
                 <NumberInput
                   label="To"
                   min={0}
+                  thousandSeparator=","
                   step={1000}
                   value={tier.to}
                   onChange={(value) => updateTier(index, "to", value!)}
+                />
+                <NumberInput
+                  label="Price per Request"
+                  min={0}
+                  value={tier.pricePerRequest}
+                  step={0.001}
+                  onChange={(value) => updateTier(index, "pricePerRequest", value!)}
                 />
                 <NumberInput
                   label="Tier Price"
                   min={0}
                   value={tier.price}
                   step={100}
-                  onChange={(value) => {
-                    updateTier(index, "price", parseFloat((+value).toFixed(2)));
-                  }}
+                  readOnly
                 />
                 <ActionIcon
                   className="mt-6 float-end h-9 w-9"

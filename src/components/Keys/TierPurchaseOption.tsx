@@ -10,6 +10,8 @@ import {
   NumberInput,
   Title,
   Card,
+  Tooltip,
+  Table,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useNotification } from "@/hooks/use-notification";
@@ -59,6 +61,21 @@ const calculateIncrements = (tiers) => {
   return increments;
 };
 
+const calculateCumulativePrice = (tiers, requestCount) => {
+  return tiers.reduce(
+    (acc, tier) => {
+      if (requestCount > 0) {
+        const tierRange = Math.min(requestCount, tier.to - tier.from);
+        acc.price += tierRange * tier.pricePerRequest;
+        acc.details.push(`(${tierRange} * ${tier.pricePerRequest})`);
+        requestCount -= tierRange;
+      }
+      return acc;
+    },
+    { price: 0, details: [] }
+  );
+};
+
 export default function TierPurchaseOption({
   subscription,
   preview = false,
@@ -72,16 +89,26 @@ export default function TierPurchaseOption({
       from: number;
       to: number;
       price: number;
+      pricePerRequest: number;
     }[]
   >([]);
   const [increments, setIncrements] = useState<number[]>([]);
-  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [maxAllowedRequest, setMaxAllowedRequest] = useState<number>();
+  const [selectedRequest, setSelectedRequest] = useState<number | null>(null);
   const [
     confirmModalOpened,
     { open: openConfirmModal, close: closeConfirmModal },
   ] = useDisclosure(false);
+  const [
+    moreOptionsModalOpened,
+    { open: openMoreOptionsModal, close: closeMoreOptionsModal },
+  ] = useDisclosure(false);
+  const [inputRequestCount, setInputRequestCount] = useState<string | number>(
+    1000
+  );
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [priceDetails, setPriceDetails] = useState<string[]>([]);
 
   useEffect(() => {
     if (subscription?.service?.tiers?.length > 0) {
@@ -90,28 +117,40 @@ export default function TierPurchaseOption({
   }, [subscription]);
 
   useEffect(() => {
+    setInputRequestCount(+tiers?.[0]?.to || 1000);
     if (tiers.length > 0) {
       const calculatedIncrements = calculateIncrements(tiers);
       setIncrements(calculatedIncrements);
+      setMaxAllowedRequest(Math.max(...tiers.map((tier) => tier.to)));
     }
   }, [tiers]);
 
-  const handlePurchase = (requestCount) => {
+  const handlePurchase = (requestCount: number) => {
     setSelectedRequest(requestCount);
-    setQuantity(1);
     openConfirmModal();
   };
 
   useEffect(() => {
-    if (selectedRequest && quantity) {
-      const tier = tiers.find(
-        (tier) => selectedRequest >= tier.from && selectedRequest <= tier.to
+    if (selectedRequest) {
+      const { price, details } = calculateCumulativePrice(
+        tiers,
+        selectedRequest
       );
-      if (tier) {
-        setTotalPrice(quantity * tier.price);
-      }
+      setTotalPrice(price * quantity);
+      setPriceDetails(details);
     }
-  }, [quantity, selectedRequest, tiers]);
+  }, [selectedRequest, quantity, tiers]);
+
+  useEffect(() => {
+    if (inputRequestCount) {
+      const { price, details } = calculateCumulativePrice(
+        tiers,
+        inputRequestCount
+      );
+      setTotalPrice(price * quantity);
+      setPriceDetails(details);
+    }
+  }, [inputRequestCount, quantity, tiers, moreOptionsModalOpened]);
 
   const stripePayment = async () => {
     notifySuccess(`Purchasing ${selectedRequest! * quantity} requests!`);
@@ -143,41 +182,69 @@ export default function TierPurchaseOption({
         "_blank"
       );
     }
+    resetValues();
+  };
+
+  const resetValues = () => {
+    setInputRequestCount(1000);
+    setQuantity(1);
+    setSelectedRequest(null);
+  };
+
+  const handleInputRequestChange = (val: string | number) => {
+    if (+val > maxAllowedRequest!) {
+      setInputRequestCount(maxAllowedRequest!);
+    } else {
+      setInputRequestCount(+val || 1);
+    }
   };
 
   return (
     <>
       <Card className="shadow-sm border-gray-200" withBorder>
-        <Title order={2} mb="sm">
-          Purchase More Requests
-        </Title>
+        <Group className="mb-3 grid grid-cols-[1fr_auto]">
+          <Title order={2}>Purchase More Requests</Title>
+          <Button onClick={openMoreOptionsModal} variant="default">
+            More Options
+          </Button>
+        </Group>
         <Text>Click a button below to purchase more requests:</Text>
         <Group className="button-group mt-4 grid grid-cols-2 gap-1 xl:grid-cols-6 md:grid-cols-3 sm:grid-cols-2">
           {increments.map((increment, index) => {
+            const { price, details } = calculateCumulativePrice(
+              tiers,
+              increment
+            );
             const tier = tiers.find(
               (tier) => increment >= tier.from && increment <= tier.to
             );
+
             return (
-              <Button
-                key={index}
-                disabled={preview}
-                className="h-auto p-3"
-                variant="orange"
-                onClick={() => handlePurchase(increment)}
-              >
-                <Box className="grid grid-rows-3 gap-y-2">
-                  <Text className="font-bold">
-                    <FixedFormatter value={increment} /> Req&apos;s
-                  </Text>
-                  <Text className="font-bold">at</Text>
-                  <Text className="font-bold">
-                    <CurrencyFormatter
-                      price={tier?.price || 0}
-                      currencyType={subscription?.service?.currencyType}
-                    />
-                  </Text>
-                </Box>
-              </Button>
+              <Tooltip key={index} label={details.join(" + ")}>
+                <Button
+                  key={index}
+                  disabled={preview}
+                  className="h-auto p-3"
+                  variant="orange"
+                  onClick={() => handlePurchase(increment)}
+                >
+                  <Box className="grid grid-rows-4 gap-y-2">
+                    <Text className="font-bold">
+                      <FixedFormatter value={increment} /> Req&apos;s
+                    </Text>
+                    <Text className="font-bold">at</Text>
+                    <Text className="font-bold">
+                      <CurrencyFormatter
+                        price={price}
+                        currencyType={subscription?.service?.currencyType}
+                      />
+                    </Text>
+                    <Text className="font-bold text-sm">
+                      ({tier?.pricePerRequest.toFixed(2)} per request)
+                    </Text>
+                  </Box>
+                </Button>
+              </Tooltip>
             );
           })}
         </Group>
@@ -186,33 +253,48 @@ export default function TierPurchaseOption({
       <Modal
         centered
         opened={confirmModalOpened}
-        onClose={closeConfirmModal}
+        onClose={() => {
+          resetValues();
+          closeConfirmModal();
+        }}
         title="Confirm Purchase"
       >
         <Box>
-          <Text>
-            You are about to purchase{" "}
-            <strong>{selectedRequest! * quantity}</strong> requests.
-          </Text>
-          <Box mt="lg">
-            <NumberInput
-              label="Quantity"
-              value={quantity}
-              onChange={(val) => setQuantity(+val ? +val : 1)}
-              min={1}
-            />
-          </Box>
-          <Box mt="lg">
-            <Text>
-              Total Price:{" "}
-              <CurrencyFormatter
-                price={totalPrice}
-                currencyType={subscription?.service?.currencyType}
-              />
-            </Text>
-          </Box>
-          <Group className="flex justify-end mt-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
-            <Button onClick={closeConfirmModal} variant="outline">
+          <Table>
+            <Table.Tbody>
+              <Table.Tr>
+                <Table.Td>Requests</Table.Td>
+                <Table.Td style={{ textAlign: "right" }}>
+                  <FixedFormatter value={selectedRequest! * quantity} />
+                </Table.Td>
+              </Table.Tr>
+              <Table.Tr>
+                <Table.Td>Total Price</Table.Td>
+                <Table.Td style={{ textAlign: "right" }}>
+                  <CurrencyFormatter
+                    price={totalPrice}
+                    currencyType={subscription?.service?.currencyType}
+                  />
+                </Table.Td>
+              </Table.Tr>
+              <Table.Tr>
+                <Table.Td>Breakdown</Table.Td>
+                <Table.Td className="float-end text-xs">
+                  {priceDetails?.length > 1
+                    ? `(${priceDetails.join(" + ")}) * (${quantity})`
+                    : `${priceDetails.join(" + ")} * (${quantity})`}
+                </Table.Td>
+              </Table.Tr>
+            </Table.Tbody>
+          </Table>
+          <Group className="flex justify-end mt-4">
+            <Button
+              onClick={() => {
+                resetValues();
+                closeConfirmModal();
+              }}
+              variant="outline"
+            >
               Cancel
             </Button>
             {payPalEnabled && !isFree && (
@@ -252,6 +334,86 @@ export default function TierPurchaseOption({
                   />
                 </Button>
               )}
+          </Group>
+        </Box>
+      </Modal>
+
+      <Modal
+        centered
+        opened={moreOptionsModalOpened}
+        onClose={() => {
+          resetValues();
+          closeMoreOptionsModal();
+        }}
+        title="More Options"
+      >
+        <Box>
+          <NumberInput
+            label="Specify the number of requests to purchase:"
+            className="mt-3"
+            value={inputRequestCount}
+            onChange={handleInputRequestChange}
+            thousandSeparator=","
+            min={1000}
+            defaultValue={1000}
+            max={maxAllowedRequest}
+          />
+          <NumberInput
+            label="Specify the quantity:"
+            className="mt-3"
+            value={quantity}
+            onChange={(val) => setQuantity(+val || 1)}
+            min={1}
+          />
+          <Table className="mt-3">
+            <Table.Tbody>
+              <Table.Tr>
+                <Table.Td>Requests</Table.Td>
+                <Table.Td style={{ textAlign: "right" }}>
+                  <FixedFormatter value={+inputRequestCount! * quantity} />
+                </Table.Td>
+              </Table.Tr>
+              <Table.Tr>
+                <Table.Td>Total Price</Table.Td>
+                <Table.Td style={{ textAlign: "right" }}>
+                  <CurrencyFormatter
+                    price={totalPrice}
+                    currencyType={subscription?.service?.currencyType}
+                  />
+                </Table.Td>
+              </Table.Tr>
+              <Table.Tr>
+                <Table.Td>Breakdown</Table.Td>
+                <Table.Td className="float-end text-xs">
+                  {priceDetails?.length > 1
+                    ? `(${priceDetails.join(" + ")}) * (${quantity})`
+                    : `${priceDetails.join(" + ")} * (${quantity})`}
+                </Table.Td>
+              </Table.Tr>
+            </Table.Tbody>
+          </Table>
+          <Group className="flex justify-end mt-4">
+            <Button
+              onClick={() => {
+                resetValues();
+                closeMoreOptionsModal();
+              }}
+              variant="outline"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                handlePurchase(+inputRequestCount!);
+                closeMoreOptionsModal();
+              }}
+              loading={loading === "stripe-payment"}
+              type="button"
+              variant="default"
+              className="drop-shadow-md"
+            >
+              Purchase
+            </Button>
           </Group>
         </Box>
       </Modal>

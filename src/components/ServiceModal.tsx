@@ -26,7 +26,7 @@ export default function ServiceModal({
 }) {
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError } = useNotification();
-  const [tiers, setTiers] = useState([{ from: 0, to: 1000, price: 0 }]);
+  const [tiers, setTiers] = useState([{ from: 0, to: 1000, price: 0, pricePerRequest: 0 }],);
   const getDefaultValues = (service: ServiceType | null) => ({
     id: service?.id || "",
     name: service?.name || "",
@@ -39,7 +39,9 @@ export default function ServiceModal({
     refillInterval: service?.refillInterval || 60000,
     expires: service?.expires || DateTime.now().plus({ months: 3 }).toJSDate(),
     paymentType: service?.paymentType || "Free",
-    tiers: service?.tiers || [{ from: 0, to: 1000, price: 0 }],
+    tiers: service?.tiers || [
+      { from: 0, to: 1000, price: 0, pricePerRequest: 0 },
+    ],
   });
 
   const router = useRouter();
@@ -60,7 +62,9 @@ export default function ServiceModal({
 
   useEffect(() => {
     if (opened) form.setValues(getDefaultValues(service as ServiceType));
-    setTiers(service?.tiers || [{ from: 0, to: 1000, price: 0 }]);
+    setTiers(
+      service?.tiers || [{ from: 0, to: 1000, price: 0, pricePerRequest: 0 }]
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service, opened]);
 
