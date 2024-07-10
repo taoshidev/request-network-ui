@@ -11,6 +11,7 @@ import {
   TextInput,
   Center,
   Card,
+  Autocomplete,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { generateShortId } from "@/utils/ids";
@@ -81,12 +82,14 @@ const stepText: StepText = {
 
 export function RegistrationStepper({
   user,
+  currentSubscriptions,
   StepOne,
   StepTwo,
   StepThree,
   StepFour,
 }: {
   user: UserType;
+  currentSubscriptions: SubscriptionType[];
   StepOne: React.ReactElement;
   StepTwo: React.ReactElement;
   StepThree: React.ReactElement;
@@ -116,6 +119,14 @@ export function RegistrationStepper({
   const modals = useModals();
 
   const agreeModalRef = useRef<string | null>(null);
+  const applicationNames = (currentSubscriptions || [])
+    .map((sub) => sub?.appName || "")
+    .filter((appName, index, arr) => arr.indexOf(appName) === index)
+    .sort();
+  const consumerApiUrls = (currentSubscriptions || [])
+    .map((sub) => sub?.consumerApiUrl || "")
+    .filter((appName, index, arr) => arr.indexOf(appName) === index)
+    .sort();
 
   const openAgreeModal = () => {
     modals.openModal({
@@ -547,37 +558,35 @@ export function RegistrationStepper({
                   </Text>
                 )}
                 <Box className="mt-7">
-                  <TextInput
+                  <Autocomplete
                     label="Application Name"
                     className="mb-4"
-                    withAsterisk
+                    placeholder="Application Name"
                     value={registrationData?.appName}
-                    onChange={(e) => {
-                      updateData({
-                        appName: e.target.value,
-                      } as RegistrationData);
+                    data={applicationNames}
+                    withAsterisk
+                    onChange={(appName) => {
+                      updateData({ appName } as RegistrationData);
                       if (errors) setErrors([]);
                     }}
                     error={
                       errors?.find((e) => e.path.includes("appName"))?.message
                     }
-                    placeholder="Application Name"
                   />
-                  <TextInput
+                  <Autocomplete
                     label="Your Domain Name"
-                    withAsterisk
+                    placeholder="https://mysite.com"
                     value={registrationData?.consumerApiUrl}
-                    onChange={(e) => {
-                      updateData({
-                        consumerApiUrl: e.target.value,
-                      } as RegistrationData);
+                    data={consumerApiUrls}
+                    withAsterisk
+                    onChange={(consumerApiUrl) => {
+                      updateData({ consumerApiUrl } as RegistrationData);
                       if (errors) setErrors([]);
                     }}
                     error={
                       errors?.find((e) => e.path.includes("consumerApiUrl"))
                         ?.message
                     }
-                    placeholder="https://mysite.com"
                   />
                   {isCrypto(registrationData?.endpoint?.selectedService) && (
                     <TextInput

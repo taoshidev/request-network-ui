@@ -202,7 +202,8 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
                   value={
                     registrationData?.endpoint?.selectedService.refillInterval
                   }
-                /> ms
+                />{" "}
+                ms
               </Text>
             </Group>
             <Divider className="border-dashed" />
