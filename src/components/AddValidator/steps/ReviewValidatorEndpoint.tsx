@@ -133,6 +133,7 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                           </Table.Tr>
                           <Table.Tr>
                             <Table.Td colSpan={4}>
+                              <Box className="-mx-[10px]">
                               <TierPurchaseOption
                                 subscription={
                                   {
@@ -141,6 +142,7 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                                 }
                                 preview={true}
                               />
+                              </Box>
                             </Table.Td>
                           </Table.Tr>
                         </>

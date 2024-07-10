@@ -5,6 +5,9 @@ import { getValidatorStatusPage } from "@/actions/validators";
 import { eq } from "drizzle-orm";
 import { validators } from "@/db/schema";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function StatusPage() {
   const supabase = createClient();
 

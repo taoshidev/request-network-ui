@@ -1,4 +1,4 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, asc } from "drizzle-orm";
 import { endpoints, validators, subscriptions } from "@/db/schema";
 import { getAuthUser } from "@/actions/auth";
 import { getSubnets } from "@/actions/subnets";
@@ -51,6 +51,7 @@ export default async function Page() {
               },
             },
           },
+          orderBy: [asc(endpoints?.url), asc(endpoints?.percentRealtime)],
         },
       },
     },
