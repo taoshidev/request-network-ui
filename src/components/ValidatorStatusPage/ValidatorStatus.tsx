@@ -21,7 +21,7 @@ export default function ValidatorStatus({
     health: { uptime: number; message: string };
   })[];
 }) {
-  let { data: validators } = useSWR(
+  const { data: validators } = useSWR(
     "/validator-status",
     async () => await getValidatorStatusPage(user),
     {
