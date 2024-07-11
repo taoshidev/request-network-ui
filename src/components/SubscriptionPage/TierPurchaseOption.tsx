@@ -136,8 +136,6 @@ export default function TierPurchaseOption({
 
     if (tiers.length > 0) {
       const calculatedIncrements = calculateIncrements(tiers);
-      // setMaxAllowedRequest(Math.max(...tiers.map((tier) => tier.to)));
-
       const precomputed = calculatedIncrements.map((increment) => {
         const { price, details } = calculateCumulativePrice(tiers, increment);
         return { increment, price, details };
@@ -297,8 +295,12 @@ export default function TierPurchaseOption({
                 <Table.Td>Breakdown</Table.Td>
                 <Table.Td className="float-end text-xs">
                   {priceDetails?.length > 1
-                    ? `(${priceDetails.join(" + ")}) * (${quantity})`
-                    : `${priceDetails.join(" + ")} * (${quantity})`}
+                    ? SHOW_QUANTITY_INPUT
+                      ? `(${priceDetails.join(" + ")}) * (${quantity})`
+                      : `${priceDetails.join(" + ")}`
+                    : SHOW_QUANTITY_INPUT
+                    ? `${priceDetails.join(" + ")} * (${quantity})`
+                    : `${priceDetails.join(" + ")}`}
                 </Table.Td>
               </Table.Tr>
             </Table.Tbody>
@@ -404,8 +406,12 @@ export default function TierPurchaseOption({
                 <Table.Td>Breakdown</Table.Td>
                 <Table.Td className="float-end text-xs">
                   {priceDetails?.length > 1
-                    ? `(${priceDetails.join(" + ")}) * (${quantity})`
-                    : `${priceDetails.join(" + ")} * (${quantity})`}
+                    ? SHOW_QUANTITY_INPUT
+                      ? `(${priceDetails.join(" + ")})  * (${quantity})`
+                      : `(${priceDetails.join(" + ")})`
+                    : SHOW_QUANTITY_INPUT
+                    ? `${priceDetails.join(" + ")} * (${quantity})`
+                    : `${priceDetails.join(" + ")}`}
                 </Table.Td>
               </Table.Tr>
             </Table.Tbody>
