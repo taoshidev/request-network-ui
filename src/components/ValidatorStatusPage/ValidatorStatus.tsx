@@ -1,7 +1,7 @@
 "use client";
 
 import { UserType } from "@/db/types/user";
-import { ValidatorType } from "@/db/types/validator";
+import { ValidatorWithInfo } from "@/db/types/validator";
 import { Alert, Box, Group, Text } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
 import clsx from "clsx";
@@ -17,9 +17,7 @@ export default function ValidatorStatus({
   initialValidators,
 }: {
   user: UserType;
-  initialValidators: (ValidatorType & {
-    health: { uptime: number; message: string };
-  })[];
+  initialValidators: ValidatorWithInfo[];
 }) {
   const { data: validators } = useSWR(
     "/validator-status",

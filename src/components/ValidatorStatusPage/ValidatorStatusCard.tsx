@@ -1,5 +1,5 @@
 import { EndpointType } from "@/db/types/endpoint";
-import { ValidatorType } from "@/db/types/validator";
+import { ValidatorWithInfo } from "@/db/types/validator";
 import { Badge, Box, Card, Table, Text } from "@mantine/core";
 import { IconAlertTriangle, IconCircleCheck } from "@tabler/icons-react";
 import clsx from "clsx";
@@ -10,7 +10,7 @@ import { DateTime } from "luxon";
 export default function ValidatorStatus({
   validator,
 }: {
-  validator: ValidatorType & { health: { uptime: number; message: string } };
+  validator: ValidatorWithInfo;
 }) {
   const [reqTime, setReqTime] = useState(DateTime.now());
   const [validatorUptime, setValidatorUptime] = useState<number | null>(validator.health?.uptime);
