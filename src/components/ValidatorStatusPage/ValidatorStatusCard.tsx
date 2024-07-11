@@ -13,26 +13,37 @@ export default function ValidatorStatus({
   validator: ValidatorType & { health: { uptime: number; message: string } };
 }) {
   const [reqTime, setReqTime] = useState(DateTime.now());
-  const [uptime, setUptime] = useState(DateTime.now());
+  const [validatorUptime, setValidatorUptime] = useState<number | null>(validator.health?.uptime);
+  const [uptime, setUptime] = useState<number | null>(null);
 
   useEffect(() => {
+    if (validatorUptime) {
+      setUptime(
+        validatorUptime +
+          DateTime.now().diff(reqTime).toObject()?.milliseconds / 1000
+      );
+    } else {
+      setUptime(null);
+    }
+
     const interval = setInterval(() => {
-      if (validator.health?.uptime) {
+      if (validatorUptime) {
         setUptime(
-          validator.health.uptime +
+          validatorUptime +
             DateTime.now().diff(reqTime).toObject()?.milliseconds / 1000
         );
+      } else {
+        setUptime(null);
       }
     }, 1000);
 
-    return () => {
-      clearTimeout(interval);
-    };
-  }, []);
+    return () => clearTimeout(interval);
+  }, [validatorUptime, reqTime]);
 
   useEffect(() => {
+    setValidatorUptime(validator.health?.uptime);
     setReqTime(DateTime.now());
-  }, [validator]);
+  }, [validator.health?.uptime]);
 
   return (
     <Card

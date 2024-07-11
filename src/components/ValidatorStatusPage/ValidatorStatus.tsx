@@ -8,8 +8,6 @@ import clsx from "clsx";
 import useSWR from "swr";
 import { getValidatorStatusPage } from "@/actions/validators";
 import { cloneDeep as _cloneDeep } from "lodash";
-import { useState } from "react";
-import { DateTime } from "luxon";
 import ValidatorStatusCard from "./ValidatorStatusCard";
 
 const requestRate = 10000; // send request every 10 seconds
@@ -23,8 +21,6 @@ export default function ValidatorStatus({
     health: { uptime: number; message: string };
   })[];
 }) {
-  const [reqTime, setReqTime] = useState(DateTime.now());
-
   let { data: validators } = useSWR(
     "/validator-status",
     async () => await getValidatorStatusPage(user),
