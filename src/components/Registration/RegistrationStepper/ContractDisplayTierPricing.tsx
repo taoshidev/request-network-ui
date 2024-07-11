@@ -19,7 +19,9 @@ export default function ContractDisplayTierPricing({
   >([]);
 
   useEffect(() => {
-    setTiersWithCumulativePrices(getCumulativePriceDetails(service.tiers));
+    if (service.tiers) {
+      setTiersWithCumulativePrices(getCumulativePriceDetails(service.tiers));
+    }
   }, [service.tiers]);
 
   const getCumulativePriceDetails = (tiers) => {
@@ -31,8 +33,8 @@ export default function ContractDisplayTierPricing({
       return {
         ...tier,
         cumulativePrice,
-        details: `(${tierRange} * ${tier.pricePerRequest.toFixed(
-          2
+        details: `(${tierRange} * ${tier?.pricePerRequest?.toFixed(
+          4
         )}) = $${priceForTier.toFixed(2)}`,
       };
     });

@@ -30,6 +30,7 @@ const payPalEnabled = true;
 const loading: string = "";
 
 const BUTTON_COUNT = 6;
+const SHOW_QUANTITY_INPUT = false;
 
 const calculateIncrements = (tiers) => {
   const paidTiers = tiers.filter((tier) => tier.price > 0);
@@ -67,15 +68,19 @@ const calculateCumulativePrice = (tiers, requestCount) => {
 
   return paidTiers.reduce(
     (acc, tier, i) => {
+      const tierPrice = tier.pricePerRequest.toFixed(4);
       if (remainingRequestCount > 0) {
         const tierRange = Math.min(
           remainingRequestCount,
           tier.to - (tier.from - 1)
         );
-
         acc.price += tierRange * tier.pricePerRequest;
-        acc.details.push(`(${tierRange} * ${tier.pricePerRequest.toFixed(2)})`);
+        acc.details.push(`(${tierRange} * ${tierPrice})`);
         remainingRequestCount -= tierRange;
+        if (i === paidTiers.length - 1 && remainingRequestCount > 0) {
+          acc.price += remainingRequestCount * tierPrice;
+          acc.details.push(`(${remainingRequestCount} * ${tierPrice})`);
+        }
       }
       return acc;
     },
@@ -131,7 +136,7 @@ export default function TierPurchaseOption({
 
     if (tiers.length > 0) {
       const calculatedIncrements = calculateIncrements(tiers);
-      setMaxAllowedRequest(Math.max(...tiers.map((tier) => tier.to)));
+      // setMaxAllowedRequest(Math.max(...tiers.map((tier) => tier.to)));
 
       const precomputed = calculatedIncrements.map((increment) => {
         const { price, details } = calculateCumulativePrice(tiers, increment);
@@ -251,7 +256,7 @@ export default function TierPurchaseOption({
                       />
                     </Text>
                     <Text className="font-bold text-xs">
-                      ({tier?.pricePerRequest.toFixed(2)} per request)
+                      ({tier?.pricePerRequest.toFixed(4)} per request)
                     </Text>
                   </Box>
                 </Button>
@@ -360,24 +365,24 @@ export default function TierPurchaseOption({
       >
         <Box>
           <NumberInput
-            label={`Number of requests to purchase (Max: ${maxAllowedRequest}):`}
+            label={`Number of requests to purchase:`}
             className="mt-3"
             value={inputRequestCount}
-            onChange={handleInputRequestChange}
-            clampBehavior="strict"
+            onChange={setInputRequestCount}
             thousandSeparator=","
             min={1}
             step={100}
             defaultValue={1000}
-            max={+maxAllowedRequest!}
           />
-          <NumberInput
-            label="Specify quantity:"
-            className="mt-3"
-            value={quantity}
-            onChange={(val) => setQuantity(+val || 1)}
-            min={1}
-          />
+          {SHOW_QUANTITY_INPUT && (
+            <NumberInput
+              label="Specify quantity:"
+              className="mt-3"
+              value={quantity}
+              onChange={(val) => setQuantity(+val || 1)}
+              min={1}
+            />
+          )}
           <Table className="mt-3">
             <Table.Tbody>
               <Table.Tr>

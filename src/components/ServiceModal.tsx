@@ -10,6 +10,7 @@ import { DateTime } from "luxon";
 import { ServiceFormInput } from "./Services/ServiceFormInput";
 import { useRouter } from "next/navigation";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { TierType, DEFAULT_TIER } from "@/components/Services/ServiceForm";
 
 export default function ServiceModal({
   user,
@@ -26,7 +27,7 @@ export default function ServiceModal({
 }) {
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError } = useNotification();
-  const [tiers, setTiers] = useState([{ from: 0, to: 1000, price: 0, pricePerRequest: 0 }],);
+  const [tiers, setTiers] = useState([DEFAULT_TIER],);
   const getDefaultValues = (service: ServiceType | null) => ({
     id: service?.id || "",
     name: service?.name || "",
@@ -40,7 +41,7 @@ export default function ServiceModal({
     expires: service?.expires || DateTime.now().plus({ months: 3 }).toJSDate(),
     paymentType: service?.paymentType || "Free",
     tiers: service?.tiers || [
-      { from: 0, to: 1000, price: 0, pricePerRequest: 0 },
+      { from: 1, to: 1000, price: "0.00", pricePerRequest: "0.000" },
     ],
   });
 
@@ -63,7 +64,7 @@ export default function ServiceModal({
   useEffect(() => {
     if (opened) form.setValues(getDefaultValues(service as ServiceType));
     setTiers(
-      service?.tiers || [{ from: 0, to: 1000, price: 0, pricePerRequest: 0 }]
+      service?.tiers || [DEFAULT_TIER]
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service, opened]);

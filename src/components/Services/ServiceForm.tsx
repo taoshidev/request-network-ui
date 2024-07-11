@@ -10,6 +10,10 @@ import { createService } from "@/actions/services";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 import { useRouter } from "next/navigation";
 
+
+export type TierType = { from: number; to: number; price: number; pricePerRequest: number };
+export const DEFAULT_TIER: TierType = { from: 1, to: 1000, price: 0.00, pricePerRequest: 0.000 };
+
 export function ServiceForm({
   onComplete,
   onDataPrepped,
@@ -24,7 +28,7 @@ export function ServiceForm({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
-  const [tiers, setTiers] = useState([{ from: 0, to: 1000, price: 0, pricePerRequest: 0 }]);
+  const [tiers, setTiers] = useState<TierType[]>([DEFAULT_TIER]);
 
   const getDefaultValues = () => ({
     id: service?.id || "",
@@ -40,7 +44,7 @@ export function ServiceForm({
       service?.expires ||
       new Date(new Date().setMonth(new Date().getMonth() + 3)),
     paymentType: service?.paymentType || "Free",
-    tiers: service?.tiers || [{ from: 0, to: 1000, price: 0, pricePerRequest: 0 }],
+    tiers: service?.tiers || [DEFAULT_TIER],
   });
 
   const form = useForm<Partial<ServiceType>>({
@@ -60,7 +64,7 @@ export function ServiceForm({
 
   useEffect(() => {
     form.setValues(getDefaultValues());
-    setTiers(service?.tiers || [{ from: 0, to: 1000, price: 0 }]);
+    setTiers(service?.tiers || [DEFAULT_TIER]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service, user]);
 

@@ -17,6 +17,7 @@ import { UserType } from "@/db/types/user";
 import { useRouter } from "next/navigation";
 import { IconPlus, IconX } from "@tabler/icons-react";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { TierType } from "@/components/Services/ServiceForm";
 
 export function ServiceFormInput({
   form,
@@ -24,16 +25,11 @@ export function ServiceFormInput({
   setTiers,
 }: {
   form: UseFormReturnType<Partial<ServiceType>>;
-  tiers: { from: number; to: number; price: number; pricePerRequest: number }[];
-  setTiers: Dispatch<
-    SetStateAction<
-      { from: number; to: number; price: number; pricePerRequest: number }[]
-    >
-  >;
+  tiers: TierType[];
+  setTiers: Dispatch<SetStateAction<TierType[]>>;
 }) {
   const [currencyType, setCurrencyType] = useState("");
   const [user, setUser] = useState<UserType | null>(null);
-  const [editMode, setEditMode] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -45,7 +41,6 @@ export function ServiceFormInput({
       setUser(user);
     };
     fetchUser();
-    setEditMode(form?.values?.id?.length > 0);
     // eslint-disable-next-line
   }, []);
 
@@ -109,13 +104,14 @@ export function ServiceFormInput({
       {
         from: lastTier.to + 1,
         to: lastTier.to + 1000,
-        price: 0,
-        pricePerRequest: 0,
+        price: 0.0,
+        pricePerRequest: 0.0,
       },
     ]);
   };
 
   const updateTier = (index: number, field: string, value: string | number) => {
+    if (isNaN(+value)) return;
     const updatedTiers = [...tiers];
     updatedTiers[index][field] = value;
 
@@ -124,8 +120,16 @@ export function ServiceFormInput({
     }
 
     if (field === "price") {
-      if (isNaN(+value)) return;
-      updatedTiers[index].pricePerRequest = parseFloat((+value / updatedTiers[index].to).toFixed(4));
+      const prevIndex = index > 0 ? index - 1 : -1;
+      const prevTier = prevIndex !== -1 ? updatedTiers[prevIndex] : null;
+      const price = prevIndex === -1 ? +value : +value - +prevTier?.price!;
+
+      updatedTiers[index].pricePerRequest = parseFloat(
+        (
+          price /
+          (+updatedTiers[index].to - (+updatedTiers[index].from - 1))
+        ).toFixed(4)
+      );
     }
 
     let cumulativePrice = 0;
@@ -190,7 +194,7 @@ export function ServiceFormInput({
                 Add Tier
               </Button>
             </Box>
-            {tiers.map((tier, index) => (
+            {tiers.map((tier, index, arr) => (
               <Group
                 key={index}
                 mb="sm"
@@ -198,14 +202,17 @@ export function ServiceFormInput({
               >
                 <NumberInput
                   label="From"
-                  min={1}
+                  min={
+                    index > 0 && arr[index - 1].to ? arr[index - 1].to + 1 : 1
+                  }
+                  disabled={index === 0}
                   thousandSeparator=","
                   value={tier.from}
                   onChange={(value) => updateTier(index, "from", value!)}
                 />
                 <NumberInput
                   label="To"
-                  min={100}
+                  min={tier.from || 100}
                   thousandSeparator=","
                   step={1000}
                   value={tier.to}
