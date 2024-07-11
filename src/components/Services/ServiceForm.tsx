@@ -8,6 +8,7 @@ import { ServiceFormInput } from "@/components/Services/ServiceFormInput";
 import { UserType } from "@/db/types/user";
 import { createService } from "@/actions/services";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { useRouter } from "next/navigation";
 
 export function ServiceForm({
   onComplete,
@@ -20,6 +21,7 @@ export function ServiceForm({
   service?: ServiceType;
   user: UserType;
 }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const [tiers, setTiers] = useState([{ from: 0, to: 1000, price: 0, pricePerRequest: 0 }]);
@@ -70,7 +72,7 @@ export function ServiceForm({
         values.expires = null;
       }
     } else {
-      values.tiers = [...tiers];
+      values.tiers = [...tiers].sort((a, b) => a.to - b.to);
       values.expires = null;
       const freeTier = values.tiers?.find((tier) => +tier.price === 0);
 
@@ -95,6 +97,7 @@ export function ServiceForm({
       notifyInfo((error as Error).message);
     } finally {
       setLoading(false);
+      router.refresh();
     }
   };
 

@@ -78,7 +78,7 @@ export default function ServiceModal({
           values.expires = null;
         }
       } else {
-        values.tiers = [...tiers];
+        values.tiers = [...tiers].sort((a, b) => a.to - b.to);
         values.expires = null;
         const freeTier = values.tiers?.find((tier) => +tier.price === 0);
         if (freeTier) {

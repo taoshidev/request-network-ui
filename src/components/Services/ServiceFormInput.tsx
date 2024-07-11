@@ -26,11 +26,14 @@ export function ServiceFormInput({
   form: UseFormReturnType<Partial<ServiceType>>;
   tiers: { from: number; to: number; price: number; pricePerRequest: number }[];
   setTiers: Dispatch<
-    SetStateAction<{ from: number; to: number; price: number; pricePerRequest: number }[]>
+    SetStateAction<
+      { from: number; to: number; price: number; pricePerRequest: number }[]
+    >
   >;
 }) {
   const [currencyType, setCurrencyType] = useState("");
   const [user, setUser] = useState<UserType | null>(null);
+  const [editMode, setEditMode] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -42,6 +45,7 @@ export function ServiceFormInput({
       setUser(user);
     };
     fetchUser();
+    setEditMode(form?.values?.id?.length > 0);
     // eslint-disable-next-line
   }, []);
 
@@ -119,14 +123,19 @@ export function ServiceFormInput({
       updatedTiers[index + 1].from = +value + 1;
     }
 
-    if (field === "pricePerRequest") {
-      let cumulativePrice = 0;
-      updatedTiers.forEach((tier, idx) => {
-        const tierRange = tier.to - tier.from;
-        cumulativePrice += tierRange * tier.pricePerRequest;
-        tier.price = parseFloat(cumulativePrice.toFixed(2));
-      });
+    if (field === "price") {
+      if (isNaN(+value)) return;
+      updatedTiers[index].pricePerRequest = parseFloat((+value / updatedTiers[index].to).toFixed(4));
     }
+
+    let cumulativePrice = 0;
+    updatedTiers.forEach((tier, i) => {
+      let tierRange = tier.to - (tier.from - 1);
+      cumulativePrice += tierRange * tier.pricePerRequest;
+      if (!(i === index && field === "price")) {
+        tier.price = parseFloat(cumulativePrice.toFixed(2));
+      }
+    });
 
     setTiers(updatedTiers);
   };
@@ -136,19 +145,6 @@ export function ServiceFormInput({
     updatedTiers.splice(index, 1);
     setTiers(updatedTiers);
   };
-
-  useEffect(() => {
-    let cumulativePrice = 0;
-    const updatedTiers = tiers.map((tier) => {
-      const tierRange = tier.to - tier.from;
-      cumulativePrice += tierRange * tier.pricePerRequest;
-      return {
-        ...tier,
-        price: parseFloat(cumulativePrice.toFixed(2)),
-      };
-    });
-    setTiers(updatedTiers);
-  }, [tiers.length]);
 
   return (
     <>
@@ -202,14 +198,14 @@ export function ServiceFormInput({
               >
                 <NumberInput
                   label="From"
-                  min={0}
+                  min={1}
                   thousandSeparator=","
                   value={tier.from}
                   onChange={(value) => updateTier(index, "from", value!)}
                 />
                 <NumberInput
                   label="To"
-                  min={0}
+                  min={100}
                   thousandSeparator=","
                   step={1000}
                   value={tier.to}
@@ -219,15 +215,17 @@ export function ServiceFormInput({
                   label="Price per Request"
                   min={0}
                   value={tier.pricePerRequest}
-                  step={0.001}
-                  onChange={(value) => updateTier(index, "pricePerRequest", value!)}
+                  step={0.0001}
+                  onChange={(value) =>
+                    updateTier(index, "pricePerRequest", value!)
+                  }
                 />
-                <NumberInput
+                <TextInput
                   label="Tier Price"
-                  min={0}
                   value={tier.price}
-                  step={100}
-                  readOnly
+                  onChange={(event) =>
+                    updateTier(index, "price", event.currentTarget.value!)
+                  }
                 />
                 <ActionIcon
                   className="mt-6 float-end h-9 w-9"
@@ -272,16 +270,18 @@ export function ServiceFormInput({
               {...form.getInputProps("remaining")}
             />
           </Box>
-          {form.values.paymentType !== PAYMENT_TYPE.SUBSCRIPTION && <Box>
-            <DateTimePicker
-              label="Expiry Date"
-              description="When should your keys expire?"
-              withSeconds
-              valueFormat="MM/DD/YYYY hh:mm:ss A"
-              placeholder="Expiry Date"
-              {...form.getInputProps("expires")}
-            />
-          </Box>}
+          {form.values.paymentType !== PAYMENT_TYPE.SUBSCRIPTION && (
+            <Box>
+              <DateTimePicker
+                label="Expiry Date"
+                description="When should your keys expire?"
+                withSeconds
+                valueFormat="MM/DD/YYYY hh:mm:ss A"
+                placeholder="Expiry Date"
+                {...form.getInputProps("expires")}
+              />
+            </Box>
+          )}
         </Group>
       )}
 

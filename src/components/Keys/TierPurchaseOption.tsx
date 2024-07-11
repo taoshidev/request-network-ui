@@ -62,13 +62,20 @@ const calculateIncrements = (tiers) => {
 };
 
 const calculateCumulativePrice = (tiers, requestCount) => {
-  return tiers.reduce(
-    (acc, tier) => {
-      if (requestCount > 0) {
-        const tierRange = Math.min(requestCount, tier.to - tier.from);
+  const paidTiers = tiers.filter((tier) => tier.pricePerRequest > 0);
+  let remainingRequestCount = requestCount;
+
+  return paidTiers.reduce(
+    (acc, tier, i) => {
+      if (remainingRequestCount > 0) {
+        const tierRange = Math.min(
+          remainingRequestCount,
+          tier.to - (tier.from - 1)
+        );
+
         acc.price += tierRange * tier.pricePerRequest;
-        acc.details.push(`(${tierRange} * ${tier.pricePerRequest})`);
-        requestCount -= tierRange;
+        acc.details.push(`(${tierRange} * ${tier.pricePerRequest.toFixed(2)})`);
+        remainingRequestCount -= tierRange;
       }
       return acc;
     },
@@ -92,7 +99,6 @@ export default function TierPurchaseOption({
       pricePerRequest: number;
     }[]
   >([]);
-  const [increments, setIncrements] = useState<number[]>([]);
   const [maxAllowedRequest, setMaxAllowedRequest] = useState<number>();
   const [selectedRequest, setSelectedRequest] = useState<number | null>(null);
   const [
@@ -109,6 +115,9 @@ export default function TierPurchaseOption({
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
   const [priceDetails, setPriceDetails] = useState<string[]>([]);
+  const [precomputedPrices, setPrecomputedPrices] = useState<
+    { increment: number; price: number; details: string[] }[]
+  >([]);
 
   useEffect(() => {
     if (subscription?.service?.tiers?.length > 0) {
@@ -117,11 +126,18 @@ export default function TierPurchaseOption({
   }, [subscription]);
 
   useEffect(() => {
-    setInputRequestCount(+tiers?.[0]?.to || 1000);
+    const paidTiers = tiers.filter((tier) => tier.price > 0);
+    setInputRequestCount(+paidTiers?.[0]?.to || 1000);
+
     if (tiers.length > 0) {
       const calculatedIncrements = calculateIncrements(tiers);
-      setIncrements(calculatedIncrements);
       setMaxAllowedRequest(Math.max(...tiers.map((tier) => tier.to)));
+
+      const precomputed = calculatedIncrements.map((increment) => {
+        const { price, details } = calculateCumulativePrice(tiers, increment);
+        return { increment, price, details };
+      });
+      setPrecomputedPrices(precomputed);
     }
   }, [tiers]);
 
@@ -139,7 +155,7 @@ export default function TierPurchaseOption({
       setTotalPrice(price * quantity);
       setPriceDetails(details);
     }
-  }, [selectedRequest, quantity, tiers]);
+  }, [selectedRequest, quantity]);
 
   useEffect(() => {
     if (inputRequestCount) {
@@ -150,7 +166,7 @@ export default function TierPurchaseOption({
       setTotalPrice(price * quantity);
       setPriceDetails(details);
     }
-  }, [inputRequestCount, quantity, tiers, moreOptionsModalOpened]);
+  }, [inputRequestCount, quantity, moreOptionsModalOpened]);
 
   const stripePayment = async () => {
     notifySuccess(`Purchasing ${selectedRequest! * quantity} requests!`);
@@ -210,15 +226,10 @@ export default function TierPurchaseOption({
         </Group>
         <Text>Click a button below to purchase more requests:</Text>
         <Group className="button-group mt-4 grid grid-cols-2 gap-1 xl:grid-cols-6 md:grid-cols-3 sm:grid-cols-2">
-          {increments.map((increment, index) => {
-            const { price, details } = calculateCumulativePrice(
-              tiers,
-              increment
-            );
-            const tier = tiers.find(
-              (tier) => increment >= tier.from && increment <= tier.to
-            );
-
+          {precomputedPrices.map(({ increment, price, details }, index) => {
+            const tier = tiers
+              .filter((tier) => tier.price > 0)
+              .find((tier) => increment >= tier.from && increment <= tier.to);
             return (
               <Tooltip key={index} label={details.join(" + ")}>
                 <Button
@@ -239,7 +250,7 @@ export default function TierPurchaseOption({
                         currencyType={subscription?.service?.currencyType}
                       />
                     </Text>
-                    <Text className="font-bold text-sm">
+                    <Text className="font-bold text-xs">
                       ({tier?.pricePerRequest.toFixed(2)} per request)
                     </Text>
                   </Box>
@@ -349,17 +360,19 @@ export default function TierPurchaseOption({
       >
         <Box>
           <NumberInput
-            label="Specify the number of requests to purchase:"
+            label={`Number of requests to purchase (Max: ${maxAllowedRequest}):`}
             className="mt-3"
             value={inputRequestCount}
             onChange={handleInputRequestChange}
+            clampBehavior="strict"
             thousandSeparator=","
-            min={1000}
+            min={1}
+            step={100}
             defaultValue={1000}
-            max={maxAllowedRequest}
+            max={+maxAllowedRequest!}
           />
           <NumberInput
-            label="Specify the quantity:"
+            label="Specify quantity:"
             className="mt-3"
             value={quantity}
             onChange={(val) => setQuantity(+val || 1)}
@@ -403,6 +416,7 @@ export default function TierPurchaseOption({
               Cancel
             </Button>
             <Button
+              disabled={preview}
               onClick={() => {
                 handlePurchase(+inputRequestCount!);
                 closeMoreOptionsModal();

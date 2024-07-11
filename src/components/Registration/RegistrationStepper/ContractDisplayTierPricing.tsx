@@ -1,12 +1,5 @@
-import {
-  Box,
-  Text,
-  Group,
-  Badge,
-  Divider,
-  Tooltip,
-  Table,
-} from "@mantine/core";
+import { useState, useEffect } from "react";
+import { Box, Text, Badge, Tooltip, Table } from "@mantine/core";
 import { ServiceType } from "@/db/types/service";
 import CurrencyFormatter from "../../Formatters/CurrencyFormatter";
 import FixedFormatter from "../../Formatters/FixedFormatter";
@@ -16,10 +9,23 @@ export default function ContractDisplayTierPricing({
 }: {
   service: ServiceType;
 }) {
+  const [tiersWithCumulativePrices, setTiersWithCumulativePrices] = useState<
+    {
+      from: number;
+      to: number;
+      cumulativePrice: number;
+      details: string;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    setTiersWithCumulativePrices(getCumulativePriceDetails(service.tiers));
+  }, [service.tiers]);
+
   const getCumulativePriceDetails = (tiers) => {
     let cumulativePrice = 0;
     return tiers.map((tier) => {
-      const tierRange = tier.to - tier.from;
+      const tierRange = tier.to - (tier.from - 1);
       const priceForTier = tierRange * tier.pricePerRequest;
       cumulativePrice += priceForTier;
       return {
@@ -32,8 +38,6 @@ export default function ContractDisplayTierPricing({
     });
   };
 
-  const tiersWithCumulativePrices = getCumulativePriceDetails(service.tiers);
-
   return (
     <Box>
       <Table highlightOnHover striped>
@@ -45,7 +49,7 @@ export default function ContractDisplayTierPricing({
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {tiersWithCumulativePrices.map((tier, index) => (
+          {tiersWithCumulativePrices?.map?.((tier, index) => (
             <Table.Tr key={index}>
               <Table.Td>
                 <FixedFormatter value={tier.from} /> to{" "}
