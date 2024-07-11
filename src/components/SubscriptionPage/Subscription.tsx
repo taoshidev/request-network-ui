@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 import { Settings } from "./Settings";
 import { IconCopy } from "@tabler/icons-react";
 
-export function Keys({
+export function Subscription({
   apiKey,
   subscription,
   consumerApiUrls

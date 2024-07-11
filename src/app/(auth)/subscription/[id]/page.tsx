@@ -3,7 +3,7 @@ import { getKey } from "@/actions/keys";
 import { getConsumerApiUrls, getSubscriptions } from "@/actions/subscriptions";
 import ClientRedirect from "@/components/ClientRedirect";
 
-import { Keys } from "@/components/Keys/Keys";
+import { Subscription } from "@/components/SubscriptionPage/Subscription";
 import { subscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -58,11 +58,6 @@ export default async function Page({ params }: any) {
     (sub) => sub.consumerApiUrl
   );
   const { result } = await getKey({ keyId: data?.[0]?.keyId });
-  return (
-    <Keys
-      apiKey={result}
-      subscription={data?.[0]}
-      consumerApiUrls={consumerApiUrls}
-    />
-  );
+
+  return <Subscription apiKey={result} subscription={data?.[0]} consumerApiUrls={consumerApiUrls} />;
 }
