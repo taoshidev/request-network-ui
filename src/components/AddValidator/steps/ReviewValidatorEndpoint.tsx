@@ -8,7 +8,7 @@ import FixedFormatter from "@/components/Formatters/FixedFormatter";
 import { constructEndpointUrl } from "@/utils/endpoint-url";
 import dayjs from "dayjs";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
-import TierPurchaseOption from "@/components/Keys/TierPurchaseOption";
+import TierPurchaseOption from "@/components/SubscriptionPage/TierPurchaseOption";
 import { SubscriptionType } from "@/db/types/subscription";
 
 export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
@@ -134,14 +134,14 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                           <Table.Tr>
                             <Table.Td colSpan={4}>
                               <Box className="-mx-[10px]">
-                              <TierPurchaseOption
-                                subscription={
-                                  {
-                                    service,
-                                  } as SubscriptionType
-                                }
-                                preview={true}
-                              />
+                                <TierPurchaseOption
+                                  subscription={
+                                    {
+                                      service,
+                                    } as SubscriptionType
+                                  }
+                                  preview={true}
+                                />
                               </Box>
                             </Table.Td>
                           </Table.Tr>
