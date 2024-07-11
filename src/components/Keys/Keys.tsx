@@ -18,9 +18,11 @@ import { IconCopy } from "@tabler/icons-react";
 export function Keys({
   apiKey,
   subscription,
+  consumerApiUrls
 }: {
   apiKey: any;
   subscription: any;
+  consumerApiUrls: string[]
 }) {
   const url = apiKey?.meta?.endpoint;
 
@@ -69,7 +71,7 @@ export function Keys({
         </Box>
       </Box>
 
-      <Settings apiKey={apiKey} subscription={subscription} />
+      <Settings apiKey={apiKey} subscription={subscription} consumerApiUrls={consumerApiUrls} />
     </Container>
   );
 }

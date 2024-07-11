@@ -1,6 +1,6 @@
 import { getAuthUser } from "@/actions/auth";
 import { getKey } from "@/actions/keys";
-import { getSubscriptions } from "@/actions/subscriptions";
+import { getConsumerApiUrls, getSubscriptions } from "@/actions/subscriptions";
 import ClientRedirect from "@/components/ClientRedirect";
 
 import { Keys } from "@/components/Keys/Keys";
@@ -53,6 +53,16 @@ export default async function Page({ params }: any) {
       />
     );
 
+  const userSubscriptions = await getConsumerApiUrls(user.id);
+  const consumerApiUrls = (userSubscriptions || []).map(
+    (sub) => sub.consumerApiUrl
+  );
   const { result } = await getKey({ keyId: data?.[0]?.keyId });
-  return <Keys apiKey={result} subscription={data?.[0]} />;
+  return (
+    <Keys
+      apiKey={result}
+      subscription={data?.[0]}
+      consumerApiUrls={consumerApiUrls}
+    />
+  );
 }

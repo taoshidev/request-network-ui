@@ -20,6 +20,21 @@ export const getSubscriptions = async (query: object = {}) => {
   }
 };
 
+export const getConsumerApiUrls = async (userId: string) => {
+  try {
+    const res = await db
+      .selectDistinctOn([subscriptions.consumerApiUrl], {
+        consumerApiUrl: subscriptions.consumerApiUrl,
+      })
+      .from(subscriptions)
+      .where(eq(subscriptions.userId, userId))
+      .orderBy(subscriptions.consumerApiUrl);
+    return filterData(res, ["apiKey", "apiSecret"]);
+  } catch (error) {
+    if (error instanceof Error) return parseError(error);
+  }
+};
+
 export const getSubscription = async ({ id }: { id: string }) => {
   const res = await db.query.subscriptions.findFirst({
     where: (subscriptions, { eq }) => eq(subscriptions.id, id as string),
