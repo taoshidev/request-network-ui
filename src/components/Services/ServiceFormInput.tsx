@@ -105,7 +105,7 @@ export function ServiceFormInput({
         from: lastTier.to + 1,
         to: lastTier.to + 1000,
         price: 0.0,
-        pricePerRequest: 0.0,
+        pricePerRequest: 0.0000,
       },
     ]);
   };
@@ -219,7 +219,7 @@ export function ServiceFormInput({
                   onChange={(value) => updateTier(index, "to", value!)}
                 />
                 <NumberInput
-                  label="Price per Request"
+                  label="Price Per Request"
                   min={0}
                   value={tier.pricePerRequest}
                   step={0.0001}
