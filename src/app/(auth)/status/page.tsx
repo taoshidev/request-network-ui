@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { Box } from "@mantine/core";
-import ValidatorStatus from "@/components/ValidatorStatus";
+import ValidatorStatus from "@/components/ValidatorStatusPage/ValidatorStatus";
 import { getValidatorStatusPage } from "@/actions/validators";
 import { eq } from "drizzle-orm";
 import { validators } from "@/db/schema";

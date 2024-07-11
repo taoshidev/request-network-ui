@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
     setUser(user);
   };
 
-  if (loading || redirect) {
+  if (redirect) {
     return (
       <ClientRedirect
         href={redirect?.path!}

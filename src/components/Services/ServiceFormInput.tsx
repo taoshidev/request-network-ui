@@ -17,6 +17,7 @@ import { UserType } from "@/db/types/user";
 import { useRouter } from "next/navigation";
 import { IconPlus, IconX } from "@tabler/icons-react";
 import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { TierType } from "@/components/Services/ServiceForm";
 
 export function ServiceFormInput({
   form,
@@ -24,10 +25,8 @@ export function ServiceFormInput({
   setTiers,
 }: {
   form: UseFormReturnType<Partial<ServiceType>>;
-  tiers: { from: number; to: number; price: number }[];
-  setTiers: Dispatch<
-    SetStateAction<{ from: number; to: number; price: number }[]>
-  >;
+  tiers: TierType[];
+  setTiers: Dispatch<SetStateAction<TierType[]>>;
 }) {
   const [currencyType, setCurrencyType] = useState("");
   const [user, setUser] = useState<UserType | null>(null);
@@ -89,7 +88,6 @@ export function ServiceFormInput({
       form.setFieldValue("price", "0.00");
     } else if (paymentType === PAYMENT_TYPE.PAY_PER_REQUEST) {
       form.setFieldValue("price", "0.00");
-      // form.setFieldValue("expires", "");
       const freeTier = tiers?.find((tier) => +tier.price === 0);
 
       if (freeTier) {
@@ -106,18 +104,42 @@ export function ServiceFormInput({
       {
         from: lastTier.to + 1,
         to: lastTier.to + 1000,
-        price: 0,
+        price: 0.0,
+        pricePerRequest: 0.0000,
       },
     ]);
   };
 
   const updateTier = (index: number, field: string, value: string | number) => {
+    if (isNaN(+value)) return;
     const updatedTiers = [...tiers];
     updatedTiers[index][field] = value;
 
     if (field === "to" && index < updatedTiers.length - 1) {
       updatedTiers[index + 1].from = +value + 1;
     }
+
+    if (field === "price") {
+      const prevIndex = index > 0 ? index - 1 : -1;
+      const prevTier = prevIndex !== -1 ? updatedTiers[prevIndex] : null;
+      const price = prevIndex === -1 ? +value : +value - +prevTier?.price!;
+
+      updatedTiers[index].pricePerRequest = parseFloat(
+        (
+          price /
+          (+updatedTiers[index].to - (+updatedTiers[index].from - 1))
+        ).toFixed(4)
+      );
+    }
+
+    let cumulativePrice = 0;
+    updatedTiers.forEach((tier, i) => {
+      let tierRange = tier.to - (tier.from - 1);
+      cumulativePrice += tierRange * tier.pricePerRequest;
+      if (!(i === index && field === "price")) {
+        tier.price = parseFloat(cumulativePrice.toFixed(2));
+      }
+    });
 
     setTiers(updatedTiers);
   };
@@ -172,34 +194,45 @@ export function ServiceFormInput({
                 Add Tier
               </Button>
             </Box>
-            {tiers.map((tier, index) => (
+            {tiers.map((tier, index, arr) => (
               <Group
                 key={index}
                 mb="sm"
-                className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2"
+                className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-2"
               >
                 <NumberInput
                   label="From"
-                  min={0}
+                  min={
+                    index > 0 && arr[index - 1].to ? arr[index - 1].to + 1 : 1
+                  }
+                  disabled={index === 0}
+                  thousandSeparator=","
                   value={tier.from}
-                  disabled
                   onChange={(value) => updateTier(index, "from", value!)}
                 />
                 <NumberInput
                   label="To"
-                  min={0}
+                  min={tier.from || 100}
+                  thousandSeparator=","
                   step={1000}
                   value={tier.to}
                   onChange={(value) => updateTier(index, "to", value!)}
                 />
                 <NumberInput
-                  label="Tier Price"
+                  label="Price Per Request"
                   min={0}
+                  value={tier.pricePerRequest}
+                  step={0.0001}
+                  onChange={(value) =>
+                    updateTier(index, "pricePerRequest", value!)
+                  }
+                />
+                <TextInput
+                  label="Tier Price"
                   value={tier.price}
-                  step={100}
-                  onChange={(value) => {
-                    updateTier(index, "price", parseFloat((+value).toFixed(2)));
-                  }}
+                  onChange={(event) =>
+                    updateTier(index, "price", event.currentTarget.value!)
+                  }
                 />
                 <ActionIcon
                   className="mt-6 float-end h-9 w-9"
@@ -244,16 +277,18 @@ export function ServiceFormInput({
               {...form.getInputProps("remaining")}
             />
           </Box>
-          {form.values.paymentType !== PAYMENT_TYPE.SUBSCRIPTION && <Box>
-            <DateTimePicker
-              label="Expiry Date"
-              description="When should your keys expire?"
-              withSeconds
-              valueFormat="MM/DD/YYYY hh:mm:ss A"
-              placeholder="Expiry Date"
-              {...form.getInputProps("expires")}
-            />
-          </Box>}
+          {form.values.paymentType !== PAYMENT_TYPE.SUBSCRIPTION && (
+            <Box>
+              <DateTimePicker
+                label="Expiry Date"
+                description="When should your keys expire?"
+                withSeconds
+                valueFormat="MM/DD/YYYY hh:mm:ss A"
+                placeholder="Expiry Date"
+                {...form.getInputProps("expires")}
+              />
+            </Box>
+          )}
         </Group>
       )}
 
