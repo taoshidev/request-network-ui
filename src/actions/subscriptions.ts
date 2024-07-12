@@ -88,6 +88,24 @@ export const apiUpdateSubscription = async ({
   }
 };
 
+export const updateProxySubscription = async ({
+  id,
+  baseApiUrl,
+  validatorId,
+  ...values
+}) => {
+  const proxyRes = await sendToProxy({
+    endpoint: {
+      url: baseApiUrl as string,
+      method: "PUT",
+      path: `/update-service/${id}`,
+    },
+    validatorId: validatorId!,
+    data: { ...values },
+  });
+  return proxyRes;
+};
+
 export const createSubscription = async (
   subscription: Partial<SubscriptionType>
 ) => {
