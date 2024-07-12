@@ -83,7 +83,6 @@ export default function Notifications({
   };
 
   const markAllAsViewed = async () => {
-    console.log("Marking all as viewed");
     for (let userNotification of userNotifications) {
       await markViewed(userNotification);
     }
