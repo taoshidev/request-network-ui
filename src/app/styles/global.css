@@ -26,6 +26,9 @@ a {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+.editor-bg-none .mantine-RichTextEditor-content {
+  background: none;
+}
 
 .mantine-Stepper-content::-webkit-scrollbar {
   display: none;

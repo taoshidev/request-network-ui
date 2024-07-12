@@ -189,8 +189,8 @@ export default function ValidatorStatus({
             </Table.Tr>
           </Table.Tbody>
         </Table>
-        <Box className="absolute w-full bottom-0 left-0 pb-2">
-          <Text className="px-3 py-1 text-sm font-bold text-center border border-top">
+        <Box className="absolute w-full bottom-0 left-0 pb-2 pl-2 pr-2">
+          <Text className="px-3 py-1 text-sm font-bold text-center border-b border-t">
             Uptime
           </Text>
           <UptimeFormatter seconds={uptime} />
