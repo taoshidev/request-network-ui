@@ -103,7 +103,7 @@ export function Onboarding() {
               data-checked={role === "validator" || undefined}
               onClick={() => handleClick("validator")}
             >
-              <Text className="font-bold leading-none">as a Validator</Text>
+              <Text className="font-bold leading-none">As a Validator</Text>
               <Text className="mt-1 text-xs">Looking to use Bittensor.</Text>
             </UnstyledButton>
           </Box>
@@ -129,7 +129,7 @@ export function Onboarding() {
               data-checked={role === "consumer" || undefined}
               onClick={() => handleClick("consumer")}
             >
-              <Text className="font-bold leading-none">as a Consumer</Text>
+              <Text className="font-bold leading-none">As a Consumer</Text>
               <Text className="mt-1 text-xs">Looking to use Bittensor.</Text>
             </UnstyledButton>
           </Box>
