@@ -220,6 +220,7 @@ export function ServiceFormInput({
                 />
                 <NumberInput
                   label="Price Per Request"
+                  thousandSeparator=","
                   min={0}
                   value={tier.pricePerRequest}
                   step={0.0001}
@@ -271,6 +272,7 @@ export function ServiceFormInput({
           <Box>
             <NumberInput
               label="Request Limit"
+              thousandSeparator=","
               withAsterisk
               description="Determines the total numbers of requests."
               placeholder="10000"
@@ -295,6 +297,7 @@ export function ServiceFormInput({
       <Box mb="md">
         <NumberInput
           label="Limit"
+          thousandSeparator=","
           withAsterisk
           description="The total amount of burstable requests."
           placeholder="10"
@@ -305,6 +308,7 @@ export function ServiceFormInput({
         <Box>
           <NumberInput
             label="Refill Interval"
+            thousandSeparator=","
             withAsterisk
             description="Determines the speed at which tokens are refilled."
             placeholder="1000"

@@ -68,7 +68,7 @@ const calculateCumulativePrice = (tiers, requestCount) => {
 
   return paidTiers.reduce(
     (acc, tier, i) => {
-      const tierPrice = tier.pricePerRequest.toFixed(4);
+      const tierPrice = tier?.pricePerRequest?.toFixed(4);
       if (remainingRequestCount > 0) {
         const tierRange = Math.min(
           remainingRequestCount,
@@ -246,7 +246,7 @@ export default function TierPurchaseOption({
                       />
                     </Text>
                     <Text className="font-bold text-xs">
-                      ({tier?.pricePerRequest.toFixed(4)} per request)
+                      ({tier?.pricePerRequest?.toFixed(4)} per request)
                     </Text>
                   </Box>
                 </Button>
@@ -371,6 +371,7 @@ export default function TierPurchaseOption({
           {SHOW_QUANTITY_INPUT && (
             <NumberInput
               label="Specify quantity:"
+              thousandSeparator=","
               className="mt-3"
               value={quantity}
               onChange={(val) => setQuantity(+val || 1)}
