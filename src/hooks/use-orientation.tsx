@@ -1,13 +1,16 @@
-'use client';
-
 import { useEventListener } from "@react-hookz/web";
 import { useState } from "react";
 
-export const useOrientation = (desktopWidth: number) => {  
-  const width =
-    window.innerWidth ||
-    document.documentElement.clientWidth ||
-    document.body.clientWidth;
+export const useOrientation = (desktopWidth: number) => {
+  let width = 1400;
+
+  if (typeof window !== "undefined") {
+    width =
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      document.body.clientWidth;
+  }
+
   const initOrientation = width < desktopWidth ? "vertical" : "horizontal";
 
   const [orientation, setOrientation] = useState<"horizontal" | "vertical">(
@@ -15,10 +18,14 @@ export const useOrientation = (desktopWidth: number) => {
   );
 
   const changeOrientation = () => {
-    const width =
-      window.innerWidth ||
-      document.documentElement.clientWidth ||
-      document.body.clientWidth;
+    let width = 1400;
+
+    if (typeof window !== "undefined") {
+      width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+    }
 
     const newOrientation = width < desktopWidth ? "vertical" : "horizontal";
 

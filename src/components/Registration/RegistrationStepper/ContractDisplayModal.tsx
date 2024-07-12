@@ -118,7 +118,7 @@ export function ContractDisplayModal({
 
   useEffect(() => {
     const activeServices = services?.filter(service => !service.deletedAt);
-    if (activeServices?.length === 1) {
+    if (activeServices?.length === 1 && !selectedServiceId && review === false) {
       handleServiceSelect(services[0]);
     }
   }, [services]);
