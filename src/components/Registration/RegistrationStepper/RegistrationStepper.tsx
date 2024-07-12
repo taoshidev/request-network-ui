@@ -153,7 +153,7 @@ export function RegistrationStepper({
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const allowNextStepsSelect = useMemo(() => {
@@ -360,7 +360,7 @@ export function RegistrationStepper({
       }
 
       if (CreateKeyError) return;
-      
+
       const { key, keyId } = result as { key: string; keyId: string };
 
       const res = await createSubscription({
