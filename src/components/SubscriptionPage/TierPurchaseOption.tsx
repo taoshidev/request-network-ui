@@ -210,14 +210,6 @@ export default function TierPurchaseOption({
     setSelectedRequest(null);
   };
 
-  const handleInputRequestChange = (val: string | number) => {
-    if (+val > maxAllowedRequest!) {
-      setInputRequestCount(maxAllowedRequest!);
-    } else {
-      setInputRequestCount(+val || 1);
-    }
-  };
-
   return (
     <>
       <Card className="shadow-sm border-gray-200" withBorder>
