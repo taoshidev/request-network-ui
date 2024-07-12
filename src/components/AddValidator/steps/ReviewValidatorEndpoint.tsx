@@ -14,9 +14,6 @@ import { SubscriptionType } from "@/db/types/subscription";
 export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
   return (
     <div className="w-full slide">
-      <Title order={2} className="text-center mt-7">
-        Review Validator Details
-      </Title>
       <Box className="flex justify-center w-full mb-16">
         <Box className="w-full overflow-y-auto">
           <Table.ScrollContainer minWidth={700}>
