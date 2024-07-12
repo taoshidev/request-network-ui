@@ -333,15 +333,14 @@ export function RegistrationStepper({
         meta,
       };
 
-      if (
-        selectedService?.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST &&
-        +selectedService?.remaining === 0
-      ) {
+      if (+selectedService?.remaining === 0) {
         delete keyPayload.remaining;
-        delete keyPayload.refill;
       }
 
-      if (selectedService?.paymentType === PAYMENT_TYPE.FREE) {
+      if (
+        selectedService?.paymentType === PAYMENT_TYPE.FREE ||
+        selectedService?.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST
+      ) {
         delete keyPayload.refill;
       }
 
