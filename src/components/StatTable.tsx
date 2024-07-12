@@ -59,10 +59,10 @@ export function StatTable({
                       <Table.Td>
                         <FixedFormatter value={key?.remaining} />
                       </Table.Td>
-                      <Table.Td>{key?.refill?.interval || "-"}</Table.Td>
-                      <Table.Td>{key?.refill?.amount || "-"}</Table.Td>
+                      <Table.Td><FixedFormatter value={key?.refill?.interval} /></Table.Td>
+                      <Table.Td><FixedFormatter value={key?.refill?.amount} /></Table.Td>
                       <Table.Td>{key?.ratelimit?.type || "-"}</Table.Td>
-                      <Table.Td>{key?.ratelimit?.limit || "-"}</Table.Td>
+                      <Table.Td><FixedFormatter value={key?.ratelimit?.limit} /></Table.Td>
                       <Table.Td>
                         {key?.ratelimit?.refillInterval
                           ? (
