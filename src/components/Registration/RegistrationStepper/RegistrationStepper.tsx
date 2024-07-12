@@ -612,7 +612,7 @@ export function RegistrationStepper({
                 </Box>
               </Box>
             </Center>
-            <Box>
+            <Box className="pt-[30px]">
               <Logo size={75} />
             </Box>
           </Card>
