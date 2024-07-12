@@ -90,6 +90,7 @@ export const apiUpdateSubscription = async ({
 
 export const updateProxySubscription = async ({
   id,
+  apiPrefix,
   baseApiUrl,
   validatorId,
   ...values
@@ -98,7 +99,7 @@ export const updateProxySubscription = async ({
     endpoint: {
       url: baseApiUrl as string,
       method: "PUT",
-      path: `/update-service/${id}`,
+      path: `${apiPrefix}/services/${id}`,
     },
     validatorId: validatorId!,
     data: { ...values },

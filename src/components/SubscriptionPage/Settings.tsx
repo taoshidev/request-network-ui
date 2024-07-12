@@ -173,6 +173,7 @@ export function Settings({
       }),
       updateProxySubscription({
         id: subscription.proxyServiceId,
+        apiPrefix: subscription.validator?.apiPrefix,
         validatorId: subscription?.validator?.id,
         baseApiUrl: subscription.endpoint.validator.baseApiUrl,
         consumerApiUrl: values.consumerApiUrl,
@@ -186,7 +187,7 @@ export function Settings({
     else
       notifySuccess("Subscription domain name updated successfully." as string);
 
-    if (proxySubRes?.error) notifyError(subRes?.error?.message as string);
+    if (proxySubRes?.error) notifyError(proxySubRes?.error as string);
     else
       notifySuccess(
         "Subscription domain name updated on API server successfully." as string
