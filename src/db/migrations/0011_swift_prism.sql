@@ -1,0 +1,1 @@
+ALTER TABLE "endpoints" ALTER COLUMN "percent_realtime" SET DEFAULT -1;

@@ -166,7 +166,7 @@ export const endpoints = pgTable(
       onDelete: "set null",
     }),
     url: varchar("url").notNull(),
-    percentRealtime: integer("percent_realtime").default(0),
+    percentRealtime: integer("percent_realtime").default(-1),
     enabled: boolean("enabled").default(false).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at", {
