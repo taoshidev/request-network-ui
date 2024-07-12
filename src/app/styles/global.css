@@ -18,6 +18,10 @@ a {
   text-decoration: none !important;
 }
 
+.disabled {
+filter: grayscale(100%) brightness(1.5);
+}
+
 .mantine-Stepper-content {
   overflow-y: auto;
   height: calc(100vh - 320px);
