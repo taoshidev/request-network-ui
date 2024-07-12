@@ -333,15 +333,14 @@ export function RegistrationStepper({
         meta,
       };
 
-      if (
-        selectedService?.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST &&
-        +selectedService?.remaining === 0
-      ) {
+      if (+selectedService?.remaining === 0) {
         delete keyPayload.remaining;
-        delete keyPayload.refill;
       }
 
-      if (selectedService?.paymentType === PAYMENT_TYPE.FREE) {
+      if (
+        selectedService?.paymentType === PAYMENT_TYPE.FREE ||
+        selectedService?.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST
+      ) {
         delete keyPayload.refill;
       }
 
@@ -359,7 +358,9 @@ export function RegistrationStepper({
           "Cannot create required keys at this time. Please try again later."
         );
       }
+
       if (CreateKeyError) return;
+      
       const { key, keyId } = result as { key: string; keyId: string };
 
       const res = await createSubscription({
