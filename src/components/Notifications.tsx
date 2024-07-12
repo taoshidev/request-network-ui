@@ -9,6 +9,8 @@ import {
   Notification,
   Popover,
   Text,
+  Alert,
+  Card,
 } from "@mantine/core";
 import {
   NOTIFICATION_COLOR,
@@ -20,16 +22,17 @@ import {
   updateUserNotification,
 } from "@/actions/notifications";
 import { useEffect, useState } from "react";
-import { IconBell } from "@tabler/icons-react";
+import { IconCircleCheck, IconBell } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import removeMd from "remove-markdown";
+import clsx from "clsx";
 
 export default function Notifications({
   opened,
   toggle,
   isLoading,
   userNotifications,
-  refresh
+  refresh,
 }: {
   opened: boolean;
   toggle: () => void;
@@ -40,11 +43,22 @@ export default function Notifications({
   const [timer, setTimer] = useState();
   const [deleted, setDeleted] = useState<string | undefined>();
   const [viewedBtnOpen, { close, open }] = useDisclosure();
-  function deleteNotification(id: string) {
+  const [loading, setLoading] = useState(false);
+
+  const deleteNotification = (id: string) => {
     setDeleted(id);
     deleteUserNotification(id);
     refresh();
-  }
+  };
+
+  const handleDeleteAllNotifications = async () => {
+    setLoading(true);
+    for (const userNotification of userNotifications) {
+      await deleteUserNotification(userNotification?.id as string);
+    }
+    refresh();
+    setLoading(false);
+  };
 
   const markViewed = async (userNotification?: UserNotificationType) => {
     if (userNotification && !userNotification?.viewed) {
@@ -69,6 +83,7 @@ export default function Notifications({
   };
 
   const markAllAsViewed = async () => {
+    console.log("Marking all as viewed");
     for (let userNotification of userNotifications) {
       await markViewed(userNotification);
     }
@@ -112,55 +127,87 @@ export default function Notifications({
           </Button>
         </Popover.Target>
         <Popover.Dropdown style={{ pointerEvents: "none" }}>
-          <Text size="sm">Mark all as viewed.</Text>
+          <Text size="sm">Mark all as Viewed.</Text>
         </Popover.Dropdown>
       </Popover>{" "}
       Notifications
     </>
   );
+
   return (
     <Drawer
       position="right"
-      className="app-notifications"
+      className="app-notifications h-full"
       opened={opened}
       onClose={toggle}
       title={title}
     >
       <br />
-      {isLoading ? (
-        <Box className="text-center">
-          <Loader size="lg" />
-        </Box>
-      ) : (
-        (userNotifications || []).map((userNotification) => (
-          <Notification
-            key={userNotification.id}
-            loading={deleted === userNotification.id}
-            className={`${
-              userNotification.viewed ? "viewed" : ""
-            } app-notification shadow-md border border-gray-200 mb-3`}
-            onClose={deleteNotification.bind(
-              null,
-              userNotification.id as string
-            )}
-            icon={
-              NOTIFICATION_ICON[
-                NotificationTypes[userNotification.notification.type]
-              ]
-            }
-            color={
-              NOTIFICATION_COLOR[
-                NotificationTypes[userNotification.notification.type]
-              ]
-            }
-            title={userNotification.notification.subject}
-          >
-            <span className="text-slate-700">
-              {removeMd(userNotification.notification.content)}
-            </span>
-          </Notification>
-        ))
-      )}
+      <Box className="flex flex-col h-full">
+        {isLoading ? (
+          <Box className="flex-grow flex justify-center items-center">
+            <Loader size="lg" />
+          </Box>
+        ) : userNotifications.length > 0 ? (
+          <>
+            <Box className="flex-grow overflow-y-auto">
+              {(userNotifications || []).map((userNotification) => (
+                <Card
+                  key={userNotification.id}
+                  className="border-gray-200 shadow-sm p-0 mb-3"
+                  withBorder
+                >
+                  <Notification
+                    loading={deleted === userNotification.id}
+                    className={clsx(
+                      "app-notification shadow-sm",
+                      userNotification.viewed ? "viewed" : ""
+                    )}
+                    onClose={deleteNotification.bind(
+                      null,
+                      userNotification.id as string
+                    )}
+                    icon={
+                      NOTIFICATION_ICON[
+                        NotificationTypes[userNotification.notification.type]
+                      ]
+                    }
+                    color={
+                      NOTIFICATION_COLOR[
+                        NotificationTypes[userNotification.notification.type]
+                      ]
+                    }
+                    title={userNotification.notification.subject}
+                  >
+                    {removeMd(userNotification.notification.content)}
+                  </Notification>
+                </Card>
+              ))}
+            </Box>
+            <Box className="flex justify-center mt-auto">
+              <Button
+                onClick={handleDeleteAllNotifications}
+                variant="subtle"
+                className="my-6"
+                loading={loading}
+              >
+                Remove All Notifications
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <Box className="flex justify-center items-center">
+            <Alert
+              className="mb-7 shadow-sm w-full border-gray-200"
+              color="orange"
+              variant="light"
+              icon={<IconCircleCheck size="1rem" />}
+            >
+              <Text className="mb-7">Awesome! You&apos;re all caught up.</Text>
+            </Alert>
+          </Box>
+        )}
+      </Box>
     </Drawer>
   );
 }
