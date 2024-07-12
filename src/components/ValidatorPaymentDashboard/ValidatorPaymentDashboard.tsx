@@ -6,7 +6,7 @@ import TransactionsTable from "@/components/ValidatorPaymentDashboard/Transactio
 import { IconAlertCircle } from "@tabler/icons-react";
 import { formatter } from "@/utils/number-formatter";
 import { StatCard } from "@/components/StatCard";
-import { ValidatorType, ValidatorWithInfo } from "@/db/types/validator";
+import { ValidatorWithInfo } from "@/db/types/validator";
 import { ValidatorKeyType } from "@/components/StatTable";
 import { SubscriptionType } from "@/db/types/subscription";
 import { EndpointType } from "@/db/types/endpoint";

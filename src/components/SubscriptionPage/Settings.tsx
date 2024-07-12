@@ -35,7 +35,11 @@ import { useNotification } from "@/hooks/use-notification";
 import { StatTable } from "../StatTable";
 import { cancelSubscription, requestPayment } from "@/actions/payments";
 import { ConfirmModal } from "../ConfirmModal";
-import { updateSubscription, fetchProxyService } from "@/actions/subscriptions";
+import {
+  updateSubscription,
+  fetchProxyService,
+  updateProxySubscription,
+} from "@/actions/subscriptions";
 import CurrencyFormatter from "../Formatters/CurrencyFormatter";
 import clsx from "clsx";
 import TierPurchaseOption from "./TierPurchaseOption";
@@ -157,7 +161,8 @@ export function Settings({
     if (consumerApiUrlError) return notifyError(consumerApiUrlError as string);
 
     setLoading("update-key");
-    const [res, subRes] = await Promise.all([
+
+    const [res, subRes, proxySubRes] = await Promise.all([
       updateKey({
         keyId: apiKey?.id,
         params: { name: values.name },
@@ -166,15 +171,32 @@ export function Settings({
         id: subscription?.id,
         consumerApiUrl: values.consumerApiUrl,
       }),
+      updateProxySubscription({
+        id: subscription.proxyServiceId,
+        apiPrefix: subscription.validator?.apiPrefix,
+        validatorId: subscription?.validator?.id,
+        baseApiUrl: subscription.endpoint.validator.baseApiUrl,
+        consumerApiUrl: values.consumerApiUrl,
+      }),
     ]);
 
-    if (res?.status !== 200) return notifyError(res?.message as string);
-    notifySuccess(res?.message as string);
+    if (res?.status !== 200) notifyError(res?.message as string);
+    else notifySuccess(res?.message as string);
 
-    if (subRes?.error) return notifyError(subRes?.error?.message as string);
-    notifySuccess("Subscription domain name updated successfully." as string);
+    if (subRes?.error) notifyError(subRes?.error?.message as string);
+    else
+      notifySuccess("Subscription domain name updated successfully." as string);
+
+    if (proxySubRes?.error) notifyError(proxySubRes?.error as string);
+    else
+      notifySuccess(
+        "Subscription domain name updated on API server successfully." as string
+      );
 
     setLoading("");
+
+    if (res?.status !== 200 || subRes?.error || proxySubRes?.error) return;
+
     router.refresh();
     setTimeout(() => router.back(), 1000);
   };
