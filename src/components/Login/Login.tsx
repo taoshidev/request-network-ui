@@ -17,36 +17,37 @@ export function Login() {
     }
   };
 
-  return loading ? (
-    <ClientRedirect message="Initializing session..." />
-  ) : (
-    <Box className="mt-40">
-      <Box className="mb-8">
-        <Title className="mb-4">Login</Title>
-        <Text>
-          Authentication with the Request Network, simply sign in with Google or
-          Github
-        </Text>
+  return (
+    <>
+      {loading && <ClientRedirect message="Initializing session..." />}
+      <Box className="mt-40">
+        <Box className="mb-8">
+          <Title className="mb-4">Login</Title>
+          <Text>
+            Authentication with the Request Network, simply sign in with Google
+            or Github
+          </Text>
+        </Box>
+        <Box onClick={handleLoading}>
+          <Auth
+            redirectTo={`${process.env.NEXT_PUBLIC_DOMAIN}/callback`}
+            supabaseClient={supabase}
+            onlyThirdPartyProviders
+            appearance={{
+              extend: false,
+              className: {
+                anchor: styles.anchor,
+                button: styles.button,
+                container: styles.container,
+                input: styles.input,
+                label: styles.label,
+                message: styles.message,
+              },
+            }}
+            providers={["google", "github"]}
+          />
+        </Box>
       </Box>
-      <Box onClick={handleLoading}>
-        <Auth
-          redirectTo={`${process.env.NEXT_PUBLIC_DOMAIN}/callback`}
-          supabaseClient={supabase}
-          onlyThirdPartyProviders
-          appearance={{
-            extend: false,
-            className: {
-              anchor: styles.anchor,
-              button: styles.button,
-              container: styles.container,
-              input: styles.input,
-              label: styles.label,
-              message: styles.message,
-            },
-          }}
-          providers={["google", "github"]}
-        />
-      </Box>
-    </Box>
+    </>
   );
 }

@@ -9,10 +9,15 @@ import { getValidator } from "./validators";
 import { ValidatorType } from "@/db/types/validator";
 import { revalidatePath } from "next/cache";
 import { StripeCheckType } from "@/db/types/stripe-check";
+import { PayPalCheckType } from "@/db/types/paypal-check";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 
 export async function requestPayment(
   proxyServiceId: string,
-  returnRedirect: string = ""
+  returnRedirect: string = "",
+  price: string,
+  paymentType: string = PAYMENT_TYPE.SUBSCRIPTION,
+  quantity?: number
 ) {
   const user = await getAuthUser();
 
@@ -44,6 +49,9 @@ export async function requestPayment(
       email: user?.email,
       serviceId: subscription?.proxyServiceId as string,
       redirect: returnRedirect,
+      price,
+      quantity,
+      paymentType,
     },
   });
 
@@ -80,6 +88,8 @@ export async function cancelSubscription(proxyServiceId) {
     },
   });
 
+  if (proxyRes?.error) return proxyRes;
+
   await updateSubscription({
     id: subscription?.id,
     active: false,
@@ -98,6 +108,21 @@ export async function checkForStripe(
       url: validator?.baseApiUrl as string,
       method: "POST",
       path: "/has-stripe",
+    },
+    validatorId: validator?.id as string,
+    data: {},
+  });
+}
+
+export async function checkForPayPal(
+  validatorId: string
+): Promise<Partial<PayPalCheckType>> {
+  const validator: ValidatorType = await getValidator({ id: validatorId });
+  return await sendToProxy({
+    endpoint: {
+      url: validator?.baseApiUrl as string,
+      method: "POST",
+      path: "/has-paypal",
     },
     validatorId: validator?.id as string,
     data: {},

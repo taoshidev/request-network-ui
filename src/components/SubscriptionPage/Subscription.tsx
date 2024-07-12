@@ -15,18 +15,20 @@ import dayjs from "dayjs";
 import { Settings } from "./Settings";
 import { IconCopy } from "@tabler/icons-react";
 
-export function Keys({
+export function Subscription({
   apiKey,
   subscription,
+  consumerApiUrls
 }: {
   apiKey: any;
   subscription: any;
+  consumerApiUrls: string[]
 }) {
   const url = apiKey?.meta?.endpoint;
 
   return (
     <Container>
-      <Box my="xl" pb="lg">
+      <Box my="xl">
         <Title className="mb-5">{subscription?.appName}</Title>
         <Text size="xs" mb="sm">
           Created: {dayjs(apiKey?.createdAt).format("MMM DD, YYYY")}
@@ -69,7 +71,7 @@ export function Keys({
         </Box>
       </Box>
 
-      <Settings apiKey={apiKey} subscription={subscription} />
+      <Settings apiKey={apiKey} subscription={subscription} consumerApiUrls={consumerApiUrls} />
     </Container>
   );
 }

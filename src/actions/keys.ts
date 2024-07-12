@@ -2,21 +2,25 @@
 
 import { Unkey } from "@unkey/api";
 import { getAuthUser } from "./auth";
+import * as Sentry from "@sentry/nextjs";
+
 const unkey = new Unkey({ rootKey: process.env.UNKEY_ROOT_KEY as string });
 
 export const updateKey = async ({
   keyId,
+  userId,
   params,
 }: {
   keyId: string;
+  userId?: string;
   params: object;
 }) => {
   try {
     const user = await getAuthUser();
-    const key = await await unkey.keys.get({ keyId });
+    const key = await unkey.keys.get({ keyId });
 
-    if (user?.id !== key?.result?.ownerId) {
-      throw new Error('Error: Unauthorized!')
+    if (![user?.id, userId].includes(key?.result?.ownerId)) {
+      throw new Error("Error: Unauthorized!");
     }
 
     await unkey.keys.update({
@@ -27,6 +31,30 @@ export const updateKey = async ({
   } catch (error) {
     console.error(error);
   }
+};
+
+export const updateRemaining = async ({
+  keyId,
+  userId,
+  value,
+  op = "increment",
+}: {
+  keyId: string;
+  userId?: string;
+  value: number;
+  op?: "increment" | "decrement" | "set";
+}) => {
+  const user = await getAuthUser();
+  const key = await unkey.keys.get({ keyId });
+
+  if (![user?.id, userId].includes(key?.result?.ownerId)) {
+    throw new Error("Error: Unauthorized!");
+  }
+
+  op = key.result?.remaining ? "increment" : "set";
+
+  await unkey.keys.updateRemaining({ keyId, op, value });
+  return { status: 200, message: "Key updated successfully" };
 };
 
 export const deleteKey = async ({ keyId }: { keyId: string }) => {
@@ -50,11 +78,13 @@ export const createKey = async (apiId: string, params: any) => {
       prefix: "req",
       ...params,
     });
+
     return {
       result,
       error: null,
     };
   } catch (error) {
+    Sentry.captureException(error);
     return { result: null, error };
   }
 };

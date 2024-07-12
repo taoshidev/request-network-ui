@@ -2,11 +2,11 @@
 
 import { RegistrationProvider } from "@/providers/registration";
 import { Subnets } from "./RegistrationStepper/steps/Subnets";
-import { SubnetValidator } from "@/components/SubnetValidator";
+import { SubnetValidator } from "@/components/Registration/RegistrationStepper/steps/SubnetValidator";
 import { SubnetValidatorReview } from "@/components/Registration/RegistrationStepper/steps/SubnetValidatorReview";
 import { RegistrationStepper } from "@/components/Registration/RegistrationStepper/RegistrationStepper";
 import { SubscriptionType } from "@/db/types/subscription";
-import { ValidatorType, ValidatorWithInfo } from "@/db/types/validator";
+import { ValidatorWithInfo } from "@/db/types/validator";
 import { SubnetType } from "@/db/types/subnet";
 import { ValidatorEndpoint } from "@/components/Registration/RegistrationStepper/steps/ValidatorEndpoint";
 import { Alert, Text } from "@mantine/core";
@@ -33,6 +33,7 @@ export function Registration({
     <RegistrationProvider>
       <RegistrationStepper
         user={user}
+        currentSubscriptions={currentSubscriptions}
         StepOne={
           validators?.length! > 0 ? (
             <Subnets

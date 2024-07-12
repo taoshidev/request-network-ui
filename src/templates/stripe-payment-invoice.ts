@@ -1,6 +1,4 @@
 import { TransactionType } from "@/db/types/transaction";
-import { marked } from "marked";
-const { convert: toText } = require("html-to-text");
 
 export const invoiceHTML = ({
   consumerApiUrl,
@@ -13,7 +11,10 @@ export const invoiceHTML = ({
   endpointUrl: string;
   transaction: TransactionType;
 }) => {
-  const { meta, amount } = transaction;
+  const { amount } = transaction;
+  const stripeReceiptUrl = `<p><a href="${transaction?.meta?.receipt_url}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">View ${validatorName} Receipt</button></a></p>`;
+  const stripeInvoiceUrl = `<p><a href="${transaction?.meta?.hosted_invoice_url}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">View ${validatorName} Invoice</button></a></p>`;
+  const stripeInvoicePdf = `<p><a href="${transaction?.meta?.invoice_pdf}"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">Download ${validatorName} Invoice</button></a></p>`;
 
   return `
 <!DOCTYPE html>
@@ -50,12 +51,9 @@ export const invoiceHTML = ({
               )}</p>
               <p>Api Url: ${consumerApiUrl}</p>
               <p>Endpoint Url: ${endpointUrl}</p>
-              <p><a href="${
-                meta?.hosted_invoice_url
-              }"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">View ${validatorName} Invoice</button></a></p>
-              <p><a href="${
-                meta?.invoice_pdf
-              }"><button style="padding: 8px 15px; background: #00008b; color: #fff; width: 100%; border: none;">Download ${validatorName} Invoice</button></a></p>
+              ${transaction?.meta?.receipt_url ? stripeReceiptUrl : ""}
+              ${transaction?.meta?.hosted_invoice_url ? stripeInvoiceUrl : ""}
+              ${transaction?.meta?.invoice_pdf ? stripeInvoicePdf : ""}
             </div>
             <p></p>
             <p style="font-style: italic">
@@ -81,15 +79,28 @@ export const invoiceText = ({
   transaction: TransactionType;
   endpointUrl: string;
 }) => {
-  const { meta, amount } = transaction;
+  const { amount } = transaction;
 
   return `Your Payment to ${validatorName}
 
   Price: $${(Math.round((amount as number) * 100) / 100).toFixed(2)}
   Api Url: ${consumerApiUrl}
   Endpoint Url: ${endpointUrl}
-  View Invoice: ${meta?.hosted_invoice_url}
-  Download Invoice: ${meta?.invoice_pdf}
+  ${
+    transaction?.meta?.receipt_url
+      ? "View Receipt: " + transaction?.meta?.receipt_url
+      : ""
+  }
+  ${
+    transaction?.meta?.hosted_invoice_url
+      ? "View Invoice: " + transaction?.meta?.hosted_invoice_url
+      : ""
+  }
+  ${
+    transaction?.meta?.invoice_pdf
+      ? "Download Invoice: " + transaction?.meta?.invoice_pdf
+      : ""
+  }
 
   This email was sent from an address that cannot accept incoming email. Please do not reply to this message.`;
 };

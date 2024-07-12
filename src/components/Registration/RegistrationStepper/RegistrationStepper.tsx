@@ -11,6 +11,7 @@ import {
   TextInput,
   Center,
   Card,
+  Autocomplete,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { generateShortId } from "@/utils/ids";
@@ -29,7 +30,7 @@ import { getAuthUser } from "@/actions/auth";
 import { NOTIFICATION_TYPE, useNotification } from "@/hooks/use-notification";
 import { Logo } from "@/components/Logo";
 import { KeyModal, keyType } from "@components/KeyModal";
-import Loading from "@/app/(auth)/loading";
+import ClientRedirect from "@components/ClientRedirect";
 import { SubscriptionType } from "@/db/types/subscription";
 import { sendToProxy } from "@/actions/apis";
 import { z, ZodIssue } from "zod";
@@ -42,6 +43,9 @@ import { UserType } from "@/db/types/user";
 import { useModals } from "@mantine/modals";
 import AgreeTOSModal from "../../AgreeTOSModal";
 import { randomBytes } from "crypto";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { ServiceType } from "@/db/types/service";
+import { constructEndpointUrl } from "@/utils/endpoint-url";
 
 const domainSchema = z.object({
   appName: z.string().min(1, { message: "Application name is required" }),
@@ -78,12 +82,14 @@ const stepText: StepText = {
 
 export function RegistrationStepper({
   user,
+  currentSubscriptions,
   StepOne,
   StepTwo,
   StepThree,
   StepFour,
 }: {
   user: UserType;
+  currentSubscriptions: SubscriptionType[];
   StepOne: React.ReactElement;
   StepTwo: React.ReactElement;
   StepThree: React.ReactElement;
@@ -113,6 +119,14 @@ export function RegistrationStepper({
   const modals = useModals();
 
   const agreeModalRef = useRef<string | null>(null);
+  const applicationNames = (currentSubscriptions || [])
+    .map((sub) => sub?.appName || "")
+    .filter((appName, index, arr) => arr.indexOf(appName) === index)
+    .sort();
+  const consumerApiUrls = (currentSubscriptions || [])
+    .map((sub) => sub?.consumerApiUrl || "")
+    .filter((appName, index, arr) => arr.indexOf(appName) === index)
+    .sort();
 
   const openAgreeModal = () => {
     modals.openModal({
@@ -270,19 +284,26 @@ export function RegistrationStepper({
       endpointId,
       selectedService?.id
     );
+    const endpointUrl = `${validator?.baseApiUrl}${constructEndpointUrl(
+      endpoint?.url,
+      endpoint?.percentRealtime
+    )}`;
+    const isActive =
+      selectedService?.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST
+        ? +selectedService?.price === 0
+        : selectedService.remaining !== 0;
 
     try {
       const refill = {
-        interval: "daily",
-        amount: 100,
+        interval: "monthly",
+        amount: +selectedService?.remaining,
       };
 
       const ratelimit = {
-        type: "fast",
+        async: true,
         limit: selectedService?.limit || 10,
-        refillRate: selectedService?.refillRate || 1,
-        refillInterval: selectedService?.refillInterval || 60,
-        duration: selectedService?.duration || 1000,
+        duration:
+          selectedService?.refillInterval || selectedService?.duration || 60000,
       };
 
       const meta = {
@@ -295,9 +316,10 @@ export function RegistrationStepper({
         currencyType: selectedService?.currencyType,
         validatorWalletAddress: validator?.walletAddress,
         hotkey: registrationData?.validator?.hotkey,
-        endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
+        endpoint: endpointUrl,
         validatorId,
         subscription: {} as SubscriptionType,
+        service: {} as ServiceType,
         proxyServiceId: "",
       };
 
@@ -310,6 +332,18 @@ export function RegistrationStepper({
         ratelimit,
         meta,
       };
+
+      if (
+        selectedService?.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST &&
+        +selectedService?.remaining === 0
+      ) {
+        delete keyPayload.remaining;
+        delete keyPayload.refill;
+      }
+
+      if (selectedService?.paymentType === PAYMENT_TYPE.FREE) {
+        delete keyPayload.refill;
+      }
 
       if (selectedService?.expires || selectedService?.expires?.length > 0) {
         keyPayload.expires = new Date(selectedService?.expires)?.getTime();
@@ -341,7 +375,7 @@ export function RegistrationStepper({
         agreedToTOS: registrationData.agreedToTOS,
         serviceId: selectedService?.id,
         contractId: registrationData?.endpoint?.contract?.id,
-        active: +selectedService?.price === 0,
+        active: isActive,
       } as SubscriptionType);
 
       if (res?.error)
@@ -350,7 +384,9 @@ export function RegistrationStepper({
         );
 
       const subscription = res?.data?.[0];
+
       meta.subscription = subscription;
+      meta.service = selectedService;
 
       const { id: subscriptionId, apiSecret } = subscription;
 
@@ -375,7 +411,8 @@ export function RegistrationStepper({
           hotkey: registrationData?.validator?.hotkey,
           validatorWalletAddress: validator?.walletAddress,
           price: selectedService?.price,
-          active: +selectedService?.price === 0,
+          active: isActive,
+          //TODO: Add paymentType: selectedService?.paymentType, and add column in api db
           meta,
         },
       });
@@ -414,7 +451,7 @@ export function RegistrationStepper({
         apiKey: key,
         apiSecret: apiSecret!,
         walletAddress: validator?.walletAddress!,
-        endpoint: `${validator?.baseApiUrl}${endpoint?.url}`,
+        endpoint: endpointUrl,
       });
       open();
 
@@ -446,7 +483,7 @@ export function RegistrationStepper({
   };
 
   return pageLoading ? (
-    <Loading />
+    <ClientRedirect />
   ) : (
     <>
       <KeyModal
@@ -521,37 +558,35 @@ export function RegistrationStepper({
                   </Text>
                 )}
                 <Box className="mt-7">
-                  <TextInput
+                  <Autocomplete
                     label="Application Name"
                     className="mb-4"
-                    withAsterisk
+                    placeholder="Application Name"
                     value={registrationData?.appName}
-                    onChange={(e) => {
-                      updateData({
-                        appName: e.target.value,
-                      } as RegistrationData);
+                    data={applicationNames}
+                    withAsterisk
+                    onChange={(appName) => {
+                      updateData({ appName } as RegistrationData);
                       if (errors) setErrors([]);
                     }}
                     error={
                       errors?.find((e) => e.path.includes("appName"))?.message
                     }
-                    placeholder="Application Name"
                   />
-                  <TextInput
+                  <Autocomplete
                     label="Your Domain Name"
-                    withAsterisk
+                    placeholder="https://mysite.com"
                     value={registrationData?.consumerApiUrl}
-                    onChange={(e) => {
-                      updateData({
-                        consumerApiUrl: e.target.value,
-                      } as RegistrationData);
+                    data={consumerApiUrls}
+                    withAsterisk
+                    onChange={(consumerApiUrl) => {
+                      updateData({ consumerApiUrl } as RegistrationData);
                       if (errors) setErrors([]);
                     }}
                     error={
                       errors?.find((e) => e.path.includes("consumerApiUrl"))
                         ?.message
                     }
-                    placeholder="https://mysite.com"
                   />
                   {isCrypto(registrationData?.endpoint?.selectedService) && (
                     <TextInput

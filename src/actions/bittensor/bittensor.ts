@@ -4,7 +4,7 @@ import { rpc } from "./rpc";
 import { types } from "./types";
 import { ValidatorType } from "@/db/types/validator";
 
-const PROVIDER_URL = ["development", "testing"].includes(
+const PROVIDER_URL = ["development", "testing", "staging"].includes(
   process.env.NEXT_PUBLIC_NODE_ENV as string
 )
   ? "wss://test.finney.opentensor.ai:443"
@@ -25,7 +25,6 @@ export const createBittensorApi = async () => {
       api.rpc.system.version(),
     ]);
 
-    // api.on("error", (error: Error) => console.error("API error:", error));
   }
   await api.isReadyOrError;
   return api;
@@ -46,7 +45,6 @@ export const fetchValidatorInfo = async (
   uId?: number
 ) => {
   try {
-    const api = await createBittensorApi();
     if (!uId) {
       const result = await fetchNeuronsLite(netUid);
       return (

@@ -55,7 +55,7 @@ export default async function Page({ params }: any) {
         },
       },
     },
-  });
+  }, { withStatus: true });
 
   if (validatorArr?.error) validatorArr = [];
 

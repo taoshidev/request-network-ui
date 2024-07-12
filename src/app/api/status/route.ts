@@ -1,7 +1,5 @@
 import { sendEmail } from "@/actions/email";
-import {
-  apiUpdateSubscription,
-} from "@/actions/subscriptions";
+import { apiUpdateSubscription } from "@/actions/subscriptions";
 import { endpoints, subscriptions, users, validators } from "@/db/schema";
 import { db } from "@/db";
 import {
@@ -15,6 +13,10 @@ import {
   canceledSubHTML,
   canceledSubText,
 } from "@/templates/canceled-subscription";
+import { updateRemaining } from "@/actions/keys";
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const PUT = async (req: NextRequest): Promise<NextResponse> => {
   try {
@@ -24,7 +26,7 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
       return jsonResponse(status, message);
     }
 
-    const { subscriptionId: id, active, type, transaction } = body;
+    const { subscriptionId: id, active, type, quantity, transaction } = body;
     await apiUpdateSubscription({
       id,
       active,
@@ -33,6 +35,8 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
     const subscriptionRes = await db
       .select({
         id: subscriptions.id,
+        userId: subscriptions.userId,
+        keyId: subscriptions.keyId,
         consumerApiUrl: subscriptions.consumerApiUrl,
         to: users.email,
         validatorName: validators.name,
@@ -47,6 +51,21 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
     const subscription: any = subscriptionRes?.[0];
 
     switch (type) {
+      case "charge.succeeded.activate":
+      case "CHARGE.SUCCEEDED":
+        const res = await updateRemaining({
+          keyId: subscription?.keyId,
+          userId: subscription?.userId,
+          value: +quantity,
+        });
+
+        if (res?.status !== 200) {
+          return NextResponse.json({
+            message: "Error updating unkey.",
+            status: 500,
+          });
+        }
+      case "BILLING.SUBSCRIPTION.ACTIVATED":
       case "invoice.payment_succeeded":
         sendEmail({
           to: subscription.to,
@@ -67,6 +86,8 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
         break;
       case "invoice.payment_failed":
         break;
+      case "BILLING.SUBSCRIPTION.EXPIRED":
+      case "BILLING.SUBSCRIPTION.CANCELLED":
       case "customer.subscription.deleted":
         sendEmail({
           to: subscription.to,
@@ -92,6 +113,7 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
       status: 200,
     });
   } catch (error: Error | unknown) {
+    console.error(error);
     return NextResponse.json({
       message: "Error updating subscription status.",
       status: 200,

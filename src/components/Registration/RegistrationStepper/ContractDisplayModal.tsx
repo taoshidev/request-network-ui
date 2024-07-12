@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -17,8 +17,10 @@ import { ServiceType } from "@/db/types/service";
 import dayjs from "dayjs";
 import clsx from "clsx";
 import { ValidatorType } from "@/db/types/validator";
-import CurrencyFormatter from "./Formatters/CurrencyFormatter";
-import FixedFormatter from "./Formatters/FixedFormatter";
+import CurrencyFormatter from "../../Formatters/CurrencyFormatter";
+import FixedFormatter from "../../Formatters/FixedFormatter";
+import { useModals } from "@mantine/modals";
+import ContractDisplayTierPricing from "./ContractDisplayTierPricing";
 
 export function ContractDisplayModal({
   html,
@@ -45,6 +47,8 @@ export function ContractDisplayModal({
     selectedService: ServiceType;
   }) => void;
 }) {
+  const modals = useModals();
+  const tierModalRef = useRef<string | null>(null);
   const { notifySuccess, notifyInfo, notifyError } = useNotification();
   const { registrationData } = useRegistration();
   const [termsAccepted, setTermsAccepted] = useState<boolean>(
@@ -53,6 +57,7 @@ export function ContractDisplayModal({
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(
     registrationData?.endpoint?.selectedService?.id || null
   );
+
   const numColumns = useMemo(
     () =>
       Math.min(
@@ -97,8 +102,18 @@ export function ContractDisplayModal({
     notifyError(`Service "${service?.name}" is not currently available.`);
   };
 
-  const handleServiceSelect = (serviceId: string) => {
-    if (!review) setSelectedServiceId(serviceId);
+  const handleServiceSelect = (service: ServiceType) => {
+    if (!review) setSelectedServiceId(service?.id as string);
+    if (service?.tiers?.length > 0) {
+      setTimeout(() => {
+        tierModalRef.current = modals.openModal({
+          centered: true,
+          size: "lg",
+          title: service?.name + " - Pay Per Request / Tier Pricing",
+          children: <ContractDisplayTierPricing service={service} />,
+        });
+      }, 700);
+    }
   };
 
   return (
@@ -149,7 +164,7 @@ export function ContractDisplayModal({
                 onClick={
                   disabled(service)
                     ? () => handleDisabled(service)
-                    : () => handleServiceSelect(service?.id as string)
+                    : () => handleServiceSelect(service)
                 }
               >
                 <Group className="justify-between items-center m-2">
@@ -161,15 +176,25 @@ export function ContractDisplayModal({
                 <Group className="justify-between items-center m-2">
                   <Text className="text-xs">Expires:</Text>
                   <Badge size="sm" variant="light">
-                    {dayjs(service?.expires).format("MMM DD, YYYY") || "-"}
+                    {service.expires
+                      ? dayjs(service.expires).format("MMM DD, YYYY")
+                      : "No Expiry"}
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />
 
                 <Group className="justify-between items-center m-2">
-                  <Text className="text-xs">Payment Method:</Text>
+                  <Text className="text-xs">Currency:</Text>
                   <Badge size="sm" variant="light">
                     {service?.currencyType}
+                  </Badge>
+                </Group>
+                <Divider className="border-dashed" />
+
+                <Group className="justify-between items-center m-2">
+                  <Text className="text-xs">Payment:</Text>
+                  <Badge size="sm" variant="light">
+                    {service?.paymentType?.split("_")?.join(" ")}
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />
@@ -188,7 +213,7 @@ export function ContractDisplayModal({
                 <Group className="justify-between items-center m-2">
                   <Text className="text-xs">Refill Interval:</Text>
                   <Badge size="sm" variant="light">
-                    <FixedFormatter value={service.refillInterval} />
+                    <FixedFormatter value={service.refillInterval} /> ms
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />
@@ -197,14 +222,6 @@ export function ContractDisplayModal({
                   <Text className="text-xs">Limit:</Text>
                   <Badge size="sm" variant="light">
                     <FixedFormatter value={service.limit} />
-                  </Badge>
-                </Group>
-                <Divider className="border-dashed" />
-
-                <Group className="justify-between items-center m-2">
-                  <Text className="text-xs">Refill Rate:</Text>
-                  <Badge size="sm" variant="light">
-                    <FixedFormatter value={service.refillRate} />
                   </Badge>
                 </Group>
                 <Divider className="border-dashed" />

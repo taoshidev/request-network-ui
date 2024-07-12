@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import NextImage from "next/image";
 import {
   Title,
   Text,
   Group,
+  Image,
   Box,
   Button,
   TextInput,
@@ -12,6 +14,8 @@ import {
   Alert,
   CopyButton,
   Grid,
+  Card,
+  Autocomplete,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
@@ -20,6 +24,8 @@ import {
   IconClockDollar,
   IconCopy,
 } from "@tabler/icons-react";
+import payPalBtn from "@/assets/paypal-1.svg";
+import stripeBtn from "@/assets/stripe.svg";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -31,22 +37,29 @@ import { cancelSubscription, requestPayment } from "@/actions/payments";
 import { ConfirmModal } from "../ConfirmModal";
 import { updateSubscription, fetchProxyService } from "@/actions/subscriptions";
 import CurrencyFormatter from "../Formatters/CurrencyFormatter";
+import clsx from "clsx";
+import TierPurchaseOption from "./TierPurchaseOption";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { omit as _omit } from "lodash";
 
-const updateSchema = z.object({
+const generalSettingsSchema = z.object({
   name: z
     .string()
     .regex(/^[^\s]*$/, { message: "Spaces are not allowed" })
     .min(3, { message: "Name must be at least 3 characters" }),
+  consumerApiUrl: z.string(),
 });
 
-type User = z.infer<typeof updateSchema>;
+type GeneralSettings = z.infer<typeof generalSettingsSchema>;
 
 export function Settings({
   apiKey,
   subscription,
+  consumerApiUrls,
 }: {
   apiKey: any;
   subscription: any;
+  consumerApiUrls: string[];
 }) {
   const isFree = useMemo(
     () => +subscription?.service?.price === 0,
@@ -60,17 +73,35 @@ export function Settings({
     () => !!subscription?.validator?.stripeLiveMode,
     [subscription]
   );
-  const [disabled, setDisabled] = useState(!stripeEnabled);
+  const payPalEnabled = useMemo(
+    () => !!subscription?.validator?.payPalEnabled,
+    [subscription]
+  );
   const [opened, { open, close }] = useDisclosure(false);
   const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
     useDisclosure(false);
   const { notifySuccess, notifyError } = useNotification();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState("");
   const [active, setActive] = useState(false);
+  const [consumerApiUrlError, setConsumerApiUrlError] = useState("");
   const router = useRouter();
   const [key]: Array<any> = useLocalStorage({
     key: TAOSHI_REQUEST_KEY,
   });
+  const [tiers, setTiers] = useState<
+    {
+      from: number;
+      to: number;
+      price: number;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    if (subscription?.service?.tiers?.length > 0) {
+      setTiers(subscription.service.tiers);
+    }
+  }, [subscription]);
+
   // refresh page when it comes back into view
   useEffect(() => {
     const fetchService = async () => {
@@ -92,7 +123,7 @@ export function Settings({
     const onFocus = async (event) => {
       if (!active && document.visibilityState == "visible") {
         setActive(true);
-        if (stripeEnabled) setDisabled(false);
+        if (stripeEnabled) setLoading("");
         await fetchService();
         router.refresh();
       } else {
@@ -112,9 +143,9 @@ export function Settings({
     register,
     handleSubmit: handleUpdateKey,
     formState: { isValid, errors },
-  } = useForm<User>({
+  } = useForm<GeneralSettings>({
     mode: "onChange",
-    resolver: zodResolver(updateSchema),
+    resolver: zodResolver(generalSettingsSchema),
   });
   const deleteUnkey = async () => {
     const res = await deleteKey({ keyId: apiKey?.id });
@@ -122,16 +153,28 @@ export function Settings({
     notifySuccess(res?.message as string);
   };
 
-  const onUpdateKey: SubmitHandler<User> = async (values) => {
-    setLoading(true);
-    const res = await updateKey({
-      keyId: apiKey?.id,
-      params: { name: values.name },
-    });
+  const onUpdateKey: SubmitHandler<GeneralSettings> = async (values) => {
+    if (consumerApiUrlError) return notifyError(consumerApiUrlError as string);
+
+    setLoading("update-key");
+    const [res, subRes] = await Promise.all([
+      updateKey({
+        keyId: apiKey?.id,
+        params: { name: values.name },
+      }),
+      updateSubscription({
+        id: subscription?.id,
+        consumerApiUrl: values.consumerApiUrl,
+      }),
+    ]);
 
     if (res?.status !== 200) return notifyError(res?.message as string);
     notifySuccess(res?.message as string);
-    setLoading(false);
+
+    if (subRes?.error) return notifyError(subRes?.error?.message as string);
+    notifySuccess("Subscription domain name updated successfully." as string);
+
+    setLoading("");
     router.refresh();
     setTimeout(() => router.back(), 1000);
   };
@@ -141,10 +184,11 @@ export function Settings({
     copy();
   };
 
-  const sendPaymentRequest = async () => {
+  const sendPaymentRequest = async (url = "stripe-pay") => {
     const requestPaymentRes = await requestPayment(
       subscription.proxyServiceId,
-      window.location.pathname
+      window.location.pathname,
+      subscription?.service?.price
     );
 
     if (
@@ -152,34 +196,48 @@ export function Settings({
       requestPaymentRes.token
     ) {
       window.open(
-        `${requestPaymentRes.subscription.endpoint.validator.baseApiUrl}/subscribe?token=${requestPaymentRes.token}`,
+        `${requestPaymentRes.subscription.endpoint.validator.baseApiUrl}/${url}?token=${requestPaymentRes.token}`,
         "_blank"
       );
     }
   };
 
   const unsubscribe = async () => {
+    setLoading("");
     const unSubRes = await cancelSubscription(subscription.proxyServiceId);
+
+    if (unSubRes?.error) {
+      notifyError(`Subscription cancel failed.`);
+      setLoading("");
+      return;
+    }
+
     notifySuccess(`Subscription cancelled successfully`);
     unSubClose();
-    setDisabled(false);
+    setLoading("");
   };
 
   const stripePayment = () => {
-    setDisabled(true);
+    setLoading("stripe-payment");
     subscription?.active ? unSubOpen() : sendPaymentRequest();
   };
 
+  const payPalPayment = () => {
+    setLoading("paypal-payment");
+    false ? unSubOpen() : sendPaymentRequest("paypal-pay");
+  };
+
   const handleDeleteSubscription = async () => {
-    setLoading(true);
-    await unsubscribe();
+    setLoading("delete-subscription");
+    if (subscription.service.paymentType === PAYMENT_TYPE.SUBSCRIPTION)
+      await unsubscribe();
     await deleteUnkey();
     await updateSubscription({
       id: subscription?.id,
       active: false,
       deletedAt: new Date(),
     });
-    setLoading(false);
+    setLoading("");
     notifySuccess("Subscription deleted successfully");
     setTimeout(() => router.back(), 1000);
   };
@@ -190,7 +248,11 @@ export function Settings({
         centered
         opened={opened}
         onClose={close}
-        title="Are you sure you want to delete subscription?"
+        title={
+          subscription.service.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST
+            ? "Are you sure you want to delete subscription?"
+            : "Are you sure you want to delete access keys?"
+        }
       >
         <Box mb="lg">
           <Text>
@@ -201,12 +263,16 @@ export function Settings({
         </Box>
         <Box className="grid grid-cols-2 gap-2 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
           <Button w="100%" onClick={close} variant="outline">
-              No, Cancel
-            </Button>
+            No, Cancel
+          </Button>
 
-            <Button w="100%" loading={loading} onClick={handleDeleteSubscription}>
-              Yes, Delete my subscription
-            </Button>
+          <Button
+            w="100%"
+            loading={loading === "delete-subscription"}
+            onClick={handleDeleteSubscription}
+          >
+            Yes, Delete
+          </Button>
         </Box>
       </Modal>
 
@@ -227,7 +293,7 @@ export function Settings({
             </Title>
 
             <Alert
-              className="shadow-sm"
+              className="shadow-sm border-gray-200"
               color="orange"
               radius="0"
               title=""
@@ -261,7 +327,7 @@ export function Settings({
       {apiKey?.meta?.currencyType === "FIAT" && (
         <Box my="xl">
           <Alert
-            className="shadow-sm"
+            className="shadow-sm border-gray-200"
             variant="light"
             color={subscription?.active ? "#33ad47" : "orange"}
             title={
@@ -283,10 +349,15 @@ export function Settings({
                     <Grid.Col span={6}>
                       <Text>
                         Price:{" "}
-                        <CurrencyFormatter
-                          price={subscription?.service?.price}
-                          currencyType={subscription?.service?.currencyType}
-                        />
+                        {subscription.service.paymentType !==
+                        PAYMENT_TYPE.PAY_PER_REQUEST ? (
+                          <CurrencyFormatter
+                            price={subscription?.service?.price}
+                            currencyType={subscription?.service?.currencyType}
+                          />
+                        ) : (
+                          "Pay Per Request"
+                        )}
                       </Text>
                       <Text>
                         Validator: {subscription?.endpoint?.validator?.name}
@@ -301,19 +372,47 @@ export function Settings({
                 <Box>Subscription is not active.</Box>
               )}
               <Group justify="flex-end" mt="lg">
+                {!subscription?.active && payPalEnabled && !isFree && (
+                  <Button
+                    onClick={payPalPayment}
+                    loading={loading === "paypal-payment"}
+                    type="button"
+                    variant="default"
+                    className="drop-shadow-md"
+                  >
+                    <Image
+                      component={NextImage}
+                      src={payPalBtn}
+                      w="auto"
+                      h={25}
+                      alt="PayPal Subscribe"
+                    />
+                  </Button>
+                )}
                 {stripeEnabled &&
                   !isFree &&
                   (stripeLiveMode ||
                     process.env.NEXT_PUBLIC_NODE_ENV !== "production") && (
                     <Button
                       onClick={stripePayment}
-                      disabled={disabled}
+                      loading={loading === "stripe-payment"}
                       type="button"
-                      variant={subscription?.active ? "light" : "orange"}
+                      variant={subscription?.active ? "orange" : "default"}
+                      className={clsx(
+                        !subscription?.active && "drop-shadow-md"
+                      )}
                     >
-                      {subscription?.active
-                        ? "Cancel Payment Subscription"
-                        : "Set up Payment Subscription"}
+                      {subscription?.active ? (
+                        "Cancel Subscription"
+                      ) : (
+                        <Image
+                          component={NextImage}
+                          src={stripeBtn}
+                          w="auto"
+                          h={30}
+                          alt="Stripe Subscribe"
+                        />
+                      )}
                     </Button>
                   )}
               </Group>
@@ -331,34 +430,76 @@ export function Settings({
       )}
 
       <Box my="xl">
+        {tiers.length > 0 && <TierPurchaseOption subscription={subscription} />}
+      </Box>
+
+      <Card className="shadow-sm border-gray-200" withBorder my="xl">
         <Title order={2} mb="sm">
           General Settings
         </Title>
 
         <Box component="form" onSubmit={handleUpdateKey(onUpdateKey)} w="100%">
           <TextInput
+            className="mb-2"
             label="Edit Key Name"
+            withAsterisk
             defaultValue={apiKey?.name}
             placeholder={apiKey?.name}
             error={errors.name?.message}
             {...register("name", { required: true })}
           />
+          <Autocomplete
+            label="Your Domain Name"
+            placeholder="https://mysite.com"
+            defaultValue={subscription?.consumerApiUrl}
+            data={consumerApiUrls}
+            withAsterisk
+            error={consumerApiUrlError}
+            {..._omit(register("consumerApiUrl", { required: true }), [
+              "onChange",
+            ])}
+            onChange={(consumerApiUrl) => {
+              switch (true) {
+                case consumerApiUrl.includes(" "):
+                  setConsumerApiUrlError("Domain name must not include spaces");
+                  break;
+                case !consumerApiUrl.includes("http://") &&
+                  !consumerApiUrl.includes("https://"):
+                  setConsumerApiUrlError(
+                    'Domain name must contain "http://" or "https://"'
+                  );
+                  break;
+                default:
+                  setConsumerApiUrlError("");
+                  break;
+              }
+            }}
+          />
 
           <Group justify="flex-end" mt="xl">
-            <Button type="submit" variant="primary">
-              Update Name
+            <Button
+              loading={loading === "update-key"}
+              type="submit"
+              variant="primary"
+            >
+              Update Settings
             </Button>
           </Group>
         </Box>
-      </Box>
-      <StatTable data={apiKey} />
-
-      <Box my="xl">
+      </Card>
+      <Card className="shadow-sm border-gray-200" withBorder>
+        <StatTable data={apiKey} />
+      </Card>
+      <Box mt="xl">
         <Alert
-          className="shadow-sm"
+          className="shadow-sm border-gray-200"
           variant="light"
           color="orange"
-          title="Delete Subscription"
+          title={
+            subscription.service.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST
+              ? "Delete Subscription"
+              : "Delete Key"
+          }
           icon={<IconAlertCircle />}
         >
           <Box>
@@ -368,7 +509,10 @@ export function Settings({
             </Box>
             <Group justify="flex-end" mt="lg">
               <Button variant="orange" onClick={open}>
-                Delete Subscription
+                {subscription.service.paymentType !==
+                PAYMENT_TYPE.PAY_PER_REQUEST
+                  ? "Delete Subscription"
+                  : "Delete Key"}
               </Button>
             </Group>
           </Box>

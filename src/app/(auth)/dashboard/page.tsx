@@ -4,7 +4,7 @@ import { getSubnets } from "@/actions/subnets";
 import { Consumer } from "@/components/Consumer";
 import ValidatorDashboard from "@/components/ValidatorDashboard";
 import { getSubscriptions } from "@/actions/subscriptions";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, asc, eq, isNull } from "drizzle-orm";
 import { subscriptions, validators, contracts } from "@/db/schema";
 import { getUserAPIKeys } from "@/actions/keys";
 import { ValidatorType } from "@/db/types/validator";
@@ -58,6 +58,10 @@ export default async function Page() {
           },
         },
       },
+      orderBy: [
+        asc(subscriptions?.appName),
+        asc(subscriptions?.consumerApiUrl),
+      ],
     });
 
     if (subs?.error) subs = [];
@@ -67,8 +71,6 @@ export default async function Page() {
     );
     // if user is a validator, render validator dashboard
   } else if (user.user_metadata.role === "validator") {
-    const validatorEndpoints = validatorArr?.map((v) => v.endpoints);
-
     const subnets = await getSubnets();
 
     const promises = (validatorArr || [])?.map(async (v: ValidatorType) => {

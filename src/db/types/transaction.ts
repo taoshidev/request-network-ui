@@ -14,6 +14,7 @@ export const TransactionSchema = z.object({
   confirmed: z.boolean(),
   tokenAddress: z.string(),
   meta: z.object({
+    receipt_url: z.string(),
     hosted_invoice_url: z.string(),
     invoice_pdf: z.string(),
   }),

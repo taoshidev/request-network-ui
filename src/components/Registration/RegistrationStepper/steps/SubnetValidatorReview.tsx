@@ -16,7 +16,7 @@ import { useRegistration } from "@/providers/registration";
 import { ValidatorType } from "@/db/types/validator";
 import { TextEditor } from "@/components/TextEditor";
 import { useDisclosure } from "@mantine/hooks";
-import { ContractDisplayModal } from "@/components/ContractDisplayModal";
+import { ContractDisplayModal } from "../ContractDisplayModal";
 import clsx from "clsx";
 import { useModals } from "@mantine/modals";
 import { useRef } from "react";
@@ -25,12 +25,17 @@ import { UserType } from "@/db/types/user";
 import CurrencyFormatter from "@/components/Formatters/CurrencyFormatter";
 import FixedFormatter from "@/components/Formatters/FixedFormatter";
 import { randomBytes } from "crypto";
+import ContractDisplayTierPricing from "../ContractDisplayTierPricing";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { constructEndpointUrl } from "@/utils/endpoint-url";
+import { PERCENT_REALTIME_LABEL } from "@/interfaces/enum/percent-realtime-enum";
 
 export function SubnetValidatorReview({ user }: { user: UserType }) {
   const { registrationData } = useRegistration();
   const [opened, { open, close }] = useDisclosure(false);
   const modals = useModals();
   const agreeModalRef = useRef<string | null>(null);
+  const tierModalRef = useRef<string | null>(null);
 
   const viewTOS = () => {
     agreeModalRef.current = `rn-modal-${randomBytes(10).toString("hex")}`;
@@ -41,6 +46,23 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
       title: "Terms of Service Agreement",
       children: (
         <AgreeTOSModal user={user} mode="view" modalRef={agreeModalRef} />
+      ),
+    });
+  };
+
+  const viewTier = () => {
+    tierModalRef.current = modals.openModal({
+      modalId: tierModalRef.current!,
+      centered: true,
+      size: "xl",
+      onClose: () => modals.closeModal(tierModalRef.current!),
+      title:
+        registrationData?.endpoint?.selectedService?.name +
+        " - Pay Per Request / Tier Pricing",
+      children: (
+        <ContractDisplayTierPricing
+          service={registrationData?.endpoint?.selectedService}
+        />
       ),
     });
   };
@@ -60,11 +82,25 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
                 html={registrationData?.validator?.description as string}
               />
             </Box>
-            <Box className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-4 px-4">
-              <Button onClick={open}>View Accepted Terms</Button>
+            <Box
+              className={clsx(
+                "grid grid-cols-1 md:grid-cols-1 gap-4 px-4",
+                registrationData?.endpoint?.selectedService?.paymentType ===
+                  PAYMENT_TYPE.PAY_PER_REQUEST
+                  ? "sm:grid-cols-3 lg:grid-cols-3"
+                  : "sm:grid-cols-2 lg:grid-cols-2"
+              )}
+            >
+              <Button onClick={open}>View Terms</Button>
               <Button onClick={viewTOS} variant="outline">
                 View Taoshi TOS
               </Button>
+              {registrationData?.endpoint?.selectedService?.paymentType ===
+                PAYMENT_TYPE.PAY_PER_REQUEST && (
+                <Button onClick={viewTier} variant="outline">
+                  View Tier Pricing
+                </Button>
+              )}
             </Box>
             <ContractDisplayModal
               services={registrationData?.endpoint?.contract?.services}
@@ -94,9 +130,26 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Endpoint</Text>
-              <Text className="text-sm">{registrationData?.endpoint?.url}</Text>
+              <Text className="text-sm">
+                {constructEndpointUrl(
+                  registrationData?.endpoint?.url,
+                  registrationData?.endpoint?.percentRealtime
+                )}
+              </Text>
             </Group>
             <Divider className="border-dashed" />
+            <Group className="justify-between items-center">
+              <Text className="text-sm">Realtime Tier</Text>
+              <Text className="text-sm">
+                {
+                  PERCENT_REALTIME_LABEL[
+                    registrationData?.endpoint?.percentRealtime
+                  ]
+                }
+              </Text>
+            </Group>
+            <Divider className="border-dashed" />
+
             <Group className="justify-between items-center">
               <Text className="text-sm">Payment Method</Text>
               <Text className="text-sm">
@@ -132,6 +185,7 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
                 />
               </Text>
             </Group>
+            <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Limit</Text>
               <Text className="text-sm">
@@ -148,25 +202,19 @@ export function SubnetValidatorReview({ user }: { user: UserType }) {
                   value={
                     registrationData?.endpoint?.selectedService.refillInterval
                   }
-                />
-              </Text>
-            </Group>
-            <Divider className="border-dashed" />
-            <Group className="justify-between items-center">
-              <Text className="text-sm">Refill Rate</Text>
-              <Text className="text-sm">
-                <FixedFormatter
-                  value={registrationData?.endpoint?.selectedService.refillRate}
-                />
+                />{" "}
+                ms
               </Text>
             </Group>
             <Divider className="border-dashed" />
             <Group className="justify-between items-center">
               <Text className="text-sm">Expiry</Text>
               <Text className="text-sm">
-                {dayjs(registrationData?.endpoint?.selectedService?.expires).format(
-                  "MMM DD, YYYY"
-                )}
+                {registrationData?.endpoint?.selectedService?.expires
+                  ? dayjs(
+                      registrationData?.endpoint?.selectedService?.expires
+                    ).format("MMM DD, YYYY")
+                  : "No Expiry"}
               </Text>
             </Group>
           </Stack>

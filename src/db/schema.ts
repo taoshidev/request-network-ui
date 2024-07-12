@@ -22,6 +22,12 @@ export const currencyTypeEnum = pgEnum("currency_type", [
   "USDT",
 ]);
 
+export const servicePaymentTypeEnum = pgEnum("payment_type", [
+  "FREE",
+  "SUBSCRIPTION",
+  "PAY_PER_REQUEST",
+]);
+
 export const users = authSchema.table("users", {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
@@ -36,6 +42,7 @@ export const users = authSchema.table("users", {
   agreedToTOS: boolean("agreed_to_tos").default(false),
   onboardingStep: integer("onboardingStep").notNull().default(0),
   stripeEnabled: boolean("stripe_enabled").default(true),
+  payPalEnabled: boolean("paypal_enabled").default(true),
   cryptoEnabled: boolean("crypto_enabled").default(false),
 });
 
@@ -121,6 +128,7 @@ export const validators = pgTable("validators", {
   verified: boolean("verified").notNull().default(false),
   stripeEnabled: boolean("stripe_enabled").default(false),
   stripeLiveMode: boolean("stripe_live_mode").default(false),
+  payPalEnabled: boolean("paypal_enabled").default(false),
   agreedToTOS: boolean("agreed_to_tos").default(false),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at", {
@@ -158,6 +166,7 @@ export const endpoints = pgTable(
       onDelete: "set null",
     }),
     url: varchar("url").notNull(),
+    percentRealtime: integer("percent_realtime").default(0),
     enabled: boolean("enabled").default(false).notNull(),
     active: boolean("active").default(true).notNull(),
     createdAt: timestamp("created_at", {
@@ -169,7 +178,7 @@ export const endpoints = pgTable(
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => ({
-    unique: unique().on(table.validatorId, table.url),
+    unique: unique().on(table.validatorId, table.url, table.percentRealtime),
   })
 );
 
@@ -183,15 +192,16 @@ export const services = pgTable("services", {
     .references(() => users.id, { onDelete: "cascade" }),
   contractId: uuid("contract_id")
     .notNull()
-    .references(() => contracts.id, { onDelete: "set null" }),
+    .references(() => contracts.id, { onDelete: "cascade" }),
   name: varchar("name"),
   price: varchar("price"),
   currencyType: currencyTypeEnum("currency_type").notNull().default("USDC"),
+  paymentType: servicePaymentTypeEnum("payment_type").notNull().default("FREE"),
+  tiers: jsonb("tiers"),
   limit: integer("limit").default(10),
   expires: timestamp("expires", {
     withTimezone: true,
   }),
-  refillRate: integer("refill_rate").default(1),
   refillInterval: integer("refill_interval").default(1000),
   remaining: integer("remaining").default(1000),
   active: boolean("active").default(true).notNull(),
@@ -296,8 +306,7 @@ export const notifications = pgTable("notifications", {
   fromUserId: uuid("from_user_id")
     .references(() => users.id, {
       onDelete: "set null",
-    })
-    .notNull(),
+    }),
   subject: varchar("subject"),
   content: varchar("content"),
   type: notificationTypeEnum("type").notNull().default("info"),

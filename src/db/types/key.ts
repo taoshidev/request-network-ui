@@ -8,7 +8,6 @@ export const RefillSchema = z.object({
 export const RateLimitSchema = z.object({
   type: z.string(),
   limit: z.number(),
-  refillRate: z.number(),
   refillInterval: z.number(),
 });
 

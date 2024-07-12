@@ -1,9 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
-import { Box, Title } from "@mantine/core";
-import ValidatorStatus from "@/components/ValidatorStatus";
+import { Box } from "@mantine/core";
+import ValidatorStatus from "@/components/ValidatorStatusPage/ValidatorStatus";
 import { getValidatorStatusPage } from "@/actions/validators";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { validators } from "@/db/schema";
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function StatusPage() {
   const supabase = createClient();

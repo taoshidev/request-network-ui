@@ -11,7 +11,11 @@ import { UserType } from "@/db/types/user";
 import { ServiceForm } from "@/components/Services/ServiceForm";
 import { useModals } from "@mantine/modals";
 import { ServiceType } from "@/db/types/service";
-import { createService, updateService } from "@/actions/services";
+import {
+  createService,
+  updateService,
+  deleteService,
+} from "@/actions/services";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import CurrencyFormatter from "./Formatters/CurrencyFormatter";
@@ -98,12 +102,6 @@ export function ContractModal({
         serviceRes.forEach((r, i) => {
           if (r?.error) {
             notifyError(`Failed to create service ${services[i]?.name}`);
-          } else {
-            notifySuccess(
-              `Service ${services[i]?.name} ${
-                services[i]?.id!?.length > 0 ? "updated" : "created"
-              } successfully for contract ${res.data?.[0].title}`
-            );
           }
         });
       }
@@ -143,6 +141,7 @@ export function ContractModal({
     serviceModalRef.current = modals.openModal({
       centered: true,
       title: service ? "Edit Service" : "Add New Service",
+      size: "lg",
       children: (
         <ServiceForm
           service={service}
@@ -153,10 +152,19 @@ export function ContractModal({
     });
   };
 
-  const handleServiceDelete = (index: number) => {
-    setServices((prevServices) =>
-      prevServices.filter((item, i) => i !== index)
-    );
+  const handleServiceDelete = async (index: number) => {
+    if (services?.[index]?.id) {
+      try {
+        await deleteService({ id: services[index].id });
+        notifySuccess("Service deleted successfully");
+        setServices((prevServices) =>
+          prevServices.filter((item, i) => i !== index)
+        );
+        router.refresh();
+      } catch (error) {
+        notifyError("Failed to delete service");
+      }
+    }
   };
 
   const openServiceDeleteConfirm = (index: number) =>
@@ -210,66 +218,76 @@ export function ContractModal({
                   <Table.Thead>
                     <Table.Tr>
                       <Table.Th>Service</Table.Th>
+                      <Table.Th>Payment Type</Table.Th>
                       <Table.Th>Expires</Table.Th>
                       <Table.Th>Price</Table.Th>
                       <Table.Th>Limit</Table.Th>
                       <Table.Th>Requests</Table.Th>
-                      <Table.Th>Refill</Table.Th>
                       <Table.Th>Interval</Table.Th>
                       <Table.Th className="text-right"></Table.Th>
                       <Table.Th className="text-right"></Table.Th>
                     </Table.Tr>
                   </Table.Thead>
                   <Table.Tbody>
-                    {services
-                      .map((service: ServiceType, index: number) => (
-                        <Table.Tr key={index}>
-                          <Table.Td>
-                            <Box ref={index === 0 ? serviceRef : undefined}>
-                              {service?.name}
-                            </Box>
-                          </Table.Td>
-                          <Table.Td>
-                            {dayjs(contract?.expires).format("MMM DD, YYYY")}
-                          </Table.Td>
-                          <Table.Td>
-                            <CurrencyFormatter
-                              price={service?.price}
-                              currencyType={service?.currencyType}
-                            />
-                          </Table.Td>
-                          <Table.Td>
-                            <FixedFormatter value={service.limit} />
-                          </Table.Td>
-                          <Table.Td>
-                            <FixedFormatter value={service.remaining} />
-                          </Table.Td>
-                          <Table.Td>
-                            <FixedFormatter value={service.refillRate} />
-                          </Table.Td>
-                          <Table.Td>
-                            <FixedFormatter value={service.refillInterval} />
-                          </Table.Td>
-                          <Table.Td className="text-right">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => openServiceModal(service, index)}
-                            >
-                              Edit
-                            </Button>
-                          </Table.Td>
-                          <Table.Td className="text-right">
-                            <Button
-                              size="sm"
-                              variant="light"
-                              onClick={() => openServiceDeleteConfirm(index)}
-                            >
-                              Delete
-                            </Button>
-                          </Table.Td>
-                        </Table.Tr>
-                      ))}
+                    {services.map((service: ServiceType, index: number) => (
+                      <Table.Tr key={index}>
+                        <Table.Td>
+                          <Box ref={index === 0 ? serviceRef : undefined}>
+                            {service?.name}
+                          </Box>
+                        </Table.Td>
+                        <Table.Td>
+                          {service?.paymentType
+                            ? service.paymentType
+                                .toLowerCase()
+                                .charAt(0)
+                                .toUpperCase() +
+                              service.paymentType
+                                .toLowerCase()
+                                .slice(1)
+                                .split("_")
+                                .join(" ")
+                            : ""}
+                        </Table.Td>
+
+                        <Table.Td>
+                          {dayjs(contract?.expires).format("MMM DD, YYYY")}
+                        </Table.Td>
+                        <Table.Td>
+                          <CurrencyFormatter
+                            price={service?.price}
+                            currencyType={service?.currencyType}
+                          />
+                        </Table.Td>
+                        <Table.Td>
+                          <FixedFormatter value={service.limit} />
+                        </Table.Td>
+                        <Table.Td>
+                          <FixedFormatter value={service.remaining} />
+                        </Table.Td>
+                        <Table.Td>
+                          <FixedFormatter value={service.refillInterval} />
+                        </Table.Td>
+                        <Table.Td className="text-right">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openServiceModal(service, index)}
+                          >
+                            Edit
+                          </Button>
+                        </Table.Td>
+                        <Table.Td className="text-right">
+                          <Button
+                            size="sm"
+                            variant="light"
+                            onClick={() => openServiceDeleteConfirm(index)}
+                          >
+                            Delete
+                          </Button>
+                        </Table.Td>
+                      </Table.Tr>
+                    ))}
                   </Table.Tbody>
                 </Table>
               </Table.ScrollContainer>

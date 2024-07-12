@@ -82,12 +82,12 @@ export const AuthProvider = ({ children }) => {
     setUser(user);
   };
 
-  if (loading || redirect) {
+  if (redirect) {
     return (
       <ClientRedirect
         href={redirect?.path!}
         message={redirect?.message}
-        delay={redirect?.delay || 3500}
+        delay={redirect?.delay || 2000}
       />
     );
   }

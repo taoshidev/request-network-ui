@@ -18,10 +18,12 @@ import { useRegistration } from "@/providers/registration";
 import { EndpointType } from "@/db/types/endpoint";
 import { SubscriptionType } from "@/db/types/subscription";
 import { useDisclosure } from "@mantine/hooks";
-import { ContractDisplayModal } from "@/components/ContractDisplayModal";
+import { ContractDisplayModal } from "../ContractDisplayModal";
 import clsx from "clsx";
 import { ServiceType } from "@/db/types/service";
 import { IconAlertCircle } from "@tabler/icons-react";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { constructEndpointUrl } from "@/utils/endpoint-url";
 
 export function ValidatorEndpoint({
   currentSubscriptions,
@@ -85,7 +87,15 @@ export function ValidatorEndpoint({
     (endpoint, { termsAccepted, selectedService }) => {
       endpoint.termsAccepted = termsAccepted;
       endpoint.selectedService = selectedService;
-
+      if (selectedService.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST) {
+        const hasPreviouslySubscribed = currentSubscriptions?.some(
+          (s) =>
+            s.endpointId === endpoint.id && s.serviceId === selectedService.id
+        );
+        if (hasPreviouslySubscribed) {
+          endpoint.selectedService.remaining = 0;
+        }
+      }
       setTimeout(() => handleSubscribeClick(endpoint), 500);
     },
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -156,7 +166,10 @@ export function ValidatorEndpoint({
                     )}
                   >
                     <Text className="font-bold mb-4" truncate>
-                      {endpoint?.url || "-"}
+                      {constructEndpointUrl(
+                        endpoint?.url,
+                        endpoint?.percentRealtime
+                      )}
                     </Text>
                     <Divider className="border-dashed" />
                     <Group className="justify-between items-center my-2">

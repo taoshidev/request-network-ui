@@ -9,6 +9,8 @@ import { createService, updateService } from "@/actions/services";
 import { DateTime } from "luxon";
 import { ServiceFormInput } from "./Services/ServiceFormInput";
 import { useRouter } from "next/navigation";
+import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
+import { TierType, DEFAULT_TIER } from "@/components/Services/ServiceForm";
 
 export default function ServiceModal({
   user,
@@ -25,19 +27,22 @@ export default function ServiceModal({
 }) {
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError } = useNotification();
+  const [tiers, setTiers] = useState([DEFAULT_TIER]);
   const getDefaultValues = (service: ServiceType | null) => ({
     id: service?.id || "",
     name: service?.name || "",
     userId: service?.userId || user.id,
     contractId: service?.contractId || "",
-    price: service?.price || "",
+    price: service?.price || "0.00",
     currencyType: service?.currencyType || "",
     limit: service?.limit || 10,
     remaining: service?.remaining || 10000,
-    refillRate: service?.refillRate || 1,
-    refillInterval: service?.refillInterval || 1000,
+    refillInterval: service?.refillInterval || 60000,
     expires: service?.expires || DateTime.now().plus({ months: 3 }).toJSDate(),
+    paymentType: service?.paymentType || "Free",
+    tiers: service?.tiers || [DEFAULT_TIER],
   });
+
   const router = useRouter();
 
   const form = useForm<Partial<ServiceType>>({
@@ -48,12 +53,15 @@ export default function ServiceModal({
         active: true,
         createdAt: true,
         updatedAt: true,
+        contractId: !!service as true,
+        deletedAt: true,
       })
     ),
   });
 
   useEffect(() => {
     if (opened) form.setValues(getDefaultValues(service as ServiceType));
+    setTiers(service?.tiers || [DEFAULT_TIER]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service, opened]);
 
@@ -61,9 +69,24 @@ export default function ServiceModal({
     setLoading(true);
     try {
       if (!service) delete values.id;
+      if (service?.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST) {
+        values.tiers = [];
+        if (values?.paymentType == PAYMENT_TYPE.SUBSCRIPTION) {
+          values.expires = null;
+        }
+      } else {
+        values.tiers = [...tiers].sort((a, b) => a.to - b.to);
+        values.expires = null;
+        const freeTier = values.tiers?.find((tier) => +tier.price === 0);
+        if (freeTier) {
+          values.remaining = freeTier.to;
+        } else {
+          values.remaining = 0;
+        }
+      }
       const res = service
-        ? await updateService(values as ServiceType)
-        : await createService(values as ServiceType);
+        ? await updateService({ ...values } as ServiceType)
+        : await createService({ ...values } as ServiceType);
 
       notifySuccess(`Service ${service ? "updated" : "created"} successfully`);
       onSuccess?.(res?.data as ServiceType);
@@ -96,13 +119,13 @@ export default function ServiceModal({
           className="w-full"
           onSubmit={form.onSubmit(onSubmit)}
         >
-          <ServiceFormInput form={form} />
-        </Box>
-          <Box className="grid grid-cols-1 mt-4 gap-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
+          <ServiceFormInput form={form} tiers={tiers} setTiers={setTiers} />
+          <Box className="grid grid-cols-1 mt-4 gap-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4 z-10">
             <Button size="sm" variant="orange" type="submit" loading={loading}>
               {service ? "Update Service" : "Create Service"}
             </Button>
           </Box>
+        </Box>
       </Modal>
     </>
   );

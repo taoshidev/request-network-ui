@@ -22,7 +22,7 @@ import { SubscriptionType } from "@/db/types/subscription";
 import { getKey } from "@/actions/keys";
 import { EndpointType } from "@/db/types/endpoint";
 import { ValidatorType } from "@/db/types/validator";
-import Loading from "@/app/(auth)/loading";
+import ClientRedirect from "@components/ClientRedirect";
 import { UserType } from "@/db/types/user";
 import FixedFormatter from "../Formatters/FixedFormatter";
 
@@ -80,7 +80,7 @@ export function Consumer({
   }, [subscriptions]);
 
   return isLoading ? (
-    <Loading />
+    <ClientRedirect />
   ) : (
     <Container className="mx-0 px-0 max-w-6xl">
       {!validators && (
@@ -149,6 +149,8 @@ export function Consumer({
                       <Table.Th>Domain</Table.Th>
                       <Table.Th>Validator</Table.Th>
                       <Table.Th>Created</Table.Th>
+                      <Table.Th>Expires</Table.Th>
+                      <Table.Th>Payment Type</Table.Th>
                       <Table.Th>Role</Table.Th>
                       <Table.Th>Request</Table.Th>
                     </Table.Tr>
@@ -176,10 +178,25 @@ export function Consumer({
                             )}
                           </Table.Td>
                           <Table.Td>
+                            {subscription?.keyData?.expires
+                              ? dayjs(subscription?.keyData?.expires).format(
+                                  "MMM DD, YYYY"
+                                )
+                              : "No Expiry"}
+                          </Table.Td>
+                          <Table.Td>
+                            {subscription?.keyData?.meta?.service?.paymentType
+                              ?.split("_")
+                              ?.join(" ")
+                              ?.toLowerCase()}
+                          </Table.Td>
+                          <Table.Td>
                             {subscription?.keyData?.meta?.type}
                           </Table.Td>
                           <Table.Td>
-                          <FixedFormatter value={subscription?.keyData?.remaining} />
+                            <FixedFormatter
+                              value={subscription?.keyData?.remaining}
+                            />
                           </Table.Td>
                           <Table.Td className="text-right">
                             <Button
