@@ -358,7 +358,9 @@ export function RegistrationStepper({
           "Cannot create required keys at this time. Please try again later."
         );
       }
+
       if (CreateKeyError) return;
+      
       const { key, keyId } = result as { key: string; keyId: string };
 
       const res = await createSubscription({
