@@ -117,8 +117,8 @@ export function UpdateEndpoint({
     try {
       if (!endpointReady || (subscriptionCount > 0 && enabled)) {
         const errorMsg = isEnabled
-          ? "Endpoint can not be enabled until validator is verified."
-          : "Endpoint can not be disabled. Endpoints can not be disabled once users have subscribed to the endpoint.";
+          ? "Endpoint cannot be enabled until validator is verified."
+          : "Endpoint cannot be disabled. Endpoints cannot be disabled once users have subscribed to the endpoint.";
         notifyError(errorMsg);
         return;
       }

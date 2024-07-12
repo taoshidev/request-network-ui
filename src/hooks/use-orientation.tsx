@@ -2,6 +2,10 @@ import { useEventListener } from "@react-hookz/web";
 import { useState } from "react";
 
 export const useOrientation = (desktopWidth: number) => {
+  if (typeof window === "undefined") {
+    return 'horizontal';
+  }
+  
   const width =
     window.innerWidth ||
     document.documentElement.clientWidth ||

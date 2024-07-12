@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useRef } from "react";
+import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import {
   Box,
   Button,
@@ -115,6 +115,13 @@ export function ContractDisplayModal({
       }, 700);
     }
   };
+
+  useEffect(() => {
+    const activeServices = services?.filter(service => !service.deletedAt);
+    if (activeServices?.length === 1) {
+      handleServiceSelect(services[0]);
+    }
+  }, [services]);
 
   return (
     <Modal size="xl" opened={opened} onClose={close} title="Service Contract">
