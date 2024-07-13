@@ -52,7 +52,7 @@ export default function Footer() {
             </Anchor>
             <Anchor
               component={Link}
-              href="mailto: support@taoshi.io"
+              href="mailto: support-request@taoshi.io"
               target="_blank"
             >
               Contact Us

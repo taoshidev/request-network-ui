@@ -17,6 +17,7 @@ import EndpointForm from "./AddValidator/steps/EndpointForm";
 import { omit as _omit, isEmpty as _isEmpty } from "lodash";
 import { sendNotification } from "@/actions/notifications";
 import { UserType } from "@/db/types/user";
+import clsx from "clsx";
 
 const EndpointFormSchema = EndpointSchema.omit({
   validator: true,
@@ -35,7 +36,7 @@ export function UpdateEndpoint({
   subscriptionCount: number;
 }) {
   const [loading, setLoading] = useState(false);
-  const [enabled, setEnabled] = useState(endpoint.enabled);
+  const [enabled, setEnabled] = useState(endpoint.enabled || false);
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
   const router = useRouter();
   const endpointReady = useMemo(() => {
@@ -82,7 +83,7 @@ export function UpdateEndpoint({
 
       if (res?.error) return notifyError(res?.message);
 
-      const users = endpoint?.subscriptions.reduce(
+      const users = endpoint?.subscriptions?.reduce(
         (prev: any, subscription: any) => {
           prev[subscription.user.email] = subscription.user;
           return prev;
@@ -114,6 +115,14 @@ export function UpdateEndpoint({
   const handleEnable = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const isEnabled = event.target.checked;
     try {
+      if (!endpointReady || (subscriptionCount > 0 && enabled)) {
+        const errorMsg = isEnabled
+          ? "Endpoint cannot be enabled until validator is verified."
+          : "Endpoint cannot be disabled. Endpoints cannot be disabled once users have subscribed to the endpoint.";
+        notifyError(errorMsg);
+        return;
+      }
+
       const res = await updateEndpoint({ id: endpoint.id, enabled: isEnabled });
       if (res?.error) return notifyError(res?.message);
       form.setValues({ enabled: isEnabled });
@@ -134,12 +143,12 @@ export function UpdateEndpoint({
           }
         );
       }
+
       notifySuccess(res.message);
+      setEnabled(isEnabled);
       router.refresh();
     } catch (error: Error | unknown) {
       notifyInfo((error as Error).message);
-    } finally {
-      setEnabled(isEnabled);
     }
   };
 
@@ -188,7 +197,9 @@ export function UpdateEndpoint({
             label="Enable or Disable Endpoint"
             checked={enabled}
             onChange={handleEnable}
-            disabled={!endpointReady || (subscriptionCount > 0 && enabled)}
+            className={clsx(
+              !endpointReady || (subscriptionCount > 0 && enabled && "disabled")
+            )}
           />
         </Box>
         <Box

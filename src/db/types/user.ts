@@ -17,6 +17,7 @@ export const UserSchema = z.object({
   userNotification: z.lazy(() => z.array(UserNotificationSchema)).optional(),
   stripeEnabled: z.boolean().optional(),
   cryptoEnabled: z.boolean().optional(),
+  user_metadata: z.any()
 });
 
 const NullableUserSchema = nullableSchema(UserSchema);

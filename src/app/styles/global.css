@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 html {
   scroll-behavior: smooth;
@@ -7,7 +7,7 @@ html {
 html,
 body {
   height: 100%;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 body {
@@ -18,6 +18,12 @@ a {
   text-decoration: none !important;
 }
 
+.disabled {
+  filter: grayscale(100%) brightness(1.5);
+}
+.mantine-Drawer-body {
+  height: calc(100% - 78px);
+}
 .mantine-Stepper-content {
   overflow-y: auto;
   height: calc(100vh - 320px);
@@ -26,16 +32,22 @@ a {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+.editor-bg-none .mantine-RichTextEditor-content {
+  background: none;
+}
 
 .mantine-Stepper-content::-webkit-scrollbar {
   display: none;
 }
-.mantine-Switch-track, .mantine-Switch-thumb, .mantine-Switch-trackLabel {
+.mantine-Switch-track,
+.mantine-Switch-thumb,
+.mantine-Switch-trackLabel {
   cursor: pointer;
 }
 
 .table-align-top {
-  th, td {
+  th,
+  td {
     vertical-align: top;
   }
 }
@@ -47,8 +59,8 @@ a {
   background-color: #f5f5f5;
   border: 1px solid #e3e3e3;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 .app-notification {
   will-change: filter;
@@ -56,8 +68,8 @@ a {
   transition: filter 1s ease-in-out;
 }
 .app-notification.viewed {
-  -webkit-filter: brightness(.93) grayscale(.3);
-  filter: brightness(.93) grayscale(.3);
+  -webkit-filter: brightness(0.93) grayscale(0.3);
+  filter: brightness(0.93) grayscale(0.3);
 }
 .app-notifications section {
   width: 600px;
@@ -79,149 +91,214 @@ a {
 }
 
 @-webkit-keyframes shake {
-  1%  {transform: rotate(15deg)}
-  2%  {transform: rotate(0deg)}
-  3%  {transform: rotate(-15deg)}
-  4%  {transform: rotate(0deg)}
-  5%  {transform: rotate(15deg)}
-  6%  {transform: rotate(0deg)}
-  7%  {transform: rotate(-15deg)}
-  8%  {transform: rotate(0deg)}
-  9%  {transform: rotate(15deg)}
-  10%  {transform: rotate(0deg)}
-  11%  {transform: rotate(-15deg)}
-  12%  {transform: rotate(0deg)}
-  13%  {transform: rotate(15deg)}
-  14%  {transform: rotate(0deg)}
-  15%  {transform: rotate(-15deg)}
-  16%  {transform: rotate(0deg)}
-  100%  {transform: rotate(0deg)}
+  1% {
+    transform: rotate(15deg);
+  }
+  2% {
+    transform: rotate(0deg);
+  }
+  3% {
+    transform: rotate(-15deg);
+  }
+  4% {
+    transform: rotate(0deg);
+  }
+  5% {
+    transform: rotate(15deg);
+  }
+  6% {
+    transform: rotate(0deg);
+  }
+  7% {
+    transform: rotate(-15deg);
+  }
+  8% {
+    transform: rotate(0deg);
+  }
+  9% {
+    transform: rotate(15deg);
+  }
+  10% {
+    transform: rotate(0deg);
+  }
+  11% {
+    transform: rotate(-15deg);
+  }
+  12% {
+    transform: rotate(0deg);
+  }
+  13% {
+    transform: rotate(15deg);
+  }
+  14% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(-15deg);
+  }
+  16% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes shake {
-  1%  {-webkit-transform: rotate(15deg)}
-  2%  {-webkit-transform: rotate(0deg)}
-  3%  {-webkit-transform: rotate(-15deg)}
-  4%  {-webkit-transform: rotate(0deg)}
-  5%  {-webkit-transform: rotate(15deg)}
-  6%  {-webkit-transform: rotate(0deg)}
-  7%  {-webkit-transform: rotate(-15deg)}
-  8%  {-webkit-transform: rotate(0deg)}
-  9%  {-webkit-transform: rotate(15deg)}
-  10%  {-webkit-transform: rotate(0deg)}
-  11%  {-webkit-transform: rotate(-15deg)}
-  12%  {-webkit-transform: rotate(0deg)}
-  13%  {-webkit-transform: rotate(15deg)}
-  14%  {-webkit-transform: rotate(0deg)}
-  15%  {-webkit-transform: rotate(-15deg)}
-  16%  {-webkit-transform: rotate(0deg)}
-  100% {-webkit-transform: rotate(0deg)}
+  1% {
+    -webkit-transform: rotate(15deg);
+  }
+  2% {
+    -webkit-transform: rotate(0deg);
+  }
+  3% {
+    -webkit-transform: rotate(-15deg);
+  }
+  4% {
+    -webkit-transform: rotate(0deg);
+  }
+  5% {
+    -webkit-transform: rotate(15deg);
+  }
+  6% {
+    -webkit-transform: rotate(0deg);
+  }
+  7% {
+    -webkit-transform: rotate(-15deg);
+  }
+  8% {
+    -webkit-transform: rotate(0deg);
+  }
+  9% {
+    -webkit-transform: rotate(15deg);
+  }
+  10% {
+    -webkit-transform: rotate(0deg);
+  }
+  11% {
+    -webkit-transform: rotate(-15deg);
+  }
+  12% {
+    -webkit-transform: rotate(0deg);
+  }
+  13% {
+    -webkit-transform: rotate(15deg);
+  }
+  14% {
+    -webkit-transform: rotate(0deg);
+  }
+  15% {
+    -webkit-transform: rotate(-15deg);
+  }
+  16% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+  }
 }
 
 .slide.left {
-  -webkit-animation: slide-left .2s normal ease-in-out;
-  animation: slide-left .2s normal ease-in-out;
+  -webkit-animation: slide-left 0.2s normal ease-in-out;
+  animation: slide-left 0.2s normal ease-in-out;
 }
 
 .slide.right {
-  -webkit-animation: slide-right .2s normal ease-in-out;
-  animation: slide-right .2s normal ease-in-out;
+  -webkit-animation: slide-right 0.2s normal ease-in-out;
+  animation: slide-right 0.2s normal ease-in-out;
 }
 
 @-webkit-keyframes slide-left {
-  0%  {
+  0% {
     transform: translateX(100%);
   }
-  100% 
-  {
+  100% {
     -webkit-transform: translateX(0);
   }
 }
 
 @keyframes slide-left {
-  0%  {
+  0% {
     -webkit-transform: translateX(100%);
   }
-  100%  {
+  100% {
     -webkit-transform: translateX(0);
   }
 }
 
 @-webkit-keyframes slide-right {
-  0%  {
+  0% {
     transform: translateX(-100%);
   }
-  100% 
-  {
+  100% {
     -webkit-transform: translateX(0);
   }
 }
 
 @keyframes slide-right {
-  0%  {
+  0% {
     -webkit-transform: translateX(-100%);
   }
-  100%  {
+  100% {
     -webkit-transform: translateX(0);
   }
 }
 
 .zoom.in {
-  -webkit-animation: zoom-in .5s normal ease-in-out;
-  animation: zoom-in .5s normal ease-in-out;
+  -webkit-animation: zoom-in 0.5s normal ease-in-out;
+  animation: zoom-in 0.5s normal ease-in-out;
 }
 .zoom.out {
-  -webkit-animation: zoom-out .5s normal ease-in-out;
-  animation: zoom-out .5s normal ease-in-out;
+  -webkit-animation: zoom-out 0.5s normal ease-in-out;
+  animation: zoom-out 0.5s normal ease-in-out;
   opacity: 0;
   transform: scale(0);
 }
 
-.card-table th, .card-table td {
+.card-table th,
+.card-table td {
   padding: 4px 0px;
 }
 
 @-webkit-keyframes zoom-in {
-  0%  {
+  0% {
     opacity: 0;
     transform: scale(0);
   }
-  100% 
-  {
+  100% {
     opacity: 1;
     -webkit-transform: scale(1);
   }
 }
 
 @keyframes zoom-in {
-  0%  {
+  0% {
     opacity: 0;
     -webkit-transform: scale(0);
   }
-  100%  {
+  100% {
     opacity: 1;
     -webkit-transform: scale(1);
   }
 }
 
 @-webkit-keyframes zoom-out {
-  0%  {
+  0% {
     opacity: 1;
     transform: scale(1);
   }
-  100% 
-  {
+  100% {
     opacity: 0;
     -webkit-transform: scale(0);
   }
 }
 
 @keyframes zoom-out {
-  0%  {
+  0% {
     opacity: 1;
     -webkit-transform: scale(1);
   }
-  100%  {
+  100% {
     opacity: 0;
     -webkit-transform: scale(0);
   }
@@ -230,7 +307,7 @@ a {
 .animate-opacity {
   opacity: 0;
   will-change: opacity;
-  transition: opacity .8s ease-in-out;
+  transition: opacity 0.8s ease-in-out;
   pointer-events: none;
 }
 
@@ -241,11 +318,11 @@ a {
 
 .rn-select {
   transform: scale(1);
-  transition: transform, box-shadow, .4s ease-in-out;
+  transition: transform, box-shadow, 0.4s ease-in-out;
   -webkit-transform: scale(1);
-  -webkit-transition: transform, box-shadow, .4s ease-in-out;
+  -webkit-transition: transform, box-shadow, 0.4s ease-in-out;
   -moz-transform: scale(1);
-  -moz-transition: transform, box-shadow, .4s ease-in-out;
+  -moz-transition: transform, box-shadow, 0.4s ease-in-out;
   will-change: transform, box-shadow;
 }
 
@@ -256,9 +333,9 @@ a {
   box-shadow: 1px 3px 4px 2px #00000024;
 }
 
-@media screen and (max-width: 767px ) {
+@media screen and (max-width: 767px) {
   .mantine-Stepper-content {
     overflow-y: hidden;
     height: auto;
-  }    
+  }
 }

@@ -27,7 +27,7 @@ export default function ReviewValidatorEndpoint({ form, contracts, errors }) {
                 </Table.Tr>
                 <Table.Tr>
                   <Table.Th colSpan={1}>Description</Table.Th>
-                  <Table.Td colSpan={3}>
+                  <Table.Td colSpan={3} className="editor-bg-none">
                     <TextEditor<ValidatorType>
                       type="BubbleEditor"
                       editable={false}

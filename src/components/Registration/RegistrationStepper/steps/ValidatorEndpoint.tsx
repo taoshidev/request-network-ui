@@ -37,8 +37,8 @@ export function ValidatorEndpoint({
   const [opened, { open, close }] = useDisclosure(false);
 
   const handleSubscribeClick = useCallback(
-    (endpoint: EndpointType) => {
-      if (registrationData?.endpoint?.id === endpoint.id) {
+    (endpoint: EndpointType, enable = false) => {
+      if (registrationData?.endpoint?.id === endpoint.id && !enable) {
         updateData({ endpoint: null });
       } else {
         updateData({ endpoint });
@@ -96,7 +96,7 @@ export function ValidatorEndpoint({
           endpoint.selectedService.remaining = 0;
         }
       }
-      setTimeout(() => handleSubscribeClick(endpoint), 500);
+      setTimeout(() => handleSubscribeClick(endpoint, true), 500);
     },
     //eslint-disable-next-line react-hooks/exhaustive-deps
     []
