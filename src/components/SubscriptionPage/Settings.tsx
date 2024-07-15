@@ -39,6 +39,7 @@ import {
   updateSubscription,
   fetchProxyService,
   updateProxySubscription,
+  getSubscription,
 } from "@/actions/subscriptions";
 import CurrencyFormatter from "../Formatters/CurrencyFormatter";
 import clsx from "clsx";
@@ -81,12 +82,17 @@ export function Settings({
     () => !!subscription?.validator?.payPalEnabled,
     [subscription]
   );
+  const subscriptionActive = useMemo(
+    () => !!subscription?.active,
+    [subscription]
+  );
   const [opened, { open, close }] = useDisclosure(false);
   const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
     useDisclosure(false);
   const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState("");
   const [active, setActive] = useState(false);
+  const [prevActive, setPrevActive] = useState(subscription.active);
   const [consumerApiUrlError, setConsumerApiUrlError] = useState("");
   const router = useRouter();
   const [key]: Array<any> = useLocalStorage({
@@ -104,6 +110,16 @@ export function Settings({
     if (subscription?.service?.tiers?.length > 0) {
       setTiers(subscription.service.tiers);
     }
+
+    if (prevActive === subscriptionActive) return;
+
+    if (subscriptionActive)
+      setTimeout(
+        () => notifySuccess("Subscription successfully activated."),
+        20000
+      );
+    setPrevActive(subscription.active);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscription]);
 
   // refresh page when it comes back into view
@@ -113,9 +129,13 @@ export function Settings({
         subscription?.validator,
         subscription?.proxyServiceId
       );
+      const dbSubscription = await getSubscription({
+        id: subscription.id as string,
+      });
+
       if (
         proxyService?.subscriptionId &&
-        proxyService.active !== subscription?.active
+        proxyService.active !== dbSubscription.active
       ) {
         return await updateSubscription({
           id: proxyService.subscriptionId,
@@ -452,7 +472,12 @@ export function Settings({
       )}
 
       <Box my="xl">
-        {tiers.length > 0 && <TierPurchaseOption subscription={subscription} />}
+        {tiers.length > 0 && (
+          <TierPurchaseOption
+            subscription={subscription}
+            remaining={apiKey.remaining}
+          />
+        )}
       </Box>
 
       <Card className="shadow-sm border-gray-200" withBorder my="xl">

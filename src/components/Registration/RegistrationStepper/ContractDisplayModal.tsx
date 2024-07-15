@@ -117,10 +117,15 @@ export function ContractDisplayModal({
   };
 
   useEffect(() => {
-    const activeServices = services?.filter(service => !service.deletedAt);
-    if (activeServices?.length === 1 && !selectedServiceId && review === false) {
+    const activeServices = services?.filter((service) => !service.deletedAt);
+    if (
+      activeServices?.length === 1 &&
+      !selectedServiceId &&
+      review === false
+    ) {
       handleServiceSelect(services[0]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [services]);
 
   return (
