@@ -23,7 +23,13 @@ export default function PayPalSetupModal({
 }) {
   let { data: payPal } = useSWR(
     "/has-payPal",
-    async () => await checkForPayPal(validatorId as string),
+    async () => {
+      try {
+        return await checkForPayPal(validatorId as string);
+      } catch (e) {
+        return payPal;
+      }
+    },
     {
       fallbackData: initialPayPal,
       refreshInterval: 5000,
@@ -243,7 +249,6 @@ export default function PayPalSetupModal({
           </>
         )}
       </Box>
-      <Divider />
       <Box className="flex justify-end mt-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
         <Button variant="outline" onClick={onCancel} className="mr-2">
           Cancel
