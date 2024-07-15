@@ -24,7 +24,7 @@ import {
   IconHelpSquare,
   IconDashboard,
 } from "@tabler/icons-react";
-import useSWR, { preload }  from "swr";
+import useSWR from "swr";
 import { getUserNotifications } from "@/actions/notifications";
 import { UserNotificationType } from "@/db/types/user-notifications";
 import { isArray as _isArray } from "lodash";
