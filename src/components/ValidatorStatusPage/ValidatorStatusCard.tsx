@@ -13,7 +13,9 @@ export default function ValidatorStatus({
   validator: ValidatorWithInfo;
 }) {
   const [reqTime, setReqTime] = useState(DateTime.now());
-  const [validatorUptime, setValidatorUptime] = useState<number | null>(validator.health?.uptime);
+  const [validatorUptime, setValidatorUptime] = useState<number | null>(
+    validator.health?.uptime
+  );
   const [uptime, setUptime] = useState<number | null>(null);
 
   useEffect(() => {
@@ -102,6 +104,12 @@ export default function ValidatorStatus({
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
+              <Table.Th>Net Uid</Table.Th>
+              <Table.Td className="text-right">
+                {validator?.bittensorNetUid || "-"}
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
               <Table.Th>Base Url</Table.Th>
               <Table.Td className="text-right">
                 {validator?.baseApiUrl}
@@ -113,12 +121,6 @@ export default function ValidatorStatus({
                 <Box className="max-w-[200px] text-ellipsis overflow-hidden float-right">
                   {validator?.hotkey}
                 </Box>
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>Net Uid</Table.Th>
-              <Table.Td className="text-right">
-                {validator?.bittensorNetUid || "-"}
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
