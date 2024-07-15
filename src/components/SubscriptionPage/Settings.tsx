@@ -39,6 +39,7 @@ import {
   updateSubscription,
   fetchProxyService,
   updateProxySubscription,
+  getSubscription,
 } from "@/actions/subscriptions";
 import CurrencyFormatter from "../Formatters/CurrencyFormatter";
 import clsx from "clsx";
@@ -81,12 +82,17 @@ export function Settings({
     () => !!subscription?.validator?.payPalEnabled,
     [subscription]
   );
+  const subscriptionActive = useMemo(
+    () => !!subscription?.active,
+    [subscription]
+  );
   const [opened, { open, close }] = useDisclosure(false);
   const [unSubOpened, { open: unSubOpen, close: unSubClose }] =
     useDisclosure(false);
   const { notifySuccess, notifyError } = useNotification();
   const [loading, setLoading] = useState("");
   const [active, setActive] = useState(false);
+  const [prevActive, setPrevActive] = useState(subscription.active);
   const [consumerApiUrlError, setConsumerApiUrlError] = useState("");
   const router = useRouter();
   const [key]: Array<any> = useLocalStorage({
@@ -104,6 +110,12 @@ export function Settings({
     if (subscription?.service?.tiers?.length > 0) {
       setTiers(subscription.service.tiers);
     }
+
+    if (prevActive === subscriptionActive) return;
+
+    if (subscriptionActive)
+      notifySuccess("Subscription successfully activated.");
+    setPrevActive(subscription.active);
   }, [subscription]);
 
   // refresh page when it comes back into view
@@ -113,9 +125,13 @@ export function Settings({
         subscription?.validator,
         subscription?.proxyServiceId
       );
+      const dbSubscription = await getSubscription({
+        id: subscription.id as string,
+      });
+
       if (
         proxyService?.subscriptionId &&
-        proxyService.active !== subscription?.active
+        proxyService.active !== dbSubscription.active
       ) {
         return await updateSubscription({
           id: proxyService.subscriptionId,
