@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import NextImage from "next/image";
 import {
   Box,
@@ -90,9 +90,11 @@ const calculateCumulativePrice = (tiers, requestCount) => {
 
 export default function TierPurchaseOption({
   subscription,
+  remaining,
   preview = false,
 }: {
   subscription: SubscriptionType;
+  remaining?: number;
   preview?: boolean;
 }) {
   const { notifySuccess } = useNotification();
@@ -104,7 +106,6 @@ export default function TierPurchaseOption({
       pricePerRequest: number;
     }[]
   >([]);
-  const [maxAllowedRequest, setMaxAllowedRequest] = useState<number>();
   const [selectedRequest, setSelectedRequest] = useState<number | null>(null);
   const [
     confirmModalOpened,
@@ -118,6 +119,7 @@ export default function TierPurchaseOption({
     1000
   );
   const [quantity, setQuantity] = useState(1);
+  const [prevRemaining, setPrevRemaining] = useState(remaining || 0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [priceDetails, setPriceDetails] = useState<string[]>([]);
   const [precomputedPrices, setPrecomputedPrices] = useState<
@@ -129,6 +131,22 @@ export default function TierPurchaseOption({
       setTiers(subscription.service.tiers);
     }
   }, [subscription]);
+
+  useEffect(() => {
+    if (remaining && prevRemaining < remaining) {
+      if (remaining > 0)
+        setTimeout(
+          () =>
+            notifySuccess(
+              `Remaining requests updated. New remaining = ${remaining} requests.`
+            ),
+          2000
+        );
+    }
+
+    setPrevRemaining(remaining || 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [remaining]);
 
   useEffect(() => {
     const paidTiers = tiers.filter((tier) => tier.price > 0);
@@ -158,6 +176,7 @@ export default function TierPurchaseOption({
       setTotalPrice(+(price * quantity).toFixed(2));
       setPriceDetails(details);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRequest, quantity]);
 
   useEffect(() => {
@@ -169,6 +188,7 @@ export default function TierPurchaseOption({
       setTotalPrice(+(price * quantity).toFixed(2));
       setPriceDetails(details);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputRequestCount, quantity, moreOptionsModalOpened]);
 
   const stripePayment = async () => {

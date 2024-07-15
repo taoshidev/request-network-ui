@@ -114,8 +114,12 @@ export function Settings({
     if (prevActive === subscriptionActive) return;
 
     if (subscriptionActive)
-      notifySuccess("Subscription successfully activated.");
+      setTimeout(
+        () => notifySuccess("Subscription successfully activated."),
+        20000
+      );
     setPrevActive(subscription.active);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscription]);
 
   // refresh page when it comes back into view
@@ -468,7 +472,12 @@ export function Settings({
       )}
 
       <Box my="xl">
-        {tiers.length > 0 && <TierPurchaseOption subscription={subscription} />}
+        {tiers.length > 0 && (
+          <TierPurchaseOption
+            subscription={subscription}
+            remaining={apiKey.remaining}
+          />
+        )}
       </Box>
 
       <Card className="shadow-sm border-gray-200" withBorder my="xl">
