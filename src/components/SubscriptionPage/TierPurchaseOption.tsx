@@ -155,7 +155,7 @@ export default function TierPurchaseOption({
         tiers,
         selectedRequest
       );
-      setTotalPrice(price * quantity);
+      setTotalPrice(+(price * quantity).toFixed(2));
       setPriceDetails(details);
     }
   }, [selectedRequest, quantity]);
@@ -166,7 +166,7 @@ export default function TierPurchaseOption({
         tiers,
         inputRequestCount
       );
-      setTotalPrice(price * quantity);
+      setTotalPrice(+(price * quantity).toFixed(2));
       setPriceDetails(details);
     }
   }, [inputRequestCount, quantity, moreOptionsModalOpened]);

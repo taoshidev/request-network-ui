@@ -79,11 +79,15 @@ export function Header() {
   } = useSWR(
     "/user-notifications",
     async () => {
-      const notifications = await getUserNotifications();
-
-      if (notifications) {
-        return notifications;
-      } else {
+      try {
+        const notifications = await getUserNotifications();
+  
+        if (notifications) {
+          return notifications;
+        } else {
+          return userNotifications;
+        }
+      } catch (e) {
         return userNotifications;
       }
     },

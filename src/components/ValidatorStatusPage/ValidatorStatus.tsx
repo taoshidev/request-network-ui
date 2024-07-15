@@ -21,7 +21,13 @@ export default function ValidatorStatus({
 }) {
   const { data: validators } = useSWR(
     "/validator-status",
-    async () => await getValidatorStatusPage(user),
+    async () => {
+      try {
+        return await getValidatorStatusPage(user);
+      } catch (e) {
+        return validators;
+      }
+    },
     {
       fallbackData: initialValidators,
       refreshInterval: requestRate,
