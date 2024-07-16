@@ -11,7 +11,7 @@ import { PAYMENT_TYPE } from "@/interfaces/enum/payment-type-enum";
 import { useRouter } from "next/navigation";
 
 
-export type TierType = { from: number; to: number; price: number; pricePerRequest: number };
+export type TierType = { from: number; to: number; price: number | string; pricePerRequest: number };
 export const DEFAULT_TIER: TierType = { from: 1, to: 1000, price: 0.00, pricePerRequest: 0.000 };
 
 export function ServiceForm({

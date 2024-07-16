@@ -105,7 +105,7 @@ export function ServiceFormInput({
         from: lastTier.to + 1,
         to: lastTier.to + 1000,
         price: 0.0,
-        pricePerRequest: 0.0000,
+        pricePerRequest: 0.0,
       },
     ]);
   };
@@ -134,10 +134,15 @@ export function ServiceFormInput({
 
     let cumulativePrice = 0;
     updatedTiers.forEach((tier, i) => {
-      let tierRange = tier.to - (tier.from - 1);
+      const tierRange = tier.to - (tier.from - 1);
       cumulativePrice += tierRange * tier.pricePerRequest;
-      if (!(i === index && field === "price")) {
-        tier.price = parseFloat(cumulativePrice.toFixed(2));
+
+      if (
+        !(i === index && field === "price") &&
+        ((field === "price" && i > index) ||
+          ((field === "pricePerRequest" || field === "to") && i >= index))
+      ) {
+        tier.price = cumulativePrice.toFixed(2);
       }
     });
 
