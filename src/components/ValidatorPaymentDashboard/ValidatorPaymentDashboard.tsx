@@ -91,19 +91,23 @@ export function ValidatorPaymentDashboard({
   } = useSWR(
     "/user-latest-notification",
     async () => {
-      const notifications = await getUserNotifications({ limit: 1 });
-      const notification = notifications?.[0];
+      try {
+        const notifications = await getUserNotifications({ limit: 1 });
+        const notification = notifications?.[0];
 
-      if (userNotification?.id && notification?.id !== userNotification?.id) {
-        setZoomIn(false);
-        setTimeout(() => {
+        if (userNotification?.id && notification?.id !== userNotification?.id) {
+          setZoomIn(false);
+          setTimeout(() => {
+            setZoomIn(true);
+          }, 500);
+        } else {
           setZoomIn(true);
-        }, 500);
-      } else {
-        setZoomIn(true);
-      }
+        }
 
-      return notification;
+        return notification;
+      } catch (e) {
+        return userNotification;
+      }
     },
     { refreshInterval: 10000 }
   );

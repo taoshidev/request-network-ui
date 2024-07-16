@@ -23,7 +23,13 @@ export default function StripeSetupModal({
 }) {
   let { data: stripe } = useSWR(
     "/has-stripe",
-    async () => await checkForStripe(validatorId as string),
+    async () => {
+      try {
+        return await checkForStripe(validatorId as string);
+      } catch (e) {
+        return stripe;
+      }
+    },
     {
       fallbackData: initialStripe,
       refreshInterval: 5000,
@@ -277,7 +283,6 @@ export default function StripeSetupModal({
           </>
         )}
       </Box>
-      <Divider />
       <Box className="flex justify-end mt-4 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
         <Button variant="outline" onClick={onCancel} className="mr-2">
           Cancel
