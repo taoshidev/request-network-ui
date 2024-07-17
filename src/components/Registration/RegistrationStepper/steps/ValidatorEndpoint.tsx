@@ -87,7 +87,7 @@ export function ValidatorEndpoint({
     (endpoint, { termsAccepted, selectedService }) => {
       endpoint.termsAccepted = termsAccepted;
       endpoint.selectedService = selectedService;
-      if (selectedService.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST) {
+      if (selectedService?.paymentType === PAYMENT_TYPE.PAY_PER_REQUEST) {
         const hasPreviouslySubscribed = currentSubscriptions?.some(
           (s) =>
             s.endpointId === endpoint.id && s.serviceId === selectedService.id
