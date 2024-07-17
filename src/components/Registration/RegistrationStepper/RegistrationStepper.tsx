@@ -300,10 +300,17 @@ export function RegistrationStepper({
       };
 
       const ratelimit = {
+        type: "fast",
         async: true,
-        limit: selectedService?.limit || 10,
+        limit: +selectedService?.limit || 10,
+        // refillInterval:
+        //   +selectedService?.refillInterval ||
+        //   +selectedService?.duration ||
+        //   60000,
         duration:
-          selectedService?.refillInterval || selectedService?.duration || 60000,
+          +selectedService?.refillInterval ||
+          +selectedService?.duration ||
+          60000,
       };
 
       const meta = {
@@ -413,7 +420,6 @@ export function RegistrationStepper({
           validatorWalletAddress: validator?.walletAddress,
           price: selectedService?.price,
           active: isActive,
-          //TODO: Add paymentType: selectedService?.paymentType, and add column in api db
           meta,
         },
       });
@@ -443,6 +449,7 @@ export function RegistrationStepper({
       await updateKey({
         keyId,
         params: {
+          ratelimit,
           meta,
         },
       });
