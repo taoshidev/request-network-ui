@@ -100,6 +100,9 @@ export const sendToProxy = async ({
         "x-taoshi-nonce": nonce,
       },
     });
+
+    if (!res?.json) return { error: "Proxy server error." };
+
     return await res.json();
   } catch (error: Error | unknown) {
     captureException(error);
