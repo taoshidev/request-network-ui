@@ -185,7 +185,10 @@ export function Settings({
     const [res, subRes, proxySubRes] = await Promise.all([
       updateKey({
         keyId: apiKey?.id,
-        params: { name: values.name },
+        params: {
+          ratelimit: apiKey?.ratelimit,
+          name: values.name
+        },
       }),
       updateSubscription({
         id: subscription?.id,
