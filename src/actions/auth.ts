@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { captureException } from "@sentry/nextjs";
 
 export async function getSupabaseSession() {
   const supabase = createClient();
@@ -13,7 +14,7 @@ export async function getSupabaseSession() {
     } = await supabase.auth.getSession();
     return session;
   } catch (error) {
-    console.error("Error:", error);
+    captureException(error);
     return null;
   }
 }
@@ -26,7 +27,7 @@ export async function getAuthUser() {
     } = await supabase.auth.getUser();
     return user;
   } catch (error) {
-    console.error("Error:", error);
+    captureException(error);
     return null;
   }
 }
@@ -37,7 +38,7 @@ export async function getUser() {
     const { data, error } = await supabase.from("users").select("*").single();
     return data;
   } catch (error) {
-    console.error("Error:", error);
+    captureException(error);
     return null;
   }
 }

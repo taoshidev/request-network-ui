@@ -24,6 +24,7 @@ import {
 } from "@/actions/notifications";
 import { NOTIFICATION_ICON, NotificationTypes } from "@/hooks/use-notification";
 import removeMd from "remove-markdown";
+import { captureException } from "@sentry/nextjs";
 
 const colors = [
   "hsl(220, 70%, 50%)",
@@ -78,7 +79,7 @@ export function ConsumerPaymentDashboard({
       try {
         const notifications = await getUserNotifications({ limit: 1 });
         const notification = notifications?.[0];
-  
+
         if (userNotification?.id && notification?.id !== userNotification?.id) {
           setZoomIn(false);
           setTimeout(() => {
@@ -87,7 +88,7 @@ export function ConsumerPaymentDashboard({
         } else {
           setZoomIn(true);
         }
-  
+
         return notification;
       } catch (e) {
         return userNotification;
@@ -131,10 +132,7 @@ export function ConsumerPaymentDashboard({
 
   const amountDue = useMemo(() => {
     setPaymentsDue(0);
-    if (!stats?.subscriptions) {
-      console.error("No subscriptions found in stats");
-      return 0;
-    }
+    if (!stats?.subscriptions) return 0;
 
     let subscriptions = stats?.subscriptions;
 
