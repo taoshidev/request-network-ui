@@ -153,17 +153,21 @@ export function ContractModal({
   };
 
   const handleServiceDelete = async (index: number) => {
-    if (services?.[index]?.id) {
-      try {
-        await deleteService({ id: services[index].id });
-        notifySuccess("Service deleted successfully");
-        setServices((prevServices) =>
-          prevServices.filter((item, i) => i !== index)
-        );
-        router.refresh();
-      } catch (error) {
-        notifyError("Failed to delete service");
-      }
+    if (!services?.[index]?.id) {
+      setServices((prevServices) =>
+        prevServices.filter((item, i) => i !== index)
+      );
+      return;
+    }
+    try {
+      await deleteService({ id: services[index].id });
+      notifySuccess("Service deleted successfully");
+      setServices((prevServices) =>
+        prevServices.filter((item, i) => i !== index)
+      );
+      router.refresh();
+    } catch (error) {
+      notifyError("Failed to delete service");
     }
   };
 
