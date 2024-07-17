@@ -17,6 +17,8 @@ export const createUnkeyApiKey = async ({ name }: { name: object }) => {
       body: JSON.stringify({ name }),
     });
 
+    if (!res?.json) return { data: null, error: "Unkey create error." };
+
     const data = await res.json();
 
     return {
