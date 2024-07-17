@@ -303,10 +303,6 @@ export function RegistrationStepper({
         type: "fast",
         async: true,
         limit: +selectedService?.limit || 10,
-        // refillInterval:
-        //   +selectedService?.refillInterval ||
-        //   +selectedService?.duration ||
-        //   60000,
         duration:
           +selectedService?.refillInterval ||
           +selectedService?.duration ||
