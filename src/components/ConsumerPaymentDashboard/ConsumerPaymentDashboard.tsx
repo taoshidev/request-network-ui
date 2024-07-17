@@ -234,8 +234,8 @@ export function ConsumerPaymentDashboard({
   }, [stats, currentSubscriptions]);
 
   useEffect(() => {
-    let subs: any = stats.subscriptions;
-    const transactions = subs.flatMap((s) => s.transactions || []);
+    let subs: any = stats?.subscriptions;
+    const transactions = subs?.flatMap((s) => s.transactions || []);
     const uniqueTransactions = Array.from(
       new Map(transactions.map((tx) => [tx.id, tx])).values()
     );

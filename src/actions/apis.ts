@@ -17,6 +17,8 @@ export const createUnkeyApiKey = async ({ name }: { name: object }) => {
       body: JSON.stringify({ name }),
     });
 
+    if (!res?.json) return { data: null, error: "Unkey create error." };
+
     const data = await res.json();
 
     return {
@@ -100,6 +102,9 @@ export const sendToProxy = async ({
         "x-taoshi-nonce": nonce,
       },
     });
+
+    if (!res?.json) return { error: "Proxy server error." };
+
     return await res.json();
   } catch (error: Error | unknown) {
     captureException(error);
