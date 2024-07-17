@@ -271,6 +271,7 @@ export function Settings({
 
   const handleDeleteSubscription = async () => {
     setLoading("delete-subscription");
+
     if (subscription.service.paymentType === PAYMENT_TYPE.SUBSCRIPTION)
       await unsubscribe();
     await deleteUnkey();
@@ -279,8 +280,9 @@ export function Settings({
       active: false,
       deletedAt: new Date(),
     });
-    setLoading("");
     notifySuccess("Subscription deleted successfully");
+    setLoading("");
+    router.refresh();
     setTimeout(() => router.back(), 1000);
   };
 
@@ -475,7 +477,7 @@ export function Settings({
         {tiers.length > 0 && (
           <TierPurchaseOption
             subscription={subscription}
-            remaining={apiKey.remaining}
+            remaining={apiKey?.remaining}
           />
         )}
       </Box>
