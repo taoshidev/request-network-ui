@@ -120,11 +120,11 @@ export function RegistrationStepper({
 
   const agreeModalRef = useRef<string | null>(null);
   const applicationNames = (currentSubscriptions || [])
-    .map((sub) => sub?.appName || "")
+    .map?.((sub) => sub?.appName || "")
     .filter((appName, index, arr) => arr.indexOf(appName) === index)
     .sort();
   const consumerApiUrls = (currentSubscriptions || [])
-    .map((sub) => sub?.consumerApiUrl || "")
+    .map?.((sub) => sub?.consumerApiUrl || "")
     .filter((appName, index, arr) => arr.indexOf(appName) === index)
     .sort();
 
@@ -193,24 +193,20 @@ export function RegistrationStepper({
 
     updateData({ direction: "left" });
 
-    setTimeout(() => {
-      updateData({
-        currentStep: active < REGISTRATION_STEPS ? active + 1 : active,
-      });
-      scrollToTop();
-    }, 0);
+    updateData({
+      currentStep: active < REGISTRATION_STEPS ? active + 1 : active,
+    });
+    scrollToTop();
   };
 
   const prevStep = () => {
     setActive((current) => (current > 0 ? current - 1 : current));
     updateData({ direction: "right" });
 
-    setTimeout(() => {
-      updateData({
-        currentStep: active > 0 ? active - 1 : active,
-      });
-      scrollToTop();
-    }, 0);
+    updateData({
+      currentStep: active > 0 ? active - 1 : active,
+    });
+    scrollToTop();
   };
 
   const handleStepChange = (value: number) => {
@@ -450,7 +446,7 @@ export function RegistrationStepper({
         },
       });
 
-      notifySuccess(res?.message as string);
+      notifySuccess("Registration completed successfully!");
       setKeys({
         apiKey: key,
         apiSecret: apiSecret!,

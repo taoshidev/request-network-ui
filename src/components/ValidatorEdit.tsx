@@ -452,10 +452,18 @@ export function ValidatorEdit({
           </>
         )}
         {activeSection === "contracts" && (
-          <Contracts contracts={contracts} user={user} />
+          <Contracts
+            subscriptions={validator?.subscriptions || []}
+            contracts={contracts}
+            user={user}
+          />
         )}
         {activeSection === "services" && (
-          <Services services={services} user={user} />
+          <Services
+            subscriptions={validator?.subscriptions || []}
+            services={services}
+            user={user}
+          />
         )}
       </Box>
     </Group>

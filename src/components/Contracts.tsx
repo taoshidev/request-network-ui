@@ -9,14 +9,18 @@ import { useNotification } from "@/hooks/use-notification";
 import { useRouter } from "next/navigation";
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { IconAlertCircle } from "@tabler/icons-react";
+import { SubscriptionType } from "@/db/types/subscription";
+
 import dayjs from "dayjs";
 
 export function Contracts({
   user,
   contracts,
+  subscriptions,
 }: {
   user: UserType;
   contracts: ContractType[];
+  subscriptions: SubscriptionType[];
 }) {
   const router = useRouter();
   const { notifySuccess, notifyError, notifyInfo } = useNotification();
@@ -119,6 +123,9 @@ export function Contracts({
                     <Button
                       size="sm"
                       variant="light"
+                      disabled={subscriptions?.some(
+                        (s) => s.contractId === contract?.id
+                      )}
                       onClick={() => openDeleteConfirm(contract)}
                     >
                       Delete
