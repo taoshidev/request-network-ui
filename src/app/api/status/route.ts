@@ -14,6 +14,7 @@ import {
   canceledSubText,
 } from "@/templates/canceled-subscription";
 import { updateRemaining } from "@/actions/keys";
+import { captureException } from "@sentry/nextjs";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -113,7 +114,7 @@ export const PUT = async (req: NextRequest): Promise<NextResponse> => {
       status: 200,
     });
   } catch (error: Error | unknown) {
-    console.error(error);
+    captureException(error);
     return NextResponse.json({
       message: "Error updating subscription status.",
       status: 200,

@@ -30,7 +30,7 @@ export const fetchServiceTransactions = async (validator, proxyServiceId) => {
   });
 
   if (res?.error) {
-    console.error(res?.error);
+    captureException(res?.error);
     return {};
   }
 
@@ -140,7 +140,7 @@ export const fetchPaymentStatusTransactions = async (
   });
 
   if (res?.error) {
-    console.error(res?.error);
+    captureException(res?.error);
     return [];
   }
 

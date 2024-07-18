@@ -3,6 +3,7 @@ import { ApiOptions } from "@polkadot/api/types";
 import { rpc } from "./rpc";
 import { types } from "./types";
 import { ValidatorType } from "@/db/types/validator";
+import { captureException } from "@sentry/nextjs";
 
 const PROVIDER_URL = ["development", "testing", "staging"].includes(
   process.env.NEXT_PUBLIC_NODE_ENV as string
@@ -54,7 +55,7 @@ export const fetchValidatorInfo = async (
     }
     return await fetchNeuronLite(netUid, uId);
   } catch (error) {
-    console.error("Error fetching validator info:", error);
+    captureException(error);
     return null;
   }
 };
@@ -91,7 +92,7 @@ export const fetchSubnetInfo = async () => {
     const result = api.createType("Vec<SubnetInfo>", result_bytes);
     return result.toJSON();
   } catch (error) {
-    console.error("Failed to decode SubnetInfo:", error);
+    captureException(error);
     return null;
   }
 };

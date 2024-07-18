@@ -29,7 +29,7 @@ export const updateKey = async ({
     });
     return { status: 200, message: "Key updated successfully" };
   } catch (error) {
-    console.error(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -62,7 +62,7 @@ export const deleteKey = async ({ keyId }: { keyId: string }) => {
     await unkey.keys.delete({ keyId });
     return { status: 204, message: "Key deleted successfully" };
   } catch (error) {
-    console.error(error);
+    Sentry.captureException(error);
   }
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Group, NavLink, Stepper, Title } from "@mantine/core";
+import { Box, Button, Group, Stepper, Title } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import { CreateValidator } from "./steps/CreateValidator";
 import { useForm } from "@mantine/form";
@@ -29,6 +29,7 @@ import { useModals } from "@mantine/modals";
 import { randomBytes } from "crypto";
 
 type KeyType = { apiKey: string; apiSecret: string };
+const STEP_COUNT = 3;
 
 export default function ValidatorStepper({
   user,
@@ -94,7 +95,7 @@ export default function ValidatorStepper({
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function getErrors() {
+  const getErrors = () => {
     const nextErrors =
       ValidatorEndpointSchema.safeParse(form.values)?.["error"]?.issues?.reduce(
         (prev, curr) => {
@@ -105,9 +106,9 @@ export default function ValidatorStepper({
       ) || {};
     setErrors(nextErrors);
     return nextErrors;
-  }
+  };
 
-  function valid() {
+  const valid = () => {
     const currentErrors = getErrors();
     return stepInputs.reduce((prev, curr, index) => {
       let error = false;
@@ -117,11 +118,11 @@ export default function ValidatorStepper({
       prev.push(!error as any);
       return prev;
     }, []);
-  }
+  };
 
-  const setStep = (step) => {
-    if (step === 0 || valid()[step - 1]) {
-      setDirection(active > step ? "right" : "left");
+  const setStep = (step: number) => {
+    if ((step === 0 || valid()[step - 1]) && step !== active) {
+      setDirection(step > active ? "right" : "left");
       setTimeout(() => setActive(step), 0);
     }
   };
@@ -137,27 +138,28 @@ export default function ValidatorStepper({
     }
 
     if (valid()[active] && !hotkeyExists) {
-      setDirection("left");
-      setTimeout(
-        () => setActive((current) => (current < 4 ? current + 1 : current)),
-        0
-      );
-    } else form.setErrors(_pick(getErrors(), stepInputs[active]));
+      setDirection("right");
+      setActive((current) => (current < 3 ? current + 1 : current));
+    } else {
+      form.setErrors(_pick(getErrors(), stepInputs[active]));
+    }
   };
+
   const prevStep = () => {
     getErrors();
-    setDirection("right");
-    setTimeout(
-      () => setActive((current) => (current > 0 ? current - 1 : current)),
-      0
-    );
+    setDirection("left");
+    setActive((current) => (current > 0 ? current - 1 : current));
   };
+
+  useEffect(() => {
+    setDirection(direction === "left" ? "right" : "left");
+  }, [active]);
 
   const handleRegistrationComplete = ({ apiKey, apiSecret }: KeyType) => {
     setKeys({ apiKey, apiSecret });
     setKeyModalOpened(true);
-    // send validator created email
   };
+
   const onSubmit = async (values: Partial<ValidatorType & EndpointType>) => {
     setLoading(true);
     const subnetId = values.subnetId as string;
@@ -227,7 +229,7 @@ export default function ValidatorStepper({
       });
 
       notifySuccess("Validator registered successfully");
-      setActive((current) => 3);
+      setActive(STEP_COUNT);
 
       sendNotification({
         type: NOTIFICATION_TYPE.SUCCESS,
@@ -264,7 +266,7 @@ export default function ValidatorStepper({
       >
         <Stepper
           active={active}
-          onStepClick={setStep}
+          onStepClick={(step) => setStep(step)}
           orientation={orientation}
         >
           <Stepper.Step
@@ -317,7 +319,7 @@ export default function ValidatorStepper({
         </Stepper>
 
         <Group justify="center" mt="xl">
-          {active < 3 && (
+          {active < STEP_COUNT && (
             <Button
               variant="default"
               onClick={prevStep}
@@ -326,7 +328,7 @@ export default function ValidatorStepper({
               Back
             </Button>
           )}
-          {active < 2 && (
+          {active < STEP_COUNT - 1 && (
             <Button
               disabled={
                 hotkeyExists || (active === 1 && walletExists) || loading
@@ -336,7 +338,7 @@ export default function ValidatorStepper({
               Next step
             </Button>
           )}
-          {active === 2 && (
+          {active === STEP_COUNT - 1 && (
             <Button
               type="submit"
               loading={loading}

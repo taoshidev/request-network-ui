@@ -71,9 +71,16 @@ export const getValidators = async (
   }
 };
 
-export const getValidator = async ({ id }: { id: string }) => {
+export const getValidator = async ({
+  id,
+  with: withProps = {},
+}: {
+  id: string;
+  with?: object;
+}) => {
   const res = await db.query.validators.findFirst({
     where: (validators, { eq }) => eq(validators.id, id as string),
+    ...(withProps && { with: withProps }),
   });
   if (!res) throw new Error(`Validator with ID ${id} not found.`);
   return res;

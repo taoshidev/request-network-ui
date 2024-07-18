@@ -2,6 +2,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import * as schema from "./schema";
+import { captureException } from "@sentry/nextjs";
 
 const connectionString = process.env.DATABASE_URL as string;
 
@@ -16,8 +17,9 @@ export const runMigration = async (): Promise<void> => {
     await client.end();
     console.info("Migrations completed successfully.");
   } catch (error) {
-    console.error(`Failed to execute migrations: ${error}`);
+    console.error("Failed to execute migrations");
+    captureException(error);
   }
 };
 
-runMigration().catch((error) => console.error(error));
+runMigration().catch((error) => captureException(error));

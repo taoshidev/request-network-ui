@@ -9,6 +9,7 @@ import { subscriptions } from "@/db/schema";
 import { parseError, parseResult } from "@/db/error";
 import { EndpointType } from "@/db/types/endpoint";
 import { getAuthUser } from "./auth";
+import { captureException } from "@sentry/nextjs";
 
 export const getEndpoints = async (query: object = {}) => {
   try {
@@ -16,7 +17,7 @@ export const getEndpoints = async (query: object = {}) => {
 
     return results;
   } catch (error) {
-    if (error instanceof Error) console.error(error.stack);
+    if (error instanceof Error) captureException(error.stack);
   }
 };
 
@@ -40,7 +41,7 @@ export const getEndpoint = async ({ id }: { id: string }) => {
 
     return results;
   } catch (error) {
-    if (error instanceof Error) console.error(error.stack);
+    if (error instanceof Error) captureException(error.stack);
   }
 };
 
@@ -82,7 +83,7 @@ export const getEndpointWithSubscription = async ({
 
     return results as EndpointType;
   } catch (error) {
-    if (error instanceof Error) console.error(error.stack);
+    if (error instanceof Error) captureException(error.stack);
     return parseError(error);
   }
 };
