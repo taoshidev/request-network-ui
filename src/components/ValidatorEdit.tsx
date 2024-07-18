@@ -48,6 +48,7 @@ import { checkForPayPal, checkForStripe } from "@/actions/payments";
 import StripeSetupModal from "./StripeSetupModal";
 import { StripeCheckType } from "@/db/types/stripe-check";
 import PayPalSetupModal from "./PayPalSetupModal";
+import { captureException } from "@sentry/nextjs";
 
 export const ValidatorEditSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -103,7 +104,7 @@ export function ValidatorEdit({
       notifySuccess(res?.message as string);
       router.back();
     } catch (error) {
-      console.error(error);
+      captureException(error);
     } finally {
       setLoading(false);
     }
@@ -451,10 +452,18 @@ export function ValidatorEdit({
           </>
         )}
         {activeSection === "contracts" && (
-          <Contracts contracts={contracts} user={user} />
+          <Contracts
+            subscriptions={validator?.subscriptions || []}
+            contracts={contracts}
+            user={user}
+          />
         )}
         {activeSection === "services" && (
-          <Services services={services} user={user} />
+          <Services
+            subscriptions={validator?.subscriptions || []}
+            services={services}
+            user={user}
+          />
         )}
       </Box>
     </Group>

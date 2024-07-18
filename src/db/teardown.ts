@@ -2,8 +2,8 @@ import { cwd } from "node:process";
 import { loadEnvConfig } from "@next/env";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
-
 import { users, subnets, validators, endpoints } from "./schema";
+import { captureException } from "@sentry/nextjs";
 
 loadEnvConfig(cwd());
 
@@ -25,7 +25,8 @@ const teardown = async () => {
 
     console.info("Teardown Completed");
   } catch (error) {
-    console.error("Teardown failed:", error);
+    console.error("Teardown failed");
+    captureException(error);
     process.exit(1);
   } finally {
     process.exit(0);
@@ -33,6 +34,7 @@ const teardown = async () => {
 };
 
 teardown().catch((error) => {
-  console.error("Unhandled error:", error);
+  console.error("Unhandled error");
+  captureException(error);
   process.exit(1);
 });

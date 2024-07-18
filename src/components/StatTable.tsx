@@ -59,7 +59,7 @@ export function StatTable({
                       <Table.Td>
                         <FixedFormatter value={key?.remaining} />
                       </Table.Td>
-                      <Table.Td>{key?.refill?.interval}</Table.Td>
+                      <Table.Td>{key?.refill?.interval || '-'}</Table.Td>
                       <Table.Td>
                         <FixedFormatter value={key?.refill?.amount} />
                       </Table.Td>

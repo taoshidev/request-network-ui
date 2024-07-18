@@ -10,7 +10,18 @@ import ClientRedirect from "@/components/ClientRedirect";
 
 export default async function Page({ params }: any) {
   const { id } = params;
-  const validator: ValidatorType = await getValidator({ id });
+  const validator: ValidatorType = await getValidator({
+    id,
+    with: {
+      subscriptions: {
+        columns: {
+          id: true,
+          contractId: true,
+          serviceId: true,
+        },
+      },
+    },
+  });
   const user = await getAuthUser();
 
   if (!user) return;

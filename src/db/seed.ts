@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { subnets } from "./schema";
 import { seedData } from "./data/subnets";
 import { SubnetType } from "./types/subnet";
+import { captureException } from "@sentry/nextjs";
 
 loadEnvConfig(cwd());
 
@@ -61,7 +62,8 @@ const seed = async () => {
 
     console.info("Seeded");
   } catch (error) {
-    console.error("Seeding failed:", error);
+    console.error("Seeding failed");
+    captureException(error);
     process.exit(1);
   } finally {
     process.exit(0);
@@ -69,6 +71,7 @@ const seed = async () => {
 };
 
 seed().catch((error) => {
-  console.error("Unhandled error:", error);
+  console.error("Unhandled error");
+  captureException(error);
   process.exit(1);
 });

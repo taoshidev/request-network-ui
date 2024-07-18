@@ -11,14 +11,16 @@ import { ServiceType } from "@/db/types/service";
 import ServiceModal from "./ServiceModal";
 import { deleteService } from "@/actions/services";
 import CurrencyFormatter from "./Formatters/CurrencyFormatter";
-import FixedFormatter from "./Formatters/FixedFormatter";
+import { SubscriptionType } from "@/db/types/subscription";
 
 export default function Services({
   user,
   services,
+  subscriptions,
 }: {
   user: UserType;
   services: ServiceType[];
+  subscriptions: SubscriptionType[];
 }) {
   const router = useRouter();
   const { notifySuccess, notifyError } = useNotification();
@@ -137,6 +139,7 @@ export default function Services({
                     <Button
                       size="sm"
                       variant="light"
+                      disabled={subscriptions?.some(s => s.serviceId === service?.id)}
                       onClick={() => openDeleteConfirm(service)}
                     >
                       Delete

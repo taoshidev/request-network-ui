@@ -2,6 +2,7 @@
 
 import { db } from "@/db";
 import { SubnetType } from "@/db/types/subnet";
+import { captureException } from "@sentry/nextjs";
 
 export const getSubnets = async (query?: object): Promise<SubnetType[] | void> => {
   try {
@@ -9,7 +10,7 @@ export const getSubnets = async (query?: object): Promise<SubnetType[] | void> =
 
     return results as SubnetType[];
   } catch (error) {
-    if (error instanceof Error) console.error(error.stack);
+    if (error instanceof Error) captureException(error.stack);
   }
 };
 

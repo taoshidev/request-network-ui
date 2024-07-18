@@ -116,7 +116,7 @@ export function Settings({
     if (subscriptionActive)
       setTimeout(
         () => notifySuccess("Subscription successfully activated."),
-        20000
+        2000
       );
     setPrevActive(subscription.active);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -171,6 +171,7 @@ export function Settings({
     mode: "onChange",
     resolver: zodResolver(generalSettingsSchema),
   });
+
   const deleteUnkey = async () => {
     const res = await deleteKey({ keyId: apiKey?.id });
     if (res?.status !== 204) return notifyError(res?.message as string);
@@ -248,7 +249,6 @@ export function Settings({
   };
 
   const unsubscribe = async () => {
-    setLoading("");
     const unSubRes = await cancelSubscription(subscription.proxyServiceId);
 
     if (unSubRes?.error) {
@@ -269,12 +269,11 @@ export function Settings({
 
   const payPalPayment = () => {
     setLoading("paypal-payment");
-    false ? unSubOpen() : sendPaymentRequest("paypal-pay");
+    subscription?.active ? unSubOpen() : sendPaymentRequest("paypal-pay");
   };
 
   const handleDeleteSubscription = async () => {
     setLoading("delete-subscription");
-
     if (subscription.service.paymentType === PAYMENT_TYPE.SUBSCRIPTION)
       await unsubscribe();
     await deleteUnkey();
@@ -289,12 +288,19 @@ export function Settings({
     setTimeout(() => router.back(), 1000);
   };
 
+  const handleCloseConfirmModal = () => {
+    console.log("confirm modal closed");
+    setLoading("");
+    if(opened) close();
+    if(unSubOpened) unSubClose();
+  }
+
   return (
     <>
       <Modal
         centered
         opened={opened}
-        onClose={close}
+        onClose={handleCloseConfirmModal}
         title={
           subscription.service.paymentType !== PAYMENT_TYPE.PAY_PER_REQUEST
             ? "Are you sure you want to delete subscription?"
@@ -309,7 +315,7 @@ export function Settings({
           <Text>This cannot be undone.</Text>
         </Box>
         <Box className="grid grid-cols-2 gap-2 sticky bg-white border-t border-gray-200 p-4 bottom-0 -mb-4 -mx-4">
-          <Button w="100%" onClick={close} variant="outline">
+          <Button w="100%" onClick={handleCloseConfirmModal} variant="outline">
             No, Cancel
           </Button>
 
@@ -329,7 +335,7 @@ export function Settings({
         message="Are you sure you want to unsubscribe. Any applications using this project's keys will no longer be
         able to access this Taoshi API."
         onConfirm={unsubscribe}
-        onCancel={unSubClose}
+        onCancel={handleCloseConfirmModal}
       />
 
       {key && key.id && (

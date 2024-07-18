@@ -58,7 +58,7 @@ export default function EndpointForm({
     disabled: SN8_ONLY && s.netUid !== 8,
   }));
 
-  const availableContracts = (contracts ? contracts : []).map((c) => ({
+  const availableContracts = (contracts ? contracts : [])?.map?.((c) => ({
     value: c.id,
     label: c.title,
     disabled: !c.active,
